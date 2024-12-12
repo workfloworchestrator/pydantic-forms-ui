@@ -2,11 +2,13 @@
     "private": true,
     "scripts": {
         "build": "turbo build",
-        "dev": "turbo dev --filter=apps/example",
+        "dev": "turbo dev --filter=example",
         "lint": "turbo lint",
+        "tsc": "turbo run tsc",
         "clean": "turbo clean && rm -rf node_modules",
         "test": "turbo test",
-        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "prettier": "prettier -c \"{**/*,*}.{ts,tsx,json,js,md}\"",
+        "prettier-fix": "prettier --write \"{**/*,*}.{ts,tsx,json,js,md}\"",
         "changeset": "changeset",
         "version-packages": "changeset version",
         "release": "turbo build --filter=pydantic-forms && changeset publish"

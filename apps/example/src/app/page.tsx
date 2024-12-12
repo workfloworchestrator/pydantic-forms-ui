@@ -1,15 +1,17 @@
-"use client";
-import { useEffect, useState } from "react";
-import styles from "./page.module.css";
+'use client';
+
+import { useEffect, useState } from 'react';
+
+import styles from './page.module.css';
 
 export default function Home() {
     const [formDefinition, setFormDefinition] = useState(null);
 
     useEffect(() => {
-        fetch("http://localhost:8000/form", {
-            method: "POST",
+        fetch('http://localhost:8000/form', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify([]),
         })
