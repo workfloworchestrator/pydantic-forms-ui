@@ -1,20 +1,21 @@
 {
     "private": true,
     "scripts": {
-        "build": "turbo build",
         "dev": "turbo dev --filter=example",
-        "lint": "turbo lint",
-        "tsc": "turbo run tsc",
-        "clean": "turbo clean && rm -rf node_modules",
         "test": "turbo test",
+        "tsc": "turbo run tsc",
+        "lint": "turbo lint",
         "prettier": "prettier -c \"{**/*,*}.{ts,tsx,json,js,md}\"",
         "prettier-fix": "prettier --write \"{**/*,*}.{ts,tsx,json,js,md}\"",
+        "build": "turbo build",
+        "clean": "turbo clean && rm -rf node_modules",
         "changeset": "changeset",
-        "version-packages": "changeset version",
-        "release": "turbo build --filter=pydantic-forms && changeset publish"
+        "packages:publish": "turbo run build lint test && changeset publish",
+        "postinstall": "husky && turbo run build --filter=./packages/*"
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",
+        "husky": "^9.1.7",
         "turbo": "^2.3.3"
     },
     "engines": {
