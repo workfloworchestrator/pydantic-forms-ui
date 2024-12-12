@@ -1,5 +1,5 @@
 export function Button() {
-    return 'button'
+    return 'button';
 }
 
 Button.displayName = 'Button';
