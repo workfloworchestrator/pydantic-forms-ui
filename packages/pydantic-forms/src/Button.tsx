@@ -1,9 +1,5 @@
-export interface ButtonProps {
-    children: React.ReactNode;
-}
-
-export function Button(props: ButtonProps) {
-    return <button>{props.children}</button>;
+export function Button() {
+    return 'button'
 }
 
 Button.displayName = 'Button';

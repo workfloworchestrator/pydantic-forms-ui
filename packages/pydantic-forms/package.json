@@ -18,6 +18,7 @@
         "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
     },
     "devDependencies": {
+        "@orchestrator-ui/eslint-config-custom": "^1.4.1",
         "@orchestrator-ui/jest-config": "^1.5.1",
         "@orchestrator-ui/tsconfig": "^1.2.1",
         "@types/react": "^18.2.61",
@@ -27,7 +28,6 @@
         "typescript": "5.5.4"
     },
     "dependencies": {
-        "@orchestrator-ui/eslint-config-custom": "^1.4.1",
         "react": "^18.2.0"
     },
     "publishConfig": {
