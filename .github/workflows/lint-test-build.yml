@@ -1,0 +1,71 @@
+name: Lint, test and build
+on: [push]
+jobs:
+    cache-dependencies:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: 'package.json'
+                  cache: 'npm'
+            - uses: actions/cache@v4
+              with:
+                  path: '**/node_modules'
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
+            - name: Installing dependencies
+              run: npm ci
+
+    linting-and-prettier:
+        runs-on: ubuntu-latest
+        needs: cache-dependencies
+        steps:
+            - uses: actions/checkout@v4
+            - name: Installing Node
+              uses: actions/setup-node@v4
+              with:
+                  cache: 'npm'
+            - uses: actions/cache@v4
+              with:
+                  path: '**/node_modules'
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
+            - name: Installing dependencies
+              run: npm ci
+            - run: npm run tsc
+            - run: npm run lint
+            - run: npm run prettier
+
+    unit-tests:
+        runs-on: ubuntu-latest
+        needs: cache-dependencies
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  cache: 'npm'
+            - uses: actions/cache@v4
+              with:
+                  path: '**/node_modules'
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
+            - name: Installing dependencies
+              run: npm ci
+            - run: npm run test
+
+    build:
+        runs-on: ubuntu-latest
+        needs: cache-dependencies
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup node
+              uses: actions/setup-node@v4
+              with:
+                  cache: 'npm'
+            - uses: actions/cache@v4
+              with:
+                  path: '**/node_modules'
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
+            - name: Installing dependencies
+              run: npm ci
+            - run: npm run build
