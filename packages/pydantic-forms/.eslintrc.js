@@ -1,8 +1,8 @@
 module.exports = {
-  root: true,
-  extends: ["@acme/eslint-config/react-internal.js"],
-  parser: "@typescript-eslint/parser",
-  parserOptions: {
-    project: true,
-  },
+    root: true,
+    extends: ["@orchestrator-ui/eslint-config-custom"],
+    parser: "@typescript-eslint/parser",
+    parserOptions: {
+        project: true,
+    },
 };

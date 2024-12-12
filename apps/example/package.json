@@ -6,6 +6,7 @@
         "dev": "next dev --turbopack",
         "build": "next build",
         "start": "next start",
+        "test": "jest --passWithNoTests",
         "lint": "next lint"
     },
     "dependencies": {
@@ -16,6 +17,8 @@
     },
     "devDependencies": {
         "@orchestrator-ui/eslint-config-custom": "^1.4.1",
+        "@orchestrator-ui/jest-config": "^1.5.1",
+        "@orchestrator-ui/tsconfig": "^1.2.1",
         "@types/node": "^20",
         "@types/react": "^18",
         "@types/react-dom": "^18",

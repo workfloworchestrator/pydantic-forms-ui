@@ -2,13 +2,14 @@
     "private": true,
     "scripts": {
         "build": "turbo build",
-        "dev": "turbo dev",
+        "dev": "turbo dev --filter=apps/example",
         "lint": "turbo lint",
         "clean": "turbo clean && rm -rf node_modules",
+        "test": "turbo test",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
         "changeset": "changeset",
         "version-packages": "changeset version",
-        "release": "turbo build --filter=docs^... && changeset publish"
+        "release": "turbo build --filter=pydantic-forms && changeset publish"
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",
