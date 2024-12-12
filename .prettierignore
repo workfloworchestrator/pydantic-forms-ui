@@ -13,3 +13,5 @@ packages/*/CHANGELOG.md
 node_modules
 
 .turbo
+
+/env

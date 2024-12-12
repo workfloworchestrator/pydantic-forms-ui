@@ -14,3 +14,4 @@ public/dist
 env
 .env.local
 *.tsbuildinfo
+__pycache__/
