@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
+import { Button } from 'pydantic-forms';
+
 import styles from './page.module.css';
 
 export default function Home() {
@@ -24,6 +26,7 @@ export default function Home() {
     return (
         <div className={styles.page}>
             <h1>Example form</h1>
+            <Button />
             <div>{JSON.stringify(formDefinition)}</div>
         </div>
     );
