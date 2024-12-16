@@ -16,3 +16,4 @@ env
 *.tsbuildinfo
 __pycache__/
 .vscode
+test
