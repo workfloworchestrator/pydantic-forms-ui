@@ -1,1 +1,3 @@
-export { Button } from './Button';
+import { PydanticForm } from './PydanticForm';
+
+export default PydanticForm;
