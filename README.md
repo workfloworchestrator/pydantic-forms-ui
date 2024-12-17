@@ -12,6 +12,7 @@ This example application creates as FastApi application to serve as a backend fo
 To install using a virtual environment:
 
 ```
+$ cd backend
 $ python -m venv env
 $ source env/bin/activate
 $ pip install -r requirements.txt
@@ -23,6 +24,7 @@ Visit [http://127.0.0.1:8000/docs][4] to view the api documentation
 ### frontend
 
 ```
+$ cd frontend
 $ npm i
 $ npm run dev
 ```
