@@ -1,7 +1,0 @@
-{
-    "extends": [
-        "@orchestrator-ui/eslint-config-custom",
-        "next/core-web-vitals",
-        "next/typescript"
-    ]
-}
