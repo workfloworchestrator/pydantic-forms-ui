@@ -25,7 +25,7 @@ export default function Home() {
 
     return (
         <div className={styles.page}>
-            <h1>Example form</h1>
+            <h1>Pydantic Form</h1>
             <PydanticForm />
             <div>{JSON.stringify(formDefinition)}</div>
         </div>
