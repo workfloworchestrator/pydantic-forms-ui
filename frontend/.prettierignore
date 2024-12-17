@@ -1,0 +1,16 @@
+# Add files here to ignore them from prettier formatting
+/**/dist
+packages/*/CHANGELOG.md
+/coverage
+/mkdocs
+
+/.changeset/*.md
+!/.changeset/README.md
+
+.next
+node_modules
+
+.turbo
+
+/env
+/test
