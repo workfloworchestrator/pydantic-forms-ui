@@ -1,6 +1,4 @@
 # Add files here to ignore them from prettier formatting
-
-/**/__generated__
 /**/dist
 packages/*/CHANGELOG.md
 /coverage
