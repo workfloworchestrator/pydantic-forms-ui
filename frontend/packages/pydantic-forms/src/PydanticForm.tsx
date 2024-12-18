@@ -1,5 +1,3 @@
-import React from 'react';
+import PydanticForm from '@/components/form/ContextWrap';
 
-export const PydanticForm = () => {
-    return <div>PydanticForm</div>;
-};
+export default PydanticForm;

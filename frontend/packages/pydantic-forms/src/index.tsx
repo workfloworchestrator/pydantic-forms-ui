@@ -1,3 +1,3 @@
-import { PydanticForm } from './PydanticForm';
+import PydanticForm from './PydanticForm';
 
 export default PydanticForm;
