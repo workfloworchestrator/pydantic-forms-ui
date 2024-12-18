@@ -11,7 +11,7 @@
         "clean": "turbo clean && rm -rf node_modules",
         "changeset": "changeset",
         "packages:publish": "turbo run build lint test && changeset publish",
-        "postinstall": "husky && turbo run build --filter=./packages/*"
+        "postinstall": "turbo run build --filter=./packages/*"
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",

@@ -29,7 +29,16 @@ $ npm i
 $ npm run dev
 ```
 
-Visit [http://127.0.0.1:3000][5] to view the api documentation
+Visit [http://127.0.0.1:3000][5] to view the generated form
+
+## Contributing
+
+When setting up this repo to contribute initialize the pre-commit hooks using [pre-commit][6] (eq. `brew install pre-commit`).
+For installing prec
+
+```
+$ pre-commit install
+```
 
 ## Publishing to npm
 
@@ -41,3 +50,4 @@ This repository is also used to publish the pydantic forms ui package to NPM.
 [3]: https://www.npmjs.com/package/pydantic-forms
 [4]: http://127.0.0.1:8000/docs
 [5]: http://127.0.0.1:3000
+[6]: https://pre-commit.com/#install
