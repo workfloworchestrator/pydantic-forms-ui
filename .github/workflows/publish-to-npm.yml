@@ -3,49 +3,46 @@ on:
     workflow_dispatch:
     push:
         branches:
-            - 'main'
+            - "main"
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
     publish:
-      runs-on: ubuntu-latest
+        runs-on: ubuntu-latest
         permissions:
             id-token: write
             contents: write
         steps:
-            -   name: Create GitHub app token
+            - name: Create GitHub app token
               uses: actions/create-github-app-token@v1
               id: app-token
               with:
                   app-id: ${{ vars.RW_REPOSITORY_CONTENT_APP_ID }}
                   private-key: ${{ secrets.RW_REPOSITORY_CONTENT_PRIVATE_KEY }}
                   owner: ${{ github.repository_owner }}
-                  repositories: 'orchestrator-ui-library'
+                  repositories: "pydantic-forms-ui"
             - uses: actions/checkout@v3
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v3
+            - name: Setting up Node
+              uses: actions/setup-node@v4
               with:
-                  node-version: ${{ matrix.node-version }}
-                  cache: 'npm'
-            - uses: actions/cache@v2
-              with:
-                  path: '**/node_modules'
-                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
+                  node-version: 22.x
+                  cache: npm
+                  cache-dependency-path: frontend
             - name: Create .npmrc file with the NPM token
-              run: |
+              run: cd frontend &&
                   cat << EOF > "$HOME/.npmrc"
-                    //registry.npmjs.org/:_authToken=$NPM_TOKEN
+                  //registry.npmjs.org/:_authToken=$NPM_TOKEN
                   EOF
               env:
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
             - name: Installing dependencies
-              run: npm ci
+              run: cd frontend && npm ci
             - name: Create Release Pull Request or Publish
               id: changesets
               uses: changesets/action@v1
               with:
-                  publish: npm run packages:publish
+                  publish: cd frontend && npm run packages:publish
               env:
                   GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
