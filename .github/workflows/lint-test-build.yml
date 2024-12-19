@@ -25,6 +25,8 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 22.x
+                  cache: npm
+                  cache-dependency-path: frontend
             - name: Installing dependencies
               run: cd frontend && npm ci
             - run: cd frontend && npm run test
@@ -37,6 +39,7 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   cache: npm
+                  cache-dependency-path: frontend
                   node-version: 22.x
             - name: Installing dependencies
               run: cd frontend && npm ci
