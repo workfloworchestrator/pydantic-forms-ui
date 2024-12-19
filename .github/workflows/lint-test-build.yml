@@ -15,7 +15,7 @@ jobs:
                   path: "**/node_modules"
                   key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
             - name: Installing dependencies
-              run: npm ci
+              run: cd frontend && npm ci
 
     linting-and-prettier:
         runs-on: ubuntu-latest
@@ -25,17 +25,17 @@ jobs:
             - name: Installing Node
               uses: actions/setup-node@v4
               with:
-                  cache: "npm"
-                  node-version: "22.x"
+                  cache: npm
+                  node-version: 22.x
             - uses: actions/cache@v4
               with:
                   path: "**/node_modules"
                   key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
             - name: Installing dependencies
-              run: npm ci
-            - run: npm run tsc
-            - run: npm run lint
-            - run: npm run prettier
+              run: cd frontend && npm ci
+            - run: cd frontend && npm run tsc
+            - run: cd frontend && npm run lint
+            - run: cd frontend && npm run prettier
 
     unit-tests:
         runs-on: ubuntu-latest
@@ -45,15 +45,15 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  cache: "npm"
-                  node-version: "22.x"
+                  cache: npm
+                  node-version: 22.x
             - uses: actions/cache@v4
               with:
                   path: "**/node_modules"
                   key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
             - name: Installing dependencies
-              run: npm ci
-            - run: npm run test
+              run: cd frontend && npm ci
+            - run: cd frontend && npm run test
 
     build:
         runs-on: ubuntu-latest
@@ -63,12 +63,12 @@ jobs:
             - name: Setup node
               uses: actions/setup-node@v4
               with:
-                  cache: "npm"
-                  node-version: "22.x"
+                  cache: npm
+                  node-version: 22.x
             - uses: actions/cache@v4
               with:
                   path: "**/node_modules"
                   key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
             - name: Installing dependencies
-              run: npm ci
-            - run: npm run build
+              run: cd frontend && npm ci
+            - run: cd frontend && npm run build
