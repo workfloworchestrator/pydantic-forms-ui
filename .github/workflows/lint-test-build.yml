@@ -8,11 +8,11 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version-file: 'package.json'
-                  cache: 'npm'
+                  node-version: "22.x"
+                  cache: "npm"
             - uses: actions/cache@v4
               with:
-                  path: '**/node_modules'
+                  path: "**/node_modules"
                   key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
             - name: Installing dependencies
               run: npm ci
@@ -25,10 +25,11 @@ jobs:
             - name: Installing Node
               uses: actions/setup-node@v4
               with:
-                  cache: 'npm'
+                  cache: "npm"
+                  node-version: "22.x"
             - uses: actions/cache@v4
               with:
-                  path: '**/node_modules'
+                  path: "**/node_modules"
                   key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
             - name: Installing dependencies
               run: npm ci
@@ -44,10 +45,11 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  cache: 'npm'
+                  cache: "npm"
+                  node-version: "22.x"
             - uses: actions/cache@v4
               with:
-                  path: '**/node_modules'
+                  path: "**/node_modules"
                   key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
             - name: Installing dependencies
               run: npm ci
@@ -61,10 +63,11 @@ jobs:
             - name: Setup node
               uses: actions/setup-node@v4
               with:
-                  cache: 'npm'
+                  cache: "npm"
+                  node-version: "22.x"
             - uses: actions/cache@v4
               with:
-                  path: '**/node_modules'
+                  path: "**/node_modules"
                   key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
             - name: Installing dependencies
               run: npm ci
