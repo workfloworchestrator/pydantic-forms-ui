@@ -28,8 +28,15 @@
         "typescript": "5.5.4"
     },
     "dependencies": {
+        "@apidevtools/json-schema-ref-parser": "^11.7.3",
         "@emotion/react": "^11.14.0",
-        "react": "^18.2.0"
+        "@hookform/resolvers": "^3.9.1",
+        "dayjs": "^1.11.13",
+        "i18next": "^24.1.2",
+        "react": "^18.2.0",
+        "react-hook-form": "^7.54.1",
+        "zod": "^3.24.1",
+        "zod-i18n-map": "^2.27.0"
     },
     "publishConfig": {
         "access": "public"
