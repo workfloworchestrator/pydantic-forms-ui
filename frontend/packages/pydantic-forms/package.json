@@ -28,6 +28,7 @@
         "typescript": "5.5.4"
     },
     "dependencies": {
+        "@apidevtools/json-schema-ref-parser": "^11.7.3",
         "@emotion/react": "^11.14.0",
         "dayjs": "^1.11.13",
         "react": "^18.2.0",

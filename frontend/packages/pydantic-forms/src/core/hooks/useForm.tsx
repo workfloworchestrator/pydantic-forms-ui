@@ -14,8 +14,6 @@
  *
  * Disabled revalidate / refresh system of SWR, this would cause submissions
  */
-import { ignoreApiErrors } from '~/apiFactory/helpers/defaultErrorHandler';
-
 import useSWR, { SWRConfiguration } from 'swr';
 
 import {
@@ -23,6 +21,18 @@ import {
     DynamicFormsMetaData,
     IDynamicFormApiErrorResponse,
 } from '@/types';
+
+const ignoreApiErrors = async (
+    req: Promise<unknown>,
+    ignoreCodes: number[],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any> => {
+    try {
+        return await req;
+    } catch (error) {
+        throw error;
+    }
+};
 
 export function useDynamicForm(
     formKey: string,

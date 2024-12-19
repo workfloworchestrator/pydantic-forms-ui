@@ -1,10 +1,9 @@
-import { navPreventDefaultFn } from '~/utils';
-
 import { useCallback } from 'react';
 
 import { useDynamicFormsContext } from '@/core';
 import { isNullableField } from '@/core/helper';
 import { IDynamicFormField } from '@/types';
+import { navPreventDefaultFn } from '@/utils';
 
 const ResetNullableFieldTrigger = ({ field }: { field: IDynamicFormField }) => {
     const { rhf, config } = useDynamicFormsContext();

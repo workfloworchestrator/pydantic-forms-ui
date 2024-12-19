@@ -3,21 +3,18 @@
  *
  * Form footer component
  */
-import ChevronButton from '~/components/generic/ChevronButton/ChevronButton';
-import { navPreventDefaultFn } from '~/utils';
-
 import { useCallback, useState } from 'react';
 
-import { Card, IconWaarschuwing, OutlineButton } from '@lib/rijkshuisstijl';
-
+import styles from '@/components/form/Form.module.scss';
 import RenderReactHookFormErrors from '@/components/render/RenderReactHookFormErrors';
-import {
-    CsFlags,
-    IsCsFlagEnabled,
-} from '@/components/utility/ClientSideFF/ClientSideFF';
 import { useDynamicFormsContext } from '@/core';
+import { navPreventDefaultFn } from '@/utils';
 
-import styles from './Form.module.scss';
+const Card = () => {};
+
+const IconWaarschuwing = () => {};
+
+const OutlineButton = () => {};
 
 const DynamicFormFooter = () => {
     const {

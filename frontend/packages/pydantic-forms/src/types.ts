@@ -401,7 +401,7 @@ export interface IDynamicFormField {
 export interface IDynamicFormFieldSection {
     id: string;
     title: string;
-    fields: string[];
+    fields: IDynamicFormField[];
 }
 
 export enum IDynamicFormState {

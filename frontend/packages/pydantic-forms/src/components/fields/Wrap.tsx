@@ -8,59 +8,86 @@
  *
  * @Uses FormField - Rijkshuisstijl
  */
+import { useCallback } from 'react';
 
-import { useCallback } from "react"
+import ResetNullableFieldTrigger from '@/components/form/ResetNullableFieldTrigger';
+import { useDynamicFormsContext } from '@/core';
+import { IDynamicFormField } from '@/types';
 
-import { FormField, IconButton, IconInfo } from "@lib/rijkshuisstijl"
-import ResetNullableFieldTrigger from "~/dynamicForms/components/form/ResetNullableFieldTrigger"
-import { useDynamicFormsContext } from "~/dynamicForms/core"
-import { IDynamicFormField } from "~/dynamicForms/types"
+interface FormFieldProps {
+    label: React.ReactNode;
+    description: string;
+    required: boolean;
+    isValid: boolean;
+    error: string;
+    dense: boolean;
+    className: string;
+    children: React.ReactNode;
+}
+
+const FormField = ({}: FormFieldProps) => {
+    return <div>FormField</div>;
+};
+
+interface IconButtonProps {
+    className: string;
+    onClick: () => void;
+    children: React.ReactNode;
+}
+
+const IconButton = ({}: IconButtonProps) => {
+    return <button>IconButton</button>;
+};
+
+const IconInfo = () => {
+    return <div>IconInfo</div>;
+};
 
 interface IDfFieldWrapProps {
-	field: IDynamicFormField
-	children: React.ReactNode
+    field: IDynamicFormField;
+    children: React.ReactNode;
 }
 
 function DfFieldWrap({ field, children }: IDfFieldWrapProps) {
-	const { rhf, errorDetails, debugMode } = useDynamicFormsContext()
+    const { rhf, errorDetails, debugMode } = useDynamicFormsContext();
 
-	const fieldState = rhf.getFieldState(field.id)
+    const fieldState = rhf.getFieldState(field.id);
 
-	const errorMsg =
-		errorDetails?.mapped?.[field.id]?.msg ?? fieldState.error?.message
-	const isInvalid = errorMsg ?? fieldState.invalid
+    const errorMsg =
+        errorDetails?.mapped?.[field.id]?.msg ?? fieldState.error?.message;
+    const isInvalid = errorMsg ?? fieldState.invalid;
 
-	const debugTrigger = useCallback(() => {
-		// eslint-disable-next-line no-console
-		console.log(field)
-	}, [field])
+    const debugTrigger = useCallback(() => {
+        // eslint-disable-next-line no-console
+        console.log(field);
+    }, [field]);
 
-	return (
-		<FormField
-			label={
-				<>
-					{field.title}
-					<ResetNullableFieldTrigger field={field} />
-				</>
-			}
-			description={field.description}
-			required={field.required}
-			isValid={!isInvalid}
-			error={errorMsg as string}
-			dense
-			className="mt-0 mb-0"
-		>
-			<div className="d-flex">
-				<div className="w-100">{children}</div>
+    return (
+        <FormField
+            label={
+                <>
+                    {field.title}
+                    <ResetNullableFieldTrigger field={field} />
+                </>
+            }
+            description={field.description}
+            required={field.required}
+            isValid={!isInvalid}
+            error={errorMsg as string}
+            dense
+            className="mt-0 mb-0"
+        >
+            <div className="d-flex">
+                <div className="w-100">{children}</div>
 
-				{debugMode && (
-					<IconButton className="ml-3" onClick={debugTrigger}>
-						<IconInfo />
-					</IconButton>
-				)}
-			</div>
-		</FormField>
-	)
+                {debugMode && (
+                    <IconButton className="ml-3" onClick={debugTrigger}>
+                        <IconInfo />
+                    </IconButton>
+                )}
+            </div>
+        </FormField>
+    );
 }
 
-export default DfFieldWrap
+export default DfFieldWrap;

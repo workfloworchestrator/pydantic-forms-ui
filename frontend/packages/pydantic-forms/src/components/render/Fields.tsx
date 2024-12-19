@@ -10,6 +10,18 @@ import { DynamicFormsFormLayout, IDynamicFormField } from '@/types';
 interface IRenderFieldsProps {
     fields: IDynamicFormField[];
 }
+interface RowProps {
+    children: React.ReactNode;
+}
+const Row = ({ children }: RowProps) => <div>{children}</div>;
+
+interface ColProps {
+    md: number;
+    sm: number;
+    children: React.ReactNode;
+}
+
+const Col = ({ md, sm, children }: ColProps) => <div>{children}</div>;
 
 export function RenderFields({ fields }: IRenderFieldsProps) {
     const { formLayout } = useDynamicFormsContext();

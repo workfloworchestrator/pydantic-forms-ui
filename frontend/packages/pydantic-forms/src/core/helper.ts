@@ -243,7 +243,7 @@ export const getFieldBySection = (fields: IDynamicFormField[]) => {
         // since we start at 0, and the first label will add
         const targetSection = curSection - 1;
 
-        sections[targetSection].fields.push(field.id);
+        sections[targetSection].fields.push(field);
     }
 
     return sections;
@@ -378,13 +378,13 @@ export function addCustomFieldToDynamicForm(
         customField,
         anchorIndex,
     );
-
+    /*
     formData.sections[0].fields = insertItemAtIndex(
         formData.sections[0].fields,
         fieldId,
         anchorIndex,
     );
-
+*/
     return formData;
 }
 
