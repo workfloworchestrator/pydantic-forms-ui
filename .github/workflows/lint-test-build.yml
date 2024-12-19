@@ -12,8 +12,8 @@ jobs:
                   cache: npm
             - uses: actions/cache@v4
               with:
-                  path: "**/node_modules"
-                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
+                  path: "**/frontend/node_modules"
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/frontend/package-lock.json') }}-${{ hashFiles('**/frontend/package.json') }}
             - name: Installing dependencies
               run: cd frontend && npm ci
 
@@ -29,8 +29,8 @@ jobs:
                   node-version: 22.x
             - uses: actions/cache@v4
               with:
-                  path: "**/node_modules"
-                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
+                  path: "**/frontend/node_modules"
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/frontend/package-lock.json') }}-${{ hashFiles('**/frontend/package.json') }}
             - name: Installing dependencies
               run: cd frontend && npm ci
             - run: cd frontend && npm run tsc
@@ -49,8 +49,8 @@ jobs:
                   node-version: 22.x
             - uses: actions/cache@v4
               with:
-                  path: "**/node_modules"
-                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
+                  path: "**/frontend/node_modules"
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/frontend/package-lock.json') }}-${{ hashFiles('**/frontend/package.json') }}
             - name: Installing dependencies
               run: cd frontend && npm ci
             - run: cd frontend && npm run test
@@ -67,8 +67,8 @@ jobs:
                   node-version: 22.x
             - uses: actions/cache@v4
               with:
-                  path: "**/node_modules"
-                  key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/package.json') }}
+                  path: "**/frontend/node_modules"
+                  key: ${{ runner.os }}-node-${{ hashFiles('**/frontend/package-lock.json') }}-${{ hashFiles('**/frontend/package.json') }}
             - name: Installing dependencies
               run: cd frontend && npm ci
             - run: cd frontend && npm run build
