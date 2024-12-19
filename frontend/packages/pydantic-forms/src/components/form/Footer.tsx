@@ -5,16 +5,9 @@
  */
 import { useCallback, useState } from 'react';
 
-import styles from '@/components/form/Form.module.scss';
 import RenderReactHookFormErrors from '@/components/render/RenderReactHookFormErrors';
 import { useDynamicFormsContext } from '@/core';
 import { navPreventDefaultFn } from '@/utils';
-
-const Card = () => {};
-
-const IconWaarschuwing = () => {};
-
-const OutlineButton = () => {};
 
 const DynamicFormFooter = () => {
     const {
@@ -24,7 +17,6 @@ const DynamicFormFooter = () => {
         cancelButton,
         resetButtonAlternative,
         sendLabel,
-        footerCtaPrimaryVariant,
         footerComponent,
         allowUntouchedSubmit,
     } = useDynamicFormsContext();
@@ -36,41 +28,38 @@ const DynamicFormFooter = () => {
         rhf.trigger();
     }, [rhf]);
 
-    const enableInvalidFormSubmission = IsCsFlagEnabled(
-        CsFlags.ALLOW_INVALID_FORMS,
-    );
-
     const hasErrors = !!Object.keys(rhf.formState.errors).length;
 
     return (
-        <div className={`${styles.formFooter} form-footer`}>
+        <div className={`form-footer`}>
             {(!!footerComponent || (showErrors && hasErrors)) && (
-                <Card>
+                <div>
                     {footerComponent}
 
                     {showErrors && <RenderReactHookFormErrors />}
-                </Card>
+                </div>
             )}
 
             <div className="d-flex">
                 {resetButtonAlternative ?? (
-                    <OutlineButton
-                        variant={footerCtaPrimaryVariant}
+                    <button
                         type="button"
                         e2e-id="dynamicforms-reset-btn"
-                        onClick={resetForm}
+                        onClick={() => resetForm}
                         disabled={!rhf.formState.isDirty}
                     >
                         Rubriekinhoud herstellen
-                    </OutlineButton>
+                    </button>
                 )}
 
                 <span className="spacer"></span>
 
-                <div
-                    className={`${styles.rightSide} d-flex align-items-center`}
-                >
-                    <div className={styles.formStateNotices}>
+                <div className={`d-flex align-items-center`}>
+                    <div
+                        className={
+                            "width: 100% margin: '10px 0' order: '3 !important' text-align: center"
+                        }
+                    >
                         {rhf.formState.isValid &&
                             !allowUntouchedSubmit &&
                             !rhf.formState.isDirty && (
@@ -87,12 +76,8 @@ const DynamicFormFooter = () => {
                                 className="d-flex mv-0 mr-3"
                                 style={{ opacity: 0.8 }}
                             >
-                                <IconWaarschuwing
-                                    style={{ opacity: 0.4 }}
-                                    className="mr-2"
-                                    size={18}
-                                />{' '}
-                                Het formulier is nog niet correct ingevuld{' '}
+                                WARNING ICON Het formulier is nog niet correct
+                                ingevuld{' '}
                                 {!showErrors && (
                                     <>
                                         -{' '}
@@ -113,36 +98,28 @@ const DynamicFormFooter = () => {
 
                     {!!onCancel &&
                         (cancelButton ?? (
-                            <OutlineButton
-                                variant={footerCtaPrimaryVariant}
+                            <button
                                 type="button"
                                 onClick={onCancel}
                                 e2e-id="dynamicforms-cancel-btn"
                             >
                                 Annuleren
-                            </OutlineButton>
+                            </button>
                         ))}
 
-                    <ChevronButton
-                        variant={
-                            !rhf.formState.isValid &&
-                            enableInvalidFormSubmission
-                                ? 'red'
-                                : footerCtaPrimaryVariant
-                        }
+                    <button
                         e2e-id="dynamicforms-send-btn"
                         type="submit"
                         onClick={() => ''}
                         disabled={
-                            !enableInvalidFormSubmission &&
-                            (!rhf.formState.isValid ||
-                                (!allowUntouchedSubmit &&
-                                    !rhf.formState.isDirty &&
-                                    !rhf.formState.isSubmitting))
+                            !rhf.formState.isValid ||
+                            (!allowUntouchedSubmit &&
+                                !rhf.formState.isDirty &&
+                                !rhf.formState.isSubmitting)
                         }
                     >
                         {sendLabel ?? 'Verzenden'}
-                    </ChevronButton>
+                    </button>
                 </div>
             </div>
         </div>

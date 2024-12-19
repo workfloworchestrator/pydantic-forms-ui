@@ -5,9 +5,8 @@
  */
 import { useCallback, useState } from 'react';
 
-import { HelpTextContainer, IconButton, IconInfo } from '@lib/rijkshuisstijl';
-import { HelpContainerVariant } from '@lib/rijkshuisstijl/dist/components/Elements/HelpTextContainer/HelpTextContainer';
-
+// import { HelpTextContainer, IconButton, IconInfo } from '@lib/rijkshuisstijl';
+// import { HelpContainerVariant } from '@lib/rijkshuisstijl/dist/components/Elements/HelpTextContainer/HelpTextContainer';
 import { useDynamicFormsContext } from '@/core';
 import { getFieldLabelById } from '@/core/helper';
 
@@ -27,19 +26,23 @@ export default function RenderReactHookFormErrors() {
     const multiMistakes = numErrors > 1;
 
     return (
-        <HelpTextContainer
-            variant={HelpContainerVariant.ERROR}
-            title="Het formulier bevat tenminste één niet correct ingevulde rubriek,
-		waardoor het niet opgeslagen kan worden."
+        <div
+        // Help Text Container
+        //  variant={HelpContainerVariant.ERROR}
+        //  title="Het formulier bevat tenminste één niet correct ingevulde rubriek, waardoor het niet opgeslagen kan worden."
         >
             {!!Object.keys(rhf.formState.errors).length && (
                 <>
                     <div className="d-flex align-items-center">
                         Er {multiMistakes ? 'zijn' : 'is'} {numErrors} rubriek
                         {multiMistakes && 'en'} nog niet correct ingevuld.
-                        <IconButton onClick={toggleDetails} className="ml-2">
-                            <IconInfo size={18} />
-                        </IconButton>
+                        <button
+                            onClick={toggleDetails}
+                            className="ml-2"
+                            // IconButton
+                        >
+                            ICON INFO Size 18
+                        </button>
                     </div>
                     {showDetails && (
                         <ul className="error-list mb-2">
@@ -65,6 +68,6 @@ export default function RenderReactHookFormErrors() {
                     )}
                 </>
             )}
-        </HelpTextContainer>
+        </div>
     );
 }

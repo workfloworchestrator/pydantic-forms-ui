@@ -89,9 +89,8 @@ function DynamicFormsProvider({
         tmp_allowNullableFieldResets,
         formStructureMutator,
         cancelButton,
-    } = config ?? {};
+    } = config;
 
-    const { api } = useAppContext();
     // option to enable the debug mode on the fly in the browser
     // by setting localStorage.setItem("dynamicFormsDebugMode", "true")
     // reload is required
@@ -102,25 +101,17 @@ function DynamicFormsProvider({
     const [errorDetails, setErrorDetails] = useState<IValidationErrorDetails>();
     const [isFullFilled, setIsFullFilled] = useState(false);
     const [isSending, setIsSending] = useState(false);
-    const [cacheKey] = useCacheKey(); // this ensures we refresh the swr caches anytime ctx is re-initialized
+    // const [cacheKey] = useCacheKey(); // this ensures we refresh the swr caches anytime ctx is re-initialized
 
     const [saveToLeavePageInCurrentState, setSaveToLeavePageInCurrentState] =
         useState(false);
 
     // fetch the labels of the form, but can also include the current form values
     const { data: formLabels, isLoading: isLoadingFormLabels } =
-        useLabelProvider(
-            labelProvider ?? api.portaal.Forms.getLabelsV1FormsLabelFormKeyGet,
-            formKey,
-            formIdKey,
-            cacheKey,
-        );
+        useLabelProvider(labelProvider, formKey, formIdKey);
 
     const { data: customData, isLoading: isCustomDataLoading } =
-        useCustomDataProvider(
-            dataProviderCacheKey ? dataProviderCacheKey : cacheKey,
-            dataProvider,
-        );
+        useCustomDataProvider(dataProviderCacheKey ?? 100, dataProvider);
 
     // fetch the form definition using SWR hook
     const {
@@ -131,10 +122,9 @@ function DynamicFormsProvider({
         formKey,
         // TODO: remove this temp fix? ->
         formInputData,
-        formProvider ?? api.portaal.Forms.newFormV1FormsFormKeyPost,
+        formProvider,
         !!tmp_pydanticFormsOriginalImplementation,
         metaData,
-        cacheKey,
     );
 
     // we cache the form scheme so when there is an error, we still have the form
@@ -188,11 +178,12 @@ function DynamicFormsProvider({
         !isFullFilled &&
         rhf.formState.isDirty;
 
+    /* TODO: implement this
     useLeavePageConfirm(
         hasUnsavedData,
         'Er zijn aanpassingen in het formulier. \nWeet je zeker dat je de pagina wilt verlaten?',
     );
-
+    */
     // handle successfull submits
     useEffect(() => {
         if (!isFullFilled || !onSuccess) {
@@ -205,21 +196,23 @@ function DynamicFormsProvider({
             return {
                 ...section,
                 fields: section.fields.reduce((acc, fieldId) => {
-                    const field = dynamicForm?.fields.find(
-                        ({ id }) => id === fieldId,
-                    );
-                    let val = values[fieldId];
+                    const field = dynamicForm?.fields.find(({ id }) => {
+                        const i = id as string;
+                        const i2 = fieldId.id as string;
+                        return i === i2;
+                    });
+                    let val = values[fieldId.id];
 
                     // If array of enums
                     if (Array.isArray(val)) {
-                        val = values[fieldId].map((v: string) => {
+                        val = values[fieldId.id].map((v: string) => {
                             return field?.options.find(
                                 ({ value }) => value === v,
                             )?.label;
                         });
                     }
 
-                    acc[fieldId] = {
+                    acc[fieldId.id] = {
                         label: field?.title ?? '',
                         format: field?.format,
                         value:
@@ -229,7 +222,7 @@ function DynamicFormsProvider({
                     };
 
                     return acc;
-                }, {} as Record<string, SummaryFieldValue>),
+                }, {} as Record<string, object>),
             };
         });
 
@@ -307,11 +300,8 @@ function DynamicFormsProvider({
 
     const onClientSideError = useCallback(
         (data?: FieldValues) => {
-            const enableInvalidFormSubmission = IsCsFlagEnabled(
-                CsFlags.ALLOW_INVALID_FORMS,
-            );
-
-            if (data && enableInvalidFormSubmission) {
+            // TODO implement savewith errors toggle
+            if (data) {
                 rhf.clearErrors();
                 submitFormFn();
             }
@@ -356,10 +346,7 @@ function DynamicFormsProvider({
         };
     }, [rhf, onFieldChangeHandler]);
 
-    const isLoading =
-        isLoadingFormLabels ||
-        isLoadingSchema ||
-        (dataProvider ? isCustomDataLoading : false);
+    const isLoading = isLoadingFormLabels || isLoadingSchema;
 
     const DynamicFormsContextState = {
         // to prevent an issue where the sending state hangs

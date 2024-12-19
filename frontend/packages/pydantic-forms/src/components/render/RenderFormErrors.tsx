@@ -5,8 +5,7 @@
  */
 import { useCallback, useState } from 'react';
 
-import { IconButton, IconInfo, IconWaarschuwing } from '@lib/rijkshuisstijl';
-
+// import { IconButton, IconInfo, IconWaarschuwing } from '@lib/rijkshuisstijl';
 import { useDynamicFormsContext } from '@/core';
 
 export default function RenderFormErrors() {
@@ -55,12 +54,12 @@ export default function RenderFormErrors() {
                             Er {multiMistakes ? 'zijn' : 'is'}{' '}
                             {otherErrors?.length} rubriek
                             {multiMistakes && 'en'} nog niet correct ingevuld.{' '}
-                            <IconButton
+                            <div // IconButton
                                 onClick={toggleDetails}
                                 className="ml-2"
                             >
-                                <IconInfo size={18} />
-                            </IconButton>
+                                Icon info
+                            </div>
                         </div>
                         {showDetails && (
                             <ul className="error-list mb-2">
@@ -79,11 +78,7 @@ export default function RenderFormErrors() {
                     </>
                 )}
             </div>
-            <IconWaarschuwing
-                style={{ opacity: 0.4 }}
-                className="mr-3"
-                size={40}
-            />
+            ICON WAARSCHUWING
         </div>
     );
 }

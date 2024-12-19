@@ -142,10 +142,10 @@ export type CustomValidationRuleFn = (
 
 export interface IDynamicFormsContextConfig {
     // use custom method to provide data for the form. This overwrites data fetched from labels endpoint
-    dataProvider?: DfDataProvider;
+    dataProvider: DfDataProvider;
 
     // use custom method for providing labels and data
-    labelProvider?: DfLabelProvider;
+    labelProvider: DfLabelProvider;
 
     // have an option to change the layout columns of fields
     layoutColumnProvider?: DfLayoutColumnProvider;
@@ -154,7 +154,7 @@ export interface IDynamicFormsContextConfig {
     formStructureMutator?: DfFormStructureMutator;
 
     // use a custom method for providing the form definition
-    formProvider?: DfFormProvider;
+    formProvider: DfFormProvider;
 
     // Extend field definitions
     fieldDetailProvider?: IFieldDefinitionProvider;
@@ -197,7 +197,7 @@ export interface IDynamicFormsContextInitialProps {
     title?: string | boolean;
     sendLabel?: string;
     metaData?: DynamicFormsMetaData;
-    formLayout?: DynamicFormsFormLayout;
+    formLayout: DynamicFormsFormLayout;
     successNotice?: React.ReactNode;
     onSuccess?: (fieldValues: FieldValues, summaryData: object) => void;
     onCancel?: () => void;
@@ -207,7 +207,7 @@ export interface IDynamicFormsContextInitialProps {
     footerComponent?: React.ReactNode;
     hasCardWrapper?: boolean;
 
-    config?: IDynamicFormsContextConfig;
+    config: IDynamicFormsContextConfig;
 }
 
 export type DfFormStructureMutator = (

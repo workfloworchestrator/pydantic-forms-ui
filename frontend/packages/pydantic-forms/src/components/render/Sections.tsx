@@ -28,6 +28,6 @@ export function RenderSections({
 
     return children({
         ...section,
-        fields: fields.filter((field) => section.fields.includes(field.id)),
+        fields: fields.filter((field) => section.fields.includes(field)),
     });
 }
