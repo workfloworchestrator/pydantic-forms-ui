@@ -1,0 +1,31 @@
+{
+    "name": "example",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev --turbopack",
+        "build": "next build",
+        "start": "next start",
+        "test": "jest --passWithNoTests",
+        "tsc": "tsc --noEmit",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "pydantic-forms": "*",
+        "next": "15.0.3",
+        "react": "18.*",
+        "react-dom": "18.*",
+        "swr": "^2.2.5"
+    },
+    "devDependencies": {
+        "@orchestrator-ui/eslint-config-custom": "^1.4.1",
+        "@orchestrator-ui/jest-config": "^1.5.1",
+        "@orchestrator-ui/tsconfig": "^1.2.1",
+        "@types/node": "^20",
+        "@types/react": "^18",
+        "@types/react-dom": "^18",
+        "eslint": "^8",
+        "eslint-config-next": "15.0.3",
+        "typescript": "^5"
+    }
+}
