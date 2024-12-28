@@ -6,6 +6,8 @@
  * This is the component that will be included when we want to use a form.
  * It initializes the context and calls the mainForm
  */
+import React from 'react';
+
 import RenderMainForm from '@/components/form/Form';
 import DynamicFormsProvider from '@/core/dynamicFormContext';
 import {

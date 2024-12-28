@@ -3,6 +3,7 @@
  *
  * Text component
  */
+import React from 'react';
 import {
     Controller,
     ControllerRenderProps,
@@ -27,7 +28,7 @@ const TextField = ({
     onBlur,
     disabled,
 }: TextFieldProps) => {
-    return <>value</>;
+    return <>{value}</>;
 };
 
 function DhfCtrldTextField(dfFieldConfig: IDynamicFormField) {

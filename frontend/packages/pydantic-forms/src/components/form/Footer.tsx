@@ -3,7 +3,7 @@
  *
  * Form footer component
  */
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import RenderReactHookFormErrors from '@/components/render/RenderReactHookFormErrors';
 import { useDynamicFormsContext } from '@/core';

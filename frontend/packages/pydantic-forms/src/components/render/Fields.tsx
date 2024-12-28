@@ -4,6 +4,8 @@
  * This component will render all the fields based on the
  * config in the dynamicFormContext
  */
+import React from 'react';
+
 import { useDynamicFormsContext } from '@/core';
 import { DynamicFormsFormLayout, IDynamicFormField } from '@/types';
 

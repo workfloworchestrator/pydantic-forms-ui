@@ -6,9 +6,8 @@
  * This handles the validated / error state of the element as well as the label
  * This component should wrap every field, at the field component level
  *
- * @Uses FormField - Rijkshuisstijl
  */
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import ResetNullableFieldTrigger from '@/components/form/ResetNullableFieldTrigger';
 import { useDynamicFormsContext } from '@/core';

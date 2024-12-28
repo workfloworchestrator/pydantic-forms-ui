@@ -3,7 +3,7 @@
  *
  * Renders errors that are generated client-side
  */
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 // import { IconButton, IconInfo, IconWaarschuwing } from '@lib/rijkshuisstijl';
 import { useDynamicFormsContext } from '@/core';
