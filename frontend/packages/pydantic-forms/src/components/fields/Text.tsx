@@ -12,7 +12,7 @@ import {
 
 import DfFieldWrap from '@/components/fields/Wrap';
 import { zodValidationPresets } from '@/components/zodValidations';
-import { useDynamicFormsContext } from '@/core';
+import { usePydanticFormContext } from '@/core';
 import { FormComponent, IDFInputFieldProps, IDynamicFormField } from '@/types';
 
 interface TextFieldProps {
@@ -32,7 +32,7 @@ const TextField = ({
 };
 
 function DhfCtrldTextField(dfFieldConfig: IDynamicFormField) {
-    const { rhf } = useDynamicFormsContext();
+    const { rhf } = usePydanticFormContext();
 
     return function TextInput({
         field,
@@ -63,7 +63,7 @@ function DhfCtrldTextField(dfFieldConfig: IDynamicFormField) {
 
 const DFTextField: FormComponent = {
     Element: function DFFieldControllerWrap({ field }: IDFInputFieldProps) {
-        const { rhf } = useDynamicFormsContext();
+        const { rhf } = usePydanticFormContext();
 
         return (
             <Controller

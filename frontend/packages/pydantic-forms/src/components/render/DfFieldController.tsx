@@ -10,7 +10,7 @@ import {
     UseFormStateReturn,
 } from 'react-hook-form';
 
-import { useDynamicFormsContext } from '@/core/dynamicFormContext';
+import { usePydanticFormContext } from '@/core/PydanticFormContextProvider';
 import { IDFInputFieldProps, IDynamicFormField } from '@/types';
 
 type FieldComponent = (
@@ -27,7 +27,7 @@ type FieldComponent = (
 
 export const DFFieldController = (FieldComponent: FieldComponent) => {
     return function DFFieldControllerWrap({ field }: IDFInputFieldProps) {
-        const { rhf } = useDynamicFormsContext();
+        const { rhf } = usePydanticFormContext();
 
         return (
             <Controller

@@ -10,7 +10,7 @@
 import React, { useCallback } from 'react';
 
 import ResetNullableFieldTrigger from '@/components/form/ResetNullableFieldTrigger';
-import { useDynamicFormsContext } from '@/core';
+import { usePydanticFormContext } from '@/core';
 import { IDynamicFormField } from '@/types';
 
 interface FormFieldProps {
@@ -48,7 +48,7 @@ interface IDfFieldWrapProps {
 }
 
 function DfFieldWrap({ field, children }: IDfFieldWrapProps) {
-    const { rhf, errorDetails, debugMode } = useDynamicFormsContext();
+    const { rhf, errorDetails, debugMode } = usePydanticFormContext();
 
     const fieldState = rhf.getFieldState(field.id);
 

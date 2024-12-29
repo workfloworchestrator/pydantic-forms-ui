@@ -4,7 +4,7 @@
  * This component will render all the sections based on the
  * config in the dynamicFormContext
  */
-import { useDynamicFormsContext } from '@/core';
+import { usePydanticFormContext } from '@/core';
 import { IDynamicFormField, IDynamicFormFieldSection } from '@/types';
 
 export interface IRenderDynamicFormSectionsChildProps {
@@ -22,7 +22,7 @@ export function RenderSections({
     section,
     children,
 }: IRenderDynamicFormSectionsProps) {
-    const { formData } = useDynamicFormsContext();
+    const { formData } = usePydanticFormContext();
 
     const fields = formData?.fields ?? [];
 

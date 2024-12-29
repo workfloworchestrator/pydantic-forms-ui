@@ -6,7 +6,7 @@
  */
 import React from 'react';
 
-import { useDynamicFormsContext } from '@/core';
+import { usePydanticFormContext } from '@/core';
 import { DynamicFormsFormLayout, IDynamicFormField } from '@/types';
 
 interface IRenderFieldsProps {
@@ -26,7 +26,7 @@ interface ColProps {
 const Col = ({ md, sm, children }: ColProps) => <div>{children}</div>;
 
 export function RenderFields({ fields }: IRenderFieldsProps) {
-    const { formLayout } = useDynamicFormsContext();
+    const { formLayout } = usePydanticFormContext();
 
     return fields.map((field) => {
         const FormElement = field.FormElement;

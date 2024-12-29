@@ -6,10 +6,10 @@
 import React, { useCallback, useState } from 'react';
 
 // import { IconButton, IconInfo, IconWaarschuwing } from '@lib/rijkshuisstijl';
-import { useDynamicFormsContext } from '@/core';
+import { usePydanticFormContext } from '@/core';
 
 export default function RenderFormErrors() {
-    const { errorDetails, formData } = useDynamicFormsContext();
+    const { errorDetails, formData } = usePydanticFormContext();
 
     const [showDetails, setShowDetails] = useState(false);
 

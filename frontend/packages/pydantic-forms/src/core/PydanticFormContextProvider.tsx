@@ -54,7 +54,7 @@ z.setErrorMap(zodI18nMap);
 export const DynamicFormsContext =
     createContext<IDynamicFormsContextProps | null>(null);
 
-function DynamicFormsProvider({
+function PydanticFormContextProvider({
     formKey,
     formIdKey,
     metaData,
@@ -399,7 +399,7 @@ function DynamicFormsProvider({
     );
 }
 
-export function useDynamicFormsContext() {
+export function usePydanticFormContext() {
     const context = useContext(DynamicFormsContext);
 
     if (!context) {
@@ -411,4 +411,4 @@ export function useDynamicFormsContext() {
     return context;
 }
 
-export default DynamicFormsProvider;
+export default PydanticFormContextProvider;

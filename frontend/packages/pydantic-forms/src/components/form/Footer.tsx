@@ -6,7 +6,7 @@
 import React, { useCallback, useState } from 'react';
 
 import RenderReactHookFormErrors from '@/components/render/RenderReactHookFormErrors';
-import { useDynamicFormsContext } from '@/core';
+import { usePydanticFormContext } from '@/core';
 import { navPreventDefaultFn } from '@/utils';
 
 const DynamicFormFooter = () => {
@@ -19,7 +19,7 @@ const DynamicFormFooter = () => {
         sendLabel,
         footerComponent,
         allowUntouchedSubmit,
-    } = useDynamicFormsContext();
+    } = usePydanticFormContext();
 
     const [showErrors, setShowErrors] = useState(false);
 
