@@ -7,14 +7,20 @@
 import React from 'react';
 
 import { usePydanticFormContext } from '@/core';
-import { DynamicFormsFormLayout, IDynamicFormField } from '@/types';
+import { PydanticFormField, PydanticFormLayout } from '@/types';
 
-interface IRenderFieldsProps {
-    fields: IDynamicFormField[];
+interface RenderFieldsProps {
+    fields: PydanticFormField[];
 }
+
+/**
+ * Row and Col are imported from "@lib/rijkshuisstijl" in the original implementation
+ * These are mocked until the layoutProvider pattern is implemented
+ * */
 interface RowProps {
     children: React.ReactNode;
 }
+
 const Row = ({ children }: RowProps) => <div>{children}</div>;
 
 interface ColProps {
@@ -23,9 +29,12 @@ interface ColProps {
     children: React.ReactNode;
 }
 
-const Col = ({ md, sm, children }: ColProps) => <div>{children}</div>;
+const Col = ({ md, sm, children }: ColProps) => {
+    console.log('TODO: implement MD and SM', md, sm);
+    return <div>{children}</div>;
+};
 
-export function RenderFields({ fields }: IRenderFieldsProps) {
+export function RenderFields({ fields }: RenderFieldsProps) {
     const { formLayout } = usePydanticFormContext();
 
     return fields.map((field) => {
@@ -43,7 +52,7 @@ export function RenderFields({ fields }: IRenderFieldsProps) {
             );
         }
 
-        if (formLayout === DynamicFormsFormLayout.ONE_COL) {
+        if (formLayout === PydanticFormLayout.ONE_COL) {
             return (
                 <Row key={field.id}>
                     <Col md={field.columns} sm={12} e2e-id={field.id}>

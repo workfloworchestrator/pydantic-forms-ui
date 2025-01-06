@@ -1,5 +1,5 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * Main input wrap component
  *
@@ -11,7 +11,7 @@ import React, { useCallback } from 'react';
 
 import ResetNullableFieldTrigger from '@/components/form/ResetNullableFieldTrigger';
 import { usePydanticFormContext } from '@/core';
-import { IDynamicFormField } from '@/types';
+import { PydanticFormField } from '@/types';
 
 interface FormFieldProps {
     label: React.ReactNode;
@@ -42,12 +42,12 @@ const IconInfo = () => {
     return <div>IconInfo</div>;
 };
 
-interface IDfFieldWrapProps {
-    field: IDynamicFormField;
+interface FieldWrapProps {
+    field: PydanticFormField;
     children: React.ReactNode;
 }
 
-function DfFieldWrap({ field, children }: IDfFieldWrapProps) {
+function FieldWrap({ field, children }: FieldWrapProps) {
     const { rhf, errorDetails, debugMode } = usePydanticFormContext();
 
     const fieldState = rhf.getFieldState(field.id);
@@ -89,4 +89,4 @@ function DfFieldWrap({ field, children }: IDfFieldWrapProps) {
     );
 }
 
-export default DfFieldWrap;
+export default FieldWrap;

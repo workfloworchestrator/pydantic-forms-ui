@@ -9,10 +9,10 @@
  */
 import { z } from 'zod';
 
-import { IDFZodValidationPresets } from '@/types';
+import { PydanticFormZodValidationPresets } from '@/types';
 
 // to prevent duplicate code in components that have (almost)the same validation
-export const zodValidationPresets: IDFZodValidationPresets = {
+export const zodValidationPresets: PydanticFormZodValidationPresets = {
     string: (field) => {
         const { maxLength, minLength, pattern } = field?.validation ?? {};
 

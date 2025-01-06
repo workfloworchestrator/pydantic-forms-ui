@@ -276,6 +276,10 @@ export type PydanticFormZodValidationFn = (
     rhf?: ReturnType<typeof useForm>,
 ) => z.ZodTypeAny;
 
+export interface PydanticFormZodValidationPresets {
+    [type: string]: PydanticFormZodValidationFn;
+}
+
 export interface PydanticFormsContextConfig {
     // use custom method to provide data for the form. This overwrites data fetched from labels endpoint
     customDataProvider?: PydanticFormDataProvider;

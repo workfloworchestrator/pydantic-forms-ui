@@ -11,7 +11,10 @@ import DynamicFormFooter from '@/components/form/Footer';
 import { RenderFields } from '@/components/render/Fields';
 import RenderFormErrors from '@/components/render/RenderFormErrors';
 import { RenderSections } from '@/components/render/Sections';
-import { DynamicFormsFormLayout, IDynamicFormsContextProps } from '@/types';
+import { PydanticFormContextProps, PydanticFormLayout } from '@/types';
+
+/**
+ * TODO: Implement CardAsFragment and see what the use case is
 
 const CardAsFragment = ({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -21,7 +24,7 @@ const CardAsFragment = ({
     title?: string;
     children?: React.ReactNode | undefined;
 }) => <React.Fragment>{children}</React.Fragment>;
-
+*/
 const RenderMainForm = ({
     submitForm,
     formData,
@@ -33,8 +36,7 @@ const RenderMainForm = ({
     title,
     headerComponent,
     skipSuccessNotice,
-    hasCardWrapper = true,
-}: IDynamicFormsContextProps) => {
+}: PydanticFormContextProps) => {
     if (isLoading && !isSending) {
         return <div>Formulier aan het ophalen...</div>;
     }
@@ -73,8 +75,7 @@ const RenderMainForm = ({
                     <RenderSections section={section} key={section.id}>
                         {({ fields }) => (
                             <div>
-                                {formLayout ===
-                                DynamicFormsFormLayout.ONE_COL ? (
+                                {formLayout === PydanticFormLayout.ONE_COL ? (
                                     <div className="row-with-child-rows">
                                         <RenderFields fields={fields} />
                                     </div>
