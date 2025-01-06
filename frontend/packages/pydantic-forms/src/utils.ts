@@ -1,10 +1,10 @@
-import { IDynamicFormField } from './types';
+import { PydanticFormField } from '@/types';
 
 export const insertItemAtIndex = (
-    fields: IDynamicFormField[],
-    field: IDynamicFormField,
+    fields: PydanticFormField[],
+    field: PydanticFormField,
     anchorIndex: number,
-): IDynamicFormField[] => {
+): PydanticFormField[] => {
     return [
         ...fields.slice(0, anchorIndex),
         field,

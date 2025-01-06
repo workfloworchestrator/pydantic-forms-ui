@@ -13,3 +13,17 @@ export default function Home() {
         </div>
     );
 }
+
+/**
+id: string
+meta: PydanticFormMetaData
+
+
+
+export type PydanticFormMetaData = {
+    [key: string | number]: DfFieldValue;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type DfFieldValue = any;
+*/

@@ -10,7 +10,10 @@ import React from 'react';
 
 import RenderMainForm from '@/components/form/Form';
 import PydanticFormContextProvider from '@/core/PydanticFormContextProvider';
-import { PydanticFormInitialContextProps, PydanticFormMetaData } from '@/types';
+import type {
+    PydanticFormInitialContextProps,
+    PydanticFormMetaData,
+} from '@/types';
 
 export interface PydanticFormProps
     extends Omit<PydanticFormInitialContextProps, 'formKey' | 'children'> {

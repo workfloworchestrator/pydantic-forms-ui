@@ -278,7 +278,7 @@ export type PydanticFormZodValidationFn = (
 
 export interface PydanticFormsContextConfig {
     // use custom method to provide data for the form. This overwrites data fetched from labels endpoint
-    dataProvider: PydanticFormDataProvider;
+    customDataProvider?: PydanticFormDataProvider;
 
     // use custom method for providing labels and data
     labelProvider: PydanticFormLabelProvider;
@@ -302,7 +302,7 @@ export interface PydanticFormsContextConfig {
     onFieldChangeHandler?: onPydanticFormFieldChangeHandlerFn;
 
     // provide custom validation rules for fields
-    customValidationRules?: CustomValidationRuleFn;
+    customValidationRules?: CustomValidationRule;
 
     // whether to skip the short 'successfull send notice'
     skipSuccessNotice?: boolean;
@@ -367,6 +367,62 @@ export type onPydanticFormFieldChangeHandlerFnFieldProp = {
 };
 
 export type PydanticFormCustomValidationRuleFn = (
+    fieldConfig: PydanticFormField,
+    rhf?: ReturnType<typeof useForm>,
+) => Zod.ZodTypeAny | undefined;
+
+export interface PydanticFormApiErrorResponse {
+    detail?: string;
+    status: number;
+    form: PydanticFormApiResponse;
+    success?: boolean;
+    validation_errors: IDynamicFormApiValidationError[];
+}
+
+export interface PydanticFormApiResponse extends PydanticFormApiResponseBase {
+    properties: {
+        [propId: string]: PydanticFormApiResponseProperty;
+    };
+}
+export interface PydanticFormApiResponseBase {
+    title: string;
+    description: string;
+    additionalProperties: boolean;
+    type: 'object';
+    required?: string[];
+    $defs?: {
+        [definitionId: string]: {
+            enum: string[];
+            title: string;
+            type: PydanticFormFieldType;
+        };
+    };
+}
+
+export interface PydanticFormApiResponseProperty {
+    type: PydanticFormFieldType;
+    anyOf?: PydanticFormFieldAnyOfDef[];
+    default?: string | null;
+    title: string;
+}
+
+export interface PydanticFormFieldAnyOfDef {
+    items?: JsonSchemaRef;
+    type: 'null' | 'array';
+}
+
+export interface JsonSchemaRef {
+    $ref: string;
+}
+
+export interface PydanticFormApiRefResolved
+    extends PydanticFormApiResponseBase {
+    properties: {
+        [propId: string]: PydanticFormApiResponsePropertyResolved;
+    };
+}
+
+export type CustomValidationRule = (
     fieldConfig: PydanticFormField,
     rhf?: ReturnType<typeof useForm>,
 ) => Zod.ZodTypeAny | undefined;

@@ -1,13 +1,13 @@
 import useSWR from 'swr';
 import { FetcherResponse } from 'swr/dist/_internal';
 
-import { IDynamicFormApiErrorResponse, IDynamicFormsLabels } from '@/types';
+import { PydanticFormApiErrorResponse, PydanticFormLabels } from '@/types';
 
 const useCustomDataProvider = (
     cacheKey: number,
-    promiseFn?: () => FetcherResponse<IDynamicFormsLabels>,
+    promiseFn?: () => FetcherResponse<PydanticFormLabels>,
 ) => {
-    return useSWR<IDynamicFormApiErrorResponse | object>(
+    return useSWR<PydanticFormApiErrorResponse | object>(
         // cache key
         [`dynamicFormsDataProvider-${cacheKey}`],
 

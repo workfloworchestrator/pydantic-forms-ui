@@ -10,16 +10,15 @@ import useSWR, { SWRConfiguration } from 'swr';
 
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 
-import { IDynamicFormApiRefResolved } from '@/types';
+import { PydanticFormApiRefResolved } from '@/types';
 
 export function useRefParser(
     id: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     source?: any,
     swrConfig?: SWRConfiguration,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ) {
-    return useSWR<IDynamicFormApiRefResolved | undefined>(
+    return useSWR<PydanticFormApiRefResolved | undefined>(
         // cache key
         [id, source],
 
@@ -32,9 +31,9 @@ export function useRefParser(
             try {
                 return $RefParser.dereference(source, {
                     mutateInputSchema: false,
-                }) as unknown as IDynamicFormApiRefResolved;
+                }) as unknown as PydanticFormApiRefResolved;
             } catch (error) {
-                // console.log({ error })
+                console.log({ error });
                 new Error('Could not parse JSON references');
             }
         },
