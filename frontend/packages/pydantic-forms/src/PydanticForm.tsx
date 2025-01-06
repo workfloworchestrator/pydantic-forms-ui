@@ -8,7 +8,7 @@
  */
 import React from 'react';
 
-import RenderMainForm from '@/components/form/Form';
+import RenderForm from '@/components/form/RenderForm';
 import PydanticFormContextProvider from '@/core/PydanticFormContextProvider';
 import type {
     PydanticFormInitialContextProps,
@@ -28,7 +28,7 @@ const PydanticForm = ({ id, metaData, ...contextProps }: PydanticFormProps) => (
             formKey={id}
             metaData={metaData}
         >
-            {RenderMainForm}
+            {RenderForm}
         </PydanticFormContextProvider>
     </div>
 );
