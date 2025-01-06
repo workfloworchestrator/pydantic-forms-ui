@@ -42,6 +42,8 @@ export function usePydanticForm(
     cacheKey?: number,
     swrConfig?: SWRConfiguration,
 ) {
+    console.log(formKey, formInputData, metaData, cacheKey, swrConfig);
+
     return useSWR<PydanticFormApiErrorResponse>(
         // cache key
         [formKey, formInputData, metaData, swrConfig, cacheKey],

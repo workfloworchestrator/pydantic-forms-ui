@@ -187,13 +187,13 @@ function PydanticFormContextProvider({
             return;
         }
         const values = rhf.getValues();
-        const dynamicForm = formData as PydanticFormData;
+        const pydanticFormData = formData as PydanticFormData;
 
-        const summaryData = dynamicForm.sections.map((section) => {
+        const summaryData = pydanticFormData.sections.map((section) => {
             return {
                 ...section,
                 fields: section.fields.reduce((acc, fieldId) => {
-                    const field = dynamicForm?.fields.find(({ id }) => {
+                    const field = pydanticFormData?.fields.find(({ id }) => {
                         const i = id as string;
                         const i2 = fieldId.id as string;
                         return i === i2;
@@ -348,7 +348,7 @@ function PydanticFormContextProvider({
         isLoadingSchema ||
         (dataProvider ? isCustomDataLoading : false);
 
-    const DynamicFormsContextState = {
+    const PydanticFormContextState = {
         // to prevent an issue where the sending state hangs
         // we check both the SWR hook state as our manual state
         isSending: isSending && isLoadingSchema,
@@ -383,7 +383,7 @@ function PydanticFormContextProvider({
         // eslint-disable-next-line no-console
         console.log('New context cycle', {
             resolver,
-            DynamicFormsContextState,
+            DynamicFormsContextState: PydanticFormContextState,
         });
 
         const fieldWatcher = rhf.watch();
@@ -392,8 +392,8 @@ function PydanticFormContextProvider({
     }
 
     return (
-        <PydanticFormContext.Provider value={DynamicFormsContextState}>
-            {children(DynamicFormsContextState)}
+        <PydanticFormContext.Provider value={PydanticFormContextState}>
+            {children(PydanticFormContextState)}
         </PydanticFormContext.Provider>
     );
 }
