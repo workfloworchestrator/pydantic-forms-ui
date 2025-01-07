@@ -96,7 +96,10 @@ function PydanticFormContextProvider({
     // option to enable the debug mode on the fly in the browser
     // by setting localStorage.setItem("dynamicFormsDebugMode", "true")
     // reload is required
-    const debugMode = localStorage.getItem('pydanticFormDebugMode') === '1';
+    const debugMode: boolean =
+        window && localStorage
+            ? localStorage.getItem('pydanticFormDebugMode') === '1'
+            : false;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [formInputData, setFormInputData] = useState<any>([]);
@@ -107,6 +110,7 @@ function PydanticFormContextProvider({
 
     const [saveToLeavePageInCurrentState, setSaveToLeavePageInCurrentState] =
         useState(false);
+
     console.log(saveToLeavePageInCurrentState); // Used to se hasUnsavedData
 
     // fetch the labels of the form, but can also include the current form values
