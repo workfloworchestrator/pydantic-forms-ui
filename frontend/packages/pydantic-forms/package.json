@@ -1,11 +1,36 @@
 {
     "name": "pydantic-forms",
     "version": "0.0.3",
+    "description": "Library that turns JSONSchema into frontend forms",
+    "author": {
+        "name": "Workflow Orchestrator Programme",
+        "email": "workfloworchestrator.board@commonsconservancy.org",
+        "url": "https://www.workfloworchestrator.org"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/workfloworchestrator/pydantic-forms-ui.git"
+    },
+    "publishConfig": {
+        "access": "public",
+        "provenance": true
+    },
+    "homepage": "https://www.workfloworchestrator.org",
+    "bugs": "https://github.com/workfloworchestrator/pydantic-forms-ui/issues",
+    "keywords": [
+        "orchestrator",
+        "workflow",
+        "workflow orchestrator",
+        "pydanticforms",
+        "forms",
+        "jsonschema"
+    ],
+    "browser": "./dist/index.js",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
     "sideEffects": false,
-    "license": "MIT",
+    "license": "Apache-2.0",
     "files": [
         "dist/**"
     ],
@@ -33,16 +58,10 @@
         "@hookform/resolvers": "^3.9.1",
         "dayjs": "^1.11.13",
         "i18next": "^24.1.2",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
         "react-hook-form": "^7.54.1",
         "zod": "^3.24.1",
         "zod-i18n-map": "^2.27.0"
-    },
-    "peerDependencies": {
-        "next": "^15.1.3",
-        "react": "18.*",
-        "react-dom": "18.*"
-    },
-    "publishConfig": {
-        "access": "public"
     }
 }

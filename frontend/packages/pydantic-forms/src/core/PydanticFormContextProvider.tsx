@@ -96,10 +96,7 @@ function PydanticFormContextProvider({
     // option to enable the debug mode on the fly in the browser
     // by setting localStorage.setItem("dynamicFormsDebugMode", "true")
     // reload is required
-    const debugMode: boolean =
-        window && localStorage
-            ? localStorage.getItem('pydanticFormDebugMode') === '1'
-            : false;
+    const debugMode: boolean = false;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [formInputData, setFormInputData] = useState<any>([]);
@@ -193,7 +190,7 @@ function PydanticFormContextProvider({
         const values = rhf.getValues();
         const pydanticFormData = formData as PydanticFormData;
 
-        const summaryData = pydanticFormData.sections.map((section) => {
+        const summaryData = pydanticFormData.sections?.map((section) => {
             return {
                 ...section,
                 fields: section.fields.reduce((acc, fieldId) => {
