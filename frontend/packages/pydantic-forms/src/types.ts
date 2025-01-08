@@ -285,7 +285,7 @@ export interface PydanticFormsContextConfig {
     customDataProvider?: PydanticFormDataProvider;
 
     // use custom method for providing labels and data
-    labelProvider: PydanticFormLabelProvider;
+    labelProvider?: PydanticFormLabelProvider;
 
     // have an option to change the layout columns of fields
     layoutColumnProvider?: PydanticFormLayoutColumnProvider;

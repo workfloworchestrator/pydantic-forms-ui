@@ -96,7 +96,7 @@ function PydanticFormContextProvider({
     // option to enable the debug mode on the fly in the browser
     // by setting localStorage.setItem("dynamicFormsDebugMode", "true")
     // reload is required
-    const debugMode: boolean = false;
+    const debugMode = localStorage.getItem('dynamicFormsDebugMode') === '1';
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [formInputData, setFormInputData] = useState<any>([]);
@@ -107,9 +107,6 @@ function PydanticFormContextProvider({
 
     const [saveToLeavePageInCurrentState, setSaveToLeavePageInCurrentState] =
         useState(false);
-
-    // eslint-disable-next-line no-console
-    console.log(saveToLeavePageInCurrentState); // Used to se hasUnsavedData
 
     // fetch the labels of the form, but can also include the current form values
     const { data: formLabels, isLoading: isLoadingFormLabels } =
@@ -140,6 +137,7 @@ function PydanticFormContextProvider({
         fieldDetailProvider,
         layoutColumnProvider,
     );
+
     const formData = formStructureMutator
         ? formStructureMutator(formDataParsed) // What are the use cases here, will this be solved by a layout provider?
         : formDataParsed;

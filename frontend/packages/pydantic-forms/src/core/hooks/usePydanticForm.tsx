@@ -52,15 +52,16 @@ export function usePydanticForm(
         async ([formKey, formInputData, metaData]) => {
             // TODO: Readd sending metadata along with request
             // eslint-disable-next-line no-console
-            console.log(metaData);
+            console.log('calls fetcher in USESwr hook!');
             const requestBody = formInputData;
 
-            const ogreq = formProvider({
+            const formProviderRequest = formProvider({
                 formKey,
                 requestBody,
             });
+
             const req = (await ignoreApiErrors(
-                ogreq,
+                formProviderRequest,
                 [510, 400],
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             )) as any;

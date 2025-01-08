@@ -33,7 +33,7 @@ import {
 export const mapToUsableField = (
     fieldId: string,
     schema: PydanticFormApiRefResolved,
-    formLabels: PydanticFormLabels,
+    formLabels: PydanticFormLabels = {},
     fieldDetailProvider?: PydanticFormFieldDetailProvider,
 ): PydanticFormField => {
     const schemaField = schema.properties[fieldId];

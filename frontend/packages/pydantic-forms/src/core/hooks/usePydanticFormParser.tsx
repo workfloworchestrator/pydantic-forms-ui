@@ -28,7 +28,7 @@ export function usePydanticFormParser(
     layoutColumnProvider?: PydanticFormLayoutColumnProvider,
 ): PydanticFormData | false {
     return useMemo(() => {
-        if (!schema || !formLabels) return false;
+        if (!schema) return false;
 
         const fieldIds = Object.keys(schema?.properties ?? {});
 
