@@ -27,6 +27,8 @@ const ignoreApiErrors = async (
     ignoreCodes: number[],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> => {
+    // eslint-disable-next-line no-console
+    console.log('TODO: What to use these for?', ignoreCodes);
     try {
         return await req;
     } catch (error) {
@@ -42,8 +44,6 @@ export function usePydanticForm(
     cacheKey?: number,
     swrConfig?: SWRConfiguration,
 ) {
-    console.log(formKey, formInputData, metaData, cacheKey, swrConfig);
-
     return useSWR<PydanticFormApiErrorResponse>(
         // cache key
         [formKey, formInputData, metaData, swrConfig, cacheKey],
@@ -51,6 +51,7 @@ export function usePydanticForm(
         // return val
         async ([formKey, formInputData, metaData]) => {
             // TODO: Readd sending metadata along with request
+            // eslint-disable-next-line no-console
             console.log(metaData);
             const requestBody = formInputData;
 

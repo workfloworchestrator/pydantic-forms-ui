@@ -44,6 +44,7 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
                     'Could not parse validation rule regex',
                     field,
                     pattern,
+                    error,
                 );
             }
         }

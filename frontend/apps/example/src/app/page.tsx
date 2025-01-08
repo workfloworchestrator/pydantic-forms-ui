@@ -4,6 +4,8 @@ import PydanticForm from 'pydantic-forms';
 
 import styles from './page.module.css';
 
+type ReturnValue = string | number | object;
+
 export default function Home() {
     const formSchemaProvider = ({
         formKey,
@@ -12,8 +14,9 @@ export default function Home() {
         formKey: string;
         requestBody: object;
     }) => {
+        // eslint-disable-next-line no-console
         console.log(formKey, requestBody);
-        return new Promise<Record<string, any>>((resolve, reject) => {
+        return new Promise<Record<string, ReturnValue>>((resolve) => {
             resolve({
                 title: 'Example Form',
                 sections: [
@@ -65,8 +68,9 @@ export default function Home() {
         formKey: string;
         id?: string | null;
     }) => {
+        // eslint-disable-next-line no-console
         console.log(formKey, id);
-        return new Promise<Record<string, any>>((resolve, reject) => {
+        return new Promise<Record<string, ReturnValue>>((resolve) => {
             resolve({
                 field1: {
                     label: 'Field 1',

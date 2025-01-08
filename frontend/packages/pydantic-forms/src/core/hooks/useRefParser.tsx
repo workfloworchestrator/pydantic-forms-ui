@@ -33,7 +33,7 @@ export function useRefParser(
                     mutateInputSchema: false,
                 }) as unknown as PydanticFormApiRefResolved;
             } catch (error) {
-                console.log({ error });
+                console.error(error);
                 new Error('Could not parse JSON references');
             }
         },

@@ -659,8 +659,6 @@ export type onFieldChangeHandlerFn = (
     rhf: ReturnType<typeof useForm>,
 ) => void;
 
-export interface IDynamicFormApiResponseDefEnum {}
-
 export interface TJsonSchemaRef {
     $ref: string;
 }

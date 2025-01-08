@@ -27,6 +27,8 @@ const ignoreApiErrors = async (
     ignoreCodes: number[],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> => {
+    // eslint-disable-next-line no-console
+    console.log('TODO: What to use these for?', ignoreCodes);
     try {
         return await req;
     } catch (error) {

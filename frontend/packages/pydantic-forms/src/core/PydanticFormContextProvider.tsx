@@ -108,6 +108,7 @@ function PydanticFormContextProvider({
     const [saveToLeavePageInCurrentState, setSaveToLeavePageInCurrentState] =
         useState(false);
 
+    // eslint-disable-next-line no-console
     console.log(saveToLeavePageInCurrentState); // Used to se hasUnsavedData
 
     // fetch the labels of the form, but can also include the current form values

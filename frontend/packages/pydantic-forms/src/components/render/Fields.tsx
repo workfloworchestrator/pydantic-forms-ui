@@ -30,6 +30,7 @@ interface ColProps {
 }
 
 const Col = ({ md, sm, children }: ColProps) => {
+    // eslint-disable-next-line no-console
     console.log('TODO: implement MD and SM', md, sm);
     return <div>{children}</div>;
 };
