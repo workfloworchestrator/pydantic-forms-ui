@@ -49,7 +49,7 @@ export function usePydanticForm(
         [formKey, formInputData, metaData, swrConfig, cacheKey],
 
         // return val
-        async ([formKey, formInputData, metaData]) => {
+        async ([formKey, formInputData]) => {
             // TODO: Readd sending metadata along with request
             // eslint-disable-next-line no-console
             console.log('calls fetcher in USESwr hook!');

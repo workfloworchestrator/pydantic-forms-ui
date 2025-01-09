@@ -105,8 +105,7 @@ function PydanticFormContextProvider({
     const [isFullFilled, setIsFullFilled] = useState(false);
     const [isSending, setIsSending] = useState(false);
 
-    const [saveToLeavePageInCurrentState, setSaveToLeavePageInCurrentState] =
-        useState(false);
+    const [, setSaveToLeavePageInCurrentState] = useState(false);
 
     // fetch the labels of the form, but can also include the current form values
     const { data: formLabels, isLoading: isLoadingFormLabels } =
