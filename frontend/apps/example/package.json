@@ -8,14 +8,14 @@
         "start": "next start",
         "test": "jest --passWithNoTests",
         "tsc": "tsc --noEmit",
-        "lint": "next lint"
+        "lint": "next lint",
+        "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
     },
     "dependencies": {
         "next": "^15.1.3",
         "pydantic-forms": "*",
         "react": "18.*",
-        "react-dom": "18.*",
-        "swr": "^2.2.5"
+        "react-dom": "18.*"
     },
     "devDependencies": {
         "@orchestrator-ui/eslint-config-custom": "^1.4.1",
