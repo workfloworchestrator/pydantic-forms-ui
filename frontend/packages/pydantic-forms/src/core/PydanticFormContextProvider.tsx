@@ -96,7 +96,7 @@ function PydanticFormContextProvider({
     // option to enable the debug mode on the fly in the browser
     // by setting localStorage.setItem("dynamicFormsDebugMode", "true")
     // reload is required
-    const debugMode = localStorage.getItem('dynamicFormsDebugMode') === '1';
+    const debugMode = false;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [formInputData, setFormInputData] = useState<any>([]);
