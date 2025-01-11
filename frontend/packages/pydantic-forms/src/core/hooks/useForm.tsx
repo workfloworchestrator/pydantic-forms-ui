@@ -24,11 +24,10 @@ import {
 
 const ignoreApiErrors = async (
     req: Promise<unknown>,
-    ignoreCodes: number[],
+    // ignoreCodes: number[],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> => {
-    // eslint-disable-next-line no-console
-    console.log('TODO: What to use these for?', ignoreCodes);
+    // TODO: What to use these for?', ignoreCodes);
     try {
         return await req;
     } catch (error) {
@@ -67,7 +66,6 @@ export function useDynamicForm(
             });
             const req = (await ignoreApiErrors(
                 ogreq,
-                [510, 400],
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             )) as any;
 

@@ -48,7 +48,7 @@ const DynamicFormFooter = () => {
                         onClick={() => resetForm}
                         disabled={!rhf.formState.isDirty}
                     >
-                        Rubriekinhoud herstellen
+                        Reset
                     </button>
                 )}
 
@@ -110,7 +110,6 @@ const DynamicFormFooter = () => {
                     <button
                         e2e-id="dynamicforms-send-btn"
                         type="submit"
-                        onClick={() => ''}
                         disabled={
                             !rhf.formState.isValid ||
                             (!allowUntouchedSubmit &&

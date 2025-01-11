@@ -6,12 +6,15 @@ import type { PydanticFormProvider } from 'pydantic-forms';
 import styles from './page.module.css';
 
 export default function Home() {
-    const pydanticFormProvider: PydanticFormProvider = async () => {
+    const pydanticFormProvider: PydanticFormProvider = async ({
+        requestBody,
+    }) => {
         const fetchResult = await fetch('http://localhost:8000/form', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify(requestBody),
         });
         const jsonResult = await fetchResult.json();
         return jsonResult;

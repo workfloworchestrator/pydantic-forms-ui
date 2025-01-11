@@ -29,9 +29,8 @@ interface ColProps {
     children: React.ReactNode;
 }
 
-const Col = ({ md, sm, children }: ColProps) => {
-    // eslint-disable-next-line no-console
-    console.log('TODO: implement MD and SM', md, sm);
+const Col = ({ children }: ColProps) => {
+    // TODO: implement md, sm);
     return <div>{children}</div>;
 };
 
