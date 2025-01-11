@@ -51,8 +51,6 @@ export function usePydanticForm(
         // return val
         async ([formKey, formInputData]) => {
             // TODO: Readd sending metadata along with request
-            // eslint-disable-next-line no-console
-            console.log('calls fetcher in USESwr hook!');
             const requestBody = formInputData;
 
             const formProviderRequest = formProvider({
