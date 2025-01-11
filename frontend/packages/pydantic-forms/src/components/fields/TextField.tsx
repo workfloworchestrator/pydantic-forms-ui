@@ -19,6 +19,8 @@ import {
     PydanticFormInputFieldProps,
 } from '@/types';
 
+// import { TextField } from '@rijkshuisstijl-community/web-components-react'
+
 interface TextFieldProps {
     value: string;
     onChangeValue: (val: string) => void;
@@ -34,14 +36,17 @@ const TextComponent = ({
     onBlur,
     disabled,
 }: TextFieldProps) => {
-    // eslint-disable-next-line no-console
-    console.log(
-        'TODO: Implement onChageValue, onBlur, disabled',
-        onChangeValue,
-        onBlur,
-        disabled,
+    return (
+        <input
+            onBlur={onBlur}
+            onChange={(t) => {
+                onChangeValue(t.currentTarget.value);
+            }}
+            disabled={disabled}
+            value={value}
+            type="text"
+        />
     );
-    return <>{value}</>;
 };
 
 function ControlledTextField(fieldConfig: PydanticFormField) {
@@ -54,7 +59,6 @@ function ControlledTextField(fieldConfig: PydanticFormField) {
     }) {
         const changeHandle = (val: string) => {
             field.onChange(val);
-
             // it seems we need this because the 2nd error would get stale..
             // https://github.com/react-hook-form/react-hook-form/issues/8170
             // https://github.com/react-hook-form/react-hook-form/issues/10832

@@ -13,34 +13,8 @@ import ResetNullableFieldTrigger from '@/components/form/ResetNullableFieldTrigg
 import { usePydanticFormContext } from '@/core';
 import { PydanticFormField } from '@/types';
 
-interface FormFieldProps {
-    label: React.ReactNode;
-    description: string;
-    required: boolean;
-    isValid: boolean;
-    error: string;
-    dense: boolean;
-    className: string;
-    children: React.ReactNode;
-}
-
-const FormField = ({}: FormFieldProps) => {
-    return <div>FormField</div>;
-};
-
-interface IconButtonProps {
-    className: string;
-    onClick: () => void;
-    children: React.ReactNode;
-}
-
-const IconButton = ({}: IconButtonProps) => {
-    return <button>IconButton</button>;
-};
-
-const IconInfo = () => {
-    return <div>IconInfo</div>;
-};
+// import { FormField, IconButton, IconInfo } from "@lib/rijkshuisstijl"
+import { FormRow } from './FormRow';
 
 interface FieldWrapProps {
     field: PydanticFormField;
@@ -62,7 +36,7 @@ function FieldWrap({ field, children }: FieldWrapProps) {
     }, [field]);
 
     return (
-        <FormField
+        <FormRow
             label={
                 <>
                     {field.title}
@@ -71,21 +45,22 @@ function FieldWrap({ field, children }: FieldWrapProps) {
             }
             description={field.description}
             required={field.required}
-            isValid={!isInvalid}
+            isInvalid={!!isInvalid}
             error={errorMsg as string}
-            dense
             className="mt-0 mb-0"
         >
-            <div className="d-flex">
+            <div>
                 <div className="w-100">{children}</div>
 
                 {debugMode && (
-                    <IconButton className="ml-3" onClick={debugTrigger}>
-                        <IconInfo />
-                    </IconButton>
+                    <button
+                        aria-label="glasses"
+                        className="ml-3"
+                        onClick={debugTrigger}
+                    />
                 )}
             </div>
-        </FormField>
+        </FormRow>
     );
 }
 
