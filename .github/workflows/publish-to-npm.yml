@@ -30,8 +30,10 @@ jobs:
                   cache: npm
                   cache-dependency-path: frontend
             - name: Create .npmrc file with the NPM token
-              run: cd frontend && cat << EOF > "$HOME/.npmrc"
-                  //registry.npmjs.org/:_authToken=$NPM_TOKEN
+              run: |
+                  cd frontend
+                  cat << EOF > "$HOME/.npmrc"
+                    //registry.npmjs.org/:_authToken=$NPM_TOKEN
                   EOF
               env:
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
