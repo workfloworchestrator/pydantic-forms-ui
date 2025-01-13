@@ -308,7 +308,7 @@ function PydanticFormContextProvider({
     const submitForm = rhf.handleSubmit(submitFormFn, onClientSideError);
 
     const resetForm = useCallback(
-        (e: MouseEvent) => {
+        (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             e.preventDefault();
             resetFormData();
             setErrorDetails(undefined);

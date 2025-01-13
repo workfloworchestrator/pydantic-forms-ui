@@ -32,6 +32,8 @@ export default function Home() {
                 config={{
                     formProvider: pydanticFormProvider,
                 }}
+                headerComponent={<div>HEADER COMPONENT</div>}
+                footerComponent={<div>FOOTER COMPONENT</div>}
             />
         </div>
     );

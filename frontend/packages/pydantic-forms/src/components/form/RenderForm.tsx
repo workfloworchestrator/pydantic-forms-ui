@@ -7,7 +7,7 @@
  */
 import React from 'react';
 
-import DynamicFormFooter from '@/components/form/Footer';
+import Footer from '@/components/form/Footer';
 import { RenderFields } from '@/components/render/Fields';
 import RenderFormErrors from '@/components/render/RenderFormErrors';
 import { RenderSections } from '@/components/render/Sections';
@@ -56,21 +56,31 @@ const RenderForm = ({
 
         return (
             <div className="info-box d-flex align-items-center">
-                ICON KLAARZETTEN{' '}
                 {successNotice ?? 'Je inzending is succesvol ontvangen'}
             </div>
         );
     }
 
     return (
-        <form action={''} onSubmit={submitForm}>
-            {title !== false && <div>{title ?? formData.title}</div>}
+        <form
+            action={''}
+            onSubmit={submitForm}
+            css={{
+                border: 'thin solid lightgrey',
+                width: '500px',
+                height: '250px',
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '10px',
+            }}
+        >
+            {title !== false && <h2>{title ?? formData.title}</h2>}
 
             {headerComponent}
 
             <RenderFormErrors />
 
-            <div className="form-content-wrapper">
+            <div css={{ padding: '12px', height: '250px' }}>
                 {formData.sections.map((section) => (
                     <RenderSections section={section} key={section.id}>
                         {({ fields }) => (
@@ -90,7 +100,7 @@ const RenderForm = ({
                 ))}
             </div>
 
-            <DynamicFormFooter />
+            <Footer />
         </form>
     );
 };

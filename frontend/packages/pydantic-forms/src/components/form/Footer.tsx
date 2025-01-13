@@ -9,7 +9,7 @@ import RenderReactHookFormErrors from '@/components/render/RenderReactHookFormEr
 import { usePydanticFormContext } from '@/core';
 import { navPreventDefaultFn } from '@/utils';
 
-const DynamicFormFooter = () => {
+const Footer = () => {
     const {
         resetForm,
         rhf,
@@ -31,7 +31,7 @@ const DynamicFormFooter = () => {
     const hasErrors = !!Object.keys(rhf.formState.errors).length;
 
     return (
-        <div className={`form-footer`}>
+        <div css={{ height: '200px' }}>
             {(!!footerComponent || (showErrors && hasErrors)) && (
                 <div>
                     {footerComponent}
@@ -39,14 +39,16 @@ const DynamicFormFooter = () => {
                     {showErrors && <RenderReactHookFormErrors />}
                 </div>
             )}
-
-            <div className="d-flex">
+            <div css={{ display: 'flex' }}>
                 {resetButtonAlternative ?? (
                     <button
                         type="button"
                         e2e-id="dynamicforms-reset-btn"
-                        onClick={() => resetForm}
+                        onClick={(e) => {
+                            resetForm(e);
+                        }}
                         disabled={!rhf.formState.isDirty}
+                        css={{ marginRight: '10px' }}
                     >
                         Reset
                     </button>
@@ -55,11 +57,7 @@ const DynamicFormFooter = () => {
                 <span className="spacer"></span>
 
                 <div className={`d-flex align-items-center`}>
-                    <div
-                        className={
-                            "width: 100% margin: '10px 0' order: '3 !important' text-align: center"
-                        }
-                    >
+                    <div>
                         {rhf.formState.isValid &&
                             !allowUntouchedSubmit &&
                             !rhf.formState.isDirty && (
@@ -70,30 +68,6 @@ const DynamicFormFooter = () => {
                                     Het formulier is nog niet aangepast
                                 </div>
                             )}
-
-                        {!rhf.formState.isValid && rhf.formState.isDirty && (
-                            <div
-                                className="d-flex mv-0 mr-3"
-                                style={{ opacity: 0.8 }}
-                            >
-                                WARNING ICON Het formulier is nog niet correct
-                                ingevuld{' '}
-                                {!showErrors && (
-                                    <>
-                                        -{' '}
-                                        <a
-                                            className="ml-1 font-weight-bold"
-                                            href="#"
-                                            onClick={navPreventDefaultFn(
-                                                toggleErrors,
-                                            )}
-                                        >
-                                            Toon info
-                                        </a>
-                                    </>
-                                )}
-                            </div>
-                        )}
                     </div>
 
                     {!!onCancel &&
@@ -120,9 +94,26 @@ const DynamicFormFooter = () => {
                         {sendLabel ?? 'Verzenden'}
                     </button>
                 </div>
-            </div>
+            </div>{' '}
+            {!rhf.formState.isValid && rhf.formState.isDirty && (
+                <div className="d-flex mv-0 mr-3" style={{ opacity: 0.8 }}>
+                    Het formulier is nog niet correct ingevuld{' '}
+                    {!showErrors && (
+                        <>
+                            -{' '}
+                            <a
+                                className="ml-1 font-weight-bold"
+                                href="#"
+                                onClick={navPreventDefaultFn(toggleErrors)}
+                            >
+                                Toon info
+                            </a>
+                        </>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
 
-export default DynamicFormFooter;
+export default Footer;

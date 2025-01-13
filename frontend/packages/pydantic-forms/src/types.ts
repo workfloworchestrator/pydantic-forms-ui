@@ -51,7 +51,7 @@ export interface PydanticFormContextProps {
     resetButtonAlternative?: React.ReactNode;
     disableSaveProgress?: boolean;
     submitForm: FormEventHandler<HTMLFormElement>;
-    resetForm: (e: MouseEvent) => void;
+    resetForm: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     successNotice?: React.ReactNode;
     headerComponent?: React.ReactNode;
     footerComponent?: React.ReactNode;
