@@ -1,18 +1,25 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * Text component
  */
+import React from 'react';
 import {
     Controller,
     ControllerRenderProps,
     FieldValues,
 } from 'react-hook-form';
 
-import DfFieldWrap from '@/components/fields/Wrap';
+import FieldWrap from '@/components/fields/FieldWrap';
 import { zodValidationPresets } from '@/components/zodValidations';
-import { useDynamicFormsContext } from '@/core';
-import { FormComponent, IDFInputFieldProps, IDynamicFormField } from '@/types';
+import { usePydanticFormContext } from '@/core';
+import {
+    PydanticFormComponent,
+    PydanticFormField,
+    PydanticFormInputFieldProps,
+} from '@/types';
+
+// import { TextField } from '@rijkshuisstijl-community/web-components-react'
 
 interface TextFieldProps {
     value: string;
@@ -21,17 +28,29 @@ interface TextFieldProps {
     disabled: boolean;
 }
 
-const TextField = ({
+// Imported from import from "@lib/rijkshuisstijl" in the original code
+// Mocked until layoutProvider pattern is implemented
+const TextComponent = ({
     value,
     onChangeValue,
     onBlur,
     disabled,
 }: TextFieldProps) => {
-    return <>value</>;
+    return (
+        <input
+            onBlur={onBlur}
+            onChange={(t) => {
+                onChangeValue(t.currentTarget.value);
+            }}
+            disabled={disabled}
+            value={value}
+            type="text"
+        />
+    );
 };
 
-function DhfCtrldTextField(dfFieldConfig: IDynamicFormField) {
-    const { rhf } = useDynamicFormsContext();
+function ControlledTextField(fieldConfig: PydanticFormField) {
+    const { rhf } = usePydanticFormContext();
 
     return function TextInput({
         field,
@@ -40,7 +59,6 @@ function DhfCtrldTextField(dfFieldConfig: IDynamicFormField) {
     }) {
         const changeHandle = (val: string) => {
             field.onChange(val);
-
             // it seems we need this because the 2nd error would get stale..
             // https://github.com/react-hook-form/react-hook-form/issues/8170
             // https://github.com/react-hook-form/react-hook-form/issues/10832
@@ -48,31 +66,33 @@ function DhfCtrldTextField(dfFieldConfig: IDynamicFormField) {
         };
 
         return (
-            <DfFieldWrap field={dfFieldConfig}>
-                <TextField
+            <FieldWrap field={fieldConfig}>
+                <TextComponent
                     value={field.value ?? ''}
                     onChangeValue={changeHandle}
                     onBlur={field.onBlur}
-                    disabled={!!dfFieldConfig.attributes.disabled}
+                    disabled={!!fieldConfig.attributes.disabled}
                 />
-            </DfFieldWrap>
+            </FieldWrap>
         );
     };
 }
 
-const DFTextField: FormComponent = {
-    Element: function DFFieldControllerWrap({ field }: IDFInputFieldProps) {
-        const { rhf } = useDynamicFormsContext();
+const TextField: PydanticFormComponent = {
+    Element: function FieldControllerWrap({
+        field,
+    }: PydanticFormInputFieldProps) {
+        const { rhf } = usePydanticFormContext();
 
         return (
             <Controller
                 name={field.id}
                 control={rhf.control}
-                render={DhfCtrldTextField(field)}
+                render={ControlledTextField(field)}
             />
         );
     },
     validator: zodValidationPresets.string,
 };
 
-export default DFTextField;
+export default TextField;

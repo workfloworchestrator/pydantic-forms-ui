@@ -16,11 +16,11 @@
  */
 import useSWR, { SWRConfiguration } from 'swr';
 
-import { DfLabelProvider } from '@/types';
+import { PydanticFormLabelProvider } from '@/types';
 
 export function useLabelProvider(
-    labelProvider: DfLabelProvider,
-    formKey: string,
+    labelProvider?: PydanticFormLabelProvider,
+    formKey?: string,
     id?: string | null,
     cacheKey?: number,
     swrConfig?: SWRConfiguration,
@@ -31,10 +31,12 @@ export function useLabelProvider(
 
         // return val
         async () => {
-            return labelProvider({
-                formKey,
-                id,
-            });
+            if (labelProvider) {
+                return labelProvider({
+                    formKey: formKey || '',
+                    id,
+                });
+            }
         },
 
         // swr config

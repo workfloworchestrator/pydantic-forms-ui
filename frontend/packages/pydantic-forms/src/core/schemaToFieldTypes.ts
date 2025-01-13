@@ -14,10 +14,10 @@ import {
     matchComponentWithField,
 } from '@/core/helper';
 import {
-    IDynamicFormApiRefResolved,
-    IDynamicFormField,
-    IDynamicFormsLabels,
-    IFieldDefinitionProvider,
+    PydanticFormApiRefResolved,
+    PydanticFormField,
+    PydanticFormFieldDetailProvider,
+    PydanticFormLabels,
 } from '@/types';
 
 /**
@@ -32,17 +32,17 @@ import {
  */
 export const mapToUsableField = (
     fieldId: string,
-    schema: IDynamicFormApiRefResolved,
-    formLabels: IDynamicFormsLabels,
-    fieldDetailProvider?: IFieldDefinitionProvider,
-): IDynamicFormField => {
+    schema: PydanticFormApiRefResolved,
+    formLabels: PydanticFormLabels = {},
+    fieldDetailProvider?: PydanticFormFieldDetailProvider,
+): PydanticFormField => {
     const schemaField = schema.properties[fieldId];
 
     const options = getFieldOptions(schemaField);
 
     const fieldOptionsEntry = getFieldAllOfAnyOfEntry(schemaField);
 
-    const field: IDynamicFormField = {
+    const field: PydanticFormField = {
         id: fieldId,
         title: formLabels[fieldId]?.toString() ?? schemaField.title,
         description: formLabels[fieldId + '_info']?.toString() ?? '',

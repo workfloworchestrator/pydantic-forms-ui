@@ -1,21 +1,17 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 
-import { useDynamicFormsContext } from '@/core';
+import { usePydanticFormContext } from '@/core';
 import { isNullableField } from '@/core/helper';
-import { IDynamicFormField } from '@/types';
+import { PydanticFormField } from '@/types';
 import { navPreventDefaultFn } from '@/utils';
 
-const ResetNullableFieldTrigger = ({ field }: { field: IDynamicFormField }) => {
-    const { rhf, config } = useDynamicFormsContext();
+const ResetNullableFieldTrigger = ({ field }: { field: PydanticFormField }) => {
+    const { rhf } = usePydanticFormContext();
 
     const setNullValue = useCallback(() => {
         rhf.setValue(field.id, null);
         rhf.trigger(field.id);
     }, [rhf, field]);
-
-    if (!config?.tmp_allowNullableFieldResets) {
-        return null;
-    }
 
     if (!isNullableField(field) || rhf.getValues()?.[field.id] === null) {
         return null;

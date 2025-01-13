@@ -4,15 +4,23 @@
  * This component will render all the fields based on the
  * config in the dynamicFormContext
  */
-import { useDynamicFormsContext } from '@/core';
-import { DynamicFormsFormLayout, IDynamicFormField } from '@/types';
+import React from 'react';
 
-interface IRenderFieldsProps {
-    fields: IDynamicFormField[];
+import { usePydanticFormContext } from '@/core';
+import { PydanticFormField, PydanticFormLayout } from '@/types';
+
+interface RenderFieldsProps {
+    fields: PydanticFormField[];
 }
+
+/**
+ * Row and Col are imported from "@lib/rijkshuisstijl" in the original implementation
+ * These are mocked until the layoutProvider pattern is implemented
+ * */
 interface RowProps {
     children: React.ReactNode;
 }
+
 const Row = ({ children }: RowProps) => <div>{children}</div>;
 
 interface ColProps {
@@ -21,10 +29,13 @@ interface ColProps {
     children: React.ReactNode;
 }
 
-const Col = ({ md, sm, children }: ColProps) => <div>{children}</div>;
+const Col = ({ children }: ColProps) => {
+    // TODO: implement md, sm);
+    return <div>{children}</div>;
+};
 
-export function RenderFields({ fields }: IRenderFieldsProps) {
-    const { formLayout } = useDynamicFormsContext();
+export function RenderFields({ fields }: RenderFieldsProps) {
+    const { formLayout } = usePydanticFormContext();
 
     return fields.map((field) => {
         const FormElement = field.FormElement;
@@ -41,7 +52,7 @@ export function RenderFields({ fields }: IRenderFieldsProps) {
             );
         }
 
-        if (formLayout === DynamicFormsFormLayout.ONE_COL) {
+        if (formLayout === PydanticFormLayout.ONE_COL) {
             return (
                 <Row key={field.id}>
                     <Col md={field.columns} sm={12} e2e-id={field.id}>

@@ -12,23 +12,23 @@ import { useMemo } from 'react';
 
 import { mapToUsableField } from '@/core';
 import { getFieldBySection } from '@/core/helper';
-import {
-    DfLayoutColumnProvider,
-    IDynamicForm,
-    IDynamicFormApiRefResolved,
-    IDynamicFormState,
-    IDynamicFormsLabels,
-    IFieldDefinitionProvider,
+import type {
+    PydanticFormApiRefResolved,
+    PydanticFormData,
+    PydanticFormFieldDetailProvider,
+    PydanticFormLabels,
+    PydanticFormLayoutColumnProvider,
 } from '@/types';
+import { PydanticFormState } from '@/types';
 
-export function useFormParser(
-    schema?: IDynamicFormApiRefResolved,
-    formLabels?: IDynamicFormsLabels,
-    fieldDetailProvider?: IFieldDefinitionProvider,
-    layoutColumnProvider?: DfLayoutColumnProvider,
-): IDynamicForm | false {
+export function usePydanticFormParser(
+    schema?: PydanticFormApiRefResolved,
+    formLabels?: PydanticFormLabels,
+    fieldDetailProvider?: PydanticFormFieldDetailProvider,
+    layoutColumnProvider?: PydanticFormLayoutColumnProvider,
+): PydanticFormData | false {
     return useMemo(() => {
-        if (!schema || !formLabels) return false;
+        if (!schema) return false;
 
         const fieldIds = Object.keys(schema?.properties ?? {});
 
@@ -49,7 +49,7 @@ export function useFormParser(
         return {
             title: schema.title,
             description: schema.description,
-            state: IDynamicFormState.NEW,
+            state: PydanticFormState.NEW,
             fields,
             sections: getFieldBySection(fields),
         };

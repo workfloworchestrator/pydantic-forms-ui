@@ -7,11 +7,14 @@
  */
 import React from 'react';
 
-import DynamicFormFooter from '@/components/form/Footer';
+import Footer from '@/components/form/Footer';
 import { RenderFields } from '@/components/render/Fields';
 import RenderFormErrors from '@/components/render/RenderFormErrors';
 import { RenderSections } from '@/components/render/Sections';
-import { DynamicFormsFormLayout, IDynamicFormsContextProps } from '@/types';
+import { PydanticFormContextProps, PydanticFormLayout } from '@/types';
+
+/**
+ * TODO: Implement CardAsFragment and see what the use case is
 
 const CardAsFragment = ({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -21,8 +24,8 @@ const CardAsFragment = ({
     title?: string;
     children?: React.ReactNode | undefined;
 }) => <React.Fragment>{children}</React.Fragment>;
-
-const RenderMainForm = ({
+*/
+const RenderForm = ({
     submitForm,
     formData,
     isLoading,
@@ -33,8 +36,7 @@ const RenderMainForm = ({
     title,
     headerComponent,
     skipSuccessNotice,
-    hasCardWrapper = true,
-}: IDynamicFormsContextProps) => {
+}: PydanticFormContextProps) => {
     if (isLoading && !isSending) {
         return <div>Formulier aan het ophalen...</div>;
     }
@@ -54,27 +56,36 @@ const RenderMainForm = ({
 
         return (
             <div className="info-box d-flex align-items-center">
-                ICON KLAARZETTEN{' '}
                 {successNotice ?? 'Je inzending is succesvol ontvangen'}
             </div>
         );
     }
 
     return (
-        <form action={''} onSubmit={submitForm}>
-            {title !== false && <div>{title ?? formData.title}</div>}
+        <form
+            action={''}
+            onSubmit={submitForm}
+            css={{
+                border: 'thin solid lightgrey',
+                width: '500px',
+                height: '250px',
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '10px',
+            }}
+        >
+            {title !== false && <h2>{title ?? formData.title}</h2>}
 
             {headerComponent}
 
             <RenderFormErrors />
 
-            <div className="form-content-wrapper">
+            <div css={{ padding: '12px', height: '250px' }}>
                 {formData.sections.map((section) => (
                     <RenderSections section={section} key={section.id}>
                         {({ fields }) => (
                             <div>
-                                {formLayout ===
-                                DynamicFormsFormLayout.ONE_COL ? (
+                                {formLayout === PydanticFormLayout.ONE_COL ? (
                                     <div className="row-with-child-rows">
                                         <RenderFields fields={fields} />
                                     </div>
@@ -89,9 +100,9 @@ const RenderMainForm = ({
                 ))}
             </div>
 
-            <DynamicFormFooter />
+            <Footer />
         </form>
     );
 };
 
-export default RenderMainForm;
+export default RenderForm;

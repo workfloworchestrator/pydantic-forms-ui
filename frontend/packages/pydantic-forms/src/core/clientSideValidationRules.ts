@@ -10,10 +10,10 @@ import { useForm } from 'react-hook-form';
 
 import { z } from 'zod';
 
-import { IDynamicFormField } from '@/types';
+import { PydanticFormField } from '@/types';
 
 const clientSideValidationRule = (
-    field: IDynamicFormField,
+    field: PydanticFormField,
     rhf?: ReturnType<typeof useForm>,
 ) => {
     let validationRule = field?.validator?.(field, rhf) ?? z.string();

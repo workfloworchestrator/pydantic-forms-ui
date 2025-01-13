@@ -13,13 +13,13 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import clientSideValidationRule from '@/core/clientSideValidationRules';
-import { useFormParser } from '@/core/hooks/useFormParser';
-import { CustomValidationRuleFn } from '@/types';
+import { usePydanticFormParser } from '@/core/hooks';
+import { CustomValidationRule } from '@/types';
 
 const useCustomZodValidation = (
-    formData: ReturnType<typeof useFormParser>,
+    formData: ReturnType<typeof usePydanticFormParser>,
     rhf?: ReturnType<typeof useForm>,
-    customValidationRulesFn?: CustomValidationRuleFn,
+    customValidationRule?: CustomValidationRule,
 ) => {
     return useMemo(() => {
         if (!formData) {
@@ -29,7 +29,7 @@ const useCustomZodValidation = (
         return z.object(
             formData.fields.reduce((old, field) => {
                 const fieldRules =
-                    customValidationRulesFn?.(field, rhf) ??
+                    customValidationRule?.(field, rhf) ??
                     clientSideValidationRule(field, rhf);
 
                 return {
@@ -38,7 +38,7 @@ const useCustomZodValidation = (
                 };
             }, {}),
         );
-    }, [formData, customValidationRulesFn, rhf]);
+    }, [formData, customValidationRule, rhf]);
 };
 
 export default useCustomZodValidation;

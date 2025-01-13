@@ -16,10 +16,10 @@
  */
 import useSWR, { SWRConfiguration } from 'swr';
 
-import {
-    DfFormProvider,
-    DynamicFormsMetaData,
-    IDynamicFormApiErrorResponse,
+import type {
+    PydanticFormApiErrorResponse,
+    PydanticFormMetaData,
+    PydanticFormProvider,
 } from '@/types';
 
 const ignoreApiErrors = async (
@@ -27,7 +27,7 @@ const ignoreApiErrors = async (
     // ignoreCodes: number[],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> => {
-    // TODO: What to use these for?', ignoreCodes);
+    //  TODO: What to use these for: ignoreCodes
     try {
         return await req;
     } catch (error) {
@@ -35,37 +35,28 @@ const ignoreApiErrors = async (
     }
 };
 
-export function useDynamicForm(
+export function usePydanticForm(
     formKey: string,
-    formInputData: DynamicFormsMetaData,
-    formProvider: DfFormProvider,
-    tmp_pydanticFormsOriginalImplementation: boolean,
-    metaData?: DynamicFormsMetaData,
+    formInputData: PydanticFormMetaData, // TODO: This doesn't seem right
+    formProvider: PydanticFormProvider,
+    metaData?: PydanticFormMetaData,
     cacheKey?: number,
     swrConfig?: SWRConfiguration,
 ) {
-    return useSWR<IDynamicFormApiErrorResponse>(
+    return useSWR<PydanticFormApiErrorResponse>(
         // cache key
         [formKey, formInputData, metaData, swrConfig, cacheKey],
 
         // return val
-        async ([formKey, formInputData, metaData]) => {
-            let requestBody: object | unknown = {};
-
-            if (tmp_pydanticFormsOriginalImplementation) {
-                requestBody = formInputData;
-            } else {
-                requestBody = {
-                    form_input_data: formInputData,
-                    meta_data: metaData,
-                };
-            }
-            const ogreq = formProvider({
+        async ([formKey, formInputData]) => {
+            // TODO: Readd sending metadata along with request
+            const requestBody = formInputData;
+            const formProviderRequest = formProvider({
                 formKey,
                 requestBody,
             });
             const req = (await ignoreApiErrors(
-                ogreq,
+                formProviderRequest,
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             )) as any;
 

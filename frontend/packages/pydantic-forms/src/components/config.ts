@@ -4,10 +4,10 @@
  * We will search for the first field that returns a positive match
  * The last field has no matcher, so it will match as the default
  */
-import DFTextField from '@/components/fields/Text';
-import { DfFieldsConfig } from '@/types';
+import TextField from '@/components/fields/TextField';
+import { PydanticFormFieldConfig } from '@/types';
 
-const fieldsConfig: DfFieldsConfig = [
+const fieldsConfig: PydanticFormFieldConfig[] = [
     /*
     {
         id: 'textarea',
@@ -21,7 +21,7 @@ const fieldsConfig: DfFieldsConfig = [
     // so its the final fallback
     {
         id: 'textfield',
-        Component: DFTextField,
+        Component: TextField,
     },
 ];
 

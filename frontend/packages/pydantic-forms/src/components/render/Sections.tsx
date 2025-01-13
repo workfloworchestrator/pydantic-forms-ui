@@ -1,28 +1,25 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * This component will render all the sections based on the
- * config in the dynamicFormContext
+ * config in the pydanticFormContext
  */
-import { useDynamicFormsContext } from '@/core';
-import { IDynamicFormField, IDynamicFormFieldSection } from '@/types';
+import { usePydanticFormContext } from '@/core';
+import { PydanticFormField, PydanticFormFieldSection } from '@/types';
 
-export interface IRenderDynamicFormSectionsChildProps {
+export interface RenderSectionsChildProps {
     id: string;
     title: string;
-    fields: IDynamicFormField[];
+    fields: PydanticFormField[];
 }
 
-interface IRenderDynamicFormSectionsProps {
-    section: IDynamicFormFieldSection;
-    children: (props: IRenderDynamicFormSectionsChildProps) => React.ReactNode;
+interface RenderSectionsProps {
+    section: PydanticFormFieldSection;
+    children: (props: RenderSectionsChildProps) => React.ReactNode;
 }
 
-export function RenderSections({
-    section,
-    children,
-}: IRenderDynamicFormSectionsProps) {
-    const { formData } = useDynamicFormsContext();
+export function RenderSections({ section, children }: RenderSectionsProps) {
+    const { formData } = usePydanticFormContext();
 
     const fields = formData?.fields ?? [];
 

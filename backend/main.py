@@ -55,13 +55,12 @@ async def form(form_data: list[dict]=[]):
 
         form_data_1 = yield TestForm
 
-        class TestForm2(SubmitFormPage):
-            model_config = ConfigDict(title="Form 2 Title")
-
-            name_2: str | None = None
-
-        form_data_2 = yield TestForm2
-        return form_data_1.model_dump() | form_data_2.model_dump()
+        # class TestForm2(SubmitFormPage):
+        #    model_config = ConfigDict(title="Form 2 Title")
+        #
+        #    name_2: str | None = None
+        #    form_data_2 = yield TestForm2
+        return form_data_1.model_dump() #| form_data_2.model_dump()
 
     data = post_form(form_generator, state={}, user_inputs=form_data)
     return data

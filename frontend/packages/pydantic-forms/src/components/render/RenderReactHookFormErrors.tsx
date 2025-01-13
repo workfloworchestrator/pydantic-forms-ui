@@ -3,15 +3,15 @@
  *
  * Renders errors received from the backend after submitting the form
  */
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 // import { HelpTextContainer, IconButton, IconInfo } from '@lib/rijkshuisstijl';
 // import { HelpContainerVariant } from '@lib/rijkshuisstijl/dist/components/Elements/HelpTextContainer/HelpTextContainer';
-import { useDynamicFormsContext } from '@/core';
+import { usePydanticFormContext } from '@/core';
 import { getFieldLabelById } from '@/core/helper';
 
 export default function RenderReactHookFormErrors() {
-    const { rhf, formData } = useDynamicFormsContext();
+    const { rhf, formData } = usePydanticFormContext();
     const [showDetails, setShowDetails] = useState(false);
 
     const toggleDetails = useCallback(() => {

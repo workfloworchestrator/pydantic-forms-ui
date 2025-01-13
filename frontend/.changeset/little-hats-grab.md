@@ -3,4 +3,4 @@
 'example': patch
 ---
 
-Initial version
+Initial publish trigger

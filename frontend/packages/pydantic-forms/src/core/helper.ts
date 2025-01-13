@@ -7,16 +7,16 @@ import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
 import fieldsConfig from '@/components/config';
 import {
-    DfFieldFormats,
-    DfFieldTypes,
-    IDynamicForm,
-    IDynamicFormApiErrorResponse,
-    IDynamicFormApiResponsePropertyResolved,
-    IDynamicFormField,
-    IDynamicFormFieldAttributes,
-    IDynamicFormFieldOption,
-    IDynamicFormFieldSection,
-    IDynamicFormFieldValidation,
+    PydanticFormApiErrorResponse,
+    PydanticFormApiResponsePropertyResolved,
+    PydanticFormData,
+    PydanticFormField,
+    PydanticFormFieldAttributes,
+    PydanticFormFieldFormat,
+    PydanticFormFieldOption,
+    PydanticFormFieldSection,
+    PydanticFormFieldType,
+    PydanticFormFieldValidation,
 } from '@/types';
 import { insertItemAtIndex } from '@/utils';
 
@@ -27,7 +27,7 @@ import { insertItemAtIndex } from '@/utils';
  * @returns A object better usable for displaying errors
  */
 export const getErrorDetailsFromResponse = function (
-    apiErrorResp: IDynamicFormApiErrorResponse,
+    apiErrorResp: PydanticFormApiErrorResponse,
 ) {
     return {
         detail: apiErrorResp.detail ?? '',
@@ -51,7 +51,7 @@ export const getErrorDetailsFromResponse = function (
  * @returns anyOf, allOf, or allOf value
  */
 export const getFieldAllOfAnyOfEntry = (
-    field: IDynamicFormApiResponsePropertyResolved,
+    field: PydanticFormApiResponsePropertyResolved,
 ) => {
     const optionFields = [field.anyOf, field.oneOf, field.allOf];
 
@@ -71,10 +71,10 @@ export const getFieldAllOfAnyOfEntry = (
  * @returns an array of options in strings
  */
 export const getFieldOptions = (
-    field: IDynamicFormApiResponsePropertyResolved,
+    field: PydanticFormApiResponsePropertyResolved,
 ) => {
     let isOptionsField = false;
-    const options: IDynamicFormFieldOption[] = [];
+    const options: PydanticFormFieldOption[] = [];
 
     const optionDef = getFieldAllOfAnyOfEntry(field);
 
@@ -157,7 +157,10 @@ export const optionsToOption = (
                 (enums?.indexOf(a.value) ?? 0) - (enums?.indexOf(b.value) ?? 0),
         );
 
-export const getFieldLabelById = (fieldId: string, formData: IDynamicForm) => {
+export const getFieldLabelById = (
+    fieldId: string,
+    formData: PydanticFormData,
+) => {
     const field = formData.fields.filter((field) => field.id === fieldId);
     return field?.[0]?.title ?? fieldId;
 };
@@ -169,9 +172,9 @@ export const getFieldLabelById = (fieldId: string, formData: IDynamicForm) => {
  * @returns returns a validation object
  */
 export const getFieldValidation = (
-    field: IDynamicFormApiResponsePropertyResolved,
+    field: PydanticFormApiResponsePropertyResolved,
 ) => {
-    const validation: IDynamicFormFieldValidation = {};
+    const validation: PydanticFormFieldValidation = {};
 
     const optionDef = getFieldAllOfAnyOfEntry(field);
 
@@ -195,7 +198,7 @@ export const getFieldValidation = (
  * @param field
  * @returns
  */
-export const isNullableField = (field: IDynamicFormField) =>
+export const isNullableField = (field: PydanticFormField) =>
     !!field.validation.isNullable;
 
 /**
@@ -205,8 +208,8 @@ export const isNullableField = (field: IDynamicFormField) =>
  * every time a field comes by that starts with label_
  * we start a new section
  */
-export const getFieldBySection = (fields: IDynamicFormField[]) => {
-    const sections: IDynamicFormFieldSection[] = [];
+export const getFieldBySection = (fields: PydanticFormField[]) => {
+    const sections: PydanticFormFieldSection[] = [];
     let curSection = 0;
 
     for (const field of fields) {
@@ -256,7 +259,7 @@ export const getFieldBySection = (fields: IDynamicFormField[]) => {
  * And labelData (this holds the current values from API)
  */
 export const getFormValuesFromFieldOrLabels = (
-    fields: IDynamicFormField[],
+    fields: PydanticFormField[],
     labelData?: Record<string, string>,
 ) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -288,7 +291,7 @@ export const getFormValuesFromFieldOrLabels = (
 /**
  * Match a FormField config with an actual field from the config
  */
-export const matchComponentWithField = function (field: IDynamicFormField) {
+export const matchComponentWithField = function (field: PydanticFormField) {
     return fieldsConfig.find((possibleField) => {
         if (!possibleField.matcher) {
             return true;
@@ -302,9 +305,9 @@ export const matchComponentWithField = function (field: IDynamicFormField) {
  * Finds and returns the attributes in the schemafield
  */
 export const getFieldAttributes = function (
-    schemaField: IDynamicFormApiResponsePropertyResolved,
+    schemaField: PydanticFormApiResponsePropertyResolved,
 ) {
-    const attributes: IDynamicFormFieldAttributes = {};
+    const attributes: PydanticFormFieldAttributes = {};
 
     // we could do this in a few lines by casting schemafield
     // to the attributes. However, we dont know yet if the
@@ -336,11 +339,11 @@ export const getFieldAttributes = function (
  * @returns formData
  */
 export function addCustomFieldToDynamicForm(
-    formData: IDynamicForm | false,
+    formData: PydanticFormData | false,
     NewElement: (props?: unknown) => JSX.Element,
     fieldId: string,
     anchorFieldId: string,
-    extraOptions?: Partial<IDynamicFormField>,
+    extraOptions?: Partial<PydanticFormField>,
 ) {
     if (!formData || !formData.fields.length || !formData.sections.length) {
         return false;
@@ -356,17 +359,17 @@ export function addCustomFieldToDynamicForm(
         (item) => item.id === anchorFieldId,
     );
 
-    const customField: IDynamicFormField = {
+    const customField: PydanticFormField = {
         id: fieldId,
         title: fieldId,
         description: fieldId,
-        type: DfFieldTypes.STRING,
-        format: DfFieldFormats.BOOLFIELD,
+        type: PydanticFormFieldType.STRING,
+        format: PydanticFormFieldFormat.BOOLFIELD,
         options: [],
         columns: 6,
         required: false,
         isEnumField: false,
-        schemaField: {} as IDynamicFormApiResponsePropertyResolved,
+        schemaField: {} as PydanticFormApiResponsePropertyResolved,
         validation: {},
         attributes: {},
         FormElement: NewElement,

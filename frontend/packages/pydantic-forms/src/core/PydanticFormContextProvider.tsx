@@ -5,7 +5,7 @@
  *
  * This will fetch the jsonScheme, parse it, and handle form state and validation
  */
-import {
+import React, {
     createContext,
     useCallback,
     useContext,
@@ -26,16 +26,20 @@ import {
     getErrorDetailsFromResponse,
     getFormValuesFromFieldOrLabels,
 } from '@/core/helper';
-import { useDynamicForm, useFormParser, useRefParser } from '@/core/hooks';
+import {
+    usePydanticForm,
+    usePydanticFormParser,
+    useRefParser,
+} from '@/core/hooks';
 import useCustomDataProvider from '@/core/hooks/useCustomDataProvider';
 import useCustomZodValidation from '@/core/hooks/useCustomZodValidator';
 import { useLabelProvider } from '@/core/hooks/useLabelProvider';
 import {
-    DynamicFormsFormLayout,
-    IDynamicForm,
-    IDynamicFormsContextInitialProps,
-    IDynamicFormsContextProps,
-    IValidationErrorDetails,
+    PydanticFormContextProps,
+    PydanticFormData,
+    PydanticFormInitialContextProps,
+    PydanticFormLayout,
+    PydanticFormValidationErrorDetails,
 } from '@/types';
 
 import translation from './translations/nl.json';
@@ -51,17 +55,17 @@ i18next.init({
 });
 z.setErrorMap(zodI18nMap);
 
-export const DynamicFormsContext =
-    createContext<IDynamicFormsContextProps | null>(null);
+export const PydanticFormContext =
+    createContext<PydanticFormContextProps | null>(null);
 
-function DynamicFormsProvider({
+function PydanticFormContextProvider({
     formKey,
     formIdKey,
     metaData,
     title,
     sendLabel,
     headerComponent,
-    formLayout = DynamicFormsFormLayout.TWO_COL,
+    formLayout = PydanticFormLayout.TWO_COL,
     footerComponent,
     successNotice,
     onSuccess,
@@ -70,9 +74,9 @@ function DynamicFormsProvider({
     children,
     hasCardWrapper = true,
     config,
-}: IDynamicFormsContextInitialProps) {
+}: PydanticFormInitialContextProps) {
     const {
-        dataProvider,
+        customDataProvider: dataProvider,
         labelProvider,
         formProvider,
         fieldDetailProvider,
@@ -82,11 +86,9 @@ function DynamicFormsProvider({
         footerCtaPrimaryVariant = 'purple',
         customValidationRules,
         layoutColumnProvider,
-        tmp_pydanticFormsOriginalImplementation,
         allowUntouchedSubmit,
         skipSuccessNotice,
         disableSaveProgress,
-        tmp_allowNullableFieldResets,
         formStructureMutator,
         cancelButton,
     } = config;
@@ -94,17 +96,16 @@ function DynamicFormsProvider({
     // option to enable the debug mode on the fly in the browser
     // by setting localStorage.setItem("dynamicFormsDebugMode", "true")
     // reload is required
-    const debugMode = localStorage.getItem('dynamicFormsDebugMode') === '1';
+    const debugMode = false;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [formInputData, setFormInputData] = useState<any>([]);
-    const [errorDetails, setErrorDetails] = useState<IValidationErrorDetails>();
+    const [errorDetails, setErrorDetails] =
+        useState<PydanticFormValidationErrorDetails>();
     const [isFullFilled, setIsFullFilled] = useState(false);
     const [isSending, setIsSending] = useState(false);
-    // const [cacheKey] = useCacheKey(); // this ensures we refresh the swr caches anytime ctx is re-initialized
 
-    const [saveToLeavePageInCurrentState, setSaveToLeavePageInCurrentState] =
-        useState(false);
+    const [, setSaveToLeavePageInCurrentState] = useState(false);
 
     // fetch the labels of the form, but can also include the current form values
     const { data: formLabels, isLoading: isLoadingFormLabels } =
@@ -118,14 +119,7 @@ function DynamicFormsProvider({
         data: apiErrorResp,
         isLoading: isLoadingSchema,
         error,
-    } = useDynamicForm(
-        formKey,
-        // TODO: remove this temp fix? ->
-        formInputData,
-        formProvider,
-        !!tmp_pydanticFormsOriginalImplementation,
-        metaData,
-    );
+    } = usePydanticForm(formKey, formInputData, formProvider, metaData);
 
     // we cache the form scheme so when there is an error, we still have the form
     // the form is not in the error response
@@ -136,14 +130,15 @@ function DynamicFormsProvider({
     const { data: schema } = useRefParser('form', rawSchema);
 
     // extract the JSON schema to a more usable custom schema
-    const formDataParsed = useFormParser(
+    const formDataParsed = usePydanticFormParser(
         schema,
         formLabels?.labels,
         fieldDetailProvider,
         layoutColumnProvider,
     );
+
     const formData = formStructureMutator
-        ? formStructureMutator(formDataParsed)
+        ? formStructureMutator(formDataParsed) // What are the use cases here, will this be solved by a layout provider?
         : formDataParsed;
 
     const rhfRef = useRef<ReturnType<typeof useForm>>();
@@ -172,6 +167,7 @@ function DynamicFormsProvider({
 
     rhfRef.current = rhf;
 
+    /* TODO: implement this
     // prevent user from navigating away when there are unsaved changes
     const hasUnsavedData =
         !saveToLeavePageInCurrentState &&
@@ -190,13 +186,13 @@ function DynamicFormsProvider({
             return;
         }
         const values = rhf.getValues();
-        const dynamicForm = formData as IDynamicForm;
+        const pydanticFormData = formData as PydanticFormData;
 
-        const summaryData = dynamicForm.sections.map((section) => {
+        const summaryData = pydanticFormData.sections?.map((section) => {
             return {
                 ...section,
                 fields: section.fields.reduce((acc, fieldId) => {
-                    const field = dynamicForm?.fields.find(({ id }) => {
+                    const field = pydanticFormData?.fields.find(({ id }) => {
                         const i = id as string;
                         const i2 = fieldId.id as string;
                         return i === i2;
@@ -233,7 +229,7 @@ function DynamicFormsProvider({
                 onSuccess?.(values, summaryData);
             }, 1500);
         }
-    }, [isFullFilled, skipSuccessNotice, onSuccess, rhf]);
+    }, [isFullFilled, skipSuccessNotice, onSuccess, rhf, formData]);
 
     // a useeffect for whenever the error response updates
     // sometimes we need to update the form,
@@ -312,7 +308,7 @@ function DynamicFormsProvider({
     const submitForm = rhf.handleSubmit(submitFormFn, onClientSideError);
 
     const resetForm = useCallback(
-        (e: MouseEvent) => {
+        (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             e.preventDefault();
             resetFormData();
             setErrorDetails(undefined);
@@ -346,9 +342,12 @@ function DynamicFormsProvider({
         };
     }, [rhf, onFieldChangeHandler]);
 
-    const isLoading = isLoadingFormLabels || isLoadingSchema;
+    const isLoading =
+        isLoadingFormLabels ||
+        isLoadingSchema ||
+        (dataProvider ? isCustomDataLoading : false);
 
-    const DynamicFormsContextState = {
+    const PydanticFormContextState = {
         // to prevent an issue where the sending state hangs
         // we check both the SWR hook state as our manual state
         isSending: isSending && isLoadingSchema,
@@ -374,7 +373,6 @@ function DynamicFormsProvider({
         allowUntouchedSubmit,
         disableSaveProgress,
         resetButtonAlternative,
-        tmp_allowNullableFieldResets,
         config,
         hasCardWrapper,
         setSaveToLeavePageInCurrentState,
@@ -384,7 +382,7 @@ function DynamicFormsProvider({
         // eslint-disable-next-line no-console
         console.log('New context cycle', {
             resolver,
-            DynamicFormsContextState,
+            DynamicFormsContextState: PydanticFormContextState,
         });
 
         const fieldWatcher = rhf.watch();
@@ -393,22 +391,22 @@ function DynamicFormsProvider({
     }
 
     return (
-        <DynamicFormsContext.Provider value={DynamicFormsContextState}>
-            {children(DynamicFormsContextState)}
-        </DynamicFormsContext.Provider>
+        <PydanticFormContext.Provider value={PydanticFormContextState}>
+            {children(PydanticFormContextState)}
+        </PydanticFormContext.Provider>
     );
 }
 
-export function useDynamicFormsContext() {
-    const context = useContext(DynamicFormsContext);
+export function usePydanticFormContext() {
+    const context = useContext(PydanticFormContext);
 
     if (!context) {
         throw new Error(
-            'useDynamicFormsContext must be used within a DynamicFormsProvider',
+            'usePydanticFormContext must be used within a PydanticFormProvider',
         );
     }
 
     return context;
 }
 
-export default DynamicFormsProvider;
+export default PydanticFormContextProvider;
