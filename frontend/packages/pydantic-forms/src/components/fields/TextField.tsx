@@ -19,8 +19,6 @@ import {
     PydanticFormInputFieldProps,
 } from '@/types';
 
-// import { TextField } from '@rijkshuisstijl-community/web-components-react'
-
 interface TextFieldProps {
     value: string;
     onChangeValue: (val: string) => void;

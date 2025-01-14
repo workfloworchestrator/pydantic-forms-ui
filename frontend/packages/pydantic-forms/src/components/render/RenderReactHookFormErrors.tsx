@@ -5,8 +5,6 @@
  */
 import React, { useCallback, useState } from 'react';
 
-// import { HelpTextContainer, IconButton, IconInfo } from '@lib/rijkshuisstijl';
-// import { HelpContainerVariant } from '@lib/rijkshuisstijl/dist/components/Elements/HelpTextContainer/HelpTextContainer';
 import { usePydanticFormContext } from '@/core';
 import { getFieldLabelById } from '@/core/helper';
 
