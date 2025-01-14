@@ -1,7 +1,7 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
- * The main context of a dynamic form
+ * The main context of a Pydantic form
  *
  * This will fetch the jsonScheme, parse it, and handle form state and validation
  */
@@ -94,7 +94,7 @@ function PydanticFormContextProvider({
     } = config;
 
     // option to enable the debug mode on the fly in the browser
-    // by setting localStorage.setItem("dynamicFormsDebugMode", "true")
+    // by setting localStorage.setItem("pydanticFormsDebugMode", "true")
     // reload is required
     const debugMode = false;
 
@@ -382,7 +382,7 @@ function PydanticFormContextProvider({
         // eslint-disable-next-line no-console
         console.log('New context cycle', {
             resolver,
-            DynamicFormsContextState: PydanticFormContextState,
+            PydanticFormContextState,
         });
 
         const fieldWatcher = rhf.watch();

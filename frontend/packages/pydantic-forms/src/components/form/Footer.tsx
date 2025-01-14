@@ -1,5 +1,5 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * Form footer component
  */
@@ -43,7 +43,7 @@ const Footer = () => {
                 {resetButtonAlternative ?? (
                     <button
                         type="button"
-                        e2e-id="dynamicforms-reset-btn"
+                        e2e-id="pydanticforms-reset-btn"
                         onClick={(e) => {
                             resetForm(e);
                         }}
@@ -75,14 +75,14 @@ const Footer = () => {
                             <button
                                 type="button"
                                 onClick={onCancel}
-                                e2e-id="dynamicforms-cancel-btn"
+                                e2e-id="pydanticforms-cancel-btn"
                             >
                                 Annuleren
                             </button>
                         ))}
 
                     <button
-                        e2e-id="dynamicforms-send-btn"
+                        e2e-id="pydanticforms-send-btn"
                         type="submit"
                         disabled={
                             !rhf.formState.isValid ||

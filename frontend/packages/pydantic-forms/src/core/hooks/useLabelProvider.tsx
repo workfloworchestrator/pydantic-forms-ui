@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * SWR Hook to fetch the JSON Schema from the backend.
  * In this hook we also POST the form data when its available.

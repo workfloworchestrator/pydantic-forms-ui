@@ -1,8 +1,8 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * This component will render all the fields based on the
- * config in the dynamicFormContext
+ * config in the pydanticFormContext
  */
 import React from 'react';
 

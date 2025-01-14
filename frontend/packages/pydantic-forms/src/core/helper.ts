@@ -1,7 +1,7 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
- * Helper functions to be used in DynamicForms
+ * Helper functions to be used in PydanticForms
  */
 import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
@@ -329,7 +329,7 @@ export const getFieldAttributes = function (
 };
 
 /**
- * This method can be used to add custom extra fields to a dynamicForms instance.
+ * This method can be used to add custom extra fields to a pydanticForm instance.
  * This can be used in the formStructureMutator function.
  *
  * @param formData The formdata object
@@ -338,7 +338,7 @@ export const getFieldAttributes = function (
  * @param anchorFieldId The ID of the field where we should insert this new field
  * @returns formData
  */
-export function addCustomFieldToDynamicForm(
+export function addCustomFieldToPydanticForm(
     formData: PydanticFormData | false,
     NewElement: (props?: unknown) => JSX.Element,
     fieldId: string,
@@ -381,13 +381,13 @@ export function addCustomFieldToDynamicForm(
         customField,
         anchorIndex,
     );
-    /*
+
     formData.sections[0].fields = insertItemAtIndex(
         formData.sections[0].fields,
-        fieldId,
+        customField,
         anchorIndex,
     );
-*/
+
     return formData;
 }
 

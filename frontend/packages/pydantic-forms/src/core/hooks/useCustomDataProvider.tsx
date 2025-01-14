@@ -9,7 +9,7 @@ const useCustomDataProvider = (
 ) => {
     return useSWR<PydanticFormApiErrorResponse | object>(
         // cache key
-        [`dynamicFormsDataProvider-${cacheKey}`],
+        [`pydanticFormsDataProvider-${cacheKey}`],
 
         // return val
         () => {

@@ -1,5 +1,5 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * Here we can define some validation presets we can reuse in components.
  * String for example, can have a min & max length and pattern validation rules.
