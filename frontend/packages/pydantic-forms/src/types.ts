@@ -282,7 +282,7 @@ export interface PydanticFormZodValidationPresets {
 
 export interface PydanticFormsContextConfig {
     // use custom method to provide data for the form. This overwrites data fetched from labels endpoint
-    customDataProvider?: PydanticFormDataProvider;
+    customDataProvider?: PydanticFormCustomDataProvider;
 
     // use custom method for providing labels and data
     labelProvider?: PydanticFormLabelProvider;
@@ -300,7 +300,7 @@ export interface PydanticFormsContextConfig {
     fieldDetailProvider?: PydanticFormFieldDetailProvider;
 
     // be able to refresh the provided data
-    dataProviderCacheKey?: number;
+    customDataProviderCacheKey?: number;
 
     // whenever a fieldvalue changes, do something
     onFieldChangeHandler?: onPydanticFormFieldChangeHandlerFn;
@@ -322,8 +322,7 @@ export interface PydanticFormsContextConfig {
 
     footerCtaPrimaryVariant?: string;
 }
-
-export type PydanticFormDataProvider = () => Promise<PydanticFormLabels>;
+export type PydanticFormCustomDataProvider = () => Promise<PydanticFormLabels>;
 
 export interface PydanticFormLabels {
     [key: string]: string[] | number[] | string | number | null;

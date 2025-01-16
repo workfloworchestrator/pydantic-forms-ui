@@ -76,12 +76,12 @@ function PydanticFormContextProvider({
     config,
 }: PydanticFormInitialContextProps) {
     const {
-        customDataProvider: dataProvider,
+        customDataProvider,
         labelProvider,
         formProvider,
         fieldDetailProvider,
         onFieldChangeHandler,
-        dataProviderCacheKey,
+        customDataProviderCacheKey,
         resetButtonAlternative,
         footerCtaPrimaryVariant = 'purple',
         customValidationRules,
@@ -112,7 +112,10 @@ function PydanticFormContextProvider({
         useLabelProvider(labelProvider, formKey, formIdKey);
 
     const { data: customData, isLoading: isCustomDataLoading } =
-        useCustomDataProvider(dataProviderCacheKey ?? 100, dataProvider);
+        useCustomDataProvider(
+            customDataProviderCacheKey ?? 100,
+            customDataProvider,
+        );
 
     // fetch the form definition using SWR hook
     const {
@@ -345,7 +348,8 @@ function PydanticFormContextProvider({
     const isLoading =
         isLoadingFormLabels ||
         isLoadingSchema ||
-        (dataProvider ? isCustomDataLoading : false);
+        isLoadingSchema ||
+        (customDataProvider ? isCustomDataLoading : false);
 
     const PydanticFormContextState = {
         // to prevent an issue where the sending state hangs
@@ -361,7 +365,7 @@ function PydanticFormContextProvider({
         sendLabel,
         debugMode,
         isFullFilled,
-        dataProvider,
+        customDataProvider,
         errorDetails,
         formLayout,
         successNotice,
