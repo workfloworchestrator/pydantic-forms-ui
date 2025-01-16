@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.6
+
+### Patch Changes
+
+-   db80d93: Finishes renaming
+
 ## 0.0.5
 
 ### Patch Changes
