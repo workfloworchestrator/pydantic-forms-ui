@@ -1,5 +1,5 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * A hook that will parse the received and parsed JSON Schema
  * to something more usable in the templates

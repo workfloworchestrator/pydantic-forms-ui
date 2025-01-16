@@ -1,5 +1,5 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * A SWR hook for parsing the references in a JsonSchema
  *

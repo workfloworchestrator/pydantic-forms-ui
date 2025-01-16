@@ -1,5 +1,5 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * Main form wrap component
  *
@@ -21,8 +21,12 @@ export interface PydanticFormProps
     metaData?: PydanticFormMetaData;
 }
 
-const PydanticForm = ({ id, metaData, ...contextProps }: PydanticFormProps) => (
-    <div e2e-id={`dynamicforms-${id}`}>
+export const PydanticForm = ({
+    id,
+    metaData,
+    ...contextProps
+}: PydanticFormProps) => (
+    <div e2e-id={`pydanticforms-${id}`}>
         <PydanticFormContextProvider
             {...contextProps}
             formKey={id}

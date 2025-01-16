@@ -1,5 +1,5 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * A custom form to ZOD schema validation generator.
  * Here we can implement client side rules based on the received JSON Schema

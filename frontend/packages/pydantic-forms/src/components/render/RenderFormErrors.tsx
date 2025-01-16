@@ -1,11 +1,10 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * Renders errors that are generated client-side
  */
 import React, { useCallback, useState } from 'react';
 
-// import { IconButton, IconInfo, IconWaarschuwing } from '@lib/rijkshuisstijl';
 import { usePydanticFormContext } from '@/core';
 
 export default function RenderFormErrors() {

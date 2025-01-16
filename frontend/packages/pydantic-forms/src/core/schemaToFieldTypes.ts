@@ -1,5 +1,5 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
  * This is pretty much the matcher of the JSON Schema 'properties' definition to fields.
  * Here we try to make the mess we receive easily usable in the components

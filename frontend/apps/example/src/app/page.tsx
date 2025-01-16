@@ -1,6 +1,6 @@
 'use client';
 
-import PydanticForm from 'pydantic-forms';
+import { PydanticForm } from 'pydantic-forms';
 import type { PydanticFormProvider } from 'pydantic-forms';
 
 import styles from './page.module.css';

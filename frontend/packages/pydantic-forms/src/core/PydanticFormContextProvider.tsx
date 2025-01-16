@@ -1,7 +1,7 @@
 /**
- * Dynamic Forms
+ * Pydantic Forms
  *
- * The main context of a dynamic form
+ * The main context of a Pydantic form
  *
  * This will fetch the jsonScheme, parse it, and handle form state and validation
  */
@@ -76,12 +76,12 @@ function PydanticFormContextProvider({
     config,
 }: PydanticFormInitialContextProps) {
     const {
-        customDataProvider: dataProvider,
+        customDataProvider,
         labelProvider,
         formProvider,
         fieldDetailProvider,
         onFieldChangeHandler,
-        dataProviderCacheKey,
+        customDataProviderCacheKey,
         resetButtonAlternative,
         footerCtaPrimaryVariant = 'purple',
         customValidationRules,
@@ -94,7 +94,7 @@ function PydanticFormContextProvider({
     } = config;
 
     // option to enable the debug mode on the fly in the browser
-    // by setting localStorage.setItem("dynamicFormsDebugMode", "true")
+    // by setting localStorage.setItem("pydanticFormsDebugMode", "true")
     // reload is required
     const debugMode = false;
 
@@ -112,7 +112,10 @@ function PydanticFormContextProvider({
         useLabelProvider(labelProvider, formKey, formIdKey);
 
     const { data: customData, isLoading: isCustomDataLoading } =
-        useCustomDataProvider(dataProviderCacheKey ?? 100, dataProvider);
+        useCustomDataProvider(
+            customDataProviderCacheKey ?? 100,
+            customDataProvider,
+        );
 
     // fetch the form definition using SWR hook
     const {
@@ -345,7 +348,8 @@ function PydanticFormContextProvider({
     const isLoading =
         isLoadingFormLabels ||
         isLoadingSchema ||
-        (dataProvider ? isCustomDataLoading : false);
+        isLoadingSchema ||
+        (customDataProvider ? isCustomDataLoading : false);
 
     const PydanticFormContextState = {
         // to prevent an issue where the sending state hangs
@@ -361,7 +365,7 @@ function PydanticFormContextProvider({
         sendLabel,
         debugMode,
         isFullFilled,
-        dataProvider,
+        customDataProvider,
         errorDetails,
         formLayout,
         successNotice,
@@ -382,7 +386,7 @@ function PydanticFormContextProvider({
         // eslint-disable-next-line no-console
         console.log('New context cycle', {
             resolver,
-            DynamicFormsContextState: PydanticFormContextState,
+            PydanticFormContextState,
         });
 
         const fieldWatcher = rhf.watch();

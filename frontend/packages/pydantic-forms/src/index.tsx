@@ -1,4 +1,2 @@
-import PydanticForm from './PydanticForm';
-
 export * from './types';
-export default PydanticForm;
+export * from './PydanticForm';
