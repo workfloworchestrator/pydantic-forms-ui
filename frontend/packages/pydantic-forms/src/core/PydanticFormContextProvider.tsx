@@ -27,7 +27,7 @@ import {
     getFormValuesFromFieldOrLabels,
 } from '@/core/helper';
 import {
-    usePydanticForm,
+    useApiProvider,
     usePydanticFormParser,
     useRefParser,
 } from '@/core/hooks';
@@ -78,7 +78,7 @@ function PydanticFormContextProvider({
     const {
         customDataProvider,
         labelProvider,
-        formProvider,
+        apiProvider,
         fieldDetailProvider,
         onFieldChangeHandler,
         customDataProviderCacheKey,
@@ -93,6 +93,7 @@ function PydanticFormContextProvider({
         cancelButton,
     } = config;
 
+    // TODO: Fix this again
     // option to enable the debug mode on the fly in the browser
     // by setting localStorage.setItem("pydanticFormsDebugMode", "true")
     // reload is required
@@ -111,18 +112,23 @@ function PydanticFormContextProvider({
     const { data: formLabels, isLoading: isLoadingFormLabels } =
         useLabelProvider(labelProvider, formKey, formIdKey);
 
-    const { data: customData, isLoading: isCustomDataLoading } =
+    const { data: customData, isLoading: isLoadingCustomData } =
         useCustomDataProvider(
             customDataProviderCacheKey ?? 100,
             customDataProvider,
         );
 
     // fetch the form definition using SWR hook
+    // 1. Called and returns with 510 code and form schema in payload
+    // 2. Called with form payload
+    //    - form_validation errors => 400
+    //    - success => 200
+    //    - second step? 510 with form definition
     const {
         data: apiResponse,
         isLoading: isLoadingSchema,
         error,
-    } = usePydanticForm(formKey, formInputData, formProvider, metaData);
+    } = useApiProvider(formKey, formInputData, apiProvider, metaData);
 
     // we cache the form scheme so when there is an error, we still have the form
     // the form is not in the error response
@@ -355,7 +361,7 @@ function PydanticFormContextProvider({
         isLoadingFormLabels ||
         isLoadingSchema ||
         isLoadingSchema ||
-        (customDataProvider ? isCustomDataLoading : false);
+        (customDataProvider ? isLoadingCustomData : false);
 
     const PydanticFormContextState = {
         // to prevent an issue where the sending state hangs

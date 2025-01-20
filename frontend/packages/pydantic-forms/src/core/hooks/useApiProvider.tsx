@@ -17,9 +17,9 @@
 import useSWR, { SWRConfiguration } from 'swr';
 
 import type {
-    PydanticFormApiErrorResponse,
+    PydanticFormApiProvider,
+    PydanticFormApiResponse,
     PydanticFormMetaData,
-    PydanticFormProvider,
 } from '@/types';
 
 const ignoreApiErrors = async (
@@ -35,15 +35,15 @@ const ignoreApiErrors = async (
     }
 };
 
-export function usePydanticForm(
+export function useApiProvider(
     formKey: string,
     formInputData: PydanticFormMetaData, // TODO: This doesn't seem right
-    formProvider: PydanticFormProvider,
+    apiProvider: PydanticFormApiProvider,
     metaData?: PydanticFormMetaData,
     cacheKey?: number,
     swrConfig?: SWRConfiguration,
 ) {
-    return useSWR<PydanticFormApiErrorResponse>(
+    return useSWR<PydanticFormApiResponse>(
         // cache key
         [formKey, formInputData, metaData, swrConfig, cacheKey],
 
@@ -52,12 +52,12 @@ export function usePydanticForm(
             // TODO: Readd sending metadata along with request
             const requestBody = formInputData;
 
-            const formProviderRequest = formProvider({
+            const apiProviderRequest = apiProvider({
                 formKey,
                 requestBody,
             });
             const req = (await ignoreApiErrors(
-                formProviderRequest,
+                apiProviderRequest,
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             )) as any;
 
