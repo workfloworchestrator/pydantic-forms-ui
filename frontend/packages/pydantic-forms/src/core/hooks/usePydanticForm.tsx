@@ -51,6 +51,7 @@ export function usePydanticForm(
         async ([formKey, formInputData]) => {
             // TODO: Readd sending metadata along with request
             const requestBody = formInputData;
+
             const formProviderRequest = formProvider({
                 formKey,
                 requestBody,
@@ -65,6 +66,7 @@ export function usePydanticForm(
                 (!req.validation_errors && !req.form)
             ) {
                 return {
+                    response: req,
                     success: true,
                 };
             }

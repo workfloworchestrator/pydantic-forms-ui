@@ -119,7 +119,7 @@ function PydanticFormContextProvider({
 
     // fetch the form definition using SWR hook
     const {
-        data: apiErrorResp,
+        data: apiResponse,
         isLoading: isLoadingSchema,
         error,
     } = usePydanticForm(formKey, formInputData, formProvider, metaData);
@@ -170,14 +170,13 @@ function PydanticFormContextProvider({
 
     rhfRef.current = rhf;
 
-    /* TODO: implement this
+    /* TODO: Reimplement
     // prevent user from navigating away when there are unsaved changes
     const hasUnsavedData =
         !saveToLeavePageInCurrentState &&
         !isFullFilled &&
         rhf.formState.isDirty;
 
-    /* TODO: implement this
     useLeavePageConfirm(
         hasUnsavedData,
         'Er zijn aanpassingen in het formulier. \nWeet je zeker dat je de pagina wilt verlaten?',
@@ -226,36 +225,43 @@ function PydanticFormContextProvider({
         });
 
         if (skipSuccessNotice) {
-            onSuccess(values, summaryData);
+            onSuccess(values, summaryData, apiResponse || {});
         } else {
             setTimeout(() => {
-                onSuccess?.(values, summaryData);
-            }, 1500);
+                onSuccess?.(values, summaryData, apiResponse || {});
+            }, 1500); // Delay to allow notice to show first
         }
-    }, [isFullFilled, skipSuccessNotice, onSuccess, rhf, formData]);
+    }, [
+        isFullFilled,
+        skipSuccessNotice,
+        onSuccess,
+        rhf,
+        formData,
+        apiResponse,
+    ]);
 
     // a useeffect for whenever the error response updates
     // sometimes we need to update the form,
     // some we need to update the errors
     useEffect(() => {
-        if (apiErrorResp?.success) {
+        if (apiResponse?.success) {
             setIsFullFilled(true);
             return;
         }
 
         // when we receive a form from the JSON, we fully reset the scheme
-        if (apiErrorResp?.form) {
-            setRawSchema(apiErrorResp.form);
+        if (apiResponse?.form) {
+            setRawSchema(apiResponse.form);
             setErrorDetails(undefined);
         }
 
         // when we receive errors, we append to the scheme
-        if (apiErrorResp?.validation_errors) {
-            setErrorDetails(getErrorDetailsFromResponse(apiErrorResp));
+        if (apiResponse?.validation_errors) {
+            setErrorDetails(getErrorDetailsFromResponse(apiResponse));
         }
 
         setIsSending(false);
-    }, [apiErrorResp, onSuccess, rhf, skipSuccessNotice]);
+    }, [apiResponse, onSuccess, rhf, skipSuccessNotice]);
 
     const resetFormData = useCallback(() => {
         if (!formData) {
@@ -320,7 +326,7 @@ function PydanticFormContextProvider({
         [resetFormData, rhf],
     );
 
-    // with this we have the possiblity to have listeners for specific fields
+    // with this we have the possibility to have listeners for specific fields
     // this could be used to trigger validations of related fields, casting changes to elsewhere, etc.
     useEffect(() => {
         let sub: Subscription;

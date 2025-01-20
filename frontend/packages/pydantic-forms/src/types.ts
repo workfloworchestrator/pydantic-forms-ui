@@ -20,7 +20,11 @@ export interface PydanticFormInitialContextProps {
     metaData?: PydanticFormMetaData;
     formLayout?: PydanticFormLayout;
     successNotice?: React.ReactNode;
-    onSuccess?: (fieldValues: FieldValues, summaryData: object) => void;
+    onSuccess?: (
+        fieldValues: FieldValues,
+        summaryData: object,
+        response: object,
+    ) => void;
     onCancel?: () => void;
     onChange?: (fieldValues: FieldValues) => void;
     children: (props: PydanticFormContextProps) => React.ReactNode;
