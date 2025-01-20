@@ -100,7 +100,14 @@ function PydanticFormContextProvider({
     const debugMode = false;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [formInputData, setFormInputData] = useState<any>([]);
+    const [formInputData, setFormInputData] = useState<object[]>([]);
+
+    const addFormInputData = (formInput: object) => {
+        setFormInputData((currentInputs) => {
+            return [...currentInputs, formInput];
+        });
+    };
+
     const [errorDetails, setErrorDetails] =
         useState<PydanticFormValidationErrorDetails>();
     const [isFullFilled, setIsFullFilled] = useState(false);
@@ -304,7 +311,7 @@ function PydanticFormContextProvider({
 
     const submitFormFn = useCallback(() => {
         setIsSending(true);
-        setFormInputData([rhf?.getValues()]);
+        addFormInputData(rhf?.getValues());
 
         window.scrollTo(0, 0);
     }, [rhf]);
