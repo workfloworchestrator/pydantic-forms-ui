@@ -20,7 +20,11 @@ export interface PydanticFormInitialContextProps {
     metaData?: PydanticFormMetaData;
     formLayout?: PydanticFormLayout;
     successNotice?: React.ReactNode;
-    onSuccess?: (fieldValues: FieldValues, summaryData: object) => void;
+    onSuccess?: (
+        fieldValues: FieldValues,
+        summaryData: object,
+        response: object,
+    ) => void;
     onCancel?: () => void;
     onChange?: (fieldValues: FieldValues) => void;
     children: (props: PydanticFormContextProps) => React.ReactNode;
@@ -294,7 +298,7 @@ export interface PydanticFormsContextConfig {
     formStructureMutator?: PydanticFormStructureMutator;
 
     // use a custom method for providing the form definition
-    formProvider: PydanticFormProvider;
+    apiProvider: PydanticFormApiProvider;
 
     // Extend field definitions
     fieldDetailProvider?: PydanticFormFieldDetailProvider;
@@ -344,7 +348,7 @@ export type PydanticFormStructureMutator = (
     formData: PydanticFormData | false,
 ) => PydanticFormData | false;
 
-export type PydanticFormProvider = ({
+export type PydanticFormApiProvider = ({
     formKey,
     requestBody,
 }: {
@@ -374,20 +378,20 @@ export type PydanticFormCustomValidationRuleFn = (
     rhf?: ReturnType<typeof useForm>,
 ) => Zod.ZodTypeAny | undefined;
 
-export interface PydanticFormApiErrorResponse {
+export interface PydanticFormApiResponse {
     detail?: string;
     status: number;
-    form: PydanticFormApiResponse;
+    form: PydanticFormSchema;
     success?: boolean;
     validation_errors: PydanticFormApiValidationError[];
 }
 
-export interface PydanticFormApiResponse extends PydanticFormApiResponseBase {
+export interface PydanticFormSchema extends PydanticFormSchemaBase {
     properties: {
         [propId: string]: PydanticFormApiResponseProperty;
     };
 }
-export interface PydanticFormApiResponseBase {
+export interface PydanticFormSchemaBase {
     title: string;
     description: string;
     additionalProperties: boolean;
@@ -418,8 +422,7 @@ export interface JsonSchemaRef {
     $ref: string;
 }
 
-export interface PydanticFormApiRefResolved
-    extends PydanticFormApiResponseBase {
+export interface PydanticFormApiRefResolved extends PydanticFormSchemaBase {
     properties: {
         [propId: string]: PydanticFormApiResponsePropertyResolved;
     };

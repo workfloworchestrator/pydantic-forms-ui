@@ -7,7 +7,7 @@ import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
 import fieldsConfig from '@/components/config';
 import {
-    PydanticFormApiErrorResponse,
+    PydanticFormApiResponse,
     PydanticFormApiResponsePropertyResolved,
     PydanticFormData,
     PydanticFormField,
@@ -27,7 +27,7 @@ import { insertItemAtIndex } from '@/utils';
  * @returns A object better usable for displaying errors
  */
 export const getErrorDetailsFromResponse = function (
-    apiErrorResp: PydanticFormApiErrorResponse,
+    apiErrorResp: PydanticFormApiResponse,
 ) {
     return {
         detail: apiErrorResp.detail ?? '',
