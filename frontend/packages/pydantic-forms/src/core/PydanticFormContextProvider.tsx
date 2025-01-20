@@ -126,11 +126,6 @@ function PydanticFormContextProvider({
         );
 
     // fetch the form definition using SWR hook
-    // 1. Called and returns with 510 code and form schema in payload
-    // 2. Called with form payload
-    //    - form_validation errors => 400
-    //    - success => 200
-    //    - second step? 510 with form definition
     const {
         data: apiResponse,
         isLoading: isLoadingSchema,
