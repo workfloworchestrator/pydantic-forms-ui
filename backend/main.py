@@ -37,6 +37,7 @@ app.add_exception_handler(FormException, form_error_handler)  # type: ignore[arg
 def read_root():
     return {"Hello": "World"}
 
+
 @dataclass(frozen=True, **SLOTS)
 class ExtraData(GroupedMetadata):
     props: dict
@@ -44,8 +45,9 @@ class ExtraData(GroupedMetadata):
     def __iter__(self) -> Iterator[BaseMetadata]:
         yield Field(json_schema_extra=self.props)
 
+
 @app.post("/form")
-async def form(form_data: list[dict]=[]):
+async def form(form_data: list[dict] = []):
     def form_generator(state: State):
         class TestForm(FormPage):
             model_config = ConfigDict(title="Form Title")
@@ -55,12 +57,14 @@ async def form(form_data: list[dict]=[]):
 
         form_data_1 = yield TestForm
 
-        # class TestForm2(SubmitFormPage):
-        #    model_config = ConfigDict(title="Form 2 Title")
-        #
-        #    name_2: str | None = None
-        #    form_data_2 = yield TestForm2
-        return form_data_1.model_dump() #| form_data_2.model_dump()
+        class TestForm2(SubmitFormPage):
+            model_config = ConfigDict(title="Form 2 Title")
 
-    data = post_form(form_generator, state={}, user_inputs=form_data)
-    return data
+            name_2: str | None = None
+
+        form_data_2 = yield TestForm2
+
+        return form_data_1.model_dump() | form_data_2.model_dump()
+
+    post_form(form_generator, state={}, user_inputs=form_data)
+    return "OK!"
