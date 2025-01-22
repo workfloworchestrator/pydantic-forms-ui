@@ -76,7 +76,7 @@ function ControlledTextField(fieldConfig: PydanticFormField) {
     };
 }
 
-const TextField: PydanticFormComponent = {
+export const TextField: PydanticFormComponent = {
     Element: function FieldControllerWrap({
         field,
     }: PydanticFormInputFieldProps) {

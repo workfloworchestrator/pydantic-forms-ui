@@ -44,7 +44,7 @@ export function RenderFields({ fields }: RenderFieldsProps) {
             return <></>;
         }
 
-        if (field.matchedFieldResult?.preventColRender) {
+        if (field.matchedComponentResult?.preventColRender) {
             return (
                 <div key={field.id} e2e-id={field.id}>
                     <FormElement field={field} />

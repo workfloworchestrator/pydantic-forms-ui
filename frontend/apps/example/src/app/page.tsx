@@ -2,6 +2,7 @@
 
 import { PydanticForm } from 'pydantic-forms';
 import type {
+    PydanticComponentMatcher,
     PydanticFormApiProvider,
     PydanticFormCustomDataProvider,
     PydanticFormLabelProvider,
@@ -28,11 +29,11 @@ export default function Home() {
         return new Promise((resolve) => {
             resolve({
                 labels: {
-                    name: 'LABEL NAAM',
+                    name: 'LABEL NAME',
                     name_info: 'DESCRIPTION NAAM',
                 },
                 data: {
-                    name: 'VALUE NAAM',
+                    name: 'LABEL VALUE NAAM',
                 },
             });
         });
@@ -53,6 +54,14 @@ export default function Home() {
     const CancelButtonAlternative = () => (
         <button type="button">Alternative cancel</button>
     );
+
+    const componentMatcher = (
+        currentMatchers: PydanticComponentMatcher[],
+    ): PydanticComponentMatcher[] => {
+        console.log('hahahaha');
+        console.log(currentMatchers);
+        return [...currentMatchers];
+    };
 
     return (
         <div className={styles.page}>
@@ -83,6 +92,7 @@ export default function Home() {
                     onFieldChangeHandler: () => {
                         // console.log('calling onFieldChangeHandler', field);
                     },
+                    componentMatcher: componentMatcher,
                 }}
                 headerComponent={<div>HEADER COMPONENT</div>}
                 footerComponent={<div>FOOTER COMPONENT</div>}

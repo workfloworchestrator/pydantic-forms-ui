@@ -5,7 +5,6 @@
  */
 import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
-import fieldsConfig from '@/components/config';
 import {
     PydanticFormApiResponse,
     PydanticFormApiResponsePropertyResolved,
@@ -286,19 +285,6 @@ export const getFormValuesFromFieldOrLabels = (
     }
 
     return fieldValues;
-};
-
-/**
- * Match a FormField config with an actual field from the config
- */
-export const matchComponentWithField = function (field: PydanticFormField) {
-    return fieldsConfig.find((possibleField) => {
-        if (!possibleField.matcher) {
-            return true;
-        }
-
-        return possibleField.matcher(field);
-    });
 };
 
 /**

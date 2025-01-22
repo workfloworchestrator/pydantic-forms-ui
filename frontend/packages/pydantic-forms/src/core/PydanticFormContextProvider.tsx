@@ -91,6 +91,7 @@ function PydanticFormContextProvider({
         disableSaveProgress,
         formStructureMutator,
         cancelButton,
+        componentMatcher,
     } = config;
 
     // TODO: Fix this again
@@ -146,6 +147,7 @@ function PydanticFormContextProvider({
         formLabels?.labels,
         fieldDetailProvider,
         layoutColumnProvider,
+        componentMatcher,
     );
 
     const formData = formStructureMutator

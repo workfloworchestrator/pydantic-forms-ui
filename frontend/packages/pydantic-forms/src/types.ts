@@ -99,7 +99,7 @@ export interface PydanticFormField {
     attributes: PydanticFormFieldAttributes;
     validator?: PydanticFormZodValidationFn;
     FormElement?: PydanticFormElement;
-    matchedFieldResult?: PydanticFormFieldConfig;
+    matchedComponentResult?: PydanticComponentMatcher;
 }
 
 export interface PydanticFormFieldSection {
@@ -256,12 +256,13 @@ export interface PydanticFormApiValidationError {
     url: string; //"https://errors.pydantic.dev/2.4/v/extra_forbidden"
 }
 
-export interface PydanticFormFieldConfig {
+export interface PydanticComponentMatcher {
     id: string;
     Component: PydanticFormComponent;
-    matcher?: (field: PydanticFormField) => boolean;
+    matcher: (field: PydanticFormField) => boolean;
     preventColRender?: boolean;
 }
+
 export interface PydanticFormComponent {
     Element: PydanticFormElement;
     validator?: PydanticFormZodValidationFn;
@@ -325,7 +326,12 @@ export interface PydanticFormsContextConfig {
     disableSaveProgress?: boolean;
 
     footerCtaPrimaryVariant?: string;
+
+    componentMatcher?: (
+        currentMatchers: PydanticComponentMatcher[],
+    ) => PydanticComponentMatcher[];
 }
+
 export type PydanticFormCustomDataProvider = () => Promise<PydanticFormLabels>;
 
 export interface PydanticFormLabels {

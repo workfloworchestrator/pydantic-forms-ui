@@ -10,7 +10,6 @@
  */
 import { useMemo } from 'react';
 
-import { mapToUsableField } from '@/core';
 import { getFieldBySection } from '@/core/helper';
 import type {
     PydanticFormApiRefResolved,
@@ -18,29 +17,54 @@ import type {
     PydanticFormFieldDetailProvider,
     PydanticFormLabels,
     PydanticFormLayoutColumnProvider,
+    PydanticFormsContextConfig,
 } from '@/types';
-import { PydanticFormState } from '@/types';
+import {
+    PydanticFormFieldFormat,
+    PydanticFormFieldType,
+    PydanticFormState,
+} from '@/types';
+
+import { mapFieldToComponent } from '../mapFieldToComponent';
+
+const emptySchema: PydanticFormApiRefResolved = {
+    title: '',
+    description: '',
+    additionalProperties: false,
+    type: 'object',
+    properties: {
+        property: {
+            type: PydanticFormFieldType.STRING,
+            title: '',
+            format: PydanticFormFieldFormat.DEFAULT,
+        },
+    },
+};
 
 export function usePydanticFormParser(
-    schema?: PydanticFormApiRefResolved,
+    schema: PydanticFormApiRefResolved = emptySchema,
     formLabels?: PydanticFormLabels,
     fieldDetailProvider?: PydanticFormFieldDetailProvider,
     layoutColumnProvider?: PydanticFormLayoutColumnProvider,
+    componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ): PydanticFormData | false {
     return useMemo(() => {
         if (!schema) return false;
 
-        const fieldIds = Object.keys(schema?.properties ?? {});
+        const mapper = (fieldId: string) => {
+            return mapFieldToComponent(
+                fieldId,
+                schema,
+                formLabels,
+                fieldDetailProvider,
+                componentMatcher,
+            );
+        };
+
+        const fieldIds = Object.keys(schema.properties ?? {});
 
         const fields = fieldIds
-            .map((fieldId) =>
-                mapToUsableField(
-                    fieldId,
-                    schema,
-                    formLabels,
-                    fieldDetailProvider,
-                ),
-            )
+            .map((fieldId) => mapper(fieldId))
             .map((field) => ({
                 ...field,
                 columns: layoutColumnProvider?.(field.id) ?? field.columns,
@@ -53,5 +77,11 @@ export function usePydanticFormParser(
             fields,
             sections: getFieldBySection(fields),
         };
-    }, [schema, formLabels, layoutColumnProvider, fieldDetailProvider]);
+    }, [
+        schema,
+        formLabels,
+        fieldDetailProvider,
+        componentMatcher,
+        layoutColumnProvider,
+    ]);
 }
