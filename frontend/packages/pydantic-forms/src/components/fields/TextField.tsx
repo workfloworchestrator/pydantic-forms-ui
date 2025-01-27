@@ -43,6 +43,12 @@ const TextComponent = ({
             disabled={disabled}
             value={value}
             type="text"
+            style={{
+                width: '400px',
+                height: '30px',
+                padding: '4px',
+                marginTop: '4px',
+            }}
         />
     );
 };

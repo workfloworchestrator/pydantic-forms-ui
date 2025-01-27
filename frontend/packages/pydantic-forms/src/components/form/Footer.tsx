@@ -48,7 +48,7 @@ const Footer = () => {
                             resetForm(e);
                         }}
                         disabled={!rhf.formState.isDirty}
-                        css={{ marginRight: '10px' }}
+                        css={{ padding: '4px' }}
                     >
                         Reset
                     </button>
@@ -76,6 +76,11 @@ const Footer = () => {
                                 type="button"
                                 onClick={onCancel}
                                 e2e-id="pydanticforms-cancel-btn"
+                                style={{
+                                    marginLeft: '8px',
+                                    height: '28px',
+                                    padding: '4px',
+                                }}
                             >
                                 Annuleren
                             </button>
@@ -84,6 +89,11 @@ const Footer = () => {
                     <button
                         e2e-id="pydanticforms-send-btn"
                         type="submit"
+                        style={{
+                            marginLeft: '8px',
+                            height: '28px',
+                            padding: '4px',
+                        }}
                         disabled={
                             !rhf.formState.isValid ||
                             (!allowUntouchedSubmit &&

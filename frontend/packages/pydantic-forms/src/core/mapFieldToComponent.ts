@@ -89,6 +89,7 @@ export const getComponentMatcher = (
 
         if (matchedComponent) return matchedComponent;
 
+        // Defaults to textField when there are no matches
         return {
             id: 'textfield',
             Component: TextField,
@@ -96,6 +97,5 @@ export const getComponentMatcher = (
         };
     };
 
-    // Default to textField
     return matcher;
 };

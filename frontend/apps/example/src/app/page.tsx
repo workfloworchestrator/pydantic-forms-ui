@@ -1,12 +1,18 @@
 'use client';
 
-import { PydanticForm } from 'pydantic-forms';
+import {
+    PydanticForm,
+    PydanticFormFieldFormat,
+    PydanticFormFieldType,
+} from 'pydantic-forms';
 import type {
     PydanticComponentMatcher,
     PydanticFormApiProvider,
     PydanticFormCustomDataProvider,
     PydanticFormLabelProvider,
 } from 'pydantic-forms';
+
+import { TextArea } from '@/fields';
 
 import styles from './page.module.css';
 
@@ -58,23 +64,30 @@ export default function Home() {
     const componentMatcher = (
         currentMatchers: PydanticComponentMatcher[],
     ): PydanticComponentMatcher[] => {
-        console.log('hahahaha');
-        console.log(currentMatchers);
-        return [...currentMatchers];
+        // return currentMatchers;
+        return [
+            {
+                id: 'textarea',
+                Component: TextArea,
+                matcher(field) {
+                    return field.type === PydanticFormFieldType.STRING;
+                },
+            },
+            ...currentMatchers,
+        ];
     };
 
     return (
         <div className={styles.page}>
-            <h1>Pydantic Form</h1>
+            <h1 style={{ marginBottom: '40px' }}>Pydantic Form</h1>
 
             <PydanticForm
                 id="theForm"
-                title="The form title"
-                sendLabel="Send label"
+                title="Example form"
                 successNotice="Custom success notice"
                 onSuccess={() => {
-                    // console.log(fieldValues, summaryData, response);
-                    alert('Form submitted successfully');
+                    console.log(fieldValues, summaryData, response);
+                    // alert('Form submitted successfully');
                 }}
                 onCancel={() => {
                     alert('Form cancelled');
@@ -90,12 +103,10 @@ export default function Home() {
                     cancelButton: CancelButtonAlternative(),
                     allowUntouchedSubmit: true,
                     onFieldChangeHandler: () => {
-                        // console.log('calling onFieldChangeHandler', field);
+                        console.log('calling onFieldChangeHandler', field);
                     },
                     componentMatcher: componentMatcher,
                 }}
-                headerComponent={<div>HEADER COMPONENT</div>}
-                footerComponent={<div>FOOTER COMPONENT</div>}
             />
         </div>
     );
