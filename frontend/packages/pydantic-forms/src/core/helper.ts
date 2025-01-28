@@ -322,7 +322,7 @@ export const getFieldAttributes = function (
  * This can be used in the formStructureMutator function.
  *
  * @param formData The formdata object
- * @param fieldElement The new element to be shown
+ * @param fieldElement Te new element to be shown
  * @param fieldId The ID for the new element, should be unique and not conflict with existing fields
  * @param anchorFieldId The ID of the field where we should insert this new field
  * @returns formData
@@ -361,7 +361,7 @@ export function addCustomFieldToPydanticForm(
         schemaField: {} as PydanticFormApiResponsePropertyResolved,
         validation: {},
         attributes: {},
-        FormElement: NewElement(),
+        FormElement: NewElement,
         ...extraOptions,
     };
 

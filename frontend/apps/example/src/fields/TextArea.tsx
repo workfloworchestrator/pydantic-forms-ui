@@ -13,11 +13,7 @@ import type {
 export const TextArea: PydanticFormFieldElement = ({
     value,
     onChange,
-    onBlur,
-    disabled,
-    pydanticFormField,
 }: PydanticFormFieldElementProps) => {
-    console.log(pydanticFormField);
     return (
         <textarea
             defaultValue={value}

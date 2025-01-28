@@ -9,7 +9,6 @@
  * - Marks required fields in their definition
  */
 import { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
 
 import { getFieldBySection } from '@/core/helper';
 import type {
