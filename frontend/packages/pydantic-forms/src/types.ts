@@ -8,8 +8,6 @@ import type {
 
 import { z } from 'zod';
 
-import { EmotionJSX } from '@emotion/react/dist/declarations/src/jsx-namespace';
-
 /****** Pydantic forms renamed types ******/
 export type PydanticFormMetaData = {
     [key: string | number]: PydanticFormFieldValue;
@@ -275,13 +273,6 @@ export interface PydanticComponentMatcher {
     validator?: PydanticFormZodValidationFn;
     matcher: (field: PydanticFormField) => boolean;
 }
-
-export type PydanticComponentMatch = Pick<
-    PydanticComponentMatcher,
-    'id' | 'validator' | 'matcher'
-> & {
-    WrappedElement: EmotionJSX.Element;
-};
 
 export interface PydanticFormInputFieldProps {
     field: PydanticFormField;

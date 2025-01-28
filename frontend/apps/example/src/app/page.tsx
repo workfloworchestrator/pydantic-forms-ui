@@ -1,18 +1,12 @@
 'use client';
 
-import {
-    PydanticForm, // PydanticFormFieldFormat,
-    PydanticFormFieldType,
-} from 'pydantic-forms';
+import { PydanticForm, PydanticFormFieldType } from 'pydantic-forms';
 import type {
     PydanticComponentMatcher,
     PydanticFormApiProvider,
     PydanticFormCustomDataProvider,
-    PydanticFormField,
     PydanticFormLabelProvider,
-    PydanticFormZodValidationFn,
 } from 'pydantic-forms';
-import { z } from 'zod';
 
 import { TextArea } from '@/fields';
 
@@ -63,61 +57,9 @@ export default function Home() {
         <button type="button">Alternative cancel</button>
     );
 
-    const validatorTest: PydanticFormZodValidationFn = (
-        field: PydanticFormField,
-    ) => {
-        const { maxLength, minLength, pattern } = {
-            maxLength: 10,
-            minLength: 3,
-            pattern: 'hallo',
-        };
-
-        let validationRule = z.string().trim();
-        if (minLength) {
-            validationRule = validationRule?.min(
-                minLength,
-                minLength === 1
-                    ? 'Moet ingevuld zijn'
-                    : `Dit veld heeft een minimum lengte van ${minLength} karakters`,
-            );
-        }
-
-        if (maxLength) {
-            validationRule = validationRule?.max(
-                maxLength,
-                `Dit veld heeft een maximum lengte van ${maxLength} karakters`,
-            );
-        }
-
-        if (pattern) {
-            try {
-                validationRule = validationRule?.regex(
-                    new RegExp(pattern),
-                    'De invoer is niet volgens het juiste formaat',
-                );
-            } catch (error) {
-                console.error(
-                    'Could not parse validation rule regex',
-                    field,
-                    pattern,
-                    error,
-                );
-            }
-        }
-
-        if (!field.required) {
-            validationRule = validationRule.or(
-                z.literal(''),
-            ) as unknown as z.ZodString;
-        }
-
-        return validationRule;
-    };
-
     const componentMatcher = (
         currentMatchers: PydanticComponentMatcher[],
     ): PydanticComponentMatcher[] => {
-        // return currentMatchers;
         return [
             {
                 id: 'textarea',
@@ -125,7 +67,6 @@ export default function Home() {
                 matcher(field) {
                     return field.type === PydanticFormFieldType.STRING;
                 },
-                validator: validatorTest,
             },
             ...currentMatchers,
         ];
@@ -148,10 +89,6 @@ export default function Home() {
                     customDataProvider: pydanticCustomDataProvider,
                     resetButtonAlternative: ResetButtonAlternative(),
                     cancelButton: CancelButtonAlternative(),
-                    allowUntouchedSubmit: true,
-                    onFieldChangeHandler: () => {
-                        // console.log('calling onFieldChangeHandler', field);
-                    },
                     componentMatcher: componentMatcher,
                 }}
             />

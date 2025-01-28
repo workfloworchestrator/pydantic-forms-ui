@@ -5,8 +5,6 @@
  */
 import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
-import { EmotionJSX } from '@emotion/react/dist/declarations/src/jsx-namespace';
-
 import {
     PydanticFormApiResponse,
     PydanticFormApiResponsePropertyResolved,
@@ -322,14 +320,14 @@ export const getFieldAttributes = function (
  * This can be used in the formStructureMutator function.
  *
  * @param formData The formdata object
- * @param fieldElement Te new element to be shown
+ * @param fieldElement The new element to be shown
  * @param fieldId The ID for the new element, should be unique and not conflict with existing fields
  * @param anchorFieldId The ID of the field where we should insert this new field
  * @returns formData
  */
 export function addCustomFieldToPydanticForm(
     formData: PydanticFormData | false,
-    NewElement: (props?: PydanticFormFieldElementProps) => EmotionJSX.Element,
+    NewElement: (props?: PydanticFormFieldElementProps) => JSX.Element,
     fieldId: string,
     anchorFieldId: string,
     extraOptions?: Partial<PydanticFormField>,
