@@ -13,10 +13,17 @@ export const wrapFieldElement = (
         <Controller
             name={pydanticFormField.id}
             control={rhf.control}
-            render={({ field, fieldState, formState }) => {
-                /* eslint-disable-next-line no-console */
-                console.log(formState);
+            render={({ field, fieldState }) => {
                 const { onChange, onBlur, value, name, ref } = field;
+
+                const onChangeHandle = (val: string) => {
+                    onChange(val);
+
+                    // it seems we need this because the 2nd error would get stale..
+                    // https://github.com/react-hook-form/react-hook-form/issues/8170
+                    // https://github.com/react-hook-form/react-hook-form/issues/10832
+                    rhf.trigger(field.name);
+                };
 
                 return (
                     <FieldWrap
@@ -24,7 +31,7 @@ export const wrapFieldElement = (
                         fieldState={fieldState}
                     >
                         <PydanticFormFieldElement
-                            onChange={onChange}
+                            onChange={onChangeHandle}
                             onBlur={onBlur}
                             value={value || ''}
                             disabled={!!pydanticFormField.attributes.disabled}

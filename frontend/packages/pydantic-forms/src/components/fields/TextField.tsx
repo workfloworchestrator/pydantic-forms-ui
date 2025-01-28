@@ -7,8 +7,6 @@ import React from 'react';
 
 import { PydanticFormFieldElementProps } from '@/types';
 
-// Imported from import from "@lib/rijkshuisstijl" in the original code
-// Mocked until layoutProvider pattern is implemented
 export const TextField = ({
     value,
     onChange,

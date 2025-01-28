@@ -7,6 +7,7 @@
 import React from 'react';
 
 import { usePydanticFormContext } from '@/core';
+import { wrapFieldElement } from '@/core/wrapFieldElement';
 import { PydanticFormField, PydanticFormLayout } from '@/types';
 
 interface RenderFieldsProps {
@@ -35,14 +36,15 @@ const Col = ({ children }: ColProps) => {
 };
 
 export function RenderFields({ fields }: RenderFieldsProps) {
-    const { formLayout } = usePydanticFormContext();
+    const { formLayout, rhf } = usePydanticFormContext();
 
     return fields.map((field) => {
-        const FormElement = field.FormElement;
+        const element = field.FormElement;
 
-        if (!FormElement) {
+        if (!element) {
             return <></>;
         }
+        const FormElement = wrapFieldElement(element, field, rhf);
 
         if (formLayout === PydanticFormLayout.ONE_COL) {
             return (

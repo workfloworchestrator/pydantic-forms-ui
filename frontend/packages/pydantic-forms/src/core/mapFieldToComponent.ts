@@ -6,10 +6,9 @@
  *
  * Since the actual field definition is kinda scattered in the schema, it is a bit ugly imo
  */
-import { useForm } from 'react-hook-form';
-
 import { TextField } from '@/components';
 import defaultComponentMatchers from '@/components/defaultComponentMatchers';
+import { zodValidationPresets } from '@/components/zodValidations';
 import {
     getFieldAllOfAnyOfEntry,
     getFieldAttributes,
@@ -17,15 +16,13 @@ import {
     getFieldValidation,
 } from '@/core/helper';
 import {
-    PydanticComponentMatch,
+    PydanticComponentMatcher,
     PydanticFormApiRefResolved,
     PydanticFormField,
     PydanticFormFieldDetailProvider,
     PydanticFormLabels,
     PydanticFormsContextConfig,
 } from '@/types';
-
-import { wrapFieldElement } from './wrapFieldElement';
 
 /**
  * Map field of the schema to a better usable format
@@ -41,11 +38,10 @@ export const mapFieldToComponent = (
     fieldId: string,
     schema: PydanticFormApiRefResolved,
     formLabels: PydanticFormLabels = {},
-    rhf: ReturnType<typeof useForm>,
     fieldDetailProvider?: PydanticFormFieldDetailProvider,
     componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ): PydanticFormField => {
-    const matcher = getComponentMatcher(rhf, componentMatcher);
+    const matcher = getComponentMatcher(componentMatcher);
 
     const schemaField = schema.properties[fieldId];
     const options = getFieldOptions(schemaField);
@@ -73,40 +69,32 @@ export const mapFieldToComponent = (
     };
 
     const matchedComponent = matcher(field);
-    field.FormElement = matchedComponent.WrappedElement;
+    field.FormElement = matchedComponent.Element;
     field.validator = matchedComponent.validator;
 
     return field;
 };
 
 export const getComponentMatcher = (
-    rhf: ReturnType<typeof useForm>,
     componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ) => {
     const matchers = componentMatcher
         ? componentMatcher(defaultComponentMatchers)
         : defaultComponentMatchers;
 
-    const matcher = (field: PydanticFormField): PydanticComponentMatch => {
+    const matcher = (field: PydanticFormField): PydanticComponentMatcher => {
         const matchedComponent = matchers.find(({ matcher }) => {
             return matcher(field);
         });
 
-        if (matchedComponent)
-            return {
-                ...matchedComponent,
-                WrappedElement: wrapFieldElement(
-                    matchedComponent.Element,
-                    field,
-                    rhf,
-                ),
-            };
+        if (matchedComponent) return matchedComponent;
 
         // Defaults to textField when there are no matches
         return {
             id: 'textfield',
-            WrappedElement: wrapFieldElement(TextField, field, rhf),
+            Element: TextField,
             matcher: () => true,
+            validator: zodValidationPresets.string,
         };
     };
 

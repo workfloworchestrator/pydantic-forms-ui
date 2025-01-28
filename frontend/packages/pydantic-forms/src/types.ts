@@ -111,7 +111,7 @@ export interface PydanticFormField {
     validation: PydanticFormFieldValidation;
     attributes: PydanticFormFieldAttributes;
     validator?: PydanticFormZodValidationFn;
-    FormElement?: PydanticComponentMatch['WrappedElement'];
+    FormElement?: PydanticComponentMatcher['Element'];
     matchedComponentResult?: PydanticComponentMatcher;
 }
 
