@@ -44,19 +44,11 @@ export function RenderFields({ fields }: RenderFieldsProps) {
             return <></>;
         }
 
-        if (field.matchedComponentResult?.preventColRender) {
-            return (
-                <div key={field.id} e2e-id={field.id}>
-                    <FormElement field={field} />
-                </div>
-            );
-        }
-
         if (formLayout === PydanticFormLayout.ONE_COL) {
             return (
                 <Row key={field.id}>
                     <Col md={field.columns} sm={12} e2e-id={field.id}>
-                        <FormElement field={field} />
+                        {FormElement}
                     </Col>
                 </Row>
             );
@@ -64,7 +56,7 @@ export function RenderFields({ fields }: RenderFieldsProps) {
 
         return (
             <Col key={field.id} md={field.columns} sm={12} e2e-id={field.id}>
-                <FormElement field={field} />
+                {FormElement}
             </Col>
         );
     });

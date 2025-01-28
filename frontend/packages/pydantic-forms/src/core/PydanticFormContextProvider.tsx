@@ -141,9 +141,17 @@ function PydanticFormContextProvider({
     // parse the raw scheme refs so all data is where it should be in the schema
     const { data: schema } = useRefParser('form', rawSchema);
 
+    // initialize the react-hook-form
+    const rhf = useForm({
+        mode: 'all',
+    });
+
+    const rhfRef = useRef<ReturnType<typeof useForm>>();
+
     // extract the JSON schema to a more usable custom schema
     const formDataParsed = usePydanticFormParser(
         schema,
+        rhf,
         formLabels?.labels,
         fieldDetailProvider,
         layoutColumnProvider,
@@ -154,20 +162,12 @@ function PydanticFormContextProvider({
         ? formStructureMutator(formDataParsed) // What are the use cases here, will this be solved by a layout provider?
         : formDataParsed;
 
-    const rhfRef = useRef<ReturnType<typeof useForm>>();
-
     // build validation rules based on custom schema
     const resolver = useCustomZodValidation(
         formData,
         rhfRef.current,
         customValidationRules,
     );
-
-    // initialize the react-hook-form
-    const rhf = useForm({
-        resolver: zodResolver(resolver),
-        mode: 'all',
-    });
 
     useEffect(() => {
         const sub = rhf.watch((values) => {

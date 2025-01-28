@@ -5,12 +5,15 @@
  */
 import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
+import { EmotionJSX } from '@emotion/react/dist/declarations/src/jsx-namespace';
+
 import {
     PydanticFormApiResponse,
     PydanticFormApiResponsePropertyResolved,
     PydanticFormData,
     PydanticFormField,
     PydanticFormFieldAttributes,
+    PydanticFormFieldElementProps,
     PydanticFormFieldFormat,
     PydanticFormFieldOption,
     PydanticFormFieldSection,
@@ -326,7 +329,7 @@ export const getFieldAttributes = function (
  */
 export function addCustomFieldToPydanticForm(
     formData: PydanticFormData | false,
-    NewElement: (props?: unknown) => JSX.Element,
+    NewElement: (props?: PydanticFormFieldElementProps) => EmotionJSX.Element,
     fieldId: string,
     anchorFieldId: string,
     extraOptions?: Partial<PydanticFormField>,
@@ -358,7 +361,7 @@ export function addCustomFieldToPydanticForm(
         schemaField: {} as PydanticFormApiResponsePropertyResolved,
         validation: {},
         attributes: {},
-        FormElement: NewElement,
+        FormElement: NewElement(),
         ...extraOptions,
     };
 

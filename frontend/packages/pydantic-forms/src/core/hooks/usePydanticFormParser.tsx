@@ -9,6 +9,7 @@
  * - Marks required fields in their definition
  */
 import { useMemo } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { getFieldBySection } from '@/core/helper';
 import type {
@@ -43,6 +44,7 @@ const emptySchema: PydanticFormApiRefResolved = {
 
 export function usePydanticFormParser(
     schema: PydanticFormApiRefResolved = emptySchema,
+    rhf: ReturnType<typeof useForm>,
     formLabels?: PydanticFormLabels,
     fieldDetailProvider?: PydanticFormFieldDetailProvider,
     layoutColumnProvider?: PydanticFormLayoutColumnProvider,
@@ -56,6 +58,7 @@ export function usePydanticFormParser(
                 fieldId,
                 schema,
                 formLabels,
+                rhf,
                 fieldDetailProvider,
                 componentMatcher,
             );
