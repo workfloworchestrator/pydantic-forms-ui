@@ -331,7 +331,13 @@ export interface PydanticFormsContextConfig {
     componentMatcher?: (
         currentMatchers: PydanticComponentMatcher[],
     ) => PydanticComponentMatcher[];
+
+    formRenderer?: FormRenderer;
 }
+
+export type FormRenderer = React.JSXElementConstructor<{
+    pydanticFormData: PydanticFormData;
+}>;
 
 export type PydanticFormCustomDataProvider = () => Promise<PydanticFormLabels>;
 

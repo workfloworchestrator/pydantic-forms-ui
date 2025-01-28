@@ -8,7 +8,7 @@
  */
 import React from 'react';
 
-import RenderForm from '@/components/form/RenderForm';
+import RenderForm from '@/components/render/RenderForm';
 import PydanticFormContextProvider from '@/core/PydanticFormContextProvider';
 import type {
     PydanticFormInitialContextProps,
