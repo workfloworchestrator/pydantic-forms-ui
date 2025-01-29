@@ -5,7 +5,6 @@ import type {
     PydanticComponentMatcher,
     PydanticFormApiProvider,
     PydanticFormCustomDataProvider,
-    PydanticFormData,
     PydanticFormLabelProvider,
 } from 'pydantic-forms';
 
@@ -91,17 +90,6 @@ export default function Home() {
                     resetButtonAlternative: ResetButtonAlternative(),
                     cancelButton: CancelButtonAlternative(),
                     componentMatcher: componentMatcher,
-                    formRenderer: ({
-                        pydanticFormData,
-                    }: {
-                        pydanticFormData: PydanticFormData;
-                    }) => {
-                        return (
-                            <div>
-                                PASSED IN FORM RENDERER {pydanticFormData.title}
-                            </div>
-                        );
-                    },
                 }}
             />
         </div>
