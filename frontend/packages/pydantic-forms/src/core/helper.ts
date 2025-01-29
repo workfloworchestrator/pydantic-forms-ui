@@ -332,7 +332,7 @@ export function addCustomFieldToPydanticForm(
     anchorFieldId: string,
     extraOptions?: Partial<PydanticFormField>,
 ) {
-    if (!formData || !formData.fields.length || !formData.sections.length) {
+    if (!formData || !formData.fields.length) {
         return false;
     }
 
@@ -365,12 +365,6 @@ export function addCustomFieldToPydanticForm(
 
     formData.fields = insertItemAtIndex(
         formData.fields,
-        customField,
-        anchorIndex,
-    );
-
-    formData.sections[0].fields = insertItemAtIndex(
-        formData.sections[0].fields,
         customField,
         anchorIndex,
     );
