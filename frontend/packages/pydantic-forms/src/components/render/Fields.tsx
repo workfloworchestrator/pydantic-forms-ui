@@ -44,13 +44,13 @@ export function RenderFields({ fields }: RenderFieldsProps) {
         if (!element) {
             return <></>;
         }
-        const FormElement = wrapFieldElement(element, field, rhf);
+        const formElement = wrapFieldElement(element, field, rhf);
 
         if (formLayout === PydanticFormLayout.ONE_COL) {
             return (
                 <Row key={field.id}>
                     <Col md={field.columns} sm={12} e2e-id={field.id}>
-                        {FormElement}
+                        {formElement}
                     </Col>
                 </Row>
             );
@@ -58,7 +58,7 @@ export function RenderFields({ fields }: RenderFieldsProps) {
 
         return (
             <Col key={field.id} md={field.columns} sm={12} e2e-id={field.id}>
-                {FormElement}
+                {formElement}
             </Col>
         );
     });

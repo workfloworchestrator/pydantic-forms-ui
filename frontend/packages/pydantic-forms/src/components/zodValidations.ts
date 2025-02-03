@@ -57,4 +57,57 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
 
         return validationRule;
     },
+    integer: (field) => {
+        const {
+            minimum,
+            maximum,
+            exclusiveMaximum,
+            exclusiveMinimum,
+            multipleOf,
+        } = field?.validation ?? {};
+
+        let validationRule = z
+            .number({
+                required_error: 'Dit veld is verplicht',
+                invalid_type_error: 'Dit veld moet een integer zijn',
+            })
+            .int();
+
+        if (minimum) {
+            validationRule = validationRule.gte(
+                minimum,
+                `Dit veld heeft een minimum waarde van ${minimum}`,
+            );
+        }
+
+        if (exclusiveMinimum) {
+            validationRule = validationRule.gt(
+                exclusiveMinimum,
+                `Dit veld heeft een minimum waarde van meer dan ${exclusiveMinimum}`,
+            );
+        }
+
+        if (maximum) {
+            validationRule = validationRule.lte(
+                maximum,
+                `Dit veld heeft een maximum waarde van${maximum}`,
+            );
+        }
+
+        if (exclusiveMaximum) {
+            validationRule = validationRule.lt(
+                exclusiveMaximum,
+                `Dit veld heeft een maximum waarde van minder dan ${exclusiveMaximum}`,
+            );
+        }
+
+        if (multipleOf) {
+            validationRule = validationRule.multipleOf(
+                multipleOf,
+                `De waarde van dit veld moet een veelvoud zijn van ${multipleOf}`,
+            );
+        }
+
+        return validationRule;
+    },
 };

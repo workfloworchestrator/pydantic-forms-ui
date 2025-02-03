@@ -43,27 +43,27 @@ export const mapFieldToComponent = (
 ): PydanticFormField => {
     const matcher = getComponentMatcher(componentMatcher);
 
-    const schemaField = schema.properties[fieldId];
-    const options = getFieldOptions(schemaField);
+    const fieldProperties = schema.properties[fieldId];
+    const options = getFieldOptions(fieldProperties);
 
-    const fieldOptionsEntry = getFieldAllOfAnyOfEntry(schemaField);
+    const fieldOptionsEntry = getFieldAllOfAnyOfEntry(fieldProperties);
 
     const field: PydanticFormField = {
         id: fieldId,
-        title: formLabels[fieldId]?.toString() ?? schemaField.title,
+        title: formLabels[fieldId]?.toString() ?? fieldProperties.title,
         description: formLabels[fieldId + '_info']?.toString() ?? '',
-        format: schemaField.format ?? fieldOptionsEntry?.[0]?.format,
+        format: fieldProperties.format ?? fieldOptionsEntry?.[0]?.format,
         type:
-            schemaField.type ??
+            fieldProperties.type ??
             fieldOptionsEntry?.[0]?.type ??
             fieldOptionsEntry?.[0]?.items?.type,
         options: options.options,
         isEnumField: options.isOptionsField,
-        default: schemaField.default,
-        validation: getFieldValidation(schemaField),
+        default: fieldProperties.default,
+        validation: getFieldValidation(fieldProperties),
         required: !!schema.required?.includes(fieldId),
-        attributes: getFieldAttributes(schemaField),
-        schemaField: schemaField,
+        attributes: getFieldAttributes(fieldProperties),
+        schemaField: fieldProperties,
         columns: 6,
         ...fieldDetailProvider?.[fieldId],
     };

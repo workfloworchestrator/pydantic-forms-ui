@@ -168,26 +168,41 @@ export const getFieldLabelById = (
 /**
  * Field to validation object
  *
- * @param field A field from the 'properties' key of the JSON Schema
+ * @param fieldProperties A field from the 'properties' key of the JSON Schema
  * @returns returns a validation object
  */
 export const getFieldValidation = (
-    field: PydanticFormApiResponsePropertyResolved,
+    fieldProperties: PydanticFormApiResponsePropertyResolved,
 ) => {
     const validation: PydanticFormFieldValidation = {};
-
-    const optionDef = getFieldAllOfAnyOfEntry(field);
-
-    const isNullable = optionDef?.filter((option) => option.type === 'null');
+    const propertyDef = getFieldAllOfAnyOfEntry(fieldProperties);
+    const isNullable = propertyDef?.filter((option) => option.type === 'null');
 
     if (isNullable) {
         validation.isNullable = true;
     }
 
-    for (const option of [field, ...(optionDef ?? [])]) {
-        if (option.maxLength) validation.maxLength = option.maxLength;
-        if (option.minLength) validation.minLength = option.minLength;
-        if (option.pattern) validation.pattern = option.pattern;
+    for (const properties of [fieldProperties, ...(propertyDef ?? [])]) {
+        if (fieldProperties.type === PydanticFormFieldType.STRING) {
+            if (properties.maxLength)
+                validation.maxLength = properties.maxLength;
+            if (properties.minLength)
+                validation.minLength = properties.minLength;
+            if (properties.pattern) validation.pattern = properties.pattern;
+        }
+        if (
+            fieldProperties.type === PydanticFormFieldType.NUMBER ||
+            fieldProperties.type === PydanticFormFieldType.INTEGER
+        ) {
+            if (properties.minimum) validation.minimum = properties.minimum;
+            if (properties.maximum) validation.maximum = properties.maximum;
+            if (properties.exclusiveMinimum)
+                validation.exclusiveMinimum = properties.exclusiveMinimum;
+            if (properties.exclusiveMaximum)
+                validation.exclusiveMaximum = properties.exclusiveMaximum;
+            if (properties.multipleOf)
+                validation.multipleOf = properties.multipleOf;
+        }
     }
 
     return validation;
