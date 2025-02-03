@@ -1,8 +1,3 @@
-/**
- * Pydantic Forms
- *
- * Text component
- */
 import React from 'react';
 
 import type {
@@ -10,6 +5,11 @@ import type {
     PydanticFormFieldElementProps,
 } from 'pydantic-forms';
 
+/**
+ * Pydantic Forms
+ *
+ * Text component
+ */
 export const TextArea: PydanticFormFieldElement = ({
     value,
     onChange,

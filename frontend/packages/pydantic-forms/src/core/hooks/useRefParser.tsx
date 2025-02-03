@@ -15,7 +15,7 @@ import { PydanticFormApiRefResolved } from '@/types';
 export function useRefParser(
     id: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    source: any = {},
+    source: object = {},
     swrConfig?: SWRConfiguration,
 ) {
     return useSWR<PydanticFormApiRefResolved | undefined>(
