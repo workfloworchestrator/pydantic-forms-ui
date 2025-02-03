@@ -115,6 +115,18 @@ export interface PydanticFormFieldSection {
 }
 
 export enum PydanticFormFieldType {
+    // Primitive types https://json-schema.org/understanding-json-schema/reference/type
+    STRING = 'string',
+    INTEGER = 'integer',
+    NUMBER = 'number',
+    ENUM = 'enum',
+    CONST = 'const',
+    BOOLEAN = 'boolean',
+    ARRAY = 'array',
+    OBJECT = 'object',
+    NULL = 'null',
+
+    // Complex types
     OPTGROUP = 'optGroup',
     SKIP = 'skip',
     LONG = 'long',
@@ -122,15 +134,8 @@ export enum PydanticFormFieldType {
     LABEL = 'label',
     SUMMARY = 'summary',
     ACCEPT = 'accept',
-    NULL = 'null',
-
     DATE = 'date',
     DATETIME = 'date-time',
-    OBJECT = 'object',
-    STRING = 'string',
-    ARRAY = 'array',
-    BOOLEAN = 'boolean',
-    NUMBER = 'number',
     TIMESTAMP = 'timestamp',
     LIST = 'list',
     DEFINED_LIST = 'defined-list',
@@ -167,7 +172,8 @@ export interface PydanticFormFieldOption {
     label: string;
 }
 
-export interface PydanticFormApiResponsePropertyResolved {
+export interface PydanticFormApiResponsePropertyResolved
+    extends PydanticFormFieldValidation {
     type: PydanticFormFieldType;
 
     anyOf?: PydanticFormFieldAnyOfResolved[];
@@ -189,11 +195,6 @@ export interface PydanticFormApiResponsePropertyResolved {
         sensitive: boolean;
         password: boolean;
     };
-
-    // validation props
-    maxLength?: number;
-    minLength?: number;
-    pattern?: string;
 }
 
 export interface PydanticFormFieldValidation {
@@ -201,9 +202,15 @@ export interface PydanticFormFieldValidation {
     minLength?: number;
     pattern?: string;
     isNullable?: boolean;
+    minimum?: number;
+    maximum?: number;
+    exclusiveMinimum?: number;
+    exclusiveMaximum?: number;
+    multipleOf?: number;
 }
 
-export interface PydanticFormFieldAttributes {
+export interface PydanticFormFieldAttributes
+    extends PydanticFormFieldValidation {
     disabled?: boolean;
     sensitive?: boolean;
     password?: boolean;
@@ -212,7 +219,8 @@ export interface PydanticFormFieldAttributes {
     };
 }
 
-export interface PydanticFormFieldAnyOfResolved {
+export interface PydanticFormFieldAnyOfResolved
+    extends PydanticFormFieldValidation {
     items?: PydanticFormFieldAnyOfResolvedItems;
     enum?: string[];
     options?: {
@@ -220,21 +228,15 @@ export interface PydanticFormFieldAnyOfResolved {
     };
     format?: 'date' | 'date-time';
     type: PydanticFormListFieldType;
-    maxLength?: number;
-    minLength?: number;
-    pattern?: string;
 }
-
-export interface PydanticFormFieldAnyOfResolvedItems {
+export interface PydanticFormFieldAnyOfResolvedItems
+    extends PydanticFormFieldValidation {
     enum: string[];
     options?: {
         [id: string]: string;
     };
     title: string;
     type: PydanticFormListFieldType;
-    maxLength?: number;
-    minLength?: number;
-    pattern?: string;
 }
 
 export type PydanticFormListFieldType =

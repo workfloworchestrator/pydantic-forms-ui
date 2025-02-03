@@ -175,9 +175,7 @@ export const getFieldValidation = (
     field: PydanticFormApiResponsePropertyResolved,
 ) => {
     const validation: PydanticFormFieldValidation = {};
-
     const optionDef = getFieldAllOfAnyOfEntry(field);
-
     const isNullable = optionDef?.filter((option) => option.type === 'null');
 
     if (isNullable) {
@@ -185,9 +183,23 @@ export const getFieldValidation = (
     }
 
     for (const option of [field, ...(optionDef ?? [])]) {
-        if (option.maxLength) validation.maxLength = option.maxLength;
-        if (option.minLength) validation.minLength = option.minLength;
-        if (option.pattern) validation.pattern = option.pattern;
+        if (field.type === PydanticFormFieldType.STRING) {
+            if (option.maxLength) validation.maxLength = option.maxLength;
+            if (option.minLength) validation.minLength = option.minLength;
+            if (option.pattern) validation.pattern = option.pattern;
+        }
+        if (
+            field.type === PydanticFormFieldType.NUMBER ||
+            field.type === PydanticFormFieldType.INTEGER
+        ) {
+            if (option.minimum) validation.minimum = option.minimum;
+            if (option.maximum) validation.maximum = option.maximum;
+            if (option.exclusiveMinimum)
+                validation.exclusiveMinimum = option.exclusiveMinimum;
+            if (option.exclusiveMaximum)
+                validation.exclusiveMaximum = option.exclusiveMaximum;
+            if (option.multipleOf) validation.multipleOf = option.multipleOf;
+        }
     }
 
     return validation;
