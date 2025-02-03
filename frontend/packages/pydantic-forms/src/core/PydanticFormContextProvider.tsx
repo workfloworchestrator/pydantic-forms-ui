@@ -91,6 +91,7 @@ function PydanticFormContextProvider({
         disableSaveProgress,
         formStructureMutator,
         cancelButton,
+        componentMatcher,
     } = config;
 
     // TODO: Fix this again
@@ -113,6 +114,7 @@ function PydanticFormContextProvider({
     const [isFullFilled, setIsFullFilled] = useState(false);
     const [isSending, setIsSending] = useState(false);
 
+    // TODO: Fix leave confirmation functionality
     const [, setSaveToLeavePageInCurrentState] = useState(false);
 
     // fetch the labels of the form, but can also include the current form values
@@ -146,6 +148,7 @@ function PydanticFormContextProvider({
         formLabels?.labels,
         fieldDetailProvider,
         layoutColumnProvider,
+        componentMatcher,
     );
 
     const formData = formStructureMutator
@@ -153,7 +156,6 @@ function PydanticFormContextProvider({
         : formDataParsed;
 
     const rhfRef = useRef<ReturnType<typeof useForm>>();
-
     // build validation rules based on custom schema
     const resolver = useCustomZodValidation(
         formData,
@@ -395,18 +397,6 @@ function PydanticFormContextProvider({
         hasCardWrapper,
         setSaveToLeavePageInCurrentState,
     };
-
-    if (debugMode) {
-        // eslint-disable-next-line no-console
-        console.log('New context cycle', {
-            resolver,
-            PydanticFormContextState,
-        });
-
-        const fieldWatcher = rhf.watch();
-        // eslint-disable-next-line no-console
-        console.log({ fieldWatcher });
-    }
 
     return (
         <PydanticFormContext.Provider value={PydanticFormContextState}>

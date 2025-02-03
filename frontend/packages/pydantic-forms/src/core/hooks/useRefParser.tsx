@@ -15,7 +15,7 @@ import { PydanticFormApiRefResolved } from '@/types';
 export function useRefParser(
     id: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    source?: any,
+    source: any = {},
     swrConfig?: SWRConfiguration,
 ) {
     return useSWR<PydanticFormApiRefResolved | undefined>(
@@ -24,14 +24,12 @@ export function useRefParser(
 
         // return val
         async ([, source]) => {
-            if (!source) {
-                return undefined;
-            }
-
             try {
-                return $RefParser.dereference(source, {
+                const parsedSchema = $RefParser.dereference(source, {
                     mutateInputSchema: false,
                 }) as unknown as PydanticFormApiRefResolved;
+
+                return parsedSchema;
             } catch (error) {
                 console.error(error);
                 new Error('Could not parse JSON references');
@@ -40,7 +38,6 @@ export function useRefParser(
 
         // swr config
         {
-            fallback: {},
             ...swrConfig,
         },
     );

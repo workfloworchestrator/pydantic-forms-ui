@@ -1,11 +1,14 @@
 'use client';
 
-import { PydanticForm } from 'pydantic-forms';
+import { PydanticForm, PydanticFormFieldType } from 'pydantic-forms';
 import type {
+    PydanticComponentMatcher,
     PydanticFormApiProvider,
     PydanticFormCustomDataProvider,
     PydanticFormLabelProvider,
 } from 'pydantic-forms';
+
+import { TextArea } from '@/fields';
 
 import styles from './page.module.css';
 
@@ -28,11 +31,11 @@ export default function Home() {
         return new Promise((resolve) => {
             resolve({
                 labels: {
-                    name: 'LABEL NAAM',
+                    name: 'LABEL NAME',
                     name_info: 'DESCRIPTION NAAM',
                 },
                 data: {
-                    name: 'VALUE NAAM',
+                    name: 'LABEL VALUE NAAM',
                 },
             });
         });
@@ -54,24 +57,31 @@ export default function Home() {
         <button type="button">Alternative cancel</button>
     );
 
+    const componentMatcher = (
+        currentMatchers: PydanticComponentMatcher[],
+    ): PydanticComponentMatcher[] => {
+        return [
+            {
+                id: 'textarea',
+                Element: TextArea,
+                matcher(field) {
+                    return field.type === PydanticFormFieldType.STRING;
+                },
+            },
+            ...currentMatchers,
+        ];
+    };
+
     return (
         <div className={styles.page}>
-            <h1>Pydantic Form</h1>
+            <h1 style={{ marginBottom: '40px' }}>Pydantic Form</h1>
 
             <PydanticForm
                 id="theForm"
-                title="The form title"
-                sendLabel="Send label"
+                title="Example form"
                 successNotice="Custom success notice"
-                onSuccess={() => {
-                    // console.log(fieldValues, summaryData, response);
-                    alert('Form submitted successfully');
-                }}
                 onCancel={() => {
                     alert('Form cancelled');
-                }}
-                onChange={() => {
-                    // console.log('onChange', fieldValues);
                 }}
                 config={{
                     apiProvider: pydanticFormApiProvider,
@@ -79,13 +89,8 @@ export default function Home() {
                     customDataProvider: pydanticCustomDataProvider,
                     resetButtonAlternative: ResetButtonAlternative(),
                     cancelButton: CancelButtonAlternative(),
-                    allowUntouchedSubmit: true,
-                    onFieldChangeHandler: () => {
-                        // console.log('calling onFieldChangeHandler', field);
-                    },
+                    componentMatcher: componentMatcher,
                 }}
-                headerComponent={<div>HEADER COMPONENT</div>}
-                footerComponent={<div>FOOTER COMPONENT</div>}
             />
         </div>
     );

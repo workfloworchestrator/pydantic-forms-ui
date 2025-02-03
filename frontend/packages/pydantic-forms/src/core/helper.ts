@@ -5,13 +5,13 @@
  */
 import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
-import fieldsConfig from '@/components/config';
 import {
     PydanticFormApiResponse,
     PydanticFormApiResponsePropertyResolved,
     PydanticFormData,
     PydanticFormField,
     PydanticFormFieldAttributes,
+    PydanticFormFieldElementProps,
     PydanticFormFieldFormat,
     PydanticFormFieldOption,
     PydanticFormFieldSection,
@@ -289,19 +289,6 @@ export const getFormValuesFromFieldOrLabels = (
 };
 
 /**
- * Match a FormField config with an actual field from the config
- */
-export const matchComponentWithField = function (field: PydanticFormField) {
-    return fieldsConfig.find((possibleField) => {
-        if (!possibleField.matcher) {
-            return true;
-        }
-
-        return possibleField.matcher(field);
-    });
-};
-
-/**
  * Finds and returns the attributes in the schemafield
  */
 export const getFieldAttributes = function (
@@ -340,7 +327,7 @@ export const getFieldAttributes = function (
  */
 export function addCustomFieldToPydanticForm(
     formData: PydanticFormData | false,
-    NewElement: (props?: unknown) => JSX.Element,
+    NewElement: (props?: PydanticFormFieldElementProps) => JSX.Element,
     fieldId: string,
     anchorFieldId: string,
     extraOptions?: Partial<PydanticFormField>,

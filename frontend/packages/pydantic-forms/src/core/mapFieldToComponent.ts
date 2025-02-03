@@ -6,18 +6,22 @@
  *
  * Since the actual field definition is kinda scattered in the schema, it is a bit ugly imo
  */
+import { TextField } from '@/components';
+import defaultComponentMatchers from '@/components/defaultComponentMatchers';
+import { zodValidationPresets } from '@/components/zodValidations';
 import {
     getFieldAllOfAnyOfEntry,
     getFieldAttributes,
     getFieldOptions,
     getFieldValidation,
-    matchComponentWithField,
 } from '@/core/helper';
 import {
+    PydanticComponentMatcher,
     PydanticFormApiRefResolved,
     PydanticFormField,
     PydanticFormFieldDetailProvider,
     PydanticFormLabels,
+    PydanticFormsContextConfig,
 } from '@/types';
 
 /**
@@ -30,14 +34,16 @@ import {
  * @param formLabels An object with formLabels for the translation of field names
  * @returns A better usable field to be used in components
  */
-export const mapToUsableField = (
+export const mapFieldToComponent = (
     fieldId: string,
     schema: PydanticFormApiRefResolved,
     formLabels: PydanticFormLabels = {},
     fieldDetailProvider?: PydanticFormFieldDetailProvider,
+    componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ): PydanticFormField => {
-    const schemaField = schema.properties[fieldId];
+    const matcher = getComponentMatcher(componentMatcher);
 
+    const schemaField = schema.properties[fieldId];
     const options = getFieldOptions(schemaField);
 
     const fieldOptionsEntry = getFieldAllOfAnyOfEntry(schemaField);
@@ -62,15 +68,35 @@ export const mapToUsableField = (
         ...fieldDetailProvider?.[fieldId],
     };
 
-    // match it with an actual component
-    const matchedComponent = matchComponentWithField(field);
-
-    if (matchedComponent?.Component) {
-        field.FormElement = matchedComponent.Component.Element;
-        field.validator = matchedComponent.Component?.validator;
-
-        field.matchedFieldResult = matchedComponent;
-    }
+    const matchedComponent = matcher(field);
+    field.FormElement = matchedComponent.Element;
+    field.validator = matchedComponent.validator;
 
     return field;
+};
+
+export const getComponentMatcher = (
+    componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
+) => {
+    const matchers = componentMatcher
+        ? componentMatcher(defaultComponentMatchers)
+        : defaultComponentMatchers;
+
+    const matcher = (field: PydanticFormField): PydanticComponentMatcher => {
+        const matchedComponent = matchers.find(({ matcher }) => {
+            return matcher(field);
+        });
+
+        if (matchedComponent) return matchedComponent;
+
+        // Defaults to textField when there are no matches
+        return {
+            id: 'textfield',
+            Element: TextField,
+            matcher: () => true,
+            validator: zodValidationPresets.string,
+        };
+    };
+
+    return matcher;
 };

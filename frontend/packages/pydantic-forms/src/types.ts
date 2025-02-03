@@ -1,6 +1,10 @@
 import React from 'react';
 import type { Dispatch, FormEventHandler, SetStateAction } from 'react';
-import type { FieldValues, useForm } from 'react-hook-form';
+import type {
+    ControllerRenderProps,
+    FieldValues,
+    useForm,
+} from 'react-hook-form';
 
 import { z } from 'zod';
 
@@ -39,6 +43,13 @@ export enum PydanticFormLayout {
     TWO_COL = 'two-col',
     ONE_COL = 'one-col',
 }
+
+export type PydanticFormFieldElementProps = ControllerRenderProps & {
+    pydanticFormField: PydanticFormField;
+};
+
+export type PydanticFormFieldElement =
+    React.JSXElementConstructor<PydanticFormFieldElementProps>;
 
 export interface PydanticFormContextProps {
     isLoading: boolean;
@@ -98,8 +109,8 @@ export interface PydanticFormField {
     validation: PydanticFormFieldValidation;
     attributes: PydanticFormFieldAttributes;
     validator?: PydanticFormZodValidationFn;
-    FormElement?: PydanticFormElement;
-    matchedFieldResult?: PydanticFormFieldConfig;
+    FormElement?: PydanticComponentMatcher['Element'];
+    matchedComponentResult?: PydanticComponentMatcher;
 }
 
 export interface PydanticFormFieldSection {
@@ -256,25 +267,16 @@ export interface PydanticFormApiValidationError {
     url: string; //"https://errors.pydantic.dev/2.4/v/extra_forbidden"
 }
 
-export interface PydanticFormFieldConfig {
+export interface PydanticComponentMatcher {
     id: string;
-    Component: PydanticFormComponent;
-    matcher?: (field: PydanticFormField) => boolean;
-    preventColRender?: boolean;
-}
-export interface PydanticFormComponent {
-    Element: PydanticFormElement;
+    Element: PydanticFormFieldElement;
     validator?: PydanticFormZodValidationFn;
+    matcher: (field: PydanticFormField) => boolean;
 }
-
-export type PydanticFormElement = (
-    props: PydanticFormInputFieldProps,
-) => JSX.Element;
 
 export interface PydanticFormInputFieldProps {
     field: PydanticFormField;
 }
-
 export type PydanticFormZodValidationFn = (
     field: PydanticFormField,
     rhf?: ReturnType<typeof useForm>,
@@ -325,7 +327,12 @@ export interface PydanticFormsContextConfig {
     disableSaveProgress?: boolean;
 
     footerCtaPrimaryVariant?: string;
+
+    componentMatcher?: (
+        currentMatchers: PydanticComponentMatcher[],
+    ) => PydanticComponentMatcher[];
 }
+
 export type PydanticFormCustomDataProvider = () => Promise<PydanticFormLabels>;
 
 export interface PydanticFormLabels {
