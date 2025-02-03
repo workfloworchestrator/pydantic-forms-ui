@@ -10,7 +10,6 @@
  */
 import { useMemo } from 'react';
 
-import { getFieldBySection } from '@/core/helper';
 import type {
     PydanticFormApiRefResolved,
     PydanticFormData,
@@ -75,7 +74,6 @@ export function usePydanticFormParser(
             description: schema.description,
             state: PydanticFormState.NEW,
             fields,
-            sections: getFieldBySection(fields),
         };
     }, [
         schema,

@@ -36,7 +36,6 @@ import useCustomZodValidation from '@/core/hooks/useCustomZodValidator';
 import { useLabelProvider } from '@/core/hooks/useLabelProvider';
 import {
     PydanticFormContextProps,
-    PydanticFormData,
     PydanticFormInitialContextProps,
     PydanticFormLayout,
     PydanticFormValidationErrorDetails,
@@ -198,47 +197,12 @@ function PydanticFormContextProvider({
             return;
         }
         const values = rhf.getValues();
-        const pydanticFormData = formData as PydanticFormData;
-
-        const summaryData = pydanticFormData.sections?.map((section) => {
-            return {
-                ...section,
-                fields: section.fields.reduce((acc, fieldId) => {
-                    const field = pydanticFormData?.fields.find(({ id }) => {
-                        const i = id as string;
-                        const i2 = fieldId.id as string;
-                        return i === i2;
-                    });
-                    let val = values[fieldId.id];
-
-                    // If array of enums
-                    if (Array.isArray(val)) {
-                        val = values[fieldId.id].map((v: string) => {
-                            return field?.options.find(
-                                ({ value }) => value === v,
-                            )?.label;
-                        });
-                    }
-
-                    acc[fieldId.id] = {
-                        label: field?.title ?? '',
-                        format: field?.format,
-                        value:
-                            field?.options.find(({ value }) => value === val)
-                                ?.label ?? val,
-                        options: field?.options,
-                    };
-
-                    return acc;
-                }, {} as Record<string, object>),
-            };
-        });
 
         if (skipSuccessNotice) {
-            onSuccess(values, summaryData, apiResponse || {});
+            onSuccess(values, apiResponse || {});
         } else {
             setTimeout(() => {
-                onSuccess?.(values, summaryData, apiResponse || {});
+                onSuccess?.(values, apiResponse || {});
             }, 1500); // Delay to allow notice to show first
         }
     }, [

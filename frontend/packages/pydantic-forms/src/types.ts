@@ -24,11 +24,7 @@ export interface PydanticFormInitialContextProps {
     metaData?: PydanticFormMetaData;
     formLayout?: PydanticFormLayout;
     successNotice?: React.ReactNode;
-    onSuccess?: (
-        fieldValues: FieldValues,
-        summaryData: object,
-        response: object,
-    ) => void;
+    onSuccess?: (fieldValues: FieldValues, response: object) => void;
     onCancel?: () => void;
     onChange?: (fieldValues: FieldValues) => void;
     children: (props: PydanticFormContextProps) => React.ReactNode;
@@ -84,7 +80,6 @@ export interface PydanticFormData {
     description: string;
     state: PydanticFormState;
     fields: PydanticFormField[];
-    sections: PydanticFormFieldSection[];
 }
 
 export enum PydanticFormState {
@@ -331,7 +326,13 @@ export interface PydanticFormsContextConfig {
     componentMatcher?: (
         currentMatchers: PydanticComponentMatcher[],
     ) => PydanticComponentMatcher[];
+
+    formRenderer?: FormRenderer;
 }
+
+export type FormRenderer = React.JSXElementConstructor<{
+    pydanticFormData: PydanticFormData;
+}>;
 
 export type PydanticFormCustomDataProvider = () => Promise<PydanticFormLabels>;
 
