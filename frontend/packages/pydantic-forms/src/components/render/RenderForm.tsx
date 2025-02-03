@@ -58,10 +58,10 @@ const RenderForm = ({
             css={{
                 border: 'thin solid lightgrey',
                 width: '500px',
-                height: '250px',
+                height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                padding: '10px',
+                padding: '5px',
             }}
         >
             {title !== false && <h2>{title ?? formData.title}</h2>}

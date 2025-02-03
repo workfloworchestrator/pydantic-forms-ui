@@ -1,6 +1,16 @@
 from dataclasses import dataclass
 from typing import Annotated, ClassVar, Iterator
-from annotated_types import SLOTS, BaseMetadata, GroupedMetadata
+from annotated_types import (
+    SLOTS,
+    BaseMetadata,
+    GroupedMetadata,
+    Ge,
+    Le,
+    MultipleOf,
+    Predicate,
+    doc,
+)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -11,6 +21,7 @@ from pydantic_forms.exception_handlers.fastapi import form_error_handler
 from pydantic_forms.exceptions import FormException
 from pydantic_forms.core import FormPage as PydanticFormsFormPage
 from pydantic_forms.types import JSON
+from pydantic_forms.validators import LongText
 
 
 class FormPage(PydanticFormsFormPage):
@@ -46,14 +57,31 @@ class ExtraData(GroupedMetadata):
         yield Field(json_schema_extra=self.props)
 
 
+def valid_asn_rfc7300(val: int) -> bool:
+    if val == 65535:
+        raise ValueError("RFC 7300 doesn't allow 65535 as ASN value")
+    return True
+
+
+Asn = Annotated[
+    int,
+    Ge(1),
+    Le(10),
+    MultipleOf(multiple_of=3),
+    Predicate(valid_asn_rfc7300),
+    doc("Autonomous System Number."),
+]
+
+
 @app.post("/form")
 async def form(form_data: list[dict] = []):
     def form_generator(state: State):
         class TestForm(FormPage):
             model_config = ConfigDict(title="Form Title")
 
-            name: Annotated[str, Field(min_length=3)]
-            # input: Annotated[str, ExtraData(props={"prop1": "val", "prop2": "val"})]
+            asn: Asn
+            text: Annotated[str, Field(min_length=3, max_length=10)]
+            textArea: LongText
 
         form_data_1 = yield TestForm
 

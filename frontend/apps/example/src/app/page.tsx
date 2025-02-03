@@ -60,6 +60,7 @@ export default function Home() {
     const componentMatcher = (
         currentMatchers: PydanticComponentMatcher[],
     ): PydanticComponentMatcher[] => {
+        return currentMatchers;
         return [
             {
                 id: 'textarea',
@@ -74,7 +75,7 @@ export default function Home() {
 
     return (
         <div className={styles.page}>
-            <h1 style={{ marginBottom: '40px' }}>Pydantic Form</h1>
+            <h1 style={{ marginBottom: '20px' }}>Pydantic Form</h1>
 
             <PydanticForm
                 id="theForm"
