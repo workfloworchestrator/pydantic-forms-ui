@@ -55,13 +55,13 @@ const RenderForm = ({
         <form
             action={''}
             onSubmit={submitForm}
-            css={{
+            style={{
                 border: 'thin solid lightgrey',
                 width: '500px',
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                padding: '5px',
+                padding: '16px',
             }}
         >
             {title !== false && <h2>{title ?? formData.title}</h2>}
@@ -70,7 +70,7 @@ const RenderForm = ({
 
             <RenderFormErrors />
 
-            <div css={{ padding: '12px', height: '250px' }}>
+            <div>
                 <Renderer pydanticFormData={formData} />
             </div>
 

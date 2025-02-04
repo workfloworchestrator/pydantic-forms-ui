@@ -3,7 +3,7 @@
  *
  * We will search for the first field that returns a positive match
  */
-import { IntegerField, TextAreaField } from '@/components/fields';
+import { IntegerField, LabelField, TextAreaField } from '@/components/fields';
 import {
     PydanticComponentMatcher,
     PydanticFormFieldFormat,
@@ -12,11 +12,13 @@ import {
 
 import { zodValidationPresets } from './zodValidations';
 
-// no matchers, it defaults to Text field in the mapToComponent function
 const defaultComponentMatchers: PydanticComponentMatcher[] = [
     {
         id: 'integerfield',
-        Element: IntegerField,
+        ElementMatch: {
+            Element: IntegerField,
+            isControlledElement: true,
+        },
         matcher(field) {
             return field.type === PydanticFormFieldType.INTEGER;
         },
@@ -24,7 +26,10 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
     },
     {
         id: 'textareafield',
-        Element: TextAreaField,
+        ElementMatch: {
+            Element: TextAreaField,
+            isControlledElement: true,
+        },
         matcher(field) {
             return (
                 field.type === PydanticFormFieldType.STRING &&
@@ -33,6 +38,19 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         },
         validator: zodValidationPresets.string,
     },
+    {
+        id: 'label',
+        ElementMatch: {
+            Element: LabelField,
+            isControlledElement: false,
+        },
+        matcher(field) {
+            return (
+                field.type === PydanticFormFieldType.STRING &&
+                field.format === PydanticFormFieldFormat.LABEL
+            );
+        },
+    },
 ];
-
+// If nothing  matches, it defaults to Text field in the mapToComponent function
 export default defaultComponentMatchers;

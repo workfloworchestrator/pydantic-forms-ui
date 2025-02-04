@@ -40,12 +40,18 @@ export enum PydanticFormLayout {
     ONE_COL = 'one-col',
 }
 
-export type PydanticFormFieldElementProps = ControllerRenderProps & {
+export type PydanticFormElementProp = {
     pydanticFormField: PydanticFormField;
 };
 
-export type PydanticFormFieldElement =
-    React.JSXElementConstructor<PydanticFormFieldElementProps>;
+export type PydanticFormElement =
+    React.JSXElementConstructor<PydanticFormElementProp>;
+
+export type PydanticFormControlledElementProps = ControllerRenderProps &
+    PydanticFormElementProp;
+
+export type PydanticFormControlledElement =
+    React.JSXElementConstructor<PydanticFormControlledElementProps>;
 
 export interface PydanticFormContextProps {
     isLoading: boolean;
@@ -103,9 +109,7 @@ export interface PydanticFormField {
     schemaField: PydanticFormApiResponsePropertyResolved;
     validation: PydanticFormFieldValidation;
     attributes: PydanticFormFieldAttributes;
-    validator?: PydanticFormZodValidationFn;
-    FormElement?: PydanticComponentMatcher['Element'];
-    matchedComponentResult?: PydanticComponentMatcher;
+    componentMatch?: PydanticComponentMatcher;
 }
 
 export interface PydanticFormFieldSection {
@@ -131,7 +135,7 @@ export enum PydanticFormFieldType {
     SKIP = 'skip',
     LONG = 'long',
     HIDDEN = 'hidden',
-    LABEL = 'label',
+
     SUMMARY = 'summary',
     ACCEPT = 'accept',
     DATE = 'date',
@@ -161,7 +165,7 @@ export enum PydanticFormFieldFormat {
     DATEPICKER = 'datepicker',
     NUMBER = 'number',
     LIST = 'list',
-
+    LABEL = 'label',
     LONG = 'long',
     FILE = 'file',
     MARKDOWN = 'markdown',
@@ -266,10 +270,20 @@ export interface PydanticFormApiValidationError {
 
 export interface PydanticComponentMatcher {
     id: string;
-    Element: PydanticFormFieldElement;
+    ElementMatch: ElementMatch | ControlledElementMatch;
     validator?: PydanticFormZodValidationFn;
     matcher: (field: PydanticFormField) => boolean;
 }
+
+type ElementMatch = {
+    Element: PydanticFormElement;
+    isControlledElement: false;
+};
+
+type ControlledElementMatch = {
+    Element: PydanticFormControlledElement;
+    isControlledElement: true;
+};
 
 export interface PydanticFormInputFieldProps {
     field: PydanticFormField;

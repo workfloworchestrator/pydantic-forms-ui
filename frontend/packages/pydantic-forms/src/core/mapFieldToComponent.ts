@@ -67,10 +67,7 @@ export const mapFieldToComponent = (
         columns: 6,
         ...fieldDetailProvider?.[fieldId],
     };
-
-    const matchedComponent = matcher(field);
-    field.FormElement = matchedComponent.Element;
-    field.validator = matchedComponent.validator;
+    field.componentMatch = matcher(field);
 
     return field;
 };
@@ -92,7 +89,10 @@ export const getComponentMatcher = (
         // Defaults to textField when there are no matches
         return {
             id: 'textfield',
-            Element: TextField,
+            ElementMatch: {
+                Element: TextField,
+                isControlledElement: true,
+            },
             matcher: () => true,
             validator: zodValidationPresets.string,
         };

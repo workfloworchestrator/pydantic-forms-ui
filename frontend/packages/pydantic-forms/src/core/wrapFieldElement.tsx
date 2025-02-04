@@ -2,10 +2,10 @@ import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import { FieldWrap } from '@/components/fields';
-import type { PydanticFormField, PydanticFormFieldElement } from '@/types';
+import type { PydanticFormControlledElement, PydanticFormField } from '@/types';
 
 export const wrapFieldElement = (
-    PydanticFormFieldElement: PydanticFormFieldElement,
+    PydanticFormControlledElement: PydanticFormControlledElement,
     pydanticFormField: PydanticFormField,
     rhf: ReturnType<typeof useForm>,
 ) => {
@@ -30,7 +30,7 @@ export const wrapFieldElement = (
                         pydanticFormField={pydanticFormField}
                         fieldState={fieldState}
                     >
-                        <PydanticFormFieldElement
+                        <PydanticFormControlledElement
                             onChange={onChangeHandle}
                             onBlur={onBlur}
                             value={value || ''}

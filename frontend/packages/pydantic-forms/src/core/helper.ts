@@ -11,14 +11,11 @@ import {
     PydanticFormData,
     PydanticFormField,
     PydanticFormFieldAttributes,
-    PydanticFormFieldElementProps,
-    PydanticFormFieldFormat,
     PydanticFormFieldOption,
     PydanticFormFieldSection,
     PydanticFormFieldType,
     PydanticFormFieldValidation,
 } from '@/types';
-import { insertItemAtIndex } from '@/utils';
 
 /**
  * Error object formatting
@@ -329,63 +326,6 @@ export const getFieldAttributes = function (
 
     return attributes;
 };
-
-/**
- * This method can be used to add custom extra fields to a pydanticForm instance.
- * This can be used in the formStructureMutator function.
- *
- * @param formData The formdata object
- * @param fieldElement The new element to be shown
- * @param fieldId The ID for the new element, should be unique and not conflict with existing fields
- * @param anchorFieldId The ID of the field where we should insert this new field
- * @returns formData
- */
-export function addCustomFieldToPydanticForm(
-    formData: PydanticFormData | false,
-    NewElement: (props?: PydanticFormFieldElementProps) => JSX.Element,
-    fieldId: string,
-    anchorFieldId: string,
-    extraOptions?: Partial<PydanticFormField>,
-) {
-    if (!formData || !formData.fields.length) {
-        return false;
-    }
-
-    const alreadyAdded = formData.fields.find((field) => field.id === fieldId);
-
-    if (alreadyAdded) {
-        return formData;
-    }
-
-    const anchorIndex = formData.fields.findIndex(
-        (item) => item.id === anchorFieldId,
-    );
-
-    const customField: PydanticFormField = {
-        id: fieldId,
-        title: fieldId,
-        description: fieldId,
-        type: PydanticFormFieldType.STRING,
-        format: PydanticFormFieldFormat.BOOLFIELD,
-        options: [],
-        columns: 6,
-        required: false,
-        isEnumField: false,
-        schemaField: {} as PydanticFormApiResponsePropertyResolved,
-        validation: {},
-        attributes: {},
-        FormElement: NewElement,
-        ...extraOptions,
-    };
-
-    formData.fields = insertItemAtIndex(
-        formData.fields,
-        customField,
-        anchorIndex,
-    );
-
-    return formData;
-}
 
 /**
  * This function can be used as the onValueChange handler in a react hook form form element component.

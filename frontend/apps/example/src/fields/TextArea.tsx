@@ -1,19 +1,19 @@
-import React from 'react';
-
-import type {
-    PydanticFormFieldElement,
-    PydanticFormFieldElementProps,
-} from 'pydantic-forms';
-
 /**
  * Pydantic Forms
  *
  * Text component
  */
-export const TextArea: PydanticFormFieldElement = ({
+import React from 'react';
+
+import type {
+    PydanticFormControlledElement,
+    PydanticFormControlledElementProps,
+} from 'pydantic-forms';
+
+export const TextArea: PydanticFormControlledElement = ({
     value,
     onChange,
-}: PydanticFormFieldElementProps) => {
+}: PydanticFormControlledElementProps) => {
     return (
         <textarea
             defaultValue={value}

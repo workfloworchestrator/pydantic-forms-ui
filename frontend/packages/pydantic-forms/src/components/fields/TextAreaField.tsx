@@ -1,13 +1,13 @@
 import React from 'react';
 
-import type { PydanticFormFieldElementProps } from '@/types';
+import type { PydanticFormControlledElementProps } from '@/types';
 
 export const TextAreaField = ({
     value,
     onChange,
     onBlur,
     disabled,
-}: PydanticFormFieldElementProps) => {
+}: PydanticFormControlledElementProps) => {
     return (
         <textarea
             onChange={(e) => onChange(e.target.value)}
