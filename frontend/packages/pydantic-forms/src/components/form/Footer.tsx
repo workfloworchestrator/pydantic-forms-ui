@@ -31,7 +31,7 @@ const Footer = () => {
     const hasErrors = !!Object.keys(rhf.formState.errors).length;
 
     return (
-        <div css={{ height: '200px' }}>
+        <div style={{ height: '200px' }}>
             {(!!footerComponent || (showErrors && hasErrors)) && (
                 <div>
                     {footerComponent}
@@ -40,7 +40,7 @@ const Footer = () => {
                 </div>
             )}
             <div
-                css={{
+                style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     margin: '8px',
@@ -54,7 +54,7 @@ const Footer = () => {
                             resetForm(e);
                         }}
                         disabled={!rhf.formState.isDirty}
-                        css={{ padding: '4px' }}
+                        style={{ padding: '4px' }}
                     >
                         Reset
                     </button>

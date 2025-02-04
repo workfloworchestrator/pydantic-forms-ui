@@ -25,5 +25,8 @@
     "workspaces": [
         "apps/*",
         "packages/*"
-    ]
+    ],
+    "dependencies": {
+        "tsc": "^2.0.4"
+    }
 }

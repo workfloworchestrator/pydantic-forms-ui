@@ -21,7 +21,14 @@ from pydantic_forms.exception_handlers.fastapi import form_error_handler
 from pydantic_forms.exceptions import FormException
 from pydantic_forms.core import FormPage as PydanticFormsFormPage
 from pydantic_forms.types import JSON
-from pydantic_forms.validators import LongText
+from pydantic_forms.validators import LongText, Label
+
+# Choice,
+# CustomerId,
+# DisplaySubscription,
+# ListOfOne,
+# ListOfTwo,
+# migration_summary
 
 
 class FormPage(PydanticFormsFormPage):
@@ -80,8 +87,9 @@ async def form(form_data: list[dict] = []):
             model_config = ConfigDict(title="Form Title")
 
             asn: Asn
-            text: Annotated[str, Field(min_length=3, max_length=10)]
+            text: Annotated[str, Field(min_length=3, max_length=10)] = "Default text"
             textArea: LongText
+            label: Label = "Label"
 
         form_data_1 = yield TestForm
 
