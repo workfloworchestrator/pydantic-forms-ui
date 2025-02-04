@@ -60,11 +60,14 @@ export default function Home() {
     const componentMatcher = (
         currentMatchers: PydanticComponentMatcher[],
     ): PydanticComponentMatcher[] => {
-        return currentMatchers;
+        // return currentMatchers;
         return [
             {
                 id: 'textarea',
-                Element: TextArea,
+                ElementMatch: {
+                    Element: TextArea,
+                    isControlledElement: true,
+                },
                 matcher(field) {
                     return field.type === PydanticFormFieldType.STRING;
                 },
