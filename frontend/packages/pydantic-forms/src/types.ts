@@ -169,6 +169,7 @@ export enum PydanticFormFieldFormat {
     LONG = 'long',
     FILE = 'file',
     MARKDOWN = 'markdown',
+    DIVIDER = 'divider',
 }
 
 export interface PydanticFormFieldOption {

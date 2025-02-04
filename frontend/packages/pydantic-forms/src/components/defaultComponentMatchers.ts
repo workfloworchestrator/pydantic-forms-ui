@@ -3,7 +3,12 @@
  *
  * We will search for the first field that returns a positive match
  */
-import { IntegerField, LabelField, TextAreaField } from '@/components/fields';
+import {
+    DividerField,
+    IntegerField,
+    LabelField,
+    TextAreaField,
+} from '@/components/fields';
 import {
     PydanticComponentMatcher,
     PydanticFormFieldFormat,
@@ -48,6 +53,19 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             return (
                 field.type === PydanticFormFieldType.STRING &&
                 field.format === PydanticFormFieldFormat.LABEL
+            );
+        },
+    },
+    {
+        id: 'divider',
+        ElementMatch: {
+            Element: DividerField,
+            isControlledElement: false,
+        },
+        matcher(field) {
+            return (
+                field.type === PydanticFormFieldType.STRING &&
+                field.format === PydanticFormFieldFormat.DIVIDER
             );
         },
     },

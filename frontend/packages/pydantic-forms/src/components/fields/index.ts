@@ -4,3 +4,4 @@ export * from './TextField';
 export * from './IntegerField';
 export * from './TextAreaField';
 export * from './LabelField';
+export * from './DividerField';
