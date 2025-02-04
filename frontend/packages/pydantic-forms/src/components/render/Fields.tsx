@@ -34,6 +34,7 @@ export function RenderFields({ fields }: RenderFieldsProps) {
             return (
                 <ElementMatch.Element
                     pydanticFormField={field}
+                    rhf={rhf}
                     key={field.id}
                 />
             );

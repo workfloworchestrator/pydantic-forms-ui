@@ -38,6 +38,7 @@ export const wrapFieldElement = (
                             name={name}
                             ref={ref}
                             pydanticFormField={pydanticFormField}
+                            rhf={rhf}
                         />
                     </FieldWrap>
                 );

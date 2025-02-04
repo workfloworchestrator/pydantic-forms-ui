@@ -1,8 +1,8 @@
 import React from 'react';
 
-import type { PydanticFormElementProp } from '@/types';
+import type { PydanticFormElementProps } from '@/types';
 
-export const LabelField = ({ pydanticFormField }: PydanticFormElementProp) => {
+export const LabelField = ({ pydanticFormField }: PydanticFormElementProps) => {
     return (
         <div>
             <label>

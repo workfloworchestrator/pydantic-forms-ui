@@ -21,7 +21,7 @@ from pydantic_forms.exception_handlers.fastapi import form_error_handler
 from pydantic_forms.exceptions import FormException
 from pydantic_forms.core import FormPage as PydanticFormsFormPage
 from pydantic_forms.types import JSON
-from pydantic_forms.validators import LongText, Label, Divider
+from pydantic_forms.validators import LongText, Label, Divider, Hidden
 
 # Choice,
 # CustomerId,
@@ -91,6 +91,7 @@ async def form(form_data: list[dict] = []):
             textArea: LongText
             divider: Divider
             label: Label = "Label"
+            hidden: Hidden = "Hidden"
 
         form_data_1 = yield TestForm
 

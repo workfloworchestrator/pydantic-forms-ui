@@ -5,6 +5,7 @@
  */
 import {
     DividerField,
+    HiddenField,
     IntegerField,
     LabelField,
     TextAreaField,
@@ -66,6 +67,19 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             return (
                 field.type === PydanticFormFieldType.STRING &&
                 field.format === PydanticFormFieldFormat.DIVIDER
+            );
+        },
+    },
+    {
+        id: 'hidden',
+        ElementMatch: {
+            Element: HiddenField,
+            isControlledElement: false,
+        },
+        matcher(field) {
+            return (
+                field.type === PydanticFormFieldType.STRING &&
+                field.format === PydanticFormFieldFormat.HIDDEN
             );
         },
     },

@@ -40,15 +40,16 @@ export enum PydanticFormLayout {
     ONE_COL = 'one-col',
 }
 
-export type PydanticFormElementProp = {
+export type PydanticFormElementProps = {
     pydanticFormField: PydanticFormField;
+    rhf: ReturnType<typeof useForm>;
 };
 
 export type PydanticFormElement =
-    React.JSXElementConstructor<PydanticFormElementProp>;
+    React.JSXElementConstructor<PydanticFormElementProps>;
 
 export type PydanticFormControlledElementProps = ControllerRenderProps &
-    PydanticFormElementProp;
+    PydanticFormElementProps;
 
 export type PydanticFormControlledElement =
     React.JSXElementConstructor<PydanticFormControlledElementProps>;

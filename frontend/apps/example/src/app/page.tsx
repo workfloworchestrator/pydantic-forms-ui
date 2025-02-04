@@ -60,8 +60,9 @@ export default function Home() {
     const componentMatcher = (
         currentMatchers: PydanticComponentMatcher[],
     ): PydanticComponentMatcher[] => {
-        // return currentMatchers;
+        return currentMatchers;
         return [
+            ...currentMatchers,
             {
                 id: 'textarea',
                 ElementMatch: {
@@ -72,7 +73,6 @@ export default function Home() {
                     return field.type === PydanticFormFieldType.STRING;
                 },
             },
-            ...currentMatchers,
         ];
     };
 
