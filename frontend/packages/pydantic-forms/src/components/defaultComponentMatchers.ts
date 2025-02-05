@@ -5,6 +5,7 @@
  */
 import {
     DividerField,
+    DropdownField,
     HiddenField,
     IntegerField,
     LabelField,
@@ -80,6 +81,20 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             return (
                 field.type === PydanticFormFieldType.STRING &&
                 field.format === PydanticFormFieldFormat.HIDDEN
+            );
+        },
+    },
+    {
+        id: 'dropdown',
+        ElementMatch: {
+            Element: DropdownField,
+            isControlledElement: true,
+        },
+        matcher(field) {
+            // We are looking for a single value from a set list of options. Use a dropdown.
+            return (
+                field.type === PydanticFormFieldType.STRING &&
+                field.options.length > 0
             );
         },
     },
