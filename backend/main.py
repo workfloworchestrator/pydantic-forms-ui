@@ -64,19 +64,14 @@ class ExtraData(GroupedMetadata):
         yield Field(json_schema_extra=self.props)
 
 
-def valid_asn_rfc7300(val: int) -> bool:
-    if val == 65535:
-        raise ValueError("RFC 7300 doesn't allow 65535 as ASN value")
+def example_backend_validation(val: int) -> bool:
+    if val == 9:
+        raise ValueError("Value cannot be 9")
     return True
 
 
-Asn = Annotated[
-    int,
-    Ge(1),
-    Le(10),
-    MultipleOf(multiple_of=3),
-    Predicate(valid_asn_rfc7300),
-    doc("Autonomous System Number."),
+NumberExample = Annotated[
+    int, Ge(1), Le(10), MultipleOf(multiple_of=3), Predicate(example_backend_validation)
 ]
 
 
@@ -86,8 +81,8 @@ async def form(form_data: list[dict] = []):
         class TestForm(FormPage):
             model_config = ConfigDict(title="Form Title")
 
-            asn: Asn
-            text: Annotated[str, Field(min_length=3, max_length=10)] = "Default text"
+            number: NumberExample
+            text: Annotated[str, Field(min_length=3, max_length=12)] = "Default text"
             textArea: LongText
             divider: Divider
             label: Label = "Label"
