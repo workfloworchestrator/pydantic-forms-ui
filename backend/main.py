@@ -1,6 +1,16 @@
 from dataclasses import dataclass
 from typing import Annotated, ClassVar, Iterator
-from annotated_types import SLOTS, BaseMetadata, GroupedMetadata
+from annotated_types import (
+    SLOTS,
+    BaseMetadata,
+    GroupedMetadata,
+    Ge,
+    Le,
+    MultipleOf,
+    Predicate,
+    doc,
+)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -11,6 +21,14 @@ from pydantic_forms.exception_handlers.fastapi import form_error_handler
 from pydantic_forms.exceptions import FormException
 from pydantic_forms.core import FormPage as PydanticFormsFormPage
 from pydantic_forms.types import JSON
+from pydantic_forms.validators import LongText, Label, Divider, Hidden
+
+# Choice,
+# CustomerId,
+# DisplaySubscription,
+# ListOfOne,
+# ListOfTwo,
+# migration_summary
 
 
 class FormPage(PydanticFormsFormPage):
@@ -46,14 +64,29 @@ class ExtraData(GroupedMetadata):
         yield Field(json_schema_extra=self.props)
 
 
+def example_backend_validation(val: int) -> bool:
+    if val == 9:
+        raise ValueError("Value cannot be 9")
+    return True
+
+
+NumberExample = Annotated[
+    int, Ge(1), Le(10), MultipleOf(multiple_of=3), Predicate(example_backend_validation)
+]
+
+
 @app.post("/form")
 async def form(form_data: list[dict] = []):
     def form_generator(state: State):
         class TestForm(FormPage):
             model_config = ConfigDict(title="Form Title")
 
-            name: Annotated[str, Field(min_length=3)]
-            # input: Annotated[str, ExtraData(props={"prop1": "val", "prop2": "val"})]
+            number: NumberExample
+            text: Annotated[str, Field(min_length=3, max_length=12)] = "Default text"
+            textArea: LongText
+            divider: Divider
+            label: Label = "Label"
+            hidden: Hidden = "Hidden"
 
         form_data_1 = yield TestForm
 

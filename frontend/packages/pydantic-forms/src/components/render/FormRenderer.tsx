@@ -15,9 +15,7 @@ export const FormRenderer: Renderer = ({
         <RenderSections section={section} key={section.id}>
             {({ fields }) => (
                 <div>
-                    <div className="row-with-child-rows">
-                        <RenderFields fields={fields} />
-                    </div>
+                    <RenderFields fields={fields} />
                 </div>
             )}
         </RenderSections>

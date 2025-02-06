@@ -16,7 +16,8 @@ const clientSideValidationRule = (
     field: PydanticFormField,
     rhf?: ReturnType<typeof useForm>,
 ) => {
-    let validationRule = field?.validator?.(field, rhf) ?? z.string();
+    const { componentMatch } = field;
+    let validationRule = componentMatch?.validator?.(field, rhf) ?? z.string();
 
     if (!field.required) {
         validationRule = validationRule.optional();

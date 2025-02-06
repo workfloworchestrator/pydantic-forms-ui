@@ -5,14 +5,14 @@
  */
 import React from 'react';
 
-import { PydanticFormFieldElementProps } from '@/types';
+import { PydanticFormControlledElementProps } from '@/types';
 
 export const TextField = ({
     value,
     onChange,
     onBlur,
     disabled,
-}: PydanticFormFieldElementProps) => (
+}: PydanticFormControlledElementProps) => (
     <input
         onBlur={onBlur}
         onChange={(t) => {
