@@ -82,6 +82,12 @@ class DropdownChoices(Choice):
     _4 = ("4", "Option 4")
 
 
+class RadioChoices(Choice):
+    _1 = ("1", "Option 1")
+    _2 = ("2", "Option 2")
+    _3 = ("3", "Option 3")
+
+
 @app.post("/form")
 async def form(form_data: list[dict] = []):
     def form_generator(state: State):
@@ -94,7 +100,12 @@ async def form(form_data: list[dict] = []):
             divider: Divider
             label: Label = "Label"
             hidden: Hidden = "Hidden"
-            dropdown: DropdownChoices = "2"
+            dropdown: DropdownChoices = (
+                "2"  # When there are > 3 choices a dropdown will be rendered
+            )
+            radio: RadioChoices = (
+                "3"  # When there are <= 3 choices a radio group will be rendered
+            )
 
         form_data_1 = yield TestForm
 
