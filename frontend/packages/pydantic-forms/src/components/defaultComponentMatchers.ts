@@ -11,6 +11,7 @@ import {
     LabelField,
     RadioField,
     TextAreaField,
+    CheckboxField
 } from '@/components/fields';
 import {
     PydanticComponentMatcher,
@@ -115,5 +116,6 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         },
     },
 ];
+
 // If nothing  matches, it defaults to Text field in the mapToComponent function
 export default defaultComponentMatchers;
