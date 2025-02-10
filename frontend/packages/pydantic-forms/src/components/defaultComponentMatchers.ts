@@ -10,6 +10,7 @@ import {
     HiddenField,
     IntegerField,
     LabelField,
+    MultiCheckboxField,
     RadioField,
     TextAreaField,
 } from '@/components/fields';
@@ -123,6 +124,20 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         },
         matcher(field) {
             return field.type === PydanticFormFieldType.BOOLEAN;
+        },
+    },
+    {
+        id: 'multicheckbox',
+        ElementMatch: {
+            Element: MultiCheckboxField,
+            isControlledElement: true,
+        },
+        matcher(field) {
+            // Use this component when we have multiple boolean options (5 or more)
+            return (
+                field.type === PydanticFormFieldType.ARRAY &&
+                field.options.length <= 5
+            );
         },
     },
 ];
