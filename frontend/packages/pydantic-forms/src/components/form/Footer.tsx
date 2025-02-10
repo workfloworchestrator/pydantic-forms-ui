@@ -7,7 +7,7 @@ import React, { useCallback, useState } from 'react';
 
 import RenderReactHookFormErrors from '@/components/render/RenderReactHookFormErrors';
 import { usePydanticFormContext } from '@/core';
-import { navPreventDefaultFn } from '@/utils';
+import { preventDefault } from '@/utils';
 
 const Footer = () => {
     const {
@@ -114,7 +114,7 @@ const Footer = () => {
                             <a
                                 className="ml-1 font-weight-bold"
                                 href="#"
-                                onClick={navPreventDefaultFn(toggleErrors)}
+                                onClick={preventDefault(toggleErrors)}
                             >
                                 Toon info
                             </a>

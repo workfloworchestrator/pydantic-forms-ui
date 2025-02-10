@@ -18,12 +18,6 @@ export const IntegerField = ({
             disabled={disabled}
             value={value}
             type="number"
-            style={{
-                width: '400px',
-                height: '30px',
-                padding: '4px',
-                marginTop: '4px',
-            }}
         />
     );
 };

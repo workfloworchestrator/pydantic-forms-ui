@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { usePydanticFormContext } from '@/core';
 import { isNullableField } from '@/core/helper';
 import { PydanticFormField } from '@/types';
-import { navPreventDefaultFn } from '@/utils';
+import { preventDefault } from '@/utils';
 
 const ResetNullableFieldTrigger = ({ field }: { field: PydanticFormField }) => {
     const { rhf } = usePydanticFormContext();
@@ -22,7 +22,7 @@ const ResetNullableFieldTrigger = ({ field }: { field: PydanticFormField }) => {
             href="#reset"
             className="ml-2"
             style={{ fontSize: '14px' }}
-            onClick={navPreventDefaultFn(setNullValue)}
+            onClick={preventDefault(setNullValue)}
         >
             Reset
         </a>

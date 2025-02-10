@@ -26,15 +26,13 @@ export const PydanticForm = ({
     metaData,
     ...contextProps
 }: PydanticFormProps) => (
-    <div e2e-id={`pydanticforms-${id}`}>
-        <PydanticFormContextProvider
-            {...contextProps}
-            formKey={id}
-            metaData={metaData}
-        >
-            {RenderForm}
-        </PydanticFormContextProvider>
-    </div>
+    <PydanticFormContextProvider
+        {...contextProps}
+        formKey={id}
+        metaData={metaData}
+    >
+        {RenderForm}
+    </PydanticFormContextProvider>
 );
 
 export default PydanticForm;
