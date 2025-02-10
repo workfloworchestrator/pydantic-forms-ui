@@ -4,6 +4,7 @@
  * We will search for the first field that returns a positive match
  */
 import {
+    CheckboxField,
     DividerField,
     DropdownField,
     HiddenField,
@@ -11,7 +12,6 @@ import {
     LabelField,
     RadioField,
     TextAreaField,
-    CheckboxField
 } from '@/components/fields';
 import {
     PydanticComponentMatcher,
