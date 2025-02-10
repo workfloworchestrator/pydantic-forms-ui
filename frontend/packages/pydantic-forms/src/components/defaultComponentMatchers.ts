@@ -4,12 +4,12 @@
  * We will search for the first field that returns a positive match
  */
 import {
+    CheckboxField,
     DividerField,
     HiddenField,
     IntegerField,
     LabelField,
     TextAreaField,
-    CheckboxField
 } from '@/components/fields';
 import {
     PydanticComponentMatcher,
@@ -91,10 +91,8 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             isControlledElement: true,
         },
         matcher(field) {
-            return (
-                field.type === PydanticFormFieldType.BOOLEAN
-            );
-        }
+            return field.type === PydanticFormFieldType.BOOLEAN;
+        },
     },
 ];
 

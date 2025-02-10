@@ -84,11 +84,9 @@ export const getComponentMatcher = (
             return matcher(field);
         });
 
-        console.log('Matched component __' + matchedComponent?.matcher)
         if (matchedComponent) return matchedComponent;
 
         // Defaults to textField when there are no matches
-        console.log('No match found for field ' + field.id);
         return {
             id: 'textfield',
             ElementMatch: {
