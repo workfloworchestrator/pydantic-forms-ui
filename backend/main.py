@@ -100,12 +100,10 @@ async def form(form_data: list[dict] = []):
             divider: Divider
             label: Label = "Label"
             hidden: Hidden = "Hidden"
-            dropdown: DropdownChoices = (
-                "2"  # When there are > 3 choices a dropdown will be rendered
-            )
-            radio: RadioChoices = (
-                "3"  # When there are <= 3 choices a radio group will be rendered
-            )
+            # When there are > 3 choices a dropdown will be rendered
+            dropdown: DropdownChoices = ("2")
+            # When there are <= 3 choices a radio group will be rendered
+            radio: RadioChoices = ("3")
 
         form_data_1 = yield TestForm
 
