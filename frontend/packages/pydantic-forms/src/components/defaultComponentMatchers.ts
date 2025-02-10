@@ -5,9 +5,11 @@
  */
 import {
     DividerField,
+    DropdownField,
     HiddenField,
     IntegerField,
     LabelField,
+    RadioField,
     TextAreaField,
 } from '@/components/fields';
 import {
@@ -80,6 +82,35 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             return (
                 field.type === PydanticFormFieldType.STRING &&
                 field.format === PydanticFormFieldFormat.HIDDEN
+            );
+        },
+    },
+    {
+        id: 'radio',
+        ElementMatch: {
+            Element: RadioField,
+            isControlledElement: true,
+        },
+        matcher(field) {
+            // We are looking for a single value from a set list of options. With less than 4 options, use radio buttons.
+            return (
+                field.type === PydanticFormFieldType.STRING &&
+                field.options.length > 0 &&
+                field.options.length <= 3
+            );
+        },
+    },
+    {
+        id: 'dropdown',
+        ElementMatch: {
+            Element: DropdownField,
+            isControlledElement: true,
+        },
+        matcher(field) {
+            // We are looking for a single value from a set list of options. With more than 3 options, use a dropdown.
+            return (
+                field.type === PydanticFormFieldType.STRING &&
+                field.options.length >= 4
             );
         },
     },

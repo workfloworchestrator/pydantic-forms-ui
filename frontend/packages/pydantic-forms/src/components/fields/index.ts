@@ -6,3 +6,5 @@ export * from './TextAreaField';
 export * from './LabelField';
 export * from './DividerField';
 export * from './HiddenField';
+export * from './DropdownField';
+export * from './RadioField';

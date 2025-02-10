@@ -21,7 +21,7 @@ from pydantic_forms.exception_handlers.fastapi import form_error_handler
 from pydantic_forms.exceptions import FormException
 from pydantic_forms.core import FormPage as PydanticFormsFormPage
 from pydantic_forms.types import JSON
-from pydantic_forms.validators import LongText, Label, Divider, Hidden
+from pydantic_forms.validators import LongText, Label, Divider, Hidden, Choice
 
 # Choice,
 # CustomerId,
@@ -75,6 +75,19 @@ NumberExample = Annotated[
 ]
 
 
+class DropdownChoices(Choice):
+    _1 = ("1", "Option 1")
+    _2 = ("2", "Option 2")
+    _3 = ("3", "Option 3")
+    _4 = ("4", "Option 4")
+
+
+class RadioChoices(Choice):
+    _1 = ("1", "Option 1")
+    _2 = ("2", "Option 2")
+    _3 = ("3", "Option 3")
+
+
 @app.post("/form")
 async def form(form_data: list[dict] = []):
     def form_generator(state: State):
@@ -87,6 +100,10 @@ async def form(form_data: list[dict] = []):
             divider: Divider
             label: Label = "Label"
             hidden: Hidden = "Hidden"
+            # When there are > 3 choices a dropdown will be rendered
+            dropdown: DropdownChoices = ("2")
+            # When there are <= 3 choices a radio group will be rendered
+            radio: RadioChoices = ("3")
 
         form_data_1 = yield TestForm
 
