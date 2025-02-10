@@ -21,7 +21,14 @@ from pydantic_forms.exception_handlers.fastapi import form_error_handler
 from pydantic_forms.exceptions import FormException
 from pydantic_forms.core import FormPage as PydanticFormsFormPage
 from pydantic_forms.types import JSON
-from pydantic_forms.validators import LongText, Label, Divider, Hidden, Choice
+from pydantic_forms.validators import (
+    LongText,
+    Label,
+    Divider,
+    Hidden,
+    Choice,
+    choice_list,
+)
 
 # Choice,
 # CustomerId,
@@ -88,6 +95,13 @@ class RadioChoices(Choice):
     _3 = ("3", "Option 3")
 
 
+class MultiCheckBoxChoices(Choice):
+    _1 = ("1", "Option 1")
+    _2 = ("2", "Option 2")
+    _3 = ("3", "Option 3")
+    _4 = ("4", "Option 4")
+
+
 @app.post("/form")
 async def form(form_data: list[dict] = []):
     def form_generator(state: State):
@@ -105,6 +119,7 @@ async def form(form_data: list[dict] = []):
             # When there are <= 3 choices a radio group will be rendered
             radio: RadioChoices = "3"
             checkbox: bool = True
+            multicheckbox: choice_list(MultiCheckBoxChoices, min_items=3)
 
         form_data_1 = yield TestForm
 
