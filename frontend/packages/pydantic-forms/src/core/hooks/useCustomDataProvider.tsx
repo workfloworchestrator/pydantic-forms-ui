@@ -3,12 +3,12 @@ import useSWR from 'swr';
 import { PydanticFormCustomDataProvider, PydanticFormLabels } from '@/types';
 
 const useCustomDataProvider = (
-    cacheKey: number,
+    customDataProviderCacheKey: number,
     customDataProvider?: PydanticFormCustomDataProvider,
 ) => {
     return useSWR<PydanticFormLabels>(
         // cache key
-        [`pydanticFormsDataProvider-${cacheKey}`],
+        [`pydanticFormsDataProvider-${customDataProviderCacheKey}`],
 
         // return val
         () => {
@@ -19,7 +19,6 @@ const useCustomDataProvider = (
             return customDataProvider();
         },
 
-        // swr config
         {
             fallback: {},
 

@@ -22,7 +22,6 @@ export interface PydanticFormInitialContextProps {
     title?: string | boolean;
     sendLabel?: string;
     metaData?: PydanticFormMetaData;
-    formLayout?: PydanticFormLayout;
     successNotice?: React.ReactNode;
     onSuccess?: (fieldValues: FieldValues, response: object) => void;
     onCancel?: () => void;
@@ -33,11 +32,6 @@ export interface PydanticFormInitialContextProps {
     hasCardWrapper?: boolean;
 
     config: PydanticFormsContextConfig;
-}
-
-export enum PydanticFormLayout {
-    TWO_COL = 'two-col',
-    ONE_COL = 'one-col',
 }
 
 export type PydanticFormElementProps = {
@@ -75,7 +69,6 @@ export interface PydanticFormContextProps {
     footerComponent?: React.ReactNode;
     allowUntouchedSubmit?: boolean;
     skipSuccessNotice?: boolean;
-    formLayout: PydanticFormLayout;
     footerCtaPrimaryVariant?: string;
     setSaveToLeavePageInCurrentState: Dispatch<SetStateAction<boolean>>;
     hasCardWrapper?: boolean;
@@ -300,25 +293,14 @@ export interface PydanticFormZodValidationPresets {
 }
 
 export interface PydanticFormsContextConfig {
-    // use custom method to provide data for the form. This overwrites data fetched from labels endpoint
-    customDataProvider?: PydanticFormCustomDataProvider;
+    // use a custom method for providing the form definition
+    apiProvider: PydanticFormApiProvider;
 
     // use custom method for providing labels and data
     labelProvider?: PydanticFormLabelProvider;
 
-    // have an option to change the layout columns of fields
-    layoutColumnProvider?: PydanticFormLayoutColumnProvider;
-
-    // have an option to change the layout columns of fields
-    formStructureMutator?: PydanticFormStructureMutator;
-
-    // use a custom method for providing the form definition
-    apiProvider: PydanticFormApiProvider;
-
-    // Extend field definitions
-    fieldDetailProvider?: PydanticFormFieldDetailProvider;
-
-    // be able to refresh the provided data
+    // use custom method to provide data for the form. This overwrites data fetched from labels endpoint
+    customDataProvider?: PydanticFormCustomDataProvider;
     customDataProviderCacheKey?: number;
 
     // whenever a fieldvalue changes, do something
@@ -337,15 +319,20 @@ export interface PydanticFormsContextConfig {
 
     resetButtonAlternative?: React.ReactNode;
 
-    disableSaveProgress?: boolean;
-
-    footerCtaPrimaryVariant?: string;
-
     componentMatcher?: (
         currentMatchers: PydanticComponentMatcher[],
     ) => PydanticComponentMatcher[];
 
     formRenderer?: FormRenderer;
+
+    // Extend field definitions
+    fieldDetailProvider?: PydanticFormFieldDetailProvider;
+
+    // have an option to change the layout columns of fields
+    layoutColumnProvider?: PydanticFormLayoutColumnProvider;
+
+    // have an option to change the layout columns of fields
+    formStructureMutator?: PydanticFormStructureMutator;
 }
 
 export type FormRenderer = React.JSXElementConstructor<{
