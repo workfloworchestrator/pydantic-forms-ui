@@ -9,6 +9,7 @@ import {
     IntegerField,
     LabelField,
     TextAreaField,
+    CheckboxField
 } from '@/components/fields';
 import {
     PydanticComponentMatcher,
@@ -83,6 +84,19 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             );
         },
     },
+    {
+        id: 'checkbox',
+        ElementMatch: {
+            Element: CheckboxField,
+            isControlledElement: true,
+        },
+        matcher(field) {
+            return (
+                field.type === PydanticFormFieldType.BOOLEAN
+            );
+        }
+    },
 ];
+
 // If nothing  matches, it defaults to Text field in the mapToComponent function
 export default defaultComponentMatchers;
