@@ -139,6 +139,7 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
                 field.options.length <= 5
             );
         },
+        validator: zodValidationPresets.array,
     },
 ];
 
