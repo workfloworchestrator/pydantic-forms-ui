@@ -37,7 +37,6 @@ import { useLabelProvider } from '@/core/hooks/useLabelProvider';
 import {
     PydanticFormContextProps,
     PydanticFormInitialContextProps,
-    PydanticFormLayout,
     PydanticFormValidationErrorDetails,
 } from '@/types';
 
@@ -64,33 +63,32 @@ function PydanticFormContextProvider({
     title,
     sendLabel,
     headerComponent,
-    formLayout = PydanticFormLayout.TWO_COL,
     footerComponent,
     successNotice,
     onSuccess,
     onCancel,
     onChange,
     children,
-    hasCardWrapper = true,
     config,
 }: PydanticFormInitialContextProps) {
     const {
-        customDataProvider,
-        labelProvider,
         apiProvider,
-        fieldDetailProvider,
-        onFieldChangeHandler,
+        labelProvider,
+        customDataProvider,
         customDataProviderCacheKey,
+
+        onFieldChangeHandler,
         resetButtonAlternative,
-        footerCtaPrimaryVariant = 'purple',
         customValidationRules,
-        layoutColumnProvider,
         allowUntouchedSubmit,
         skipSuccessNotice,
-        disableSaveProgress,
-        formStructureMutator,
+
         cancelButton,
         componentMatcher,
+
+        formStructureMutator,
+        layoutColumnProvider,
+        fieldDetailProvider,
     } = config;
 
     // TODO: Fix this again
@@ -347,18 +345,14 @@ function PydanticFormContextProvider({
         isFullFilled,
         customDataProvider,
         errorDetails,
-        formLayout,
         successNotice,
-        footerCtaPrimaryVariant,
         submitForm,
         resetForm,
         cancelButton,
         skipSuccessNotice,
         allowUntouchedSubmit,
-        disableSaveProgress,
         resetButtonAlternative,
         config,
-        hasCardWrapper,
         setSaveToLeavePageInCurrentState,
     };
 

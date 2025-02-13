@@ -14,10 +14,6 @@ export const TextAreaField = ({
             onBlur={onBlur}
             defaultValue={value}
             disabled={disabled}
-            style={{
-                width: '450px',
-                height: '100px',
-            }}
         />
     );
 };

@@ -3,11 +3,10 @@
  *
  * Form footer component
  */
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 
 import RenderReactHookFormErrors from '@/components/render/RenderReactHookFormErrors';
 import { usePydanticFormContext } from '@/core';
-import { navPreventDefaultFn } from '@/utils';
 
 const Footer = () => {
     const {
@@ -21,35 +20,21 @@ const Footer = () => {
         allowUntouchedSubmit,
     } = usePydanticFormContext();
 
-    const [showErrors, setShowErrors] = useState(false);
-
-    const toggleErrors = useCallback(() => {
-        setShowErrors((state) => !state);
-        rhf.trigger();
-    }, [rhf]);
-
     const hasErrors = !!Object.keys(rhf.formState.errors).length;
 
     return (
         <div style={{ height: '200px' }}>
-            {(!!footerComponent || (showErrors && hasErrors)) && (
+            {(!!footerComponent || hasErrors) && (
                 <div>
                     {footerComponent}
 
-                    {showErrors && <RenderReactHookFormErrors />}
+                    {<RenderReactHookFormErrors />}
                 </div>
             )}
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    margin: '8px',
-                }}
-            >
+            <div>
                 {resetButtonAlternative ?? (
                     <button
                         type="button"
-                        e2e-id="pydanticforms-reset-btn"
                         onClick={(e) => {
                             resetForm(e);
                         }}
@@ -63,38 +48,18 @@ const Footer = () => {
                 {rhf.formState.isValid &&
                     !allowUntouchedSubmit &&
                     !rhf.formState.isDirty && (
-                        <div
-                            className="d-flex mv-0 mr-3"
-                            style={{ opacity: 0.8 }}
-                        >
-                            Het formulier is nog niet aangepast
-                        </div>
+                        <div>Het formulier is nog niet aangepast</div>
                     )}
 
                 {!!onCancel &&
                     (cancelButton ?? (
-                        <button
-                            type="button"
-                            onClick={onCancel}
-                            e2e-id="pydanticforms-cancel-btn"
-                            style={{
-                                marginLeft: '8px',
-                                height: '28px',
-                                padding: '4px',
-                            }}
-                        >
+                        <button type="button" onClick={onCancel}>
                             Annuleren
                         </button>
                     ))}
 
                 <button
-                    e2e-id="pydanticforms-send-btn"
                     type="submit"
-                    style={{
-                        marginLeft: '8px',
-                        height: '28px',
-                        padding: '4px',
-                    }}
                     disabled={
                         !rhf.formState.isValid ||
                         (!allowUntouchedSubmit &&
@@ -106,21 +71,7 @@ const Footer = () => {
                 </button>
             </div>
             {!rhf.formState.isValid && rhf.formState.isDirty && (
-                <div className="d-flex mv-0 mr-3" style={{ opacity: 0.8 }}>
-                    Het formulier is nog niet correct ingevuld{' '}
-                    {!showErrors && (
-                        <>
-                            -{' '}
-                            <a
-                                className="ml-1 font-weight-bold"
-                                href="#"
-                                onClick={navPreventDefaultFn(toggleErrors)}
-                            >
-                                Toon info
-                            </a>
-                        </>
-                    )}
-                </div>
+                <div>Het formulier is nog niet correct ingevuld</div>
             )}
         </div>
     );

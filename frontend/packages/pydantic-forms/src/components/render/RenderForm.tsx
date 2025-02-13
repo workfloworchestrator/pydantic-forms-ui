@@ -43,27 +43,14 @@ const RenderForm = ({
         }
 
         return (
-            <div className="info-box d-flex align-items-center">
-                {successNotice ?? 'Je inzending is succesvol ontvangen'}
-            </div>
+            <div>{successNotice ?? 'Je inzending is succesvol ontvangen'}</div>
         );
     }
     const { formRenderer } = config || {};
     const Renderer = formRenderer ?? FormRenderer;
 
     return (
-        <form
-            action={''}
-            onSubmit={submitForm}
-            style={{
-                border: 'thin solid lightgrey',
-                width: '500px',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                padding: '16px',
-            }}
-        >
+        <form action={''} onSubmit={submitForm}>
             {title !== false && <h2>{title ?? formData.title}</h2>}
 
             {headerComponent}

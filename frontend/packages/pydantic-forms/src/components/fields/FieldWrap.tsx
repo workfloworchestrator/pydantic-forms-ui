@@ -46,11 +46,8 @@ export const FieldWrap = ({
             required={pydanticFormField.required}
             isInvalid={!!isInvalid}
             error={errorMsg as string}
-            className="mt-0 mb-0"
         >
-            <div>
-                <div className="w-100">{children}</div>
-            </div>
+            <div>{children}</div>
         </FormRow>
     );
 };

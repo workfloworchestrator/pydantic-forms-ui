@@ -12,8 +12,7 @@ export const insertItemAtIndex = (
     ];
 };
 
-export const navPreventDefaultFn =
-    (fn: () => void) => (e: React.MouseEvent) => {
-        e.preventDefault();
-        fn();
-    };
+export const preventDefault = (fn: () => void) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    fn();
+};
