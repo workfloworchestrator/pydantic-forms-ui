@@ -21,6 +21,7 @@ import {
     PydanticFormFieldType,
 } from '@/types';
 
+import { ObjectField } from './fields/ObjectField';
 import { zodValidationPresets } from './zodValidations';
 
 const defaultComponentMatchers: PydanticComponentMatcher[] = [
@@ -151,6 +152,16 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             return field.type === PydanticFormFieldType.ARRAY;
         },
         validator: zodValidationPresets.array,
+    },
+    {
+        id: 'object',
+        ElementMatch: {
+            Element: ObjectField,
+            isControlledElement: true,
+        },
+        matcher(field) {
+            return field.type === PydanticFormFieldType.OBJECT;
+        },
     },
 ];
 

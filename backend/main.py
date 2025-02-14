@@ -14,7 +14,7 @@ from annotated_types import (
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from pydantic import ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic_forms.core import FormPage, post_form
 from pydantic_forms.types import State
 from pydantic_forms.exception_handlers.fastapi import form_error_handler
@@ -101,7 +101,6 @@ class MultiCheckBoxChoices(Choice):
     _3 = ("3", "Option 3")
     _4 = ("4", "Option 4")
 
-
 class ListChoices(Choice):
     _0 = ("0", "Option 0")
     _1 = ("1", "Option 1")
@@ -110,6 +109,14 @@ class ListChoices(Choice):
     _4 = ("4", "Option 4")
     _5 = ("5", "Option 5")
     _6 = ("6", "Option 6")
+
+class Person(BaseModel):
+    name: str
+    age: Annotated[int, Ge(18), Le(99)]
+
+
+class Group(BaseModel):
+    members: list[Person]
 
 
 @app.post("/form")
@@ -129,9 +136,13 @@ async def form(form_data: list[dict] = []):
             # When there are <= 3 choices a radio group will be rendered
             radio: RadioChoices = "3"
             checkbox: bool = True
+
             # When there are <= 5 choices in a list a set of checkboxes are rendered
-            multicheckbox: choice_list(MultiCheckBoxChoices) = ["1", "2"]
+            multicheckbox: choice_list(MultiCheckBoxChoices, min_items=3) = ["1", "2"]
             list: choice_list(ListChoices) = [0, 1]
+
+            person: Person
+            group: Group
 
         form_data_1 = yield TestForm
 
