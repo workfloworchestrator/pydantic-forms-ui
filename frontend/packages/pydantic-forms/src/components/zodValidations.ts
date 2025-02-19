@@ -113,22 +113,22 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
     array: (field) => {
         const { minimum, maximum } = field?.validation ?? {};
 
-        let arraySchema = z.array(z.boolean());
+        let validationRule = z.array(z.boolean());
 
         if (minimum) {
-            arraySchema = arraySchema.min(
+            validationRule = validationRule.min(
                 minimum,
                 `Dit veld heeft een minimum waarde van ${minimum}`,
             );
         }
 
         if (maximum) {
-            arraySchema = arraySchema.max(
+            validationRule = validationRule.max(
                 maximum,
                 `Dit veld heeft een maximum waarde van ${maximum}`,
             );
         }
 
-        return arraySchema;
+        return validationRule;
     },
 };

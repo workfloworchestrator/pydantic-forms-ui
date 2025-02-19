@@ -31,6 +31,8 @@ $ npm run dev
 
 Visit [http://127.0.0.1:3000][5] to view the generated form
 
+to also regenerate the pydantic forms ui package, also perform those steps in `pydantic-forms-ui/frontend/packages/pydantic-forms/`
+
 ## Contributing
 
 When setting up this repo to contribute initialize the pre-commit hooks using [pre-commit][6] (eq. `brew install pre-commit`).

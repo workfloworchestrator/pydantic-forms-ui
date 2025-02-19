@@ -10,6 +10,7 @@ import {
     HiddenField,
     IntegerField,
     LabelField,
+    ListField,
     MultiCheckboxField,
     RadioField,
     TextAreaField,
@@ -133,7 +134,6 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             isControlledElement: true,
         },
         matcher(field) {
-            // Use this component when we have multiple boolean options (5 or more)
             return (
                 field.type === PydanticFormFieldType.ARRAY &&
                 field.options.length <= 5
@@ -141,7 +141,18 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         },
         validator: zodValidationPresets.array,
     },
+    {
+        id: 'list',
+        ElementMatch: {
+            Element: ListField,
+            isControlledElement: true,
+        },
+        matcher(field) {
+            return field.type === PydanticFormFieldType.ARRAY;
+        },
+        validator: zodValidationPresets.array,
+    },
 ];
 
-// If nothing  matches, it defaults to Text field in the mapToComponent function
+// If nothing matches, it defaults to Text field in the mapToComponent function
 export default defaultComponentMatchers;

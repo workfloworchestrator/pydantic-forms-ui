@@ -102,6 +102,16 @@ class MultiCheckBoxChoices(Choice):
     _4 = ("4", "Option 4")
 
 
+class ListChoices(Choice):
+    _0 = ("0", "Option 0")
+    _1 = ("1", "Option 1")
+    _2 = ("2", "Option 2")
+    _3 = ("3", "Option 3")
+    _4 = ("4", "Option 4")
+    _5 = ("5", "Option 5")
+    _6 = ("6", "Option 6")
+
+
 @app.post("/form")
 async def form(form_data: list[dict] = []):
     def form_generator(state: State):
@@ -119,7 +129,8 @@ async def form(form_data: list[dict] = []):
             # When there are <= 3 choices a radio group will be rendered
             radio: RadioChoices = "3"
             checkbox: bool = True
-            multicheckbox: choice_list(MultiCheckBoxChoices, min_items=3)
+            multicheckbox: choice_list(MultiCheckBoxChoices)
+            list: choice_list(ListChoices) = "0"
 
         form_data_1 = yield TestForm
 
