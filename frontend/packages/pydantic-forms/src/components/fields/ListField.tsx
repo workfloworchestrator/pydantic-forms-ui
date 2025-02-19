@@ -6,45 +6,45 @@
 import React, { useState } from 'react';
 
 import {
-  PydanticFormControlledElementProps,
-  PydanticFormFieldOption,
+    PydanticFormControlledElementProps,
+    PydanticFormFieldOption,
 } from '@/types';
 
 export const ListField = ({
-  value,
-  onChange,
-  onBlur,
-  disabled,
-  pydanticFormField,
+    value,
+    onChange,
+    onBlur,
+    disabled,
+    pydanticFormField,
 }: PydanticFormControlledElementProps & {
-  options?: Array<{ value: string; label: string }>;
+    options?: Array<{ value: string; label: string }>;
 }) => {
-  const [listItems, setListItems] = useState(value || []);
+    const [listItems, setListItems] = useState(value || []);
 
-  return (
-    <div>
-      <select
-        onBlur={onBlur}
-        disabled={disabled}
-        value={listItems}
-        onChange={(e) => {
-          const selectedValues = Array.from(
-            e.currentTarget.selectedOptions,
-            (option) => option.value
-          );
-          setListItems(selectedValues);
-          onChange(selectedValues);
-        }}
-        multiple
-      >
-        {pydanticFormField.options.map(
-          (option: PydanticFormFieldOption) => (
-            <option key={option.value} value={option.label}>
-              {option.label}
-            </option>
-          )
-        )}
-      </select>
-    </div>
-  );
+    return (
+        <div>
+            <select
+                onBlur={onBlur}
+                disabled={disabled}
+                value={listItems}
+                onChange={(e) => {
+                    const selectedValues = Array.from(
+                        e.currentTarget.selectedOptions,
+                        (option) => option.value,
+                    );
+                    setListItems(selectedValues);
+                    onChange(selectedValues);
+                }}
+                multiple
+            >
+                {pydanticFormField.options.map(
+                    (option: PydanticFormFieldOption) => (
+                        <option key={option.value} value={option.label}>
+                            {option.label}
+                        </option>
+                    ),
+                )}
+            </select>
+        </div>
+    );
 };
