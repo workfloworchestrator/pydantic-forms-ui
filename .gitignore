@@ -20,3 +20,4 @@ test
 .idea
 todo.md
 venv
+.venv
