@@ -39,7 +39,7 @@ export const ListField = ({
             >
                 {pydanticFormField.options.map(
                     (option: PydanticFormFieldOption) => (
-                        <option key={option.value} value={option.label}>
+                        <option key={option.value} value={option.value}>
                             {option.label}
                         </option>
                     ),
