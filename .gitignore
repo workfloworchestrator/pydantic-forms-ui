@@ -19,5 +19,5 @@ __pycache__/
 test
 .idea
 todo.md
-venv
-.venv
+venv/
+.venv/
