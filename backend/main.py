@@ -118,7 +118,7 @@ async def form(form_data: list[dict] = []):
         class TestForm(FormPage):
             model_config = ConfigDict(title="Form Title")
 
-            number: NumberExample = 1
+            number: NumberExample = 3
             text: Annotated[str, Field(min_length=3, max_length=12)] = "Default text"
             textArea: LongText = "Default text area"
             divider: Divider
@@ -129,7 +129,8 @@ async def form(form_data: list[dict] = []):
             # When there are <= 3 choices a radio group will be rendered
             radio: RadioChoices = "3"
             checkbox: bool = True
-            multicheckbox: choice_list(MultiCheckBoxChoices) = "1"
+            # When there are <= 5 choices in a list a set of checkboxes are rendered
+            multicheckbox: choice_list(MultiCheckBoxChoices) = ["1", "2"]
             list: choice_list(ListChoices) = [0, 1]
 
         form_data_1 = yield TestForm
