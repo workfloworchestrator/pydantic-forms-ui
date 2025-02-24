@@ -75,8 +75,8 @@ export interface PydanticFormContextProps {
 }
 
 export interface PydanticFormData {
-    title: string;
-    description: string;
+    title?: string;
+    description?: string;
     state: PydanticFormState;
     fields: PydanticFormField[];
 }
@@ -89,8 +89,8 @@ export enum PydanticFormState {
 
 export interface PydanticFormField {
     id: string;
-    title: string;
-    description: string;
+    title?: string;
+    description?: string;
     type: PydanticFormFieldType;
     format: PydanticFormFieldFormat;
     options: PydanticFormFieldOption[];
@@ -99,7 +99,7 @@ export interface PydanticFormField {
     columns: number;
     required: boolean;
     isEnumField: boolean;
-    schemaField: PydanticFormProperty;
+    schemaProperty: PydanticFormPropertySchema;
     validation: PydanticFormFieldValidation;
     attributes: PydanticFormFieldAttributes;
     componentMatch?: PydanticComponentMatcher;
@@ -374,10 +374,9 @@ export interface PydanticFormApiResponse {
 }
 
 export interface PydanticFormBaseSchema {
-    title: string;
-    description: string;
-    additionalProperties: boolean;
-    type: 'object';
+    title?: string;
+    description?: string;
+    additionalProperties?: boolean;
     required?: string[];
     $defs?: {
         [definitionId: string]: {
@@ -389,18 +388,22 @@ export interface PydanticFormBaseSchema {
 }
 
 export interface PydanticFormSchema extends PydanticFormBaseSchema {
+    type: 'object';
     properties: {
-        [propId: string]: PydanticFormProperty;
+        [propId: string]: PydanticFormPropertySchema;
     };
 }
 
 export interface PydanticFormRawSchema extends PydanticFormBaseSchema {
+    type: 'object';
     properties: {
-        [propId: string]: PydanticFormRawProperty;
+        [propId: string]: PydanticFormRawPropertySchema;
     };
 }
 
-export interface PydanticFormProperty extends PydanticFormFieldValidation {
+export interface PydanticFormPropertySchema
+    extends PydanticFormBaseSchema,
+        PydanticFormFieldValidation {
     type: PydanticFormFieldType;
 
     anyOf?: PydanticFormFieldAnyOfResolved[];
@@ -413,22 +416,21 @@ export interface PydanticFormProperty extends PydanticFormFieldValidation {
         [id: string]: string;
     };
 
-    default?: string | null;
-    title: string;
-    format: PydanticFormFieldFormat;
-
     uniforms?: {
         disabled: boolean;
         sensitive: boolean;
         password: boolean;
     };
 
+    default?: string | null;
+    format: PydanticFormFieldFormat;
+
     properties?: {
-        [propId: string]: PydanticFormProperty;
+        [propId: string]: PydanticFormPropertySchema;
     };
 }
 
-export type PydanticFormRawProperty = {
+export type PydanticFormRawPropertySchema = {
     type: PydanticFormFieldType;
 
     anyOf?: PydanticFormFieldAnyOfDef[];
@@ -436,8 +438,6 @@ export type PydanticFormRawProperty = {
     allOf?: PydanticFormFieldAnyOfDef[];
 
     default?: string | null;
-    title: string;
-
     format: PydanticFormFieldFormat;
 
     uniforms?: {
@@ -447,7 +447,7 @@ export type PydanticFormRawProperty = {
     };
 
     properties?: {
-        [propId: string]: PydanticFormRawProperty;
+        [propId: string]: PydanticFormRawPropertySchema;
     };
 } & JsonSchemaRef &
     PydanticFormFieldValidation;

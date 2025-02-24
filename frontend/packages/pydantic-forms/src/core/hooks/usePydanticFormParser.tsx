@@ -30,7 +30,7 @@ const emptySchema: PydanticFormSchema = {
     title: '',
     description: '',
     additionalProperties: false,
-    type: 'object',
+    type: PydanticFormFieldType.OBJECT,
     properties: {
         property: {
             type: PydanticFormFieldType.STRING,

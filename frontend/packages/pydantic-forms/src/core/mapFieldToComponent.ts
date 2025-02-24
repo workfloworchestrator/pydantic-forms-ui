@@ -20,6 +20,7 @@ import {
     PydanticFormField,
     PydanticFormFieldDetailProvider,
     PydanticFormLabels,
+    PydanticFormPropertySchema,
     PydanticFormSchema,
     PydanticFormsContextConfig,
 } from '@/types';
@@ -42,10 +43,9 @@ export const mapFieldToComponent = (
     componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ): PydanticFormField => {
     const matcher = getComponentMatcher(componentMatcher);
-
-    const fieldProperties = schema.properties[fieldId];
+    const fieldProperties: PydanticFormPropertySchema =
+        schema.properties?.[fieldId] ?? {};
     const options = getFieldOptions(fieldProperties);
-
     const fieldOptionsEntry = getFieldAllOfAnyOfEntry(fieldProperties);
 
     const field: PydanticFormField = {
@@ -63,7 +63,7 @@ export const mapFieldToComponent = (
         validation: getFieldValidation(fieldProperties),
         required: !!schema.required?.includes(fieldId),
         attributes: getFieldAttributes(fieldProperties),
-        schemaField: fieldProperties,
+        schemaProperty: fieldProperties,
         columns: 6,
         ...fieldDetailProvider?.[fieldId],
     };
