@@ -11,11 +11,11 @@
 import { useMemo } from 'react';
 
 import type {
-    PydanticFormApiRefResolved,
     PydanticFormData,
     PydanticFormFieldDetailProvider,
     PydanticFormLabels,
     PydanticFormLayoutColumnProvider,
+    PydanticFormSchema,
     PydanticFormsContextConfig,
 } from '@/types';
 import {
@@ -26,7 +26,7 @@ import {
 
 import { mapFieldToComponent } from '../mapFieldToComponent';
 
-const emptySchema: PydanticFormApiRefResolved = {
+const emptySchema: PydanticFormSchema = {
     title: '',
     description: '',
     additionalProperties: false,
@@ -41,7 +41,7 @@ const emptySchema: PydanticFormApiRefResolved = {
 };
 
 export function usePydanticFormParser(
-    schema: PydanticFormApiRefResolved = emptySchema,
+    schema: PydanticFormSchema = emptySchema,
     formLabels?: PydanticFormLabels,
     fieldDetailProvider?: PydanticFormFieldDetailProvider,
     layoutColumnProvider?: PydanticFormLayoutColumnProvider,

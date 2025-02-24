@@ -10,24 +10,26 @@ import useSWR, { SWRConfiguration } from 'swr';
 
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 
-import { PydanticFormApiRefResolved } from '@/types';
+import { PydanticFormRawSchema, PydanticFormSchema } from '@/types';
 
 export function useRefParser(
     id: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    source: object = {},
+    source?: PydanticFormRawSchema,
     swrConfig?: SWRConfiguration,
 ) {
-    return useSWR<PydanticFormApiRefResolved | undefined>(
+    return useSWR<PydanticFormSchema | undefined>(
         // cache key
         [id, source],
 
         // return val
         async ([, source]) => {
             try {
+                if (!source) {
+                    return undefined;
+                }
                 const parsedSchema = $RefParser.dereference(source, {
                     mutateInputSchema: false,
-                }) as unknown as PydanticFormApiRefResolved;
+                }) as unknown as PydanticFormSchema;
 
                 return parsedSchema;
             } catch (error) {

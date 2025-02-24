@@ -37,6 +37,7 @@ import { useLabelProvider } from '@/core/hooks/useLabelProvider';
 import {
     PydanticFormContextProps,
     PydanticFormInitialContextProps,
+    PydanticFormRawSchema,
     PydanticFormValidationErrorDetails,
 } from '@/types';
 
@@ -133,8 +134,7 @@ function PydanticFormContextProvider({
 
     // we cache the form scheme so when there is an error, we still have the form
     // the form is not in the error response
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [rawSchema, setRawSchema] = useState<any>({});
+    const [rawSchema, setRawSchema] = useState<PydanticFormRawSchema>();
 
     // parse the raw scheme refs so all data is where it should be in the schema
     const { data: schema } = useRefParser('form', rawSchema);

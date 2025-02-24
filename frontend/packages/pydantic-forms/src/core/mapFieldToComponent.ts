@@ -17,10 +17,10 @@ import {
 } from '@/core/helper';
 import {
     PydanticComponentMatcher,
-    PydanticFormApiRefResolved,
     PydanticFormField,
     PydanticFormFieldDetailProvider,
     PydanticFormLabels,
+    PydanticFormSchema,
     PydanticFormsContextConfig,
 } from '@/types';
 
@@ -36,7 +36,7 @@ import {
  */
 export const mapFieldToComponent = (
     fieldId: string,
-    schema: PydanticFormApiRefResolved,
+    schema: PydanticFormSchema,
     formLabels: PydanticFormLabels = {},
     fieldDetailProvider?: PydanticFormFieldDetailProvider,
     componentMatcher?: PydanticFormsContextConfig['componentMatcher'],

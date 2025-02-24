@@ -7,7 +7,6 @@ import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
 import {
     PydanticFormApiResponse,
-    PydanticFormApiResponsePropertyResolved,
     PydanticFormData,
     PydanticFormField,
     PydanticFormFieldAttributes,
@@ -15,6 +14,7 @@ import {
     PydanticFormFieldSection,
     PydanticFormFieldType,
     PydanticFormFieldValidation,
+    PydanticFormProperty,
 } from '@/types';
 
 /**
@@ -47,9 +47,7 @@ export const getErrorDetailsFromResponse = function (
  * @param field A field from the 'properties' key of the JSON Schema
  * @returns anyOf, allOf, or allOf value
  */
-export const getFieldAllOfAnyOfEntry = (
-    field: PydanticFormApiResponsePropertyResolved,
-) => {
+export const getFieldAllOfAnyOfEntry = (field: PydanticFormProperty) => {
     const optionFields = [field.anyOf, field.oneOf, field.allOf];
 
     for (const optionsDefs of optionFields) {
@@ -67,9 +65,7 @@ export const getFieldAllOfAnyOfEntry = (
  * @param field A field from the 'properties' key of the JSON Schema
  * @returns an array of options in strings
  */
-export const getFieldOptions = (
-    field: PydanticFormApiResponsePropertyResolved,
-) => {
+export const getFieldOptions = (field: PydanticFormProperty) => {
     let isOptionsField = false;
     const options: PydanticFormFieldOption[] = [];
 
@@ -168,9 +164,7 @@ export const getFieldLabelById = (
  * @param fieldProperties A field from the 'properties' key of the JSON Schema
  * @returns returns a validation object
  */
-export const getFieldValidation = (
-    fieldProperties: PydanticFormApiResponsePropertyResolved,
-) => {
+export const getFieldValidation = (fieldProperties: PydanticFormProperty) => {
     const validation: PydanticFormFieldValidation = {};
     const propertyDef = getFieldAllOfAnyOfEntry(fieldProperties);
     const isNullable = propertyDef?.filter((option) => option.type === 'null');
@@ -303,9 +297,7 @@ export const getFormValuesFromFieldOrLabels = (
 /**
  * Finds and returns the attributes in the schemafield
  */
-export const getFieldAttributes = function (
-    schemaField: PydanticFormApiResponsePropertyResolved,
-) {
+export const getFieldAttributes = function (schemaField: PydanticFormProperty) {
     const attributes: PydanticFormFieldAttributes = {};
 
     // we could do this in a few lines by casting schemafield
@@ -325,6 +317,11 @@ export const getFieldAttributes = function (
     }
 
     return attributes;
+};
+
+export const getFieldProperties = function (schemaField: PydanticFormProperty) {
+    console.log('schemaField', schemaField);
+    return [];
 };
 
 /**
