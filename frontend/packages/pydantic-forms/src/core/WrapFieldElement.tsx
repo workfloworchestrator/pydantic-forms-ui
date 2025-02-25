@@ -6,10 +6,13 @@ import type { PydanticFormControlledElement, PydanticFormField } from '@/types';
 
 import { usePydanticFormContext } from './PydanticFormContextProvider';
 
-export const WrapFieldElement = (
-    PydanticFormControlledElement: PydanticFormControlledElement,
-    pydanticFormField: PydanticFormField,
-) => {
+export const WrapFieldElement = ({
+    PydanticFormControlledElement,
+    pydanticFormField,
+}: {
+    PydanticFormControlledElement: PydanticFormControlledElement;
+    pydanticFormField: PydanticFormField;
+}) => {
     const { rhf } = usePydanticFormContext();
     return (
         <Controller

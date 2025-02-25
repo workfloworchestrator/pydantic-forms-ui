@@ -24,7 +24,10 @@ export function RenderFields({ fields }: RenderFieldsProps) {
         if (ElementMatch.isControlledElement) {
             return (
                 <div key={field.id}>
-                    {WrapFieldElement(ElementMatch.Element, field)}
+                    <WrapFieldElement
+                        PydanticFormControlledElement={ElementMatch.Element}
+                        pydanticFormField={field}
+                    />
                 </div>
             );
         } else {
