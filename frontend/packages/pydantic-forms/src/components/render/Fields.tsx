@@ -6,7 +6,7 @@
  */
 import React from 'react';
 
-import { WrapFieldElement } from '@/core/wrapFieldElement';
+import { WrapFieldElement } from '@/core/WrapFieldElement';
 import { PydanticFormField } from '@/types';
 
 interface RenderFieldsProps {
