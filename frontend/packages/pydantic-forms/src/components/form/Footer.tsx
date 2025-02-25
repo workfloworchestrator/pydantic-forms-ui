@@ -5,7 +5,6 @@
  */
 import React from 'react';
 
-import RenderReactHookFormErrors from '@/components/render/RenderReactHookFormErrors';
 import { usePydanticFormContext } from '@/core';
 
 const Footer = () => {
@@ -20,17 +19,9 @@ const Footer = () => {
         allowUntouchedSubmit,
     } = usePydanticFormContext();
 
-    const hasErrors = !!Object.keys(rhf.formState.errors).length;
-
     return (
         <div style={{ height: '200px' }}>
-            {(!!footerComponent || hasErrors) && (
-                <div>
-                    {footerComponent}
-
-                    {<RenderReactHookFormErrors />}
-                </div>
-            )}
+            {footerComponent && <div>{footerComponent}</div>}{' '}
             <div>
                 {resetButtonAlternative ?? (
                     <button

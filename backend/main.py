@@ -129,7 +129,7 @@ async def form(form_data: list[dict] = []):
         class TestForm(FormPage):
             model_config = ConfigDict(title="Form Title")
 
-            number: NumberExample = 3
+            # number: NumberExample = 3
             text: Annotated[str, Field(min_length=3, max_length=12)] = "Default text"
             textArea: LongText = "Default text area"
             divider: Divider
@@ -139,13 +139,13 @@ async def form(form_data: list[dict] = []):
             dropdown: DropdownChoices = "2"
             # When there are <= 3 choices a radio group will be rendered
             radio: RadioChoices = "3"
-            checkbox: bool = True
+            #  checkbox: bool = True TODO: Fix validation errors on this
 
             # When there are <= 5 choices in a list a set of checkboxes are rendered
             # multicheckbox: choice_list(MultiCheckBoxChoices, min_items=3) = ["1", "2"]
             # list: choice_list(ListChoices) = [0, 1]
 
-            person: Person
+            # person: Person
 
         form_data_1 = yield TestForm
 
