@@ -142,7 +142,7 @@ async def form(form_data: list[dict] = []):
             checkbox: bool = True
 
             # When there are <= 5 choices in a list a set of checkboxes are rendered
-            multicheckbox: choice_list(MultiCheckBoxChoices, min_items=3) = ["1", "2"]
+            # multicheckbox: choice_list(MultiCheckBoxChoices, min_items=3) = ["1", "2"]
             # list: choice_list(ListChoices) = [0, 1]
 
             person: Person

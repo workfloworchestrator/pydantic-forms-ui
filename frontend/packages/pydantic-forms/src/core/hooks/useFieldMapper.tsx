@@ -1,3 +1,5 @@
+import { useCallback, useMemo } from 'react';
+
 import { useLabelProvider } from '@/core/hooks/useLabelProvider';
 import type {
     PydanticFormContextProps,
@@ -33,30 +35,40 @@ export const useFieldMapper = (
         formIdKey,
     );
 
-    const mapper = (fieldId: string) => {
-        const fieldProperties = schema.properties?.[fieldId];
-        if (fieldProperties) {
-            return mapFieldToComponent(
-                fieldId,
-                fieldProperties,
-                formLabels,
-                schema.required || [],
-                config?.fieldDetailProvider,
-                config?.componentMatcher,
-            );
-        }
-    };
+    const mapper = useCallback(
+        (fieldId: string) => {
+            const fieldProperties = schema.properties?.[fieldId];
+            if (fieldProperties) {
+                return mapFieldToComponent(
+                    fieldId,
+                    fieldProperties,
+                    formLabels,
+                    schema.required || [],
+                    config?.fieldDetailProvider,
+                    config?.componentMatcher,
+                );
+            }
+        },
+        [
+            config?.componentMatcher,
+            config?.fieldDetailProvider,
+            formLabels,
+            schema.properties,
+            schema.required,
+        ],
+    );
 
-    const fieldIds = Object.keys(schema.properties ?? {});
-
-    const fields = fieldIds
-        .map((fieldId) => mapper(fieldId))
-        .filter((field) => field !== undefined)
-        .map((field) => ({
-            ...field,
-            columns:
-                config?.layoutColumnProvider?.(field?.id) ?? field?.columns,
-        }));
+    const fields = useMemo(() => {
+        const fieldIds = Object.keys(schema.properties ?? {});
+        return fieldIds
+            .map((fieldId) => mapper(fieldId))
+            .filter((field) => field !== undefined)
+            .map((field) => ({
+                ...field,
+                columns:
+                    config?.layoutColumnProvider?.(field?.id) ?? field?.columns,
+            }));
+    }, [config, mapper, schema.properties]);
 
     return fields;
 };

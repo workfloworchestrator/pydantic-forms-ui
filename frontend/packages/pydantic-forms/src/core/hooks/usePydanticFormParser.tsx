@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 /**
  * Pydantic Forms
  *
@@ -41,10 +43,12 @@ export function usePydanticFormParser(
 ): PydanticFormData | false {
     const fields = useFieldMapper(schema, config, formKey, formIdKey);
 
-    return {
-        title: schema.title,
-        description: schema.description,
-        state: PydanticFormState.NEW,
-        fields,
-    };
+    return useMemo(() => {
+        return {
+            title: schema.title,
+            description: schema.description,
+            state: PydanticFormState.NEW,
+            fields,
+        };
+    }, [fields, schema.description, schema.title]);
 }
