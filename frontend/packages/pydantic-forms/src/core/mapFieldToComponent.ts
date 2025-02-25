@@ -21,7 +21,6 @@ import {
     PydanticFormFieldDetailProvider,
     PydanticFormLabels,
     PydanticFormPropertySchema,
-    PydanticFormSchema,
     PydanticFormsContextConfig,
 } from '@/types';
 
@@ -31,20 +30,19 @@ import {
  * Also maps it to the actual component used
  *
  * @param fieldId The ID of the field
- * @param schema The full JSON Schema received from the backend
+ * @param propertySchema The full JSON Schema received from the backend
  * @param formLabels An object with formLabels for the translation of field names
  * @returns A better usable field to be used in components
  */
 export const mapFieldToComponent = (
     fieldId: string,
-    schema: PydanticFormSchema,
+    fieldProperties: PydanticFormPropertySchema,
     formLabels: PydanticFormLabels = {},
+    requiredFields: string[] = [],
     fieldDetailProvider?: PydanticFormFieldDetailProvider,
     componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ): PydanticFormField => {
     const matcher = getComponentMatcher(componentMatcher);
-    const fieldProperties: PydanticFormPropertySchema =
-        schema.properties?.[fieldId] ?? {};
     const options = getFieldOptions(fieldProperties);
     const fieldOptionsEntry = getFieldAllOfAnyOfEntry(fieldProperties);
 
@@ -61,7 +59,7 @@ export const mapFieldToComponent = (
         isEnumField: options.isOptionsField,
         default: fieldProperties.default,
         validation: getFieldValidation(fieldProperties),
-        required: !!schema.required?.includes(fieldId),
+        required: requiredFields.includes(fieldId),
         attributes: getFieldAttributes(fieldProperties),
         schemaProperty: fieldProperties,
         columns: 6,

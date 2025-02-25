@@ -35,7 +35,6 @@ export interface PydanticFormInitialContextProps {
 
 export type PydanticFormElementProps = {
     pydanticFormField: PydanticFormField;
-    rhf: ReturnType<typeof useForm>;
 };
 
 export type PydanticFormElement =
@@ -72,6 +71,8 @@ export interface PydanticFormContextProps {
     setSaveToLeavePageInCurrentState: Dispatch<SetStateAction<boolean>>;
     hasCardWrapper?: boolean;
     config?: PydanticFormsContextConfig;
+    formKey: string;
+    formIdKey?: string;
 }
 
 export interface PydanticFormData {

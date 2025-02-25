@@ -1,37 +1,11 @@
-import { usePydanticFormContext } from '@/core';
-import { mapFieldToComponent } from '@/core/mapFieldToComponent';
+import React from 'react';
+
 import { PydanticFormControlledElementProps } from '@/types';
 
-export const ObjectField = ({
-    onChange,
-    onBlur,
-    value,
-    disabled,
-    name,
-    ref,
-    pydanticFormField,
-}: PydanticFormControlledElementProps) => {
-    const { options, id, title, type, description, format } = pydanticFormField;
-    console.log(pydanticFormField);
-    // const {  } = usePydanticFormContext();
-    // const mapper = (fieldId: string) => {
-    //     return mapFieldToComponent(
-    //         fieldId,
-    //         schema,
-    //         formLabels,
-    //         fieldDetailProvider,
-    //         componentMatcher,
-    //     );
-    // };
-
-    const childElements = for (let property of pydanticFormField.schemaField.properties) {
-        
-    }
-    
+export const ObjectField = ({}: PydanticFormControlledElementProps) => {
     return (
         <div>
-            <h1>{title}</h1>
-            {childElements}
+            <h1>TITLE</h1>
         </div>
-    )
+    );
 };

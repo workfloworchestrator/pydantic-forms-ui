@@ -1,10 +1,11 @@
 import React from 'react';
 
+import { usePydanticFormContext } from '@/core';
 import { PydanticFormElementProps } from '@/types';
 
 export const HiddenField = ({
     pydanticFormField,
-    rhf,
 }: PydanticFormElementProps) => {
+    const { rhf } = usePydanticFormContext();
     return <input type="hidden" {...rhf.register(pydanticFormField.id)} />;
 };

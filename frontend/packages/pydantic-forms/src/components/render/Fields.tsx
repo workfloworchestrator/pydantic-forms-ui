@@ -6,8 +6,7 @@
  */
 import React from 'react';
 
-import { usePydanticFormContext } from '@/core';
-import { wrapFieldElement } from '@/core/wrapFieldElement';
+import { WrapFieldElement } from '@/core/wrapFieldElement';
 import { PydanticFormField } from '@/types';
 
 interface RenderFieldsProps {
@@ -15,8 +14,6 @@ interface RenderFieldsProps {
 }
 
 export function RenderFields({ fields }: RenderFieldsProps) {
-    const { rhf } = usePydanticFormContext();
-
     return fields.map((field) => {
         const { ElementMatch } = field.componentMatch || {};
 
@@ -27,14 +24,13 @@ export function RenderFields({ fields }: RenderFieldsProps) {
         if (ElementMatch.isControlledElement) {
             return (
                 <div key={field.id}>
-                    {wrapFieldElement(ElementMatch.Element, field, rhf)}
+                    {WrapFieldElement(ElementMatch.Element, field)}
                 </div>
             );
         } else {
             return (
                 <ElementMatch.Element
                     pydanticFormField={field}
-                    rhf={rhf}
                     key={field.id}
                 />
             );

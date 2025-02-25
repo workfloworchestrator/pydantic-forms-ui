@@ -85,11 +85,8 @@ function PydanticFormContextProvider({
         skipSuccessNotice,
 
         cancelButton,
-        componentMatcher,
 
         formStructureMutator,
-        layoutColumnProvider,
-        fieldDetailProvider,
     } = config;
 
     // TODO: Fix this again
@@ -142,10 +139,9 @@ function PydanticFormContextProvider({
     // extract the JSON schema to a more usable custom schema
     const formDataParsed = usePydanticFormParser(
         schema,
-        formLabels?.labels,
-        fieldDetailProvider,
-        layoutColumnProvider,
-        componentMatcher,
+        config,
+        formKey,
+        formIdKey,
     );
 
     const formData = formStructureMutator
@@ -354,6 +350,8 @@ function PydanticFormContextProvider({
         resetButtonAlternative,
         config,
         setSaveToLeavePageInCurrentState,
+        formKey,
+        formIdKey,
     };
 
     return (
@@ -374,5 +372,4 @@ export function usePydanticFormContext() {
 
     return context;
 }
-
 export default PydanticFormContextProvider;
