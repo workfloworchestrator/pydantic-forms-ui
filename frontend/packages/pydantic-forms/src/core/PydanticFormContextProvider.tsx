@@ -32,7 +32,7 @@ import {
     useRefParser,
 } from '@/core/hooks';
 import useCustomDataProvider from '@/core/hooks/useCustomDataProvider';
-import useCustomZodValidation from '@/core/hooks/useCustomZodValidator';
+import useGetZodValidator from '@/core/hooks/useGetZodValidator';
 import { useLabelProvider } from '@/core/hooks/useLabelProvider';
 import {
     PydanticFormContextProps,
@@ -150,7 +150,7 @@ function PydanticFormContextProvider({
 
     const rhfRef = useRef<ReturnType<typeof useForm>>();
     // build validation rules based on custom schema
-    const resolver = useCustomZodValidation(
+    const resolver = useGetZodValidator(
         formData,
         rhfRef.current,
         customValidationRules,

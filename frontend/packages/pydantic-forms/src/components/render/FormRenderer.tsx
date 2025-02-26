@@ -2,13 +2,9 @@ import React from 'react';
 
 import { RenderFields, RenderSections } from '@/components/render';
 import { getFieldBySection } from '@/core/helper';
-import type { PydanticFormData, FormRenderer as Renderer } from '@/types';
+import type { FormRenderer as Renderer } from '@/types';
 
-export const FormRenderer: Renderer = ({
-    pydanticFormData,
-}: {
-    pydanticFormData: PydanticFormData;
-}) => {
+export const FormRenderer: Renderer = ({ pydanticFormData }) => {
     const formSections = getFieldBySection(pydanticFormData.fields);
 
     const sections = formSections.map((section) => (

@@ -22,7 +22,7 @@ import {
 } from '@/types';
 
 import { ObjectField } from './fields/ObjectField';
-import { zodValidationPresets } from './zodValidations';
+import { zodValidationPresets } from './zodValidationsPresets';
 
 const defaultComponentMatchers: PydanticComponentMatcher[] = [
     {

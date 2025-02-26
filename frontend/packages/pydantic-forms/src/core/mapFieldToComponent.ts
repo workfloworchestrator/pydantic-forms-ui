@@ -8,7 +8,7 @@
  */
 import { TextField } from '@/components';
 import defaultComponentMatchers from '@/components/defaultComponentMatchers';
-import { zodValidationPresets } from '@/components/zodValidations';
+import { zodValidationPresets } from '@/components/zodValidationsPresets';
 import {
     getFieldAllOfAnyOfEntry,
     getFieldAttributes,
