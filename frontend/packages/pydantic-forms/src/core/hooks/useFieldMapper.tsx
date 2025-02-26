@@ -25,9 +25,9 @@ import { mapFieldToComponent } from '../mapFieldToComponent';
  */
 export const useFieldMapper = (
     schema: PydanticFormSchema | PydanticFormPropertySchema,
-    config: PydanticFormsContextConfig,
     formKey: PydanticFormContextProps['formKey'],
     formIdKey: PydanticFormContextProps['formIdKey'],
+    config?: PydanticFormsContextConfig,
 ): PydanticFormField[] => {
     const { data: formLabels } = useLabelProvider(
         config?.labelProvider,

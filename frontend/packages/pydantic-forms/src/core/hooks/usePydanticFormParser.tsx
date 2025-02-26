@@ -41,7 +41,7 @@ export function usePydanticFormParser(
     formKey: PydanticFormContextProps['formKey'],
     formIdKey: PydanticFormContextProps['formIdKey'],
 ): PydanticFormData | false {
-    const fields = useFieldMapper(schema, config, formKey, formIdKey);
+    const fields = useFieldMapper(schema, formKey, formIdKey, config);
 
     return useMemo(() => {
         return {

@@ -20,7 +20,6 @@ export const WrapFieldElement = ({
             control={rhf.control}
             render={({ field, fieldState }) => {
                 const { onChange, onBlur, value, name, ref } = field;
-
                 const onChangeHandle = (val: string) => {
                     onChange(val);
 

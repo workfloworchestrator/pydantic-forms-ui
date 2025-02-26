@@ -157,7 +157,7 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         id: 'object',
         ElementMatch: {
             Element: ObjectField,
-            isControlledElement: true,
+            isControlledElement: false,
         },
         matcher(field) {
             return field.type === PydanticFormFieldType.OBJECT;

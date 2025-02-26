@@ -323,16 +323,6 @@ export const getFieldAttributes = function (
     return attributes;
 };
 
-export const getFieldSchemaProperties = function (
-    pydanticFormField: PydanticFormField,
-) {
-    if (pydanticFormField.schemaProperty.properties) {
-        return pydanticFormField.schemaProperty.properties;
-    }
-
-    return {};
-};
-
 /**
  * This function can be used as the onValueChange handler in a react hook form form element component.
  * When used, it will trigger the related validations whenever the field changes

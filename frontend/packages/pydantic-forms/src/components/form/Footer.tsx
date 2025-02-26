@@ -49,17 +49,7 @@ const Footer = () => {
                         </button>
                     ))}
 
-                <button
-                    type="submit"
-                    disabled={
-                        !rhf.formState.isValid ||
-                        (!allowUntouchedSubmit &&
-                            !rhf.formState.isDirty &&
-                            !rhf.formState.isSubmitting)
-                    }
-                >
-                    {sendLabel ?? 'Verzenden'}
-                </button>
+                <button type="submit">{sendLabel ?? 'Verzenden'}</button>
             </div>
             {!rhf.formState.isValid && rhf.formState.isDirty && (
                 <div>Het formulier is nog niet correct ingevuld</div>
