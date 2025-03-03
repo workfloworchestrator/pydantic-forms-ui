@@ -12,65 +12,77 @@ import { useForm } from 'react-hook-form';
 
 import { z } from 'zod';
 
-import clientSideValidationRule from '@/core/clientSideValidationRules';
-import { usePydanticFormParser } from '@/core/hooks';
 import {
     CustomValidationRule,
-    PydanticFormData,
     PydanticFormField,
-    PydanticFormFieldType,
-    PydanticFormPropertySchema,
+    PydanticFormSchema,
 } from '@/types';
 
-type FieldMap = Map<string, PydanticFormField>;
+type PropertyMap = Map<string, PydanticFormField>;
 
+/*
 const addSubFieldIds = (
     schema: PydanticFormPropertySchema,
     fieldMap: FieldMap,
-) => {};
+    prefix: string
+) => {
+    Object.values(schema.properties ?? {}).forEach((property) => {
+        
+        if (property.type === PydanticFormFieldType.OBJECT) {
+            addSubFieldIds(property.schemaProperty, fieldMap);
+        
+        fieldMap.set(`${prefix}.${property.id}`, property);
+    });
+};
+*/
+const getFlatPropertyMap = (schema: PydanticFormSchema): PropertyMap => {
+    const propertyMap: PropertyMap = new Map();
 
-const getFieldMap = (
-    formData: PydanticFormData,
-): Map<string, PydanticFormField> => {
-    const fieldMap = new Map<string, PydanticFormField>();
-
-    if (formData) {
-        formData.fields.forEach((field) => {
-            if (field.type === PydanticFormFieldType.OBJECT) {
-                addSubFieldIds(field.schemaProperty, fieldMap);
-            }
-            fieldMap.set(field.id, field);
-        });
+    if (schema) {
+        Object.entries(schema.properties ?? {}).forEach(
+            ([id, pydanticFormPropertySchema]) => {
+                propertyMap.set(id, pydanticFormPropertySchema);
+            },
+        );
     }
 
-    return fieldMap;
+    return propertyMap;
 };
 
-const useGetZodValidator = (
-    formData: ReturnType<typeof usePydanticFormParser>,
+const getClientSideValidationRule = (
+    field: PydanticFormField,
+    rhf?: ReturnType<typeof useForm>,
+) => {
+    console.log(field, rhf);
+    return false;
+};
+
+export const useGetZodValidator = (
+    schema?: PydanticFormSchema,
     rhf?: ReturnType<typeof useForm>,
     customValidationRule?: CustomValidationRule,
 ) => {
     return useMemo(() => {
-        if (!formData) {
+        if (!schema) {
             return z.object({});
         }
         // Get all fields ids including the nested ones to generate the correct validation schema
-        const fieldMap = getFieldMap(formData);
-        console.log('fieldMap', fieldMap);
+        const flatPropertyMap = getFlatPropertyMap(schema);
+
         return z.object(
-            [...fieldMap].reduce((validationObject, [fieldId, field]) => {
-                const fieldRules =
-                    customValidationRule?.(field, rhf) ??
-                    clientSideValidationRule(field, rhf);
+            [...flatPropertyMap].reduce(
+                (validationObject, [propertyId, pydanticFormField]) => {
+                    const fieldRules =
+                        customValidationRule?.(pydanticFormField, rhf) ??
+                        getClientSideValidationRule(pydanticFormField, rhf);
 
-                return {
-                    ...validationObject,
-                    [fieldId]: fieldRules,
-                };
-            }, {}),
+                    return {
+                        ...validationObject,
+                        [propertyId]: fieldRules,
+                    };
+                },
+                {},
+            ),
         );
-    }, [formData, customValidationRule, rhf]);
+    }, [customValidationRule, rhf, schema]);
 };
-
-export default useGetZodValidator;

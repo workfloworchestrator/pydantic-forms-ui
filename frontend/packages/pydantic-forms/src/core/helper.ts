@@ -9,12 +9,13 @@ import {
     PydanticFormApiResponse,
     PydanticFormData,
     PydanticFormField,
+    PydanticFormFieldAnyOfItemParsed,
     PydanticFormFieldAttributes,
     PydanticFormFieldOption,
     PydanticFormFieldSection,
     PydanticFormFieldType,
-    PydanticFormFieldValidation,
-    PydanticFormPropertySchema,
+    PydanticFormFieldValidations,
+    PydanticFormPropertySchemaParsed,
 } from '@/types';
 
 /**
@@ -47,8 +48,14 @@ export const getErrorDetailsFromResponse = function (
  * @param field A field from the 'properties' key of the JSON Schema
  * @returns anyOf, allOf, or allOf value
  */
-export const getFieldAllOfAnyOfEntry = (field: PydanticFormPropertySchema) => {
-    const optionFields = [field.anyOf, field.oneOf, field.allOf];
+export const getFieldAllOfAnyOfEntry = (
+    propertySchemaParsed: PydanticFormPropertySchemaParsed,
+) => {
+    const optionFields = [
+        propertySchemaParsed.anyOf,
+        propertySchemaParsed.oneOf,
+        propertySchemaParsed.allOf,
+    ];
 
     for (const optionsDefs of optionFields) {
         if (!optionsDefs) {
@@ -62,33 +69,37 @@ export const getFieldAllOfAnyOfEntry = (field: PydanticFormPropertySchema) => {
 /**
  * Field to field options
  *
- * @param field A field from the 'properties' key of the JSON Schema
+ * @param propertySchemaParsed A field from the 'properties' key of the JSON Schema
  * @returns an array of options in strings
  */
-export const getFieldOptions = (field: PydanticFormPropertySchema) => {
+export const getFieldOptions = (
+    propertySchemaParsed: PydanticFormPropertySchemaParsed,
+) => {
     let isOptionsField = false;
     const options: PydanticFormFieldOption[] = [];
 
-    const optionDef = getFieldAllOfAnyOfEntry(field);
+    const optionDef = getFieldAllOfAnyOfEntry(propertySchemaParsed);
 
-    const fieldEnums = field.enum ?? field.items?.enum;
-    const fieldOptions = field.options ?? field.items?.options;
+    const propertyEnums =
+        propertySchemaParsed.enum ?? propertySchemaParsed.items?.enum;
+    const propertyOptions =
+        propertySchemaParsed.options ?? propertySchemaParsed.items?.options;
 
-    if (fieldEnums && !fieldOptions) {
+    if (propertyEnums && !propertyOptions) {
         isOptionsField = true;
 
-        options.push(...enumToOption(fieldEnums));
+        options.push(...enumToOption(propertyEnums));
     }
 
-    if (fieldOptions) {
-        options.push(...optionsToOption(fieldOptions, fieldEnums));
+    if (propertyOptions) {
+        options.push(...optionsToOption(propertyOptions, propertyEnums));
     }
 
     const hasEntryWithEnums = optionDef?.filter(
         (option) => !!option.items?.enum || option?.enum,
     );
 
-    if (field.items) {
+    if (propertySchemaParsed.items) {
         isOptionsField = true;
     }
 
@@ -165,9 +176,9 @@ export const getFieldLabelById = (
  * @returns returns a validation object
  */
 export const getFieldValidation = (
-    fieldProperties: PydanticFormPropertySchema,
+    fieldProperties: PydanticFormPropertySchemaParsed,
 ) => {
-    const validation: PydanticFormFieldValidation = {};
+    const validation: PydanticFormFieldValidations = {};
     const propertyDef = getFieldAllOfAnyOfEntry(fieldProperties);
     const isNullable = propertyDef?.filter((option) => option.type === 'null');
 
@@ -207,7 +218,7 @@ export const getFieldValidation = (
  * @returns
  */
 export const isNullableField = (field: PydanticFormField) =>
-    !!field.validation.isNullable;
+    !!field.validations.isNullable;
 
 /**
  * Sort field per section for displaying
@@ -300,7 +311,7 @@ export const getFormValuesFromFieldOrLabels = (
  * Finds and returns the attributes in the schemafield
  */
 export const getFieldAttributes = function (
-    schemaField: PydanticFormPropertySchema,
+    schemaField: PydanticFormPropertySchemaParsed,
 ) {
     const attributes: PydanticFormFieldAttributes = {};
 

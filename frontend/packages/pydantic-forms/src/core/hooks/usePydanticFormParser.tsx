@@ -1,54 +1,107 @@
 import { useMemo } from 'react';
 
+import $RefParser from '@apidevtools/json-schema-ref-parser';
+
+import {
+    getFieldAllOfAnyOfEntry,
+    getFieldAttributes,
+    getFieldOptions,
+    getFieldValidation,
+} from '@/core/helper';
+
 /**
  * Pydantic Forms
  *
- * A hook that will parse the received and parsed JSON Schema
- * to something more usable in the templates
+ * A hook that will parse the received JSON Schema
+ * and parse it and turn it into something more usable.
  *
  */
 import type {
-    PydanticFormContextProps,
-    PydanticFormData,
+    PydanticFormField,
     PydanticFormSchema,
-    PydanticFormsContextConfig,
+    PydanticFormSchemaParsed,
+    PydanticFormSchemaRawJson,
 } from '@/types';
-import {
-    PydanticFormFieldFormat,
-    PydanticFormFieldType,
-    PydanticFormState,
-} from '@/types';
+import { PydanticFormFieldType } from '@/types';
 
-import { useFieldMapper } from './useFieldMapper';
+const refParseSchema = (
+    pydanticFormRawJsonSchema: PydanticFormSchemaRawJson,
+): PydanticFormSchemaParsed | undefined => {
+    try {
+        const parsedSchema = $RefParser.dereference(pydanticFormRawJsonSchema, {
+            mutateInputSchema: false,
+        });
 
-const emptySchema: PydanticFormSchema = {
-    title: '',
-    description: '',
-    additionalProperties: false,
-    type: PydanticFormFieldType.OBJECT,
-    properties: {
-        property: {
-            type: PydanticFormFieldType.STRING,
-            title: '',
-            format: PydanticFormFieldFormat.DEFAULT,
+        return parsedSchema as unknown as PydanticFormSchemaParsed;
+    } catch (error) {
+        console.error(error);
+        new Error('Could not parse JSON references');
+    }
+};
+
+const parseProperties = (
+    schema: PydanticFormSchemaParsed,
+    prefix: string = '',
+) => {
+    const schemaProperties = schema.properties;
+
+    if (!schemaProperties) return {};
+
+    const properties = Object.entries(schemaProperties);
+    const parsedProperties = properties.reduce(
+        (
+            propertiesObject: PydanticFormSchema['properties'],
+            [propertyId, propertySchema],
+        ) => {
+            const options = getFieldOptions(propertySchema);
+            const fieldOptionsEntry = getFieldAllOfAnyOfEntry(propertySchema);
+            const id = `${prefix && prefix + '.'}${propertyId}`;
+
+            const parsedProperty: PydanticFormField = {
+                id,
+                title: propertySchema.title,
+                description: propertySchema.description,
+                format: propertySchema.format ?? fieldOptionsEntry?.[0]?.format,
+                type:
+                    propertySchema.type ??
+                    fieldOptionsEntry?.[0]?.type ??
+                    fieldOptionsEntry?.[0]?.items?.type,
+                options: options.options,
+                isEnumField: options.isOptionsField,
+                default: propertySchema.default,
+                required: false,
+                attributes: getFieldAttributes(propertySchema),
+                schemaProperty: propertySchema,
+                validations: getFieldValidation(propertySchema),
+                columns: 6,
+            };
+
+            propertiesObject[id] = parsedProperty;
+            return propertiesObject;
         },
-    },
+        {},
+    );
+
+    return parsedProperties;
 };
 
 export function usePydanticFormParser(
-    schema: PydanticFormSchema = emptySchema,
-    config: PydanticFormsContextConfig,
-    formKey: PydanticFormContextProps['formKey'],
-    formIdKey: PydanticFormContextProps['formIdKey'],
-): PydanticFormData | false {
-    const fields = useFieldMapper(schema, formKey, formIdKey, config);
-
+    rawJsonSchema?: PydanticFormSchemaRawJson,
+): PydanticFormSchema | undefined {
     return useMemo(() => {
+        if (!rawJsonSchema) return undefined;
+        const parsedSchema = refParseSchema(rawJsonSchema);
+
+        if (!parsedSchema) return undefined;
+        const properties = parseProperties(parsedSchema);
+
         return {
-            title: schema.title,
-            description: schema.description,
-            state: PydanticFormState.NEW,
-            fields,
+            type: PydanticFormFieldType.OBJECT,
+            title: rawJsonSchema.title,
+            description: rawJsonSchema.description,
+            additionalProperties: rawJsonSchema.additionalProperties,
+            required: rawJsonSchema.required,
+            properties,
         };
-    }, [fields, schema.description, schema.title]);
+    }, [rawJsonSchema]);
 }

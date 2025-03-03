@@ -28,16 +28,15 @@ import {
 } from '@/core/helper';
 import {
     useApiProvider,
+    useCustomDataProvider,
+    useGetZodValidator,
+    useLabelProvider,
     usePydanticFormParser,
-    useRefParser,
 } from '@/core/hooks';
-import useCustomDataProvider from '@/core/hooks/useCustomDataProvider';
-import useGetZodValidator from '@/core/hooks/useGetZodValidator';
-import { useLabelProvider } from '@/core/hooks/useLabelProvider';
 import {
     PydanticFormContextProps,
     PydanticFormInitialContextProps,
-    PydanticFormRawSchema,
+    PydanticFormSchemaRawJson,
     PydanticFormValidationErrorDetails,
 } from '@/types';
 
@@ -131,27 +130,15 @@ function PydanticFormContextProvider({
 
     // we cache the form scheme so when there is an error, we still have the form
     // the form is not in the error response
-    const [rawSchema, setRawSchema] = useState<PydanticFormRawSchema>();
-
-    // parse the raw scheme refs so all data is where it should be in the schema
-    const { data: schema } = useRefParser('form', rawSchema);
+    const [rawSchema, setRawSchema] = useState<PydanticFormSchemaRawJson>();
 
     // extract the JSON schema to a more usable custom schema
-    const formDataParsed = usePydanticFormParser(
-        schema,
-        config,
-        formKey,
-        formIdKey,
-    );
-
-    const formData = formStructureMutator
-        ? formStructureMutator(formDataParsed) // What are the use cases here, will this be solved by a layout provider?
-        : formDataParsed;
+    const pydanticFormSchema = usePydanticFormParser(rawSchema);
 
     const rhfRef = useRef<ReturnType<typeof useForm>>();
     // build validation rules based on custom schema
     const resolver = useGetZodValidator(
-        formData,
+        pydanticFormSchema,
         rhfRef.current,
         customValidationRules,
     );
@@ -199,14 +186,7 @@ function PydanticFormContextProvider({
                 onSuccess?.(values, apiResponse || {});
             }, 1500); // Delay to allow notice to show first
         }
-    }, [
-        isFullFilled,
-        skipSuccessNotice,
-        onSuccess,
-        rhf,
-        formData,
-        apiResponse,
-    ]);
+    }, [apiResponse, isFullFilled, onSuccess, rhf, skipSuccessNotice]);
 
     // a useeffect for whenever the error response updates
     // sometimes we need to update the form,
@@ -232,17 +212,19 @@ function PydanticFormContextProvider({
     }, [apiResponse, onSuccess, rhf, skipSuccessNotice]);
 
     const resetFormData = useCallback(() => {
-        if (!formData) {
+        if (!pydanticFormSchema) {
             return;
         }
 
-        const initialData = getFormValuesFromFieldOrLabels(formData.fields, {
+        const initialData = {};
+
+        /*getFormValuesFromFieldOrLabels(pydanticFormSchema.properties, {
             ...formLabels?.data,
             ...customData,
-        });
+        });*/
 
         rhf.reset(initialData);
-    }, [rhf, formData, formLabels?.data, customData]);
+    }, [customData, formLabels?.data, rhf]);
 
     // a useeffect for filling data whenever formdefinition or labels update
     useEffect(() => {
@@ -331,7 +313,7 @@ function PydanticFormContextProvider({
         isSending: isSending && isLoadingSchema,
         isLoading,
         rhf,
-        formData: formData || undefined,
+        pydanticFormSchema: pydanticFormSchema || undefined,
         headerComponent,
         footerComponent,
         onCancel,
@@ -353,7 +335,7 @@ function PydanticFormContextProvider({
         formKey,
         formIdKey,
     };
-
+    console.log(pydanticFormSchema);
     return (
         <PydanticFormContext.Provider value={PydanticFormContextState}>
             {children(PydanticFormContextState)}

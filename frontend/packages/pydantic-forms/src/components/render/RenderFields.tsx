@@ -15,28 +15,23 @@ interface RenderFieldsProps {
 
 export function RenderFields({ fields }: RenderFieldsProps) {
     return fields.map((field) => {
-        const { ElementMatch } = field.componentMatch || {};
+        const { Element, isControlledElement } = field.elementMatch || {};
 
-        if (!ElementMatch?.Element) {
+        if (!Element) {
             return <></>;
         }
 
-        if (ElementMatch.isControlledElement) {
+        if (isControlledElement) {
             return (
                 <div key={field.id}>
                     <WrapFieldElement
-                        PydanticFormControlledElement={ElementMatch.Element}
+                        PydanticFormControlledElement={Element}
                         pydanticFormField={field}
                     />
                 </div>
             );
         } else {
-            return (
-                <ElementMatch.Element
-                    pydanticFormField={field}
-                    key={field.id}
-                />
-            );
+            return <Element pydanticFormField={field} key={field.id} />;
         }
     });
 }
