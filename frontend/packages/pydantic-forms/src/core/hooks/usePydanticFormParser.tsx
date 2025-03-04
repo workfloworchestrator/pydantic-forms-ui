@@ -27,8 +27,19 @@ import { PydanticFormFieldType } from '@/types';
 
 import { useRefParser } from './useRefParser';
 
+const translateLabel = (
+    propertyId: string,
+    label?: string,
+    formLabels?: Record<string, string>,
+): string | undefined => {
+    return formLabels && formLabels[propertyId]
+        ? formLabels[propertyId].toString()
+        : label;
+};
+
 const parseProperties = (
     parsedSchema: PydanticFormSchemaParsed,
+    formLabels?: Record<string, string>,
     prefix: string = '',
 ) => {
     if (!parsedSchema) return {};
@@ -49,8 +60,17 @@ const parseProperties = (
 
             const parsedProperty: PydanticFormField = {
                 id,
-                title: propertySchema.title,
-                description: propertySchema.description,
+                title: translateLabel(
+                    propertyId,
+                    propertySchema.title,
+                    formLabels,
+                ),
+                description: translateLabel(
+                    `${propertyId}_info`,
+                    propertySchema.description,
+                    formLabels,
+                ),
+
                 format: propertySchema.format ?? fieldOptionsEntry?.[0]?.format,
                 type:
                     propertySchema.type ??
@@ -59,17 +79,13 @@ const parseProperties = (
                 options: options.options,
                 isEnumField: options.isOptionsField,
                 default: propertySchema.default,
-                required: false,
-                required: !!schema.required?.includes(fieldId),
+                required: !!parsedSchema.required?.includes(propertyId),
                 attributes: getFieldAttributes(propertySchema),
                 schemaProperty: propertySchema,
                 validations: getFieldValidation(propertySchema),
-                columns: 6, // TODO: Is this still
+                columns: 6, // TODO: Is this still relevant?
 
-                title: formLabels[fieldId]?.toString() ?? fieldProperties.title,
-                description: formLabels[fieldId + '_info']?.toString() ?? '',
-
-                ...fieldDetailProvider?.[fieldId],
+                // ...fieldDetailProvider?.[fieldId],
             };
 
             propertiesObject[id] = parsedProperty;
@@ -83,7 +99,7 @@ const parseProperties = (
 
 export const usePydanticFormParser = (
     rawJsonSchema: PydanticFormSchemaRawJson | undefined,
-    formLabels: Record<string, string>,
+    formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
     formStructureMutator?: PydanticFormsContextConfig['formStructureMutator'],
 ): {
@@ -109,7 +125,7 @@ export const usePydanticFormParser = (
             description: parsedSchema?.description,
             additionalProperties: parsedSchema?.additionalProperties,
             required: parsedSchema?.required,
-            properties: parseProperties(parsedSchema),
+            properties: parseProperties(parsedSchema, formLabels),
         };
 
         return formStructureMutator

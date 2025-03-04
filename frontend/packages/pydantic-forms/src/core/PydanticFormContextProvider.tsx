@@ -76,7 +76,8 @@ function PydanticFormContextProvider({
         labelProvider,
         customDataProvider,
         customDataProviderCacheKey,
-
+        formStructureMutator,
+        fieldDetailProvider,
         onFieldChangeHandler,
         resetButtonAlternative,
         customValidationRules,
@@ -132,7 +133,12 @@ function PydanticFormContextProvider({
 
     // extract the JSON schema to a more usable custom schema
     const { pydanticFormSchema, isLoading: isParsingSchema } =
-        usePydanticFormParser(rawSchema);
+        usePydanticFormParser(
+            rawSchema,
+            formLabels,
+            fieldDetailProvider,
+            formStructureMutator,
+        );
 
     const rhfRef = useRef<ReturnType<typeof useForm>>();
     // build validation rules based on custom schema
