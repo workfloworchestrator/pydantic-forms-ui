@@ -6,18 +6,14 @@ import type { FormRenderer as Renderer } from '@/types';
 
 export const FormRenderer: Renderer = ({ pydanticFormComponents }) => {
     const formSections = getFieldBySection(pydanticFormComponents);
-
+    console.log(formSections);
     const sections = formSections.map((section) => (
         <RenderSections
             section={section}
             key={section.id}
             components={pydanticFormComponents}
         >
-            {({ components }) => (
-                <div>
-                    <RenderFields components={components} />
-                </div>
-            )}
+            {({ components }) => <RenderFields components={components} />}
         </RenderSections>
     ));
 

@@ -1,6 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
-
-import $RefParser from '@apidevtools/json-schema-ref-parser';
+import { useMemo } from 'react';
 
 import {
     getFieldAllOfAnyOfEntry,
@@ -17,7 +15,9 @@ import {
  *
  */
 import type {
+    Properties,
     PydanticFormField,
+    PydanticFormPropertySchemaParsed,
     PydanticFormSchema,
     PydanticFormSchemaParsed,
     PydanticFormSchemaRawJson,
@@ -38,23 +38,16 @@ const translateLabel = (
 };
 
 const parseProperties = (
-    parsedSchema: PydanticFormSchemaParsed,
+    parsedSchema: PydanticFormSchemaParsed | PydanticFormPropertySchemaParsed,
     formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
     prefix: string = '',
 ) => {
-    if (!parsedSchema) return {};
+    if (!parsedSchema || !parsedSchema.properties) return {};
 
-    const schemaProperties = parsedSchema.properties;
-
-    if (!schemaProperties) return {};
-
-    const properties = Object.entries(schemaProperties);
-    const parsedProperties = properties.reduce(
-        (
-            propertiesObject: PydanticFormSchema['properties'],
-            [propertyId, propertySchema],
-        ) => {
+    const p = Object.entries(parsedSchema.properties);
+    const parsedProperties = p.reduce(
+        (propertiesObject: Properties, [propertyId, propertySchema]) => {
             const options = getFieldOptions(propertySchema);
             const fieldOptionsEntry = getFieldAllOfAnyOfEntry(propertySchema);
             const id = `${prefix && prefix + '.'}${propertyId}`;
@@ -85,6 +78,12 @@ const parseProperties = (
                 schemaProperty: propertySchema,
                 validations: getFieldValidation(propertySchema),
                 columns: 6, // TODO: Is this still relevant?
+                properties: parseProperties(
+                    propertySchema || {},
+                    formLabels,
+                    fieldDetailProvider,
+                    id,
+                ),
                 ...fieldDetailProvider?.[propertyId],
             };
 

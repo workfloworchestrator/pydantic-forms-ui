@@ -19,7 +19,7 @@ export function RenderFields({ components }: RenderFieldsProps) {
         const field: PydanticFormField = component.pydanticFormField;
 
         if (!Element) {
-            return <></>;
+            return undefined;
         }
 
         if (isControlledElement) {

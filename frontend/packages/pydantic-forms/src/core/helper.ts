@@ -8,7 +8,6 @@ import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 import defaultComponentMatchers from '@/components/defaultComponentMatchers';
 import {
     Properties,
-    PydanticComponentMatcher,
     PydanticFormApiResponse,
     PydanticFormComponents,
     PydanticFormField,
@@ -179,7 +178,6 @@ export const getFlatFieldMap = (
     properties: Properties,
     fieldMap: FieldMap = new Map(),
 ) => {
-    console.log('props', properties);
     if (properties) {
         Object.entries(properties ?? {}).forEach(([id, field]) => {
             if (field.properties) {

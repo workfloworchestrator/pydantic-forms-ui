@@ -419,7 +419,7 @@ export interface PydanticFormPropertySchemaParsed
         password: boolean;
     };
 
-    properties?: RawJsonProperties;
+    properties?: ParsedProperties;
 }
 
 export interface PydanticFormFieldAnyOfDefParsed

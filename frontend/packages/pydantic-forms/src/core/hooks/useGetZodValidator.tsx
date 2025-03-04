@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 
 import { z } from 'zod';
 
-import { getMatcher } from '@/core/helper';
+import { getFlatFieldMap, getMatcher } from '@/core/helper';
 import {
     CustomValidationRule,
     PydanticFormField,
@@ -21,20 +21,6 @@ import {
 } from '@/types';
 
 type PropertyMap = Map<string, PydanticFormField>;
-
-const getFlatPropertyMap = (schema: PydanticFormSchema): PropertyMap => {
-    const propertyMap: PropertyMap = new Map();
-
-    if (schema) {
-        Object.entries(schema.properties ?? {}).forEach(
-            ([id, pydanticFormPropertySchema]) => {
-                propertyMap.set(id, pydanticFormPropertySchema);
-            },
-        );
-    }
-
-    return propertyMap;
-};
 
 const getClientSideValidationRule = (
     field: PydanticFormField,
@@ -69,10 +55,10 @@ export const useGetZodValidator = (
             return z.object({});
         }
         // Get all fields ids including the nested ones to generate the correct validation schema
-        const flatPropertyMap = getFlatPropertyMap(pydanticFormSchema);
+        const flatFieldMap = getFlatFieldMap(pydanticFormSchema.properties);
 
         return z.object(
-            [...flatPropertyMap].reduce(
+            [...flatFieldMap].reduce(
                 (validationObject, [propertyId, pydanticFormField]) => {
                     const fieldRules =
                         customValidationRule?.(pydanticFormField, rhf) ??

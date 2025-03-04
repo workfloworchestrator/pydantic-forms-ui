@@ -1,3 +1,3 @@
 export * from './PydanticFormContextProvider';
 export * from './hooks';
-export * from './componentMatcher';
+export * from '../components/componentMatcher';
