@@ -83,7 +83,7 @@ function PydanticFormContextProvider({
         customValidationRules,
         allowUntouchedSubmit,
         skipSuccessNotice,
-
+        componentMatcher,
         cancelButton,
     } = config;
 
@@ -146,6 +146,7 @@ function PydanticFormContextProvider({
         pydanticFormSchema,
         rhfRef.current,
         customValidationRules,
+        componentMatcher,
     );
 
     // initialize the react-hook-form

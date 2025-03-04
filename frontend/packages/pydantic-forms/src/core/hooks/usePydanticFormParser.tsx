@@ -107,15 +107,11 @@ export const usePydanticFormParser = (
     isLoading: boolean;
     error: Error | undefined;
 } => {
-    console.log(formLabels, formStructureMutator, fieldDetailProvider);
-
     const {
         data: parsedSchema,
         isLoading,
         error,
     } = useRefParser('parseSchema', rawJsonSchema);
-    // Add label translations to title and description
-    // Use formStructure mutator
 
     const pydanticFormSchema = useMemo((): PydanticFormSchema | undefined => {
         if (!parsedSchema) return undefined;

@@ -7,6 +7,7 @@ import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
 import defaultComponentMatchers from '@/components/defaultComponentMatchers';
 import {
+    PydanticComponentMatcher,
     PydanticFormApiResponse,
     PydanticFormComponents,
     PydanticFormField,
@@ -289,7 +290,7 @@ export const getFormValuesFromFieldOrLabels = (
     // NOTE: PydanticFormSchema has recursive property ids at this point
     // The data in label data is flat so we need to take care of that
 
-    const fieldValues: Record<string, any> = {};
+    const fieldValues: Record<string, string> = {};
 
     /*
     const includedFields: string[] = [];
@@ -365,9 +366,16 @@ export const rhfTriggerValidationsOnChange =
         rhf.trigger(field.name);
     };
 
-export const getMatchers = (
-    componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
-) =>
-    componentMatcher
-        ? componentMatcher(defaultComponentMatchers)
+export const getMatcher = (
+    customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
+) => {
+    const componentMatchers = customComponentMatcher
+        ? customComponentMatcher(defaultComponentMatchers)
         : defaultComponentMatchers;
+
+    return (field: PydanticFormField) => {
+        return componentMatchers.find(({ matcher }) => {
+            return matcher(field);
+        });
+    };
+};

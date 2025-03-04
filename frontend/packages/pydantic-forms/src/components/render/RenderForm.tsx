@@ -9,7 +9,7 @@ import React from 'react';
 
 import Footer from '@/components/form/Footer';
 import RenderFormErrors from '@/components/render/RenderFormErrors';
-import { getComponentMatcher } from '@/core/getComponentMatcher';
+import { componentMatcher } from '@/core/componentMatcher';
 import { PydanticFormComponents, PydanticFormContextProps } from '@/types';
 
 import { FormRenderer } from './FormRenderer';
@@ -50,15 +50,16 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         );
     }
 
-    const { formRenderer } = config || {};
+    const { formRenderer, componentMatcher: customComponentMatcher } =
+        config || {};
     const Renderer = formRenderer ?? FormRenderer;
 
     // Map schema to get fields
-    const componentMatcher = getComponentMatcher(
-        contextProps.config?.componentMatcher,
+
+    const pydanticFormComponents: PydanticFormComponents = componentMatcher(
+        pydanticFormSchema,
+        customComponentMatcher,
     );
-    const pydanticFormComponents: PydanticFormComponents =
-        componentMatcher(pydanticFormSchema);
 
     return (
         <form action={''} onSubmit={submitForm}>

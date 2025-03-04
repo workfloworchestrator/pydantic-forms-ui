@@ -12,29 +12,16 @@ import { useForm } from 'react-hook-form';
 
 import { z } from 'zod';
 
+import { getMatcher } from '@/core/helper';
 import {
     CustomValidationRule,
     PydanticFormField,
     PydanticFormSchema,
+    PydanticFormsContextConfig,
 } from '@/types';
 
 type PropertyMap = Map<string, PydanticFormField>;
 
-/*
-const addSubFieldIds = (
-    schema: PydanticFormPropertySchema,
-    fieldMap: FieldMap,
-    prefix: string
-) => {
-    Object.values(schema.properties ?? {}).forEach((property) => {
-        
-        if (property.type === PydanticFormFieldType.OBJECT) {
-            addSubFieldIds(property.schemaProperty, fieldMap);
-        
-        fieldMap.set(`${prefix}.${property.id}`, property);
-    });
-};
-*/
 const getFlatPropertyMap = (schema: PydanticFormSchema): PropertyMap => {
     const propertyMap: PropertyMap = new Map();
 
@@ -52,15 +39,30 @@ const getFlatPropertyMap = (schema: PydanticFormSchema): PropertyMap => {
 const getClientSideValidationRule = (
     field: PydanticFormField,
     rhf?: ReturnType<typeof useForm>,
+    customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ) => {
-    console.log('getting clientside validation', field, rhf);
-    return false;
+    const matcher = getMatcher(customComponentMatcher);
+
+    const componentMatch = matcher(field);
+
+    let validationRule = componentMatch?.validator?.(field, rhf) ?? z.string();
+
+    if (!field.required) {
+        validationRule = validationRule.optional();
+    }
+
+    if (field.validations.isNullable) {
+        validationRule = validationRule.nullable();
+    }
+
+    return validationRule;
 };
 
 export const useGetZodValidator = (
     pydanticFormSchema?: PydanticFormSchema,
     rhf?: ReturnType<typeof useForm>,
     customValidationRule?: CustomValidationRule,
+    customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ) => {
     return useMemo(() => {
         if (!pydanticFormSchema) {
@@ -74,7 +76,11 @@ export const useGetZodValidator = (
                 (validationObject, [propertyId, pydanticFormField]) => {
                     const fieldRules =
                         customValidationRule?.(pydanticFormField, rhf) ??
-                        getClientSideValidationRule(pydanticFormField, rhf);
+                        getClientSideValidationRule(
+                            pydanticFormField,
+                            rhf,
+                            customComponentMatcher,
+                        );
 
                     return {
                         ...validationObject,
