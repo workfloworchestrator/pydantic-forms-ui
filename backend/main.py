@@ -113,8 +113,8 @@ class ListChoices(Choice):
 
 
 class Education(BaseModel):
-    degree: str
-    year: int
+    degree: str | None
+    year: int | None
 
 
 class Person(BaseModel):
@@ -129,9 +129,9 @@ async def form(form_data: list[dict] = []):
         class TestForm(FormPage):
             model_config = ConfigDict(title="Form Title")
 
-            # number: NumberExample = 3
+            number: NumberExample = 3
             text: Annotated[str, Field(min_length=3, max_length=12)] = "Default text"
-            textArea: LongText = "Default text area"
+            textArea: LongText = "Text area default"
             divider: Divider
             label: Label = "Label"
             hidden: Hidden = "Hidden"
@@ -145,7 +145,7 @@ async def form(form_data: list[dict] = []):
             # multicheckbox: choice_list(MultiCheckBoxChoices, min_items=3) = ["1", "2"]
             # list: choice_list(ListChoices) = [0, 1]
 
-            # person: Person
+            person: Person
 
         form_data_1 = yield TestForm
 

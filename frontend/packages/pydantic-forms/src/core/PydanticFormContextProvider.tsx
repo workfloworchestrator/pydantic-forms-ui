@@ -133,7 +133,8 @@ function PydanticFormContextProvider({
     const [rawSchema, setRawSchema] = useState<PydanticFormSchemaRawJson>();
 
     // extract the JSON schema to a more usable custom schema
-    const pydanticFormSchema = usePydanticFormParser(rawSchema);
+    const { pydanticFormSchema, isLoading: isParsingSchema } =
+        usePydanticFormParser(rawSchema);
 
     const rhfRef = useRef<ReturnType<typeof useForm>>();
     // build validation rules based on custom schema
@@ -224,7 +225,7 @@ function PydanticFormContextProvider({
         });*/
 
         rhf.reset(initialData);
-    }, [customData, formLabels?.data, rhf]);
+    }, [pydanticFormSchema, rhf]);
 
     // a useeffect for filling data whenever formdefinition or labels update
     useEffect(() => {
@@ -304,7 +305,7 @@ function PydanticFormContextProvider({
     const isLoading =
         isLoadingFormLabels ||
         isLoadingSchema ||
-        isLoadingSchema ||
+        isParsingSchema ||
         (customDataProvider ? isLoadingCustomData : false);
 
     const PydanticFormContextState = {
@@ -313,7 +314,7 @@ function PydanticFormContextProvider({
         isSending: isSending && isLoadingSchema,
         isLoading,
         rhf,
-        pydanticFormSchema: pydanticFormSchema || undefined,
+        pydanticFormSchema,
         headerComponent,
         footerComponent,
         onCancel,
@@ -335,7 +336,7 @@ function PydanticFormContextProvider({
         formKey,
         formIdKey,
     };
-    console.log(pydanticFormSchema);
+
     return (
         <PydanticFormContext.Provider value={PydanticFormContextState}>
             {children(PydanticFormContextState)}

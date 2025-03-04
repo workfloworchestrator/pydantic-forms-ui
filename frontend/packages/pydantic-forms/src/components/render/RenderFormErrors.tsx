@@ -8,7 +8,7 @@ import React from 'react';
 import { usePydanticFormContext } from '@/core';
 
 export default function RenderFormErrors() {
-    const { errorDetails, formData } = usePydanticFormContext();
+    const { errorDetails } = usePydanticFormContext();
 
     if (!errorDetails) {
         return <></>;
@@ -21,15 +21,7 @@ export default function RenderFormErrors() {
     const otherErrors = errors.filter((err) => !err.loc.includes('__root__'));
 
     const getFieldLabel = (fieldId: string) => {
-        const field = formData?.fields
-            .filter((field) => field.id === fieldId)
-            .shift();
-
-        if (!field) {
-            return fieldId;
-        }
-
-        return field.title;
+        return fieldId;
     };
 
     return (

@@ -19,9 +19,9 @@ interface RenderSectionsProps {
 }
 
 export function RenderSections({ section, children }: RenderSectionsProps) {
-    const { formData } = usePydanticFormContext();
+    const { pydanticFormData } = usePydanticFormContext();
 
-    const fields = formData?.fields ?? [];
+    const fields = pydanticFormData?.fields ?? [];
 
     return children({
         ...section,

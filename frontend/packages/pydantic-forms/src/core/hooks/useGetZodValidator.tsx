@@ -53,21 +53,21 @@ const getClientSideValidationRule = (
     field: PydanticFormField,
     rhf?: ReturnType<typeof useForm>,
 ) => {
-    console.log(field, rhf);
+    console.log('getting clientside validation', field, rhf);
     return false;
 };
 
 export const useGetZodValidator = (
-    schema?: PydanticFormSchema,
+    pydanticFormSchema?: PydanticFormSchema,
     rhf?: ReturnType<typeof useForm>,
     customValidationRule?: CustomValidationRule,
 ) => {
     return useMemo(() => {
-        if (!schema) {
+        if (!pydanticFormSchema) {
             return z.object({});
         }
         // Get all fields ids including the nested ones to generate the correct validation schema
-        const flatPropertyMap = getFlatPropertyMap(schema);
+        const flatPropertyMap = getFlatPropertyMap(pydanticFormSchema);
 
         return z.object(
             [...flatPropertyMap].reduce(
@@ -84,5 +84,5 @@ export const useGetZodValidator = (
                 {},
             ),
         );
-    }, [customValidationRule, rhf, schema]);
+    }, [customValidationRule, rhf, pydanticFormSchema]);
 };

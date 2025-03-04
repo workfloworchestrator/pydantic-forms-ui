@@ -9,7 +9,7 @@ import { usePydanticFormContext } from '@/core';
 import { getFieldLabelById } from '@/core/helper';
 
 export default function RenderReactHookFormErrors() {
-    const { rhf, formData } = usePydanticFormContext();
+    const { rhf } = usePydanticFormContext();
     const [showDetails, setShowDetails] = useState(false);
 
     const toggleDetails = useCallback(() => {
@@ -49,9 +49,8 @@ export default function RenderReactHookFormErrors() {
                                     const field =
                                         rhf.formState?.errors[fieldKey];
 
-                                    const fieldName = formData
-                                        ? getFieldLabelById(fieldKey, formData)
-                                        : fieldKey;
+                                    const fieldName =
+                                        'TO: Get field name by id function';
                                     return (
                                         <li key={fieldKey}>
                                             <strong className="mr-2">

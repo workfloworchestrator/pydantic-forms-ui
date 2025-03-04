@@ -52,7 +52,7 @@ export interface PydanticFormContextProps {
     isFullFilled: boolean;
     rhf: ReturnType<typeof useForm>;
     errorDetails?: PydanticFormValidationErrorDetails;
-    formData?: PydanticFormData;
+    pydanticFormSchema?: PydanticFormSchema;
     debugMode?: boolean;
     title?: string | boolean;
     sendLabel?: string;
@@ -73,13 +73,6 @@ export interface PydanticFormContextProps {
     config?: PydanticFormsContextConfig;
     formKey: string;
     formIdKey?: string;
-}
-
-export interface PydanticFormData {
-    title?: string;
-    description?: string;
-    state: PydanticFormState;
-    fields: PydanticFormField[];
 }
 
 export enum PydanticFormState {
@@ -306,7 +299,7 @@ export interface PydanticFormsContextConfig {
 }
 
 export type FormRenderer = React.JSXElementConstructor<{
-    pydanticFormData: PydanticFormData;
+    pydanticFormSchema: PydanticFormSchema;
 }>;
 
 export type PydanticFormCustomDataProvider = () => Promise<PydanticFormLabels>;
@@ -328,8 +321,8 @@ export type PydanticFormLabelProvider = ({
 export type PydanticFormLayoutColumnProvider = (fieldId: string) => number;
 
 export type PydanticFormStructureMutator = (
-    formData: PydanticFormData | false,
-) => PydanticFormData | false;
+    formSchema: PydanticFormSchema | false,
+) => PydanticFormSchema | false;
 
 export type PydanticFormApiProvider = ({
     formKey,
@@ -384,14 +377,14 @@ export interface PydanticFormBaseSchema {
 }
 
 export interface PydanticFormSchema extends PydanticFormBaseSchema {
-    type: 'object';
+    type: PydanticFormFieldType.OBJECT;
     properties: {
         [propId: string]: PydanticFormField;
     };
 }
 
 export interface PydanticFormSchemaRawJson extends PydanticFormBaseSchema {
-    type: 'object';
+    type: PydanticFormFieldType.OBJECT;
     properties: {
         [propId: string]: PydanticFormPropertySchemaRawJson;
     };

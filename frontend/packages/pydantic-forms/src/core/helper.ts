@@ -5,17 +5,18 @@
  */
 import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
+import defaultComponentMatchers from '@/components/defaultComponentMatchers';
 import {
     PydanticFormApiResponse,
-    PydanticFormData,
     PydanticFormField,
-    PydanticFormFieldAnyOfItemParsed,
     PydanticFormFieldAttributes,
     PydanticFormFieldOption,
     PydanticFormFieldSection,
     PydanticFormFieldType,
     PydanticFormFieldValidations,
     PydanticFormPropertySchemaParsed,
+    PydanticFormSchema,
+    PydanticFormsContextConfig,
 } from '@/types';
 
 /**
@@ -163,10 +164,9 @@ export const optionsToOption = (
 
 export const getFieldLabelById = (
     fieldId: string,
-    formData: PydanticFormData,
+    formScheam: PydanticFormSchema,
 ) => {
-    const field = formData.fields.filter((field) => field.id === fieldId);
-    return field?.[0]?.title ?? fieldId;
+    return fieldId;
 };
 
 /**
@@ -355,3 +355,10 @@ export const rhfTriggerValidationsOnChange =
         // https://github.com/react-hook-form/react-hook-form/issues/10832
         rhf.trigger(field.name);
     };
+
+export const getMatchers = (
+    componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
+) =>
+    componentMatcher
+        ? componentMatcher(defaultComponentMatchers)
+        : defaultComponentMatchers;
