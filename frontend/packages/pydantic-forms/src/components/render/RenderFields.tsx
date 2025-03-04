@@ -7,18 +7,16 @@
 import React from 'react';
 
 import { WrapFieldElement } from '@/core/WrapFieldElement';
-import { useGetGetComponentMatcher } from '@/core/hooks/useGetComponentMatcher';
-import { PydanticFormField } from '@/types';
+import { PydanticFormComponents, PydanticFormField } from '@/types';
 
 interface RenderFieldsProps {
-    fields: PydanticFormField[];
+    components: PydanticFormComponents;
 }
 
-export function RenderFields({ fields }: RenderFieldsProps) {
-    const componentMatcher = useGetGetComponentMatcher();
-
-    return fields.map((field) => {
-        const { Element, isControlledElement } = componentMatcher(field);
+export function RenderFields({ components }: RenderFieldsProps) {
+    return components.map((component) => {
+        const { Element, isControlledElement } = component.Element;
+        const field: PydanticFormField = component.pydanticFormField;
 
         if (!Element) {
             return <></>;

@@ -4,27 +4,33 @@
  * This component will render all the sections based on the
  * config in the pydanticFormContext
  */
-import { usePydanticFormContext } from '@/core';
-import { PydanticFormField, PydanticFormFieldSection } from '@/types';
+import { PydanticFormComponents, PydanticFormFieldSection } from '@/types';
 
 export interface RenderSectionsChildProps {
     id: string;
     title: string;
-    fields: PydanticFormField[];
+    components: PydanticFormComponents;
 }
 
 interface RenderSectionsProps {
     section: PydanticFormFieldSection;
+    components: PydanticFormComponents;
     children: (props: RenderSectionsChildProps) => React.ReactNode;
 }
 
-export function RenderSections({ section, children }: RenderSectionsProps) {
-    const { pydanticFormData } = usePydanticFormContext();
-
-    const fields = pydanticFormData?.fields ?? [];
-
+export function RenderSections({
+    section,
+    components,
+    children,
+}: RenderSectionsProps) {
     return children({
         ...section,
-        fields: fields.filter((field) => section.fields.includes(field)),
+        components: components.filter((component) =>
+            section.components.find(
+                (sectionComponent) =>
+                    component.pydanticFormField.id ===
+                    sectionComponent.pydanticFormField.id,
+            ),
+        ),
     });
 }

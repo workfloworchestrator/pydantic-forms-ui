@@ -222,12 +222,12 @@ function PydanticFormContextProvider({
         }
 
         const initialData = getFormValuesFromFieldOrLabels(pydanticFormSchema, {
-            ...formLabels?.data,
+            ...formLabels,
             ...customData,
         });
 
         rhf.reset(initialData);
-    }, [customData, formLabels?.data, pydanticFormSchema, rhf]);
+    }, [customData, formLabels, pydanticFormSchema, rhf]);
 
     // a useeffect for filling data whenever formdefinition or labels update
     useEffect(() => {

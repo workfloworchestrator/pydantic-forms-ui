@@ -115,7 +115,7 @@ export interface PydanticFormField {
 export interface PydanticFormFieldSection {
     id: string;
     title: string;
-    fields: PydanticFormField[];
+    components: PydanticFormComponents;
 }
 
 export enum PydanticFormFieldType {
@@ -299,8 +299,15 @@ export interface PydanticFormsContextConfig {
 }
 
 export type FormRenderer = React.JSXElementConstructor<{
-    pydanticFormSchema: PydanticFormSchema;
+    pydanticFormComponents: PydanticFormComponents;
 }>;
+
+interface PydanticFormComponent {
+    Element: ElementMatch;
+    pydanticFormField: PydanticFormField;
+}
+
+export type PydanticFormComponents = PydanticFormComponent[];
 
 export type PydanticFormCustomDataProvider = () => Promise<PydanticFormLabels>;
 

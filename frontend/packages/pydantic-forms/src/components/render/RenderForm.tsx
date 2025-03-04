@@ -9,7 +9,8 @@ import React from 'react';
 
 import Footer from '@/components/form/Footer';
 import RenderFormErrors from '@/components/render/RenderFormErrors';
-import { PydanticFormContextProps } from '@/types';
+import { getComponentMatcher } from '@/core/getComponentMatcher';
+import { PydanticFormComponents, PydanticFormContextProps } from '@/types';
 
 import { FormRenderer } from './FormRenderer';
 
@@ -26,8 +27,6 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         headerComponent,
         skipSuccessNotice,
     } = contextProps;
-
-    console.log('contextprops', contextProps);
 
     if (isLoading && !isSending) {
         return <div>Formulier aan het ophalen... A</div>;
@@ -54,6 +53,13 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
     const { formRenderer } = config || {};
     const Renderer = formRenderer ?? FormRenderer;
 
+    // Map schema to get fields
+    const componentMatcher = getComponentMatcher(
+        contextProps.config?.componentMatcher,
+    );
+    const pydanticFormComponents: PydanticFormComponents =
+        componentMatcher(pydanticFormSchema);
+
     return (
         <form action={''} onSubmit={submitForm}>
             {title !== false && <h2>{title ?? pydanticFormSchema.title}</h2>}
@@ -63,7 +69,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
             <RenderFormErrors />
 
             <div>
-                <Renderer pydanticFormData={pydanticFormSchema} />
+                <Renderer pydanticFormComponents={pydanticFormComponents} />
             </div>
 
             <Footer />

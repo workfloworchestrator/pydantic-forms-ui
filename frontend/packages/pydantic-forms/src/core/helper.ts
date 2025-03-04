@@ -8,6 +8,7 @@ import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 import defaultComponentMatchers from '@/components/defaultComponentMatchers';
 import {
     PydanticFormApiResponse,
+    PydanticFormComponents,
     PydanticFormField,
     PydanticFormFieldAttributes,
     PydanticFormFieldOption,
@@ -227,21 +228,25 @@ export const isNullableField = (field: PydanticFormField) =>
  * every time a field comes by that starts with label_
  * we start a new section
  */
-export const getFieldBySection = (fields: PydanticFormField[]) => {
+export const getFieldBySection = (components: PydanticFormComponents) => {
     const sections: PydanticFormFieldSection[] = [];
     let curSection = 0;
 
-    for (const field of fields) {
-        if (field.id.startsWith('label_')) {
+    // Ids will be nested at this point. We look at the last part of the id
+    for (const component of components) {
+        const id = component.pydanticFormField.id.split('.').pop();
+        const field = component.pydanticFormField;
+
+        if (id && id.startsWith('label_')) {
             curSection++;
             sections.push({
-                id: field.id,
+                id,
 
                 // strange as it is, the backend will put the
                 // correct label in the 'default' prop
                 title: field.default ?? field.title,
 
-                fields: [],
+                components: [],
             });
 
             continue;
@@ -254,7 +259,7 @@ export const getFieldBySection = (fields: PydanticFormField[]) => {
             sections.push({
                 id: 'auto-created-section',
                 title: '',
-                fields: [],
+                components: [],
             });
 
             // Make sure new fields are pushed into this section and
@@ -265,7 +270,7 @@ export const getFieldBySection = (fields: PydanticFormField[]) => {
         // since we start at 0, and the first label will add
         const targetSection = curSection - 1;
 
-        sections[targetSection].fields.push(field);
+        sections[targetSection].components.push(component);
     }
 
     return sections;
@@ -279,12 +284,12 @@ export const getFieldBySection = (fields: PydanticFormField[]) => {
  */
 export const getFormValuesFromFieldOrLabels = (
     pydanticFormSchema: PydanticFormSchema,
-    labelData?: Record<string, string>,
+    labelData?: Record<string, any>,
 ) => {
     // NOTE: PydanticFormSchema has recursive property ids at this point
     // The data in label data is flat so we need to take care of that
 
-    const fieldValues: Record<string, string> = {};
+    const fieldValues: Record<string, any> = {};
 
     /*
     const includedFields: string[] = [];

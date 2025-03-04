@@ -4,15 +4,18 @@ import { RenderFields, RenderSections } from '@/components/render';
 import { getFieldBySection } from '@/core/helper';
 import type { FormRenderer as Renderer } from '@/types';
 
-export const FormRenderer: Renderer = ({ pydanticFormSchema }) => {
-    const formSections = []; //
-    // getFieldBySection(pydanticFormData.fields);
+export const FormRenderer: Renderer = ({ pydanticFormComponents }) => {
+    const formSections = getFieldBySection(pydanticFormComponents);
 
     const sections = formSections.map((section) => (
-        <RenderSections section={section} key={section.id}>
-            {({ fields }) => (
+        <RenderSections
+            section={section}
+            key={section.id}
+            components={pydanticFormComponents}
+        >
+            {({ components }) => (
                 <div>
-                    <RenderFields fields={fields} />
+                    <RenderFields components={components} />
                 </div>
             )}
         </RenderSections>
