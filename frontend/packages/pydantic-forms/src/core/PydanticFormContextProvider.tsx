@@ -84,8 +84,6 @@ function PydanticFormContextProvider({
         skipSuccessNotice,
 
         cancelButton,
-
-        formStructureMutator,
     } = config;
 
     // TODO: Fix this again
@@ -217,15 +215,13 @@ function PydanticFormContextProvider({
             return;
         }
 
-        const initialData = {};
-
-        /*getFormValuesFromFieldOrLabels(pydanticFormSchema.properties, {
+        const initialData = getFormValuesFromFieldOrLabels(pydanticFormSchema, {
             ...formLabels?.data,
             ...customData,
-        });*/
+        });
 
         rhf.reset(initialData);
-    }, [pydanticFormSchema, rhf]);
+    }, [customData, formLabels?.data, pydanticFormSchema, rhf]);
 
     // a useeffect for filling data whenever formdefinition or labels update
     useEffect(() => {
@@ -256,7 +252,7 @@ function PydanticFormContextProvider({
 
     const onClientSideError = useCallback(
         (data?: FieldValues) => {
-            // TODO implement savewith errors toggle
+            // TODO implement save with errors toggle
             if (data) {
                 rhf.clearErrors();
                 submitFormFn();

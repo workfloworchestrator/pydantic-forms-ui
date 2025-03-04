@@ -21,6 +21,7 @@ import type {
     PydanticFormSchema,
     PydanticFormSchemaParsed,
     PydanticFormSchemaRawJson,
+    PydanticFormsContextConfig,
 } from '@/types';
 import { PydanticFormFieldType } from '@/types';
 
@@ -59,10 +60,16 @@ const parseProperties = (
                 isEnumField: options.isOptionsField,
                 default: propertySchema.default,
                 required: false,
+                required: !!schema.required?.includes(fieldId),
                 attributes: getFieldAttributes(propertySchema),
                 schemaProperty: propertySchema,
                 validations: getFieldValidation(propertySchema),
-                columns: 6,
+                columns: 6, // TODO: Is this still
+
+                title: formLabels[fieldId]?.toString() ?? fieldProperties.title,
+                description: formLabels[fieldId + '_info']?.toString() ?? '',
+
+                ...fieldDetailProvider?.[fieldId],
             };
 
             propertiesObject[id] = parsedProperty;
@@ -76,20 +83,27 @@ const parseProperties = (
 
 export const usePydanticFormParser = (
     rawJsonSchema: PydanticFormSchemaRawJson | undefined,
+    formLabels: Record<string, string>,
+    fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
+    formStructureMutator?: PydanticFormsContextConfig['formStructureMutator'],
 ): {
     pydanticFormSchema: PydanticFormSchema | undefined;
     isLoading: boolean;
     error: Error | undefined;
 } => {
+    console.log(formLabels, formStructureMutator, fieldDetailProvider);
+
     const {
         data: parsedSchema,
         isLoading,
         error,
     } = useRefParser('parseSchema', rawJsonSchema);
+    // Add label translations to title and description
+    // Use formStructure mutator
 
     const pydanticFormSchema = useMemo((): PydanticFormSchema | undefined => {
         if (!parsedSchema) return undefined;
-        return {
+        const pydanticFormSchema: PydanticFormSchema = {
             type: PydanticFormFieldType.OBJECT,
             title: parsedSchema?.title,
             description: parsedSchema?.description,
@@ -97,7 +111,11 @@ export const usePydanticFormParser = (
             required: parsedSchema?.required,
             properties: parseProperties(parsedSchema),
         };
-    }, [parsedSchema]);
+
+        return formStructureMutator
+            ? formStructureMutator(pydanticFormSchema)
+            : pydanticFormSchema;
+    }, [formStructureMutator, parsedSchema]);
 
     return {
         pydanticFormSchema,

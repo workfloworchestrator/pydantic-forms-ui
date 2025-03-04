@@ -278,12 +278,15 @@ export const getFieldBySection = (fields: PydanticFormField[]) => {
  * And labelData (this holds the current values from API)
  */
 export const getFormValuesFromFieldOrLabels = (
-    fields: PydanticFormField[],
+    pydanticFormSchema: PydanticFormSchema,
     labelData?: Record<string, string>,
 ) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fieldValues: Record<string, any> = {};
+    // NOTE: PydanticFormSchema has recursive property ids at this point
+    // The data in label data is flat so we need to take care of that
 
+    const fieldValues: Record<string, string> = {};
+
+    /*
     const includedFields: string[] = [];
 
     for (const field of fields) {
@@ -303,6 +306,7 @@ export const getFormValuesFromFieldOrLabels = (
             }
         }
     }
+        */
 
     return fieldValues;
 };

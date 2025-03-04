@@ -314,15 +314,14 @@ export type PydanticFormLabelProvider = ({
 }: {
     formKey: string;
     id?: string | null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}) => Promise<Record<string, any>>;
+}) => Promise<Record<string, string>>;
 
 // will return column
 export type PydanticFormLayoutColumnProvider = (fieldId: string) => number;
 
 export type PydanticFormStructureMutator = (
-    formSchema: PydanticFormSchema | false,
-) => PydanticFormSchema | false;
+    formSchema: PydanticFormSchema | undefined,
+) => PydanticFormSchema | undefined;
 
 export type PydanticFormApiProvider = ({
     formKey,
