@@ -107,9 +107,7 @@ export interface PydanticFormField {
         password: boolean;
     };
 
-    properties?: {
-        [propId: string]: PydanticFormField;
-    };
+    properties?: Properties;
 }
 
 export interface PydanticFormFieldSection {
@@ -384,23 +382,17 @@ export interface PydanticFormBaseSchema {
 
 export interface PydanticFormSchema extends PydanticFormBaseSchema {
     type: PydanticFormFieldType.OBJECT;
-    properties: {
-        [propId: string]: PydanticFormField;
-    };
+    properties: Properties;
 }
 
 export interface PydanticFormSchemaRawJson extends PydanticFormBaseSchema {
     type: PydanticFormFieldType.OBJECT;
-    properties: {
-        [propId: string]: PydanticFormPropertySchemaRawJson;
-    };
+    properties: RawJsonProperties;
 }
 
 export interface PydanticFormSchemaParsed extends PydanticFormBaseSchema {
     type: 'object';
-    properties: {
-        [propId: string]: PydanticFormPropertySchemaParsed;
-    };
+    properties: ParsedProperties;
 }
 
 export interface PydanticFormPropertySchemaParsed
@@ -427,9 +419,7 @@ export interface PydanticFormPropertySchemaParsed
         password: boolean;
     };
 
-    properties?: {
-        [propId: string]: PydanticFormPropertySchemaRawJson;
-    };
+    properties?: RawJsonProperties;
 }
 
 export interface PydanticFormFieldAnyOfDefParsed
@@ -472,10 +462,20 @@ export interface PydanticFormPropertySchemaRawJson
         password: boolean;
     };
 
-    properties?: {
-        [propId: string]: PydanticFormPropertySchemaRawJson;
-    };
+    properties?: RawJsonProperties;
 }
+
+export type RawJsonProperties = {
+    [propId: string]: PydanticFormPropertySchemaRawJson;
+};
+
+export type Properties = {
+    [propId: string]: PydanticFormField;
+};
+
+export type ParsedProperties = {
+    [propId: string]: PydanticFormPropertySchemaParsed;
+};
 
 export interface PydanticFormFieldAnyOfDef {
     items?: JsonSchemaRef;

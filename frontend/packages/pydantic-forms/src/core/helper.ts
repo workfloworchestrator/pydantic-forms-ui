@@ -7,6 +7,7 @@ import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
 import defaultComponentMatchers from '@/components/defaultComponentMatchers';
 import {
+    Properties,
     PydanticComponentMatcher,
     PydanticFormApiResponse,
     PydanticFormComponents,
@@ -166,9 +167,29 @@ export const optionsToOption = (
 
 export const getFieldLabelById = (
     fieldId: string,
-    formScheam: PydanticFormSchema,
+    formSchema?: PydanticFormSchema,
 ) => {
-    return fieldId;
+    const fieldMap = getFlatFieldMap(formSchema?.properties ?? {});
+    console.log('fieldMap', fieldMap);
+    return fieldMap.has(fieldId) ? fieldMap.get(fieldId)?.title : fieldId;
+};
+
+type FieldMap = Map<string, PydanticFormField>;
+export const getFlatFieldMap = (
+    properties: Properties,
+    fieldMap: FieldMap = new Map(),
+) => {
+    console.log('props', properties);
+    if (properties) {
+        Object.entries(properties ?? {}).forEach(([id, field]) => {
+            if (field.properties) {
+                getFlatFieldMap(field.properties, fieldMap);
+            }
+            fieldMap.set(id, field);
+        });
+    }
+
+    return fieldMap;
 };
 
 /**
