@@ -40,6 +40,7 @@ const translateLabel = (
 const parseProperties = (
     parsedSchema: PydanticFormSchemaParsed,
     formLabels?: Record<string, string>,
+    fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
     prefix: string = '',
 ) => {
     if (!parsedSchema) return {};
@@ -84,8 +85,7 @@ const parseProperties = (
                 schemaProperty: propertySchema,
                 validations: getFieldValidation(propertySchema),
                 columns: 6, // TODO: Is this still relevant?
-
-                // ...fieldDetailProvider?.[fieldId],
+                ...fieldDetailProvider?.[propertyId],
             };
 
             propertiesObject[id] = parsedProperty;
@@ -125,7 +125,11 @@ export const usePydanticFormParser = (
             description: parsedSchema?.description,
             additionalProperties: parsedSchema?.additionalProperties,
             required: parsedSchema?.required,
-            properties: parseProperties(parsedSchema, formLabels),
+            properties: parseProperties(
+                parsedSchema,
+                formLabels,
+                fieldDetailProvider,
+            ),
         };
 
         return formStructureMutator
