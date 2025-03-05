@@ -5,7 +5,6 @@
  */
 import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
-import defaultComponentMatchers from '@/components/defaultComponentMatchers';
 import {
     Properties,
     PydanticFormApiResponse,
@@ -18,7 +17,6 @@ import {
     PydanticFormFieldValidations,
     PydanticFormPropertySchemaParsed,
     PydanticFormSchema,
-    PydanticFormsContextConfig,
 } from '@/types';
 
 /**
@@ -169,7 +167,6 @@ export const getFieldLabelById = (
     formSchema?: PydanticFormSchema,
 ) => {
     const fieldMap = getFlatFieldMap(formSchema?.properties ?? {});
-    console.log('fieldMap', fieldMap);
     return fieldMap.has(fieldId) ? fieldMap.get(fieldId)?.title : fieldId;
 };
 
@@ -304,17 +301,14 @@ export const getFieldBySection = (components: PydanticFormComponents) => {
  */
 export const getFormValuesFromFieldOrLabels = (
     pydanticFormSchema: PydanticFormSchema,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     labelData?: Record<string, any>,
 ) => {
-    // NOTE: PydanticFormSchema has recursive property ids at this point
-    // The data in label data is flat so we need to take care of that
-
     const fieldValues: Record<string, string> = {};
 
-    /*
     const includedFields: string[] = [];
 
-    for (const field of fields) {
+    for (const [, field] of Object.entries(pydanticFormSchema.properties)) {
         includedFields.push(field.id);
 
         if (typeof field.default === 'undefined') {
@@ -331,7 +325,6 @@ export const getFormValuesFromFieldOrLabels = (
             }
         }
     }
-        */
 
     return fieldValues;
 };
@@ -384,17 +377,3 @@ export const rhfTriggerValidationsOnChange =
         // https://github.com/react-hook-form/react-hook-form/issues/10832
         rhf.trigger(field.name);
     };
-
-export const getMatcher = (
-    customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
-) => {
-    const componentMatchers = customComponentMatcher
-        ? customComponentMatcher(defaultComponentMatchers)
-        : defaultComponentMatchers;
-
-    return (field: PydanticFormField) => {
-        return componentMatchers.find(({ matcher }) => {
-            return matcher(field);
-        });
-    };
-};

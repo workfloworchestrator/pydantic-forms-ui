@@ -12,37 +12,13 @@ import { useForm } from 'react-hook-form';
 
 import { z } from 'zod';
 
-import { getFlatFieldMap, getMatcher } from '@/core/helper';
+import { getClientSideValidationRule } from '@/components/componentMatcher';
+import { getFlatFieldMap } from '@/core/helper';
 import {
     CustomValidationRule,
-    PydanticFormField,
     PydanticFormSchema,
     PydanticFormsContextConfig,
 } from '@/types';
-
-type PropertyMap = Map<string, PydanticFormField>;
-
-const getClientSideValidationRule = (
-    field: PydanticFormField,
-    rhf?: ReturnType<typeof useForm>,
-    customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
-) => {
-    const matcher = getMatcher(customComponentMatcher);
-
-    const componentMatch = matcher(field);
-
-    let validationRule = componentMatch?.validator?.(field, rhf) ?? z.string();
-
-    if (!field.required) {
-        validationRule = validationRule.optional();
-    }
-
-    if (field.validations.isNullable) {
-        validationRule = validationRule.nullable();
-    }
-
-    return validationRule;
-};
 
 export const useGetZodValidator = (
     pydanticFormSchema?: PydanticFormSchema,
@@ -76,5 +52,5 @@ export const useGetZodValidator = (
                 {},
             ),
         );
-    }, [customValidationRule, rhf, pydanticFormSchema]);
+    }, [customValidationRule, rhf, pydanticFormSchema, customComponentMatcher]);
 };

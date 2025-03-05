@@ -15,7 +15,7 @@ export const ObjectField = ({
         pydanticFormField.properties || {},
         config?.componentMatcher,
     );
-    console.log('components: ' + pydanticFormField.id, components);
+
     return (
         <div>
             <h1>{pydanticFormField.title}</h1>

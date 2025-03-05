@@ -1,11 +1,53 @@
+import { useForm } from 'react-hook-form';
+
+import { z } from 'zod';
+
+import defaultComponentMatchers from '@/components/defaultComponentMatchers';
 import { TextField } from '@/components/fields';
-import { getMatcher } from '@/core/helper';
 import type {
     ElementMatch,
     Properties,
+    PydanticComponentMatcher,
     PydanticFormComponents,
+    PydanticFormField,
     PydanticFormsContextConfig,
 } from '@/types';
+
+export const getMatcher = (
+    customComponentMatcher: PydanticFormsContextConfig['componentMatcher'],
+) => {
+    const componentMatchers = customComponentMatcher
+        ? customComponentMatcher(defaultComponentMatchers)
+        : defaultComponentMatchers;
+
+    return (field: PydanticFormField): PydanticComponentMatcher | undefined => {
+        return componentMatchers.find(({ matcher }) => {
+            return matcher(field);
+        });
+    };
+};
+
+export const getClientSideValidationRule = (
+    field: PydanticFormField,
+    rhf?: ReturnType<typeof useForm>,
+    customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
+) => {
+    const matcher = getMatcher(customComponentMatcher);
+
+    const componentMatch = matcher(field);
+
+    let validationRule = componentMatch?.validator?.(field, rhf) ?? z.string();
+
+    if (!field.required) {
+        validationRule = validationRule.optional();
+    }
+
+    if (field.validations.isNullable) {
+        validationRule = validationRule.nullable();
+    }
+
+    return validationRule;
+};
 
 export const componentMatcher = (
     properties: Properties,

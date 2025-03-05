@@ -45,8 +45,8 @@ const parseProperties = (
 ) => {
     if (!parsedSchema || !parsedSchema.properties) return {};
 
-    const p = Object.entries(parsedSchema.properties);
-    const parsedProperties = p.reduce(
+    const schemaProperties = Object.entries(parsedSchema.properties);
+    const parsedProperties = schemaProperties.reduce(
         (propertiesObject: Properties, [propertyId, propertySchema]) => {
             const options = getFieldOptions(propertySchema);
             const fieldOptionsEntry = getFieldAllOfAnyOfEntry(propertySchema);
@@ -73,9 +73,13 @@ const parseProperties = (
                 options: options.options,
                 isEnumField: options.isOptionsField,
                 default: propertySchema.default,
-                required: !!parsedSchema.required?.includes(propertyId),
+                // TODO: I think object properties should never be required only their properties are or aren't. Should we fix this in the backend?
+                required:
+                    propertySchema.type === PydanticFormFieldType.OBJECT
+                        ? false
+                        : !!parsedSchema.required?.includes(propertyId),
                 attributes: getFieldAttributes(propertySchema),
-                schemaProperty: propertySchema,
+                schema: propertySchema,
                 validations: getFieldValidation(propertySchema),
                 columns: 6, // TODO: Is this still relevant?
                 properties: parseProperties(
@@ -130,7 +134,7 @@ export const usePydanticFormParser = (
         return formStructureMutator
             ? formStructureMutator(pydanticFormSchema)
             : pydanticFormSchema;
-    }, [formStructureMutator, parsedSchema]);
+    }, [formStructureMutator, parsedSchema, formLabels, fieldDetailProvider]);
 
     return {
         pydanticFormSchema,

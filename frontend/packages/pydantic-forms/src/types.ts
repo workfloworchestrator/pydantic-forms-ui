@@ -93,7 +93,7 @@ export interface PydanticFormField {
     columns: number;
     required: boolean;
     isEnumField: boolean;
-    schemaProperty: PydanticFormPropertySchemaParsed;
+    schema: PydanticFormPropertySchemaParsed;
     validations: PydanticFormFieldValidations;
     attributes: PydanticFormFieldAttributes;
 
@@ -319,7 +319,8 @@ export type PydanticFormLabelProvider = ({
 }: {
     formKey: string;
     id?: string | null;
-}) => Promise<Record<string, string>>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+}) => Promise<Record<string, any>>;
 
 // will return column
 export type PydanticFormLayoutColumnProvider = (fieldId: string) => number;
@@ -368,6 +369,7 @@ export interface PydanticFormApiResponse {
 
 export interface PydanticFormBaseSchema {
     title?: string;
+    type: PydanticFormFieldType.OBJECT;
     description?: string;
     additionalProperties?: boolean;
     required?: string[];
@@ -380,23 +382,21 @@ export interface PydanticFormBaseSchema {
     };
 }
 
-export interface PydanticFormSchema extends PydanticFormBaseSchema {
-    type: PydanticFormFieldType.OBJECT;
+export interface PydanticFormSchema
+    extends Omit<PydanticFormBaseSchema, '$defs'> {
     properties: Properties;
 }
 
 export interface PydanticFormSchemaRawJson extends PydanticFormBaseSchema {
-    type: PydanticFormFieldType.OBJECT;
     properties: RawJsonProperties;
 }
 
 export interface PydanticFormSchemaParsed extends PydanticFormBaseSchema {
-    type: 'object';
     properties: ParsedProperties;
 }
 
 export interface PydanticFormPropertySchemaParsed
-    extends PydanticFormBaseSchema,
+    extends Omit<PydanticFormBaseSchema, 'type'>,
         PydanticFormFieldValidations {
     type: PydanticFormFieldType;
 
@@ -444,7 +444,7 @@ export interface PydanticFormFieldAnyOfItemParsed
 }
 
 export interface PydanticFormPropertySchemaRawJson
-    extends PydanticFormBaseSchema,
+    extends Omit<PydanticFormBaseSchema, 'type'>,
         PydanticFormFieldValidations,
         JsonSchemaRef {
     type: PydanticFormFieldType;
