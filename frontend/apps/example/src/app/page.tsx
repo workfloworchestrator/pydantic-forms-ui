@@ -1,6 +1,10 @@
 'use client';
 
-import { PydanticForm, PydanticFormFieldType } from 'pydantic-forms';
+import {
+    PydanticForm,
+    PydanticFormFieldFormat,
+    PydanticFormFieldType,
+} from 'pydantic-forms';
 import type {
     PydanticComponentMatcher,
     PydanticFormApiProvider,
@@ -60,9 +64,7 @@ export default function Home() {
     const componentMatcher = (
         currentMatchers: PydanticComponentMatcher[],
     ): PydanticComponentMatcher[] => {
-        return currentMatchers;
         return [
-            ...currentMatchers,
             {
                 id: 'textarea',
                 ElementMatch: {
@@ -70,9 +72,13 @@ export default function Home() {
                     isControlledElement: true,
                 },
                 matcher(field) {
-                    return field.type === PydanticFormFieldType.STRING;
+                    return (
+                        field.type === PydanticFormFieldType.STRING &&
+                        field.format === PydanticFormFieldFormat.LONG
+                    );
                 },
             },
+            ...currentMatchers,
         ];
     };
 

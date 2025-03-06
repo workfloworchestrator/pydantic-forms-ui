@@ -6,15 +6,17 @@
 import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
 import {
+    Properties,
     PydanticFormApiResponse,
-    PydanticFormApiResponsePropertyResolved,
-    PydanticFormData,
+    PydanticFormComponents,
     PydanticFormField,
     PydanticFormFieldAttributes,
     PydanticFormFieldOption,
     PydanticFormFieldSection,
     PydanticFormFieldType,
-    PydanticFormFieldValidation,
+    PydanticFormFieldValidations,
+    PydanticFormPropertySchemaParsed,
+    PydanticFormSchema,
 } from '@/types';
 
 /**
@@ -48,9 +50,13 @@ export const getErrorDetailsFromResponse = function (
  * @returns anyOf, allOf, or allOf value
  */
 export const getFieldAllOfAnyOfEntry = (
-    field: PydanticFormApiResponsePropertyResolved,
+    propertySchemaParsed: PydanticFormPropertySchemaParsed,
 ) => {
-    const optionFields = [field.anyOf, field.oneOf, field.allOf];
+    const optionFields = [
+        propertySchemaParsed.anyOf,
+        propertySchemaParsed.oneOf,
+        propertySchemaParsed.allOf,
+    ];
 
     for (const optionsDefs of optionFields) {
         if (!optionsDefs) {
@@ -64,35 +70,37 @@ export const getFieldAllOfAnyOfEntry = (
 /**
  * Field to field options
  *
- * @param field A field from the 'properties' key of the JSON Schema
+ * @param propertySchemaParsed A field from the 'properties' key of the JSON Schema
  * @returns an array of options in strings
  */
 export const getFieldOptions = (
-    field: PydanticFormApiResponsePropertyResolved,
+    propertySchemaParsed: PydanticFormPropertySchemaParsed,
 ) => {
     let isOptionsField = false;
     const options: PydanticFormFieldOption[] = [];
 
-    const optionDef = getFieldAllOfAnyOfEntry(field);
+    const optionDef = getFieldAllOfAnyOfEntry(propertySchemaParsed);
 
-    const fieldEnums = field.enum ?? field.items?.enum;
-    const fieldOptions = field.options ?? field.items?.options;
+    const propertyEnums =
+        propertySchemaParsed.enum ?? propertySchemaParsed.items?.enum;
+    const propertyOptions =
+        propertySchemaParsed.options ?? propertySchemaParsed.items?.options;
 
-    if (fieldEnums && !fieldOptions) {
+    if (propertyEnums && !propertyOptions) {
         isOptionsField = true;
 
-        options.push(...enumToOption(fieldEnums));
+        options.push(...enumToOption(propertyEnums));
     }
 
-    if (fieldOptions) {
-        options.push(...optionsToOption(fieldOptions, fieldEnums));
+    if (propertyOptions) {
+        options.push(...optionsToOption(propertyOptions, propertyEnums));
     }
 
     const hasEntryWithEnums = optionDef?.filter(
         (option) => !!option.items?.enum || option?.enum,
     );
 
-    if (field.items) {
+    if (propertySchemaParsed.items) {
         isOptionsField = true;
     }
 
@@ -156,10 +164,27 @@ export const optionsToOption = (
 
 export const getFieldLabelById = (
     fieldId: string,
-    formData: PydanticFormData,
+    formSchema?: PydanticFormSchema,
 ) => {
-    const field = formData.fields.filter((field) => field.id === fieldId);
-    return field?.[0]?.title ?? fieldId;
+    const fieldMap = getFlatFieldMap(formSchema?.properties ?? {});
+    return fieldMap.has(fieldId) ? fieldMap.get(fieldId)?.title : fieldId;
+};
+
+type FieldMap = Map<string, PydanticFormField>;
+export const getFlatFieldMap = (
+    properties: Properties,
+    fieldMap: FieldMap = new Map(),
+) => {
+    if (properties) {
+        Object.entries(properties ?? {}).forEach(([id, field]) => {
+            if (field.properties) {
+                getFlatFieldMap(field.properties, fieldMap);
+            }
+            fieldMap.set(id, field);
+        });
+    }
+
+    return fieldMap;
 };
 
 /**
@@ -169,9 +194,9 @@ export const getFieldLabelById = (
  * @returns returns a validation object
  */
 export const getFieldValidation = (
-    fieldProperties: PydanticFormApiResponsePropertyResolved,
+    fieldProperties: PydanticFormPropertySchemaParsed,
 ) => {
-    const validation: PydanticFormFieldValidation = {};
+    const validation: PydanticFormFieldValidations = {};
     const propertyDef = getFieldAllOfAnyOfEntry(fieldProperties);
     const isNullable = propertyDef?.filter((option) => option.type === 'null');
 
@@ -211,7 +236,7 @@ export const getFieldValidation = (
  * @returns
  */
 export const isNullableField = (field: PydanticFormField) =>
-    !!field.validation.isNullable;
+    !!field.validations.isNullable;
 
 /**
  * Sort field per section for displaying
@@ -220,21 +245,25 @@ export const isNullableField = (field: PydanticFormField) =>
  * every time a field comes by that starts with label_
  * we start a new section
  */
-export const getFieldBySection = (fields: PydanticFormField[]) => {
+export const getFieldBySection = (components: PydanticFormComponents) => {
     const sections: PydanticFormFieldSection[] = [];
     let curSection = 0;
 
-    for (const field of fields) {
-        if (field.id.startsWith('label_')) {
+    // Ids will be nested at this point. We look at the last part of the id
+    for (const component of components) {
+        const id = component.pydanticFormField.id.split('.').pop();
+        const field = component.pydanticFormField;
+
+        if (id && id.startsWith('label_')) {
             curSection++;
             sections.push({
-                id: field.id,
+                id,
 
                 // strange as it is, the backend will put the
                 // correct label in the 'default' prop
                 title: field.default ?? field.title,
 
-                fields: [],
+                components: [],
             });
 
             continue;
@@ -247,7 +276,7 @@ export const getFieldBySection = (fields: PydanticFormField[]) => {
             sections.push({
                 id: 'auto-created-section',
                 title: '',
-                fields: [],
+                components: [],
             });
 
             // Make sure new fields are pushed into this section and
@@ -258,7 +287,7 @@ export const getFieldBySection = (fields: PydanticFormField[]) => {
         // since we start at 0, and the first label will add
         const targetSection = curSection - 1;
 
-        sections[targetSection].fields.push(field);
+        sections[targetSection].components.push(component);
     }
 
     return sections;
@@ -271,15 +300,15 @@ export const getFieldBySection = (fields: PydanticFormField[]) => {
  * And labelData (this holds the current values from API)
  */
 export const getFormValuesFromFieldOrLabels = (
-    fields: PydanticFormField[],
-    labelData?: Record<string, string>,
-) => {
+    pydanticFormSchema: PydanticFormSchema,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fieldValues: Record<string, any> = {};
+    labelData?: Record<string, any>,
+) => {
+    const fieldValues: Record<string, string> = {};
 
     const includedFields: string[] = [];
 
-    for (const field of fields) {
+    for (const [, field] of Object.entries(pydanticFormSchema.properties)) {
         includedFields.push(field.id);
 
         if (typeof field.default === 'undefined') {
@@ -304,7 +333,7 @@ export const getFormValuesFromFieldOrLabels = (
  * Finds and returns the attributes in the schemafield
  */
 export const getFieldAttributes = function (
-    schemaField: PydanticFormApiResponsePropertyResolved,
+    schemaField: PydanticFormPropertySchemaParsed,
 ) {
     const attributes: PydanticFormFieldAttributes = {};
 

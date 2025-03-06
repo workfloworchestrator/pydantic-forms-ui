@@ -7,30 +7,33 @@
  */
 import React from 'react';
 
+import { componentMatcher } from '@/components/componentMatcher';
 import Footer from '@/components/form/Footer';
 import RenderFormErrors from '@/components/render/RenderFormErrors';
-import { PydanticFormContextProps } from '@/types';
+import { PydanticFormComponents, PydanticFormContextProps } from '@/types';
 
 import { FormRenderer } from './FormRenderer';
 
-const RenderForm = ({
-    submitForm,
-    formData,
-    config,
-    isLoading,
-    isFullFilled,
-    successNotice,
-    isSending,
-    title,
-    headerComponent,
-    skipSuccessNotice,
-}: PydanticFormContextProps) => {
+const RenderForm = (contextProps: PydanticFormContextProps) => {
+    const {
+        submitForm,
+        pydanticFormSchema,
+        config,
+        isLoading,
+        isFullFilled,
+        successNotice,
+        isSending,
+        title,
+        headerComponent,
+        skipSuccessNotice,
+    } = contextProps;
+
     if (isLoading && !isSending) {
-        return <div>Formulier aan het ophalen...</div>;
+        return <div>Formulier aan het ophalen... A</div>;
     }
 
-    if (!formData) {
-        return <div>Formulier aan het ophalen...</div>;
+    if (!pydanticFormSchema) {
+        return <div>Formulier aan het ophalen... B</div>;
     }
 
     if (isSending) {
@@ -46,19 +49,28 @@ const RenderForm = ({
             <div>{successNotice ?? 'Je inzending is succesvol ontvangen'}</div>
         );
     }
-    const { formRenderer } = config || {};
+
+    const { formRenderer, componentMatcher: customComponentMatcher } =
+        config || {};
     const Renderer = formRenderer ?? FormRenderer;
+
+    // Map schema to get fields
+
+    const pydanticFormComponents: PydanticFormComponents = componentMatcher(
+        pydanticFormSchema.properties,
+        customComponentMatcher,
+    );
 
     return (
         <form action={''} onSubmit={submitForm}>
-            {title !== false && <h2>{title ?? formData.title}</h2>}
+            {title !== false && <h2>{title ?? pydanticFormSchema.title}</h2>}
 
             {headerComponent}
 
             <RenderFormErrors />
 
             <div>
-                <Renderer pydanticFormData={formData} />
+                <Renderer pydanticFormComponents={pydanticFormComponents} />
             </div>
 
             <Footer />

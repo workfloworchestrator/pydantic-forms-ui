@@ -6,9 +6,10 @@
 import React from 'react';
 
 import { usePydanticFormContext } from '@/core';
+import { getFieldLabelById } from '@/core/helper';
 
 export default function RenderFormErrors() {
-    const { errorDetails, formData } = usePydanticFormContext();
+    const { errorDetails, pydanticFormSchema } = usePydanticFormContext();
 
     if (!errorDetails) {
         return <></>;
@@ -20,18 +21,6 @@ export default function RenderFormErrors() {
         .shift();
     const otherErrors = errors.filter((err) => !err.loc.includes('__root__'));
 
-    const getFieldLabel = (fieldId: string) => {
-        const field = formData?.fields
-            .filter((field) => field.id === fieldId)
-            .shift();
-
-        if (!field) {
-            return fieldId;
-        }
-
-        return field.title;
-    };
-
     return (
         <div>
             {!!rootError && <div>{rootError.msg}</div>}
@@ -40,8 +29,15 @@ export default function RenderFormErrors() {
                 <ul>
                     {otherErrors.map((error) => (
                         <li key={JSON.stringify(error)}>
-                            {error.loc.map(getFieldLabel).join(', ')}:{' '}
-                            {error.msg}
+                            {error.loc
+                                .map((value) =>
+                                    getFieldLabelById(
+                                        value,
+                                        pydanticFormSchema,
+                                    ),
+                                )
+                                .join(', ')}
+                            : {error.msg}
                         </li>
                     ))}
                 </ul>

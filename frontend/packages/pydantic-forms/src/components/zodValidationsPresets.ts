@@ -14,7 +14,7 @@ import { PydanticFormZodValidationPresets } from '@/types';
 // to prevent duplicate code in components that have (almost)the same validation
 export const zodValidationPresets: PydanticFormZodValidationPresets = {
     string: (field) => {
-        const { maxLength, minLength, pattern } = field?.validation ?? {};
+        const { maxLength, minLength, pattern } = field?.validations ?? {};
 
         let validationRule = z.string().trim();
         if (minLength) {
@@ -64,7 +64,7 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
             exclusiveMaximum,
             exclusiveMinimum,
             multipleOf,
-        } = field?.validation ?? {};
+        } = field?.validations ?? {};
 
         let validationRule = z
             .number({
@@ -111,7 +111,7 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
         return validationRule;
     },
     array: (field) => {
-        const { minimum, maximum } = field?.validation ?? {};
+        const { minimum, maximum } = field?.validations ?? {};
 
         let validationRule = z.array(z.boolean());
 

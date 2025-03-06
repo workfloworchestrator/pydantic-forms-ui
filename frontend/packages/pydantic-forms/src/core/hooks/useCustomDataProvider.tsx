@@ -2,7 +2,7 @@ import useSWR from 'swr';
 
 import { PydanticFormCustomDataProvider, PydanticFormLabels } from '@/types';
 
-const useCustomDataProvider = (
+export const useCustomDataProvider = (
     customDataProviderCacheKey: number,
     customDataProvider?: PydanticFormCustomDataProvider,
 ) => {
@@ -31,5 +31,3 @@ const useCustomDataProvider = (
         },
     );
 };
-
-export default useCustomDataProvider;

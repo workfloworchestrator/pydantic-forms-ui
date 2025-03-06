@@ -1,85 +1,144 @@
+import { useMemo } from 'react';
+
+import {
+    getFieldAllOfAnyOfEntry,
+    getFieldAttributes,
+    getFieldOptions,
+    getFieldValidation,
+} from '@/core/helper';
+
 /**
  * Pydantic Forms
  *
- * A hook that will parse the received and parsed JSON Schema
- * to something more usable in the templates
+ * A hook that will parse the received JSON Schema
+ * and parse it and turn it into something more usable.
  *
- * - Adds translations to fields
- * - Organizes the fields types and their options
- * - Marks required fields in their definition
  */
-import { useMemo } from 'react';
-
 import type {
-    PydanticFormApiRefResolved,
-    PydanticFormData,
-    PydanticFormFieldDetailProvider,
-    PydanticFormLabels,
-    PydanticFormLayoutColumnProvider,
+    Properties,
+    PydanticFormField,
+    PydanticFormPropertySchemaParsed,
+    PydanticFormSchema,
+    PydanticFormSchemaParsed,
+    PydanticFormSchemaRawJson,
     PydanticFormsContextConfig,
 } from '@/types';
-import {
-    PydanticFormFieldFormat,
-    PydanticFormFieldType,
-    PydanticFormState,
-} from '@/types';
+import { PydanticFormFieldType } from '@/types';
 
-import { mapFieldToComponent } from '../mapFieldToComponent';
+import { useRefParser } from './useRefParser';
 
-const emptySchema: PydanticFormApiRefResolved = {
-    title: '',
-    description: '',
-    additionalProperties: false,
-    type: 'object',
-    properties: {
-        property: {
-            type: PydanticFormFieldType.STRING,
-            title: '',
-            format: PydanticFormFieldFormat.DEFAULT,
-        },
-    },
+const translateLabel = (
+    propertyId: string,
+    label?: string,
+    formLabels?: Record<string, string>,
+): string | undefined => {
+    return formLabels && formLabels[propertyId]
+        ? formLabels[propertyId].toString()
+        : label;
 };
 
-export function usePydanticFormParser(
-    schema: PydanticFormApiRefResolved = emptySchema,
-    formLabels?: PydanticFormLabels,
-    fieldDetailProvider?: PydanticFormFieldDetailProvider,
-    layoutColumnProvider?: PydanticFormLayoutColumnProvider,
-    componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
-): PydanticFormData | false {
-    return useMemo(() => {
-        if (!schema) return false;
+const parseProperties = (
+    parsedSchema: PydanticFormSchemaParsed | PydanticFormPropertySchemaParsed,
+    formLabels?: Record<string, string>,
+    fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
+    prefix: string = '',
+) => {
+    if (!parsedSchema || !parsedSchema.properties) return {};
 
-        const mapper = (fieldId: string) => {
-            return mapFieldToComponent(
-                fieldId,
-                schema,
+    const schemaProperties = Object.entries(parsedSchema.properties);
+    const parsedProperties = schemaProperties.reduce(
+        (propertiesObject: Properties, [propertyId, propertySchema]) => {
+            const options = getFieldOptions(propertySchema);
+            const fieldOptionsEntry = getFieldAllOfAnyOfEntry(propertySchema);
+            const id = `${prefix && prefix + '.'}${propertyId}`;
+
+            const parsedProperty: PydanticFormField = {
+                id,
+                title: translateLabel(
+                    propertyId,
+                    propertySchema.title,
+                    formLabels,
+                ),
+                description: translateLabel(
+                    `${propertyId}_info`,
+                    propertySchema.description,
+                    formLabels,
+                ),
+
+                format: propertySchema.format ?? fieldOptionsEntry?.[0]?.format,
+                type:
+                    propertySchema.type ??
+                    fieldOptionsEntry?.[0]?.type ??
+                    fieldOptionsEntry?.[0]?.items?.type,
+                options: options.options,
+                isEnumField: options.isOptionsField,
+                default: propertySchema.default,
+                // TODO: I think object properties should never be required only their properties are or aren't. Should we fix this in the backend?
+                required:
+                    propertySchema.type === PydanticFormFieldType.OBJECT
+                        ? false
+                        : !!parsedSchema.required?.includes(propertyId),
+                attributes: getFieldAttributes(propertySchema),
+                schema: propertySchema,
+                validations: getFieldValidation(propertySchema),
+                columns: 6, // TODO: Is this still relevant?
+                properties: parseProperties(
+                    propertySchema || {},
+                    formLabels,
+                    fieldDetailProvider,
+                    id,
+                ),
+                ...fieldDetailProvider?.[propertyId],
+            };
+
+            propertiesObject[id] = parsedProperty;
+            return propertiesObject;
+        },
+        {},
+    );
+
+    return parsedProperties;
+};
+
+export const usePydanticFormParser = (
+    rawJsonSchema: PydanticFormSchemaRawJson | undefined,
+    formLabels?: Record<string, string>,
+    fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
+    formStructureMutator?: PydanticFormsContextConfig['formStructureMutator'],
+): {
+    pydanticFormSchema: PydanticFormSchema | undefined;
+    isLoading: boolean;
+    error: Error | undefined;
+} => {
+    const {
+        data: parsedSchema,
+        isLoading,
+        error,
+    } = useRefParser('parseSchema', rawJsonSchema);
+
+    const pydanticFormSchema = useMemo((): PydanticFormSchema | undefined => {
+        if (!parsedSchema) return undefined;
+        const pydanticFormSchema: PydanticFormSchema = {
+            type: PydanticFormFieldType.OBJECT,
+            title: parsedSchema?.title,
+            description: parsedSchema?.description,
+            additionalProperties: parsedSchema?.additionalProperties,
+            required: parsedSchema?.required,
+            properties: parseProperties(
+                parsedSchema,
                 formLabels,
                 fieldDetailProvider,
-                componentMatcher,
-            );
+            ),
         };
 
-        const fieldIds = Object.keys(schema.properties ?? {});
+        return formStructureMutator
+            ? formStructureMutator(pydanticFormSchema)
+            : pydanticFormSchema;
+    }, [formStructureMutator, parsedSchema, formLabels, fieldDetailProvider]);
 
-        const fields = fieldIds
-            .map((fieldId) => mapper(fieldId))
-            .map((field) => ({
-                ...field,
-                columns: layoutColumnProvider?.(field.id) ?? field.columns,
-            }));
-
-        return {
-            title: schema.title,
-            description: schema.description,
-            state: PydanticFormState.NEW,
-            fields,
-        };
-    }, [
-        schema,
-        formLabels,
-        fieldDetailProvider,
-        componentMatcher,
-        layoutColumnProvider,
-    ]);
-}
+    return {
+        pydanticFormSchema,
+        isLoading,
+        error,
+    };
+};

@@ -25,7 +25,7 @@ export function useLabelProvider(
     cacheKey?: number,
     swrConfig?: SWRConfiguration,
 ) {
-    return useSWR<Record<string, any>>(
+    return useSWR<Record<string, string> | undefined>(
         // cache key
         [labelProvider, formKey, id, swrConfig, cacheKey],
 

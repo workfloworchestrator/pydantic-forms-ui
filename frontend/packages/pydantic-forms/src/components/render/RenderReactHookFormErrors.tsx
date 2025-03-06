@@ -9,7 +9,7 @@ import { usePydanticFormContext } from '@/core';
 import { getFieldLabelById } from '@/core/helper';
 
 export default function RenderReactHookFormErrors() {
-    const { rhf, formData } = usePydanticFormContext();
+    const { rhf, pydanticFormSchema } = usePydanticFormContext();
     const [showDetails, setShowDetails] = useState(false);
 
     const toggleDetails = useCallback(() => {
@@ -46,18 +46,21 @@ export default function RenderReactHookFormErrors() {
                         <ul className="error-list mb-2">
                             {Object.keys(rhf.formState.errors).map(
                                 (fieldKey) => {
-                                    const field =
+                                    const fieldError =
                                         rhf.formState?.errors[fieldKey];
 
-                                    const fieldName = formData
-                                        ? getFieldLabelById(fieldKey, formData)
-                                        : fieldKey;
+                                    const fieldName = getFieldLabelById(
+                                        fieldKey,
+                                        pydanticFormSchema,
+                                    );
+
                                     return (
                                         <li key={fieldKey}>
                                             <strong className="mr-2">
                                                 {fieldName}:{' '}
                                             </strong>
-                                            {(field?.message as string) ?? ''}
+                                            {(fieldError?.message as string) ??
+                                                ''}
                                         </li>
                                     );
                                 },

@@ -8,7 +8,6 @@ import type {
 
 import { z } from 'zod';
 
-/****** Pydantic forms renamed types ******/
 export type PydanticFormMetaData = {
     [key: string | number]: PydanticFormFieldValue;
 };
@@ -36,7 +35,6 @@ export interface PydanticFormInitialContextProps {
 
 export type PydanticFormElementProps = {
     pydanticFormField: PydanticFormField;
-    rhf: ReturnType<typeof useForm>;
 };
 
 export type PydanticFormElement =
@@ -54,7 +52,7 @@ export interface PydanticFormContextProps {
     isFullFilled: boolean;
     rhf: ReturnType<typeof useForm>;
     errorDetails?: PydanticFormValidationErrorDetails;
-    formData?: PydanticFormData;
+    pydanticFormSchema?: PydanticFormSchema;
     debugMode?: boolean;
     title?: string | boolean;
     sendLabel?: string;
@@ -73,13 +71,8 @@ export interface PydanticFormContextProps {
     setSaveToLeavePageInCurrentState: Dispatch<SetStateAction<boolean>>;
     hasCardWrapper?: boolean;
     config?: PydanticFormsContextConfig;
-}
-
-export interface PydanticFormData {
-    title: string;
-    description: string;
-    state: PydanticFormState;
-    fields: PydanticFormField[];
+    formKey: string;
+    formIdKey?: string;
 }
 
 export enum PydanticFormState {
@@ -90,8 +83,8 @@ export enum PydanticFormState {
 
 export interface PydanticFormField {
     id: string;
-    title: string;
-    description: string;
+    title?: string;
+    description?: string;
     type: PydanticFormFieldType;
     format: PydanticFormFieldFormat;
     options: PydanticFormFieldOption[];
@@ -100,16 +93,27 @@ export interface PydanticFormField {
     columns: number;
     required: boolean;
     isEnumField: boolean;
-    schemaField: PydanticFormApiResponsePropertyResolved;
-    validation: PydanticFormFieldValidation;
+    schema: PydanticFormPropertySchemaParsed;
+    validations: PydanticFormFieldValidations;
     attributes: PydanticFormFieldAttributes;
-    componentMatch?: PydanticComponentMatcher;
+
+    anyOf?: PydanticFormFieldAnyOfDef[];
+    oneOf?: PydanticFormFieldAnyOfDef[];
+    allOf?: PydanticFormFieldAnyOfDef[];
+
+    uniforms?: {
+        disabled: boolean;
+        sensitive: boolean;
+        password: boolean;
+    };
+
+    properties?: Properties;
 }
 
 export interface PydanticFormFieldSection {
     id: string;
     title: string;
-    fields: PydanticFormField[];
+    components: PydanticFormComponents;
 }
 
 export enum PydanticFormFieldType {
@@ -171,32 +175,7 @@ export interface PydanticFormFieldOption {
     label: string;
 }
 
-export interface PydanticFormApiResponsePropertyResolved
-    extends PydanticFormFieldValidation {
-    type: PydanticFormFieldType;
-
-    anyOf?: PydanticFormFieldAnyOfResolved[];
-    oneOf?: PydanticFormFieldAnyOfResolved[];
-    allOf?: PydanticFormFieldAnyOfResolved[];
-
-    items?: PydanticFormFieldAnyOfResolvedItems;
-    enum?: string[];
-    options?: {
-        [id: string]: string;
-    };
-
-    default?: string | null;
-    title: string;
-    format: PydanticFormFieldFormat;
-
-    uniforms?: {
-        disabled: boolean;
-        sensitive: boolean;
-        password: boolean;
-    };
-}
-
-export interface PydanticFormFieldValidation {
+export interface PydanticFormFieldValidations {
     maxLength?: number;
     minLength?: number;
     pattern?: string;
@@ -209,33 +188,13 @@ export interface PydanticFormFieldValidation {
 }
 
 export interface PydanticFormFieldAttributes
-    extends PydanticFormFieldValidation {
+    extends PydanticFormFieldValidations {
     disabled?: boolean;
     sensitive?: boolean;
     password?: boolean;
     isAgreeField?: {
         label?: string;
     };
-}
-
-export interface PydanticFormFieldAnyOfResolved
-    extends PydanticFormFieldValidation {
-    items?: PydanticFormFieldAnyOfResolvedItems;
-    enum?: string[];
-    options?: {
-        [id: string]: string;
-    };
-    format?: 'date' | 'date-time';
-    type: PydanticFormListFieldType;
-}
-export interface PydanticFormFieldAnyOfResolvedItems
-    extends PydanticFormFieldValidation {
-    enum: string[];
-    options?: {
-        [id: string]: string;
-    };
-    title: string;
-    type: PydanticFormListFieldType;
 }
 
 export type PydanticFormListFieldType =
@@ -265,17 +224,19 @@ export interface PydanticFormApiValidationError {
 
 export interface PydanticComponentMatcher {
     id: string;
-    ElementMatch: ElementMatch | ControlledElementMatch;
+    ElementMatch: ElementMatch;
     validator?: PydanticFormZodValidationFn;
     matcher: (field: PydanticFormField) => boolean;
 }
 
-type ElementMatch = {
+export type ElementMatch = UncontrolledElementMatch | ControlledElementMatch;
+
+export type UncontrolledElementMatch = {
     Element: PydanticFormElement;
     isControlledElement: false;
 };
 
-type ControlledElementMatch = {
+export type ControlledElementMatch = {
     Element: PydanticFormControlledElement;
     isControlledElement: true;
 };
@@ -336,8 +297,15 @@ export interface PydanticFormsContextConfig {
 }
 
 export type FormRenderer = React.JSXElementConstructor<{
-    pydanticFormData: PydanticFormData;
+    pydanticFormComponents: PydanticFormComponents;
 }>;
+
+interface PydanticFormComponent {
+    Element: ElementMatch;
+    pydanticFormField: PydanticFormField;
+}
+
+export type PydanticFormComponents = PydanticFormComponent[];
 
 export type PydanticFormCustomDataProvider = () => Promise<PydanticFormLabels>;
 
@@ -358,8 +326,8 @@ export type PydanticFormLabelProvider = ({
 export type PydanticFormLayoutColumnProvider = (fieldId: string) => number;
 
 export type PydanticFormStructureMutator = (
-    formData: PydanticFormData | false,
-) => PydanticFormData | false;
+    formSchema: PydanticFormSchema | undefined,
+) => PydanticFormSchema | undefined;
 
 export type PydanticFormApiProvider = ({
     formKey,
@@ -394,21 +362,16 @@ export type PydanticFormCustomValidationRuleFn = (
 export interface PydanticFormApiResponse {
     detail?: string;
     status: number;
-    form: PydanticFormSchema;
+    form: PydanticFormSchemaRawJson;
     success?: boolean;
     validation_errors: PydanticFormApiValidationError[];
 }
 
-export interface PydanticFormSchema extends PydanticFormSchemaBase {
-    properties: {
-        [propId: string]: PydanticFormApiResponseProperty;
-    };
-}
-export interface PydanticFormSchemaBase {
-    title: string;
-    description: string;
-    additionalProperties: boolean;
-    type: 'object';
+export interface PydanticFormBaseSchema {
+    title?: string;
+    type: PydanticFormFieldType.OBJECT;
+    description?: string;
+    additionalProperties?: boolean;
     required?: string[];
     $defs?: {
         [definitionId: string]: {
@@ -419,12 +382,100 @@ export interface PydanticFormSchemaBase {
     };
 }
 
-export interface PydanticFormApiResponseProperty {
-    type: PydanticFormFieldType;
-    anyOf?: PydanticFormFieldAnyOfDef[];
-    default?: string | null;
-    title: string;
+export interface PydanticFormSchema
+    extends Omit<PydanticFormBaseSchema, '$defs'> {
+    properties: Properties;
 }
+
+export interface PydanticFormSchemaRawJson extends PydanticFormBaseSchema {
+    properties: RawJsonProperties;
+}
+
+export interface PydanticFormSchemaParsed extends PydanticFormBaseSchema {
+    properties: ParsedProperties;
+}
+
+export interface PydanticFormPropertySchemaParsed
+    extends Omit<PydanticFormBaseSchema, 'type'>,
+        PydanticFormFieldValidations {
+    type: PydanticFormFieldType;
+
+    anyOf?: PydanticFormFieldAnyOfDefParsed[];
+    oneOf?: PydanticFormFieldAnyOfDefParsed[];
+    allOf?: PydanticFormFieldAnyOfDefParsed[];
+
+    items?: PydanticFormFieldAnyOfItemParsed;
+    enum?: string[];
+    options?: {
+        [id: string]: string;
+    };
+
+    default?: string | null;
+    format: PydanticFormFieldFormat;
+
+    uniforms?: {
+        disabled: boolean;
+        sensitive: boolean;
+        password: boolean;
+    };
+
+    properties?: ParsedProperties;
+}
+
+export interface PydanticFormFieldAnyOfDefParsed
+    extends PydanticFormFieldValidations {
+    items?: PydanticFormFieldAnyOfItemParsed;
+    enum?: string[];
+    options?: {
+        [id: string]: string;
+    };
+    format?: 'date' | 'date-time';
+    type: PydanticFormListFieldType;
+}
+
+export interface PydanticFormFieldAnyOfItemParsed
+    extends PydanticFormFieldValidations {
+    enum: string[];
+    options?: {
+        [id: string]: string;
+    };
+    title: string;
+    type: PydanticFormListFieldType;
+}
+
+export interface PydanticFormPropertySchemaRawJson
+    extends Omit<PydanticFormBaseSchema, 'type'>,
+        PydanticFormFieldValidations,
+        JsonSchemaRef {
+    type: PydanticFormFieldType;
+
+    anyOf?: PydanticFormFieldAnyOfDef[];
+    oneOf?: PydanticFormFieldAnyOfDef[];
+    allOf?: PydanticFormFieldAnyOfDef[];
+
+    default?: string | null;
+    format: PydanticFormFieldFormat;
+
+    uniforms?: {
+        disabled: boolean;
+        sensitive: boolean;
+        password: boolean;
+    };
+
+    properties?: RawJsonProperties;
+}
+
+export type RawJsonProperties = {
+    [propId: string]: PydanticFormPropertySchemaRawJson;
+};
+
+export type Properties = {
+    [propId: string]: PydanticFormField;
+};
+
+export type ParsedProperties = {
+    [propId: string]: PydanticFormPropertySchemaParsed;
+};
 
 export interface PydanticFormFieldAnyOfDef {
     items?: JsonSchemaRef;
@@ -435,15 +486,7 @@ export interface JsonSchemaRef {
     $ref: string;
 }
 
-export interface PydanticFormApiRefResolved extends PydanticFormSchemaBase {
-    properties: {
-        [propId: string]: PydanticFormApiResponsePropertyResolved;
-    };
-}
-
 export type CustomValidationRule = (
-    fieldConfig: PydanticFormField,
+    field: PydanticFormField,
     rhf?: ReturnType<typeof useForm>,
 ) => Zod.ZodTypeAny | undefined;
-
-/****** // Pydantic forms renamed types ******/

@@ -28,15 +28,15 @@ import {
 } from '@/core/helper';
 import {
     useApiProvider,
+    useCustomDataProvider,
+    useGetZodValidator,
+    useLabelProvider,
     usePydanticFormParser,
-    useRefParser,
 } from '@/core/hooks';
-import useCustomDataProvider from '@/core/hooks/useCustomDataProvider';
-import useCustomZodValidation from '@/core/hooks/useCustomZodValidator';
-import { useLabelProvider } from '@/core/hooks/useLabelProvider';
 import {
     PydanticFormContextProps,
     PydanticFormInitialContextProps,
+    PydanticFormSchemaRawJson,
     PydanticFormValidationErrorDetails,
 } from '@/types';
 
@@ -76,19 +76,15 @@ function PydanticFormContextProvider({
         labelProvider,
         customDataProvider,
         customDataProviderCacheKey,
-
+        formStructureMutator,
+        fieldDetailProvider,
         onFieldChangeHandler,
         resetButtonAlternative,
         customValidationRules,
         allowUntouchedSubmit,
         skipSuccessNotice,
-
-        cancelButton,
         componentMatcher,
-
-        formStructureMutator,
-        layoutColumnProvider,
-        fieldDetailProvider,
+        cancelButton,
     } = config;
 
     // TODO: Fix this again
@@ -133,31 +129,24 @@ function PydanticFormContextProvider({
 
     // we cache the form scheme so when there is an error, we still have the form
     // the form is not in the error response
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [rawSchema, setRawSchema] = useState<any>({});
-
-    // parse the raw scheme refs so all data is where it should be in the schema
-    const { data: schema } = useRefParser('form', rawSchema);
+    const [rawSchema, setRawSchema] = useState<PydanticFormSchemaRawJson>();
 
     // extract the JSON schema to a more usable custom schema
-    const formDataParsed = usePydanticFormParser(
-        schema,
-        formLabels?.labels,
-        fieldDetailProvider,
-        layoutColumnProvider,
-        componentMatcher,
-    );
-
-    const formData = formStructureMutator
-        ? formStructureMutator(formDataParsed) // What are the use cases here, will this be solved by a layout provider?
-        : formDataParsed;
+    const { pydanticFormSchema, isLoading: isParsingSchema } =
+        usePydanticFormParser(
+            rawSchema,
+            formLabels,
+            fieldDetailProvider,
+            formStructureMutator,
+        );
 
     const rhfRef = useRef<ReturnType<typeof useForm>>();
     // build validation rules based on custom schema
-    const resolver = useCustomZodValidation(
-        formData,
+    const resolver = useGetZodValidator(
+        pydanticFormSchema,
         rhfRef.current,
         customValidationRules,
+        componentMatcher,
     );
 
     // initialize the react-hook-form
@@ -203,14 +192,7 @@ function PydanticFormContextProvider({
                 onSuccess?.(values, apiResponse || {});
             }, 1500); // Delay to allow notice to show first
         }
-    }, [
-        isFullFilled,
-        skipSuccessNotice,
-        onSuccess,
-        rhf,
-        formData,
-        apiResponse,
-    ]);
+    }, [apiResponse, isFullFilled, onSuccess, rhf, skipSuccessNotice]);
 
     // a useeffect for whenever the error response updates
     // sometimes we need to update the form,
@@ -236,17 +218,17 @@ function PydanticFormContextProvider({
     }, [apiResponse, onSuccess, rhf, skipSuccessNotice]);
 
     const resetFormData = useCallback(() => {
-        if (!formData) {
+        if (!pydanticFormSchema) {
             return;
         }
 
-        const initialData = getFormValuesFromFieldOrLabels(formData.fields, {
-            ...formLabels?.data,
+        const initialData = getFormValuesFromFieldOrLabels(pydanticFormSchema, {
+            ...formLabels,
             ...customData,
         });
 
         rhf.reset(initialData);
-    }, [rhf, formData, formLabels?.data, customData]);
+    }, [customData, formLabels, pydanticFormSchema, rhf]);
 
     // a useeffect for filling data whenever formdefinition or labels update
     useEffect(() => {
@@ -277,7 +259,7 @@ function PydanticFormContextProvider({
 
     const onClientSideError = useCallback(
         (data?: FieldValues) => {
-            // TODO implement savewith errors toggle
+            // TODO implement save with errors toggle
             if (data) {
                 rhf.clearErrors();
                 submitFormFn();
@@ -326,7 +308,7 @@ function PydanticFormContextProvider({
     const isLoading =
         isLoadingFormLabels ||
         isLoadingSchema ||
-        isLoadingSchema ||
+        isParsingSchema ||
         (customDataProvider ? isLoadingCustomData : false);
 
     const PydanticFormContextState = {
@@ -335,7 +317,7 @@ function PydanticFormContextProvider({
         isSending: isSending && isLoadingSchema,
         isLoading,
         rhf,
-        formData: formData || undefined,
+        pydanticFormSchema,
         headerComponent,
         footerComponent,
         onCancel,
@@ -354,6 +336,8 @@ function PydanticFormContextProvider({
         resetButtonAlternative,
         config,
         setSaveToLeavePageInCurrentState,
+        formKey,
+        formIdKey,
     };
 
     return (
@@ -374,5 +358,4 @@ export function usePydanticFormContext() {
 
     return context;
 }
-
 export default PydanticFormContextProvider;
