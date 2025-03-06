@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.8
+
+### Patch Changes
+
+-   844c11b: Adds object field
+
 ## 0.0.7
 
 ### Patch Changes
