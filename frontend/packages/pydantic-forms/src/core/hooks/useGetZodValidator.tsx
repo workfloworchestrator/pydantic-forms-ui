@@ -10,15 +10,60 @@
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { z } from 'zod';
+import { ZodRawShape, z } from 'zod';
 
 import { getClientSideValidationRule } from '@/components/componentMatcher';
-import { getFlatFieldMap } from '@/core/helper';
 import {
     CustomValidationRule,
+    Properties,
     PydanticFormSchema,
     PydanticFormsContextConfig,
 } from '@/types';
+
+/**
+ * Generates a Zod validation object from an array of Pydantic form fields.
+ *
+ * @param pydanticFormFields - An array of Pydantic form fields.
+ * @returns A ZodRawShape object representing the validation schema.
+ */
+const getZodValidationObject = (
+    properties: Properties,
+    rhf?: ReturnType<typeof useForm>,
+    customValidationRule?: CustomValidationRule,
+    customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
+) => {
+    const pydanticFormFields = Object.values(properties);
+    if (!pydanticFormFields) return {};
+
+    const validationObject: ZodRawShape = {};
+
+    pydanticFormFields.forEach((pydanticFormField) => {
+        const id =
+            pydanticFormField.id.split('.').pop() || pydanticFormField.id;
+
+        if (pydanticFormField.type === 'object') {
+            validationObject[id] = z.object(
+                getZodValidationObject(
+                    pydanticFormField.properties || {},
+                    rhf,
+                    customValidationRule,
+                    customComponentMatcher,
+                ),
+            );
+        } else {
+            const fieldRules =
+                customValidationRule?.(pydanticFormField, rhf) ??
+                getClientSideValidationRule(
+                    pydanticFormField,
+                    rhf,
+                    customComponentMatcher,
+                );
+
+            validationObject[id] = fieldRules;
+        }
+    });
+    return validationObject;
+};
 
 export const useGetZodValidator = (
     pydanticFormSchema?: PydanticFormSchema,
@@ -31,26 +76,12 @@ export const useGetZodValidator = (
             return z.object({});
         }
         // Get all fields ids including the nested ones to generate the correct validation schema
-        const flatFieldMap = getFlatFieldMap(pydanticFormSchema.properties);
-
-        return z.object(
-            [...flatFieldMap].reduce(
-                (validationObject, [propertyId, pydanticFormField]) => {
-                    const fieldRules =
-                        customValidationRule?.(pydanticFormField, rhf) ??
-                        getClientSideValidationRule(
-                            pydanticFormField,
-                            rhf,
-                            customComponentMatcher,
-                        );
-
-                    return {
-                        ...validationObject,
-                        [propertyId]: fieldRules,
-                    };
-                },
-                {},
-            ),
+        const validationObject = getZodValidationObject(
+            pydanticFormSchema.properties,
+            rhf,
+            customValidationRule,
+            customComponentMatcher,
         );
-    }, [customValidationRule, rhf, pydanticFormSchema, customComponentMatcher]);
+        return z.object(validationObject);
+    }, [customComponentMatcher, customValidationRule, pydanticFormSchema, rhf]);
 };
