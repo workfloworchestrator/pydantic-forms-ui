@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.10
+
+### Patch Changes
+
+-   11c742b: Updates dependencies to latest minor versions
+
 ## 0.0.9
 
 ### Patch Changes
