@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.11
+
+### Patch Changes
+
+-   a860f16: Loosens next peer dependency
+
 ## 0.0.10
 
 ### Patch Changes
