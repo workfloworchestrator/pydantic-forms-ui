@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.9
+
+### Patch Changes
+
+-   bd671f1: Updates react peer dependencies
+
 ## 0.0.8
 
 ### Patch Changes
