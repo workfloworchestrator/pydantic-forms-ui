@@ -50,7 +50,7 @@
         "@types/react-dom": "^18.2.19",
         "eslint": "^8.57.0",
         "tsup": "^8.0.2",
-        "typescript": "5.5.4"
+        "typescript": "^5.8.2"
     },
     "dependencies": {
         "@apidevtools/json-schema-ref-parser": "^11.7.3",
