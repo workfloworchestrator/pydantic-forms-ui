@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.12
+
+### Patch Changes
+
+-   0cf5269: Adds passable footer renderer
+
 ## 0.0.11
 
 ### Patch Changes
