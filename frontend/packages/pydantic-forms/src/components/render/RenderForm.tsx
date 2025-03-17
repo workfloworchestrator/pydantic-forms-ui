@@ -50,9 +50,13 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         );
     }
 
-    const { formRenderer, componentMatcher: customComponentMatcher } =
-        config || {};
+    const {
+        formRenderer,
+        footerRenderer,
+        componentMatcher: customComponentMatcher,
+    } = config || {};
     const Renderer = formRenderer ?? FormRenderer;
+    const FooterRenderer = footerRenderer ?? Footer;
 
     // Map schema to get fields
 
@@ -73,7 +77,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
                 <Renderer pydanticFormComponents={pydanticFormComponents} />
             </div>
 
-            <Footer />
+            <FooterRenderer />
         </form>
     );
 };
