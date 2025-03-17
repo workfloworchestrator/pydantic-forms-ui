@@ -285,6 +285,7 @@ export interface PydanticFormsContextConfig {
     ) => PydanticComponentMatcher[];
 
     formRenderer?: FormRenderer;
+    footerRenderer?: React.JSXElementConstructor<object>;
 
     // Extend field definitions
     fieldDetailProvider?: PydanticFormFieldDetailProvider;
