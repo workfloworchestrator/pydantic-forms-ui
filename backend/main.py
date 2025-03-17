@@ -126,8 +126,8 @@ class Person(BaseModel):
 @app.post("/form")
 async def form(form_data: list[dict] = []):
     def form_generator(state: State):
-        class TestForm(FormPage):
-            model_config = ConfigDict(title="Form Title")
+        class TestForm1(FormPage):
+            model_config = ConfigDict(title="Form Title Page 1")
 
             number: NumberExample = 3
             text: Annotated[str, Field(min_length=3, max_length=12)] = "Default text"
@@ -147,16 +147,40 @@ async def form(form_data: list[dict] = []):
 
             person: Person
 
-        form_data_1 = yield TestForm
+        form_data_1 = yield TestForm1
 
-        class TestForm2(SubmitFormPage):
-            model_config = ConfigDict(title="Form 2 Title")
+        # todo rename to avoid duplicate field names
+        class TestForm2(FormPage):
+            model_config = ConfigDict(title="Form Title Page 2")
 
-            name_2: str | None = None
+            number: NumberExample = 3
+            text: Annotated[str, Field(min_length=3, max_length=12)] = "Default text"
+            textArea: LongText = "Text area default"
+            divider: Divider
+            label: Label = "Label"
+            hidden: Hidden = "Hidden"
+            # When there are > 3 choices a dropdown will be rendered
+            dropdown: DropdownChoices = "2"
+            # When there are <= 3 choices a radio group will be rendered
+            radio: RadioChoices = "3"
+            #  checkbox: bool = True TODO: Fix validation errors on this
+
+            # When there are <= 5 choices in a list a set of checkboxes are rendered
+            # multicheckbox: choice_list(MultiCheckBoxChoices, min_items=3) = ["1", "2"]
+            # list: choice_list(ListChoices) = [0, 1]
+
+            person: Person
 
         form_data_2 = yield TestForm2
 
-        return form_data_1.model_dump() | form_data_2.model_dump()
+        class TestSubmitForm(SubmitFormPage):
+            model_config = ConfigDict(title="Submit Form")
+
+            name_2: str | None = None
+
+        form_data_submit = yield TestSubmitForm
+
+        return form_data_1.model_dump() | form_data_2.model_dump() | form_data_submit.model_dump()
 
     post_form(form_generator, state={}, user_inputs=form_data)
     return "OK!"
