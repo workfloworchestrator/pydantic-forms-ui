@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.14
+
+### Patch Changes
+
+-   9b0d4a3: Hides form title if it's "unknown"
+
 ## 0.0.13
 
 ### Patch Changes
