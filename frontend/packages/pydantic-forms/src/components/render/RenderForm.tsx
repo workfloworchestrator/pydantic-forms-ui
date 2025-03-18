@@ -67,9 +67,11 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
 
     return (
         <form action={''} onSubmit={submitForm}>
-            {title !== false && title !== 'undefined' && (
-                <h2>{title ?? pydanticFormSchema.title}</h2>
-            )}
+            {title !== false &&
+                title !== 'undefined' &&
+                title !== 'unknown' && (
+                    <h2>{title ?? pydanticFormSchema.title}</h2>
+                )}
 
             {headerComponent}
 
