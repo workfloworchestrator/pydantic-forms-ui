@@ -308,11 +308,9 @@ interface PydanticFormComponent {
 
 export type PydanticFormComponents = PydanticFormComponent[];
 
-export type PydanticFormCustomDataProvider = () => Promise<PydanticFormLabels>;
-
-export interface PydanticFormLabels {
-    [key: string]: string[] | number[] | string | number | null;
-}
+export type PydanticFormCustomDataProvider = () => Promise<
+    PydanticFormLabelProviderResponse['data']
+>;
 
 export type PydanticFormLabelProvider = ({
     formKey,

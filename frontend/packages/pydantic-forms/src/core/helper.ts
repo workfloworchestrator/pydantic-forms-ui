@@ -301,8 +301,7 @@ export const getFieldBySection = (components: PydanticFormComponents) => {
  */
 export const getFormValuesFromFieldOrLabels = (
     pydanticFormSchema: PydanticFormSchema,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    labelData?: Record<string, any>,
+    labelData?: Record<string, string>,
 ) => {
     const fieldValues: Record<string, string> = {};
 
