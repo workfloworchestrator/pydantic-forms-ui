@@ -8,7 +8,6 @@
  *
  */
 import React from 'react';
-import type { ControllerFieldState } from 'react-hook-form';
 
 import { usePydanticFormContext } from '@/core';
 import { PydanticFormField } from '@/types';
