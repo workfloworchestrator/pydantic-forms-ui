@@ -1,5 +1,12 @@
 # pydantic-forms
 
+## 0.0.13
+
+### Patch Changes
+
+-   839fb76: Fixes form labels
+-   6878fbe: Makes rowRenderer configurable
+
 ## 0.0.12
 
 ### Patch Changes
