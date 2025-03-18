@@ -83,7 +83,7 @@ export enum PydanticFormState {
 
 export interface PydanticFormField {
     id: string;
-    title?: string;
+    title: string;
     description?: string;
     type: PydanticFormFieldType;
     format: PydanticFormFieldFormat;
@@ -320,8 +320,7 @@ export type PydanticFormLabelProvider = ({
 }: {
     formKey: string;
     id?: string | null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}) => Promise<Record<string, any>>;
+}) => Promise<PydanticFormLabelProviderResponse>;
 
 // will return column
 export type PydanticFormLayoutColumnProvider = (fieldId: string) => number;
@@ -359,6 +358,11 @@ export type PydanticFormCustomValidationRuleFn = (
     fieldConfig: PydanticFormField,
     rhf?: ReturnType<typeof useForm>,
 ) => Zod.ZodTypeAny | undefined;
+
+export interface PydanticFormLabelProviderResponse {
+    labels: Record<string, string>;
+    data: Record<string, string>;
+}
 
 export interface PydanticFormApiResponse {
     detail?: string;

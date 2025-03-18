@@ -10,7 +10,6 @@
 import React from 'react';
 import type { ControllerFieldState } from 'react-hook-form';
 
-import ResetNullableFieldTrigger from '@/components/form/ResetNullableFieldTrigger';
 import { usePydanticFormContext } from '@/core';
 import { PydanticFormField } from '@/types';
 
@@ -36,12 +35,7 @@ export const FieldWrap = ({
 
     return (
         <FormRow
-            label={
-                <>
-                    {pydanticFormField.title}
-                    <ResetNullableFieldTrigger field={pydanticFormField} />
-                </>
-            }
+            title={pydanticFormField.title}
             description={pydanticFormField.description}
             required={pydanticFormField.required}
             isInvalid={!!isInvalid}
