@@ -17,24 +17,20 @@ import { FormRow } from './FormRow';
 
 interface FieldWrapProps {
     pydanticFormField: PydanticFormField;
-    fieldState: ControllerFieldState;
     children: React.ReactNode;
 }
 
-export const FieldWrap = ({
-    pydanticFormField,
-    fieldState,
-    children,
-}: FieldWrapProps) => {
-    const { errorDetails } = usePydanticFormContext();
-
+export const FieldWrap = ({ pydanticFormField, children }: FieldWrapProps) => {
+    const { errorDetails, rhf, config } = usePydanticFormContext();
+    const RowRenderer = config?.rowRenderer ? config.rowRenderer : FormRow;
+    const fieldState = rhf.getFieldState(pydanticFormField.id);
     const errorMsg =
         errorDetails?.mapped?.[pydanticFormField.id]?.msg ??
         fieldState.error?.message;
     const isInvalid = errorMsg ?? fieldState.invalid;
 
     return (
-        <FormRow
+        <RowRenderer
             title={pydanticFormField.title}
             description={pydanticFormField.description}
             required={pydanticFormField.required}
@@ -42,6 +38,6 @@ export const FieldWrap = ({
             error={errorMsg as string}
         >
             <div>{children}</div>
-        </FormRow>
+        </RowRenderer>
     );
 };

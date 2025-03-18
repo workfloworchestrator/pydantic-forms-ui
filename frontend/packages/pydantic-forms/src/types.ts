@@ -249,6 +249,15 @@ export type PydanticFormZodValidationFn = (
     rhf?: ReturnType<typeof useForm>,
 ) => z.ZodTypeAny;
 
+export type RowRenderer = React.JSXElementConstructor<{
+    title: string;
+    description?: string;
+    required?: boolean;
+    isInvalid?: boolean;
+    error?: string;
+    children: React.ReactNode;
+}>;
+
 export interface PydanticFormZodValidationPresets {
     [type: string]: PydanticFormZodValidationFn;
 }
@@ -286,6 +295,7 @@ export interface PydanticFormsContextConfig {
 
     formRenderer?: FormRenderer;
     footerRenderer?: React.JSXElementConstructor<object>;
+    rowRenderer?: RowRenderer;
 
     // Extend field definitions
     fieldDetailProvider?: PydanticFormFieldDetailProvider;
