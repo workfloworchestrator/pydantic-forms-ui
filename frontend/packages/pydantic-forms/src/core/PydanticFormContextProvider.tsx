@@ -135,7 +135,7 @@ function PydanticFormContextProvider({
     const { pydanticFormSchema, isLoading: isParsingSchema } =
         usePydanticFormParser(
             rawSchema,
-            formLabels,
+            formLabels?.labels,
             fieldDetailProvider,
             formStructureMutator,
         );
@@ -223,7 +223,7 @@ function PydanticFormContextProvider({
         }
 
         const initialData = getFormValuesFromFieldOrLabels(pydanticFormSchema, {
-            ...formLabels,
+            ...formLabels?.data,
             ...customData,
         });
 

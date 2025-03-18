@@ -3,7 +3,7 @@ import type { HTMLAttributes, ReactElement, ReactNode } from 'react';
 
 type FormRowProps = {
     children: ReactElement;
-    label?: ReactNode;
+    title: string;
     isInvalid?: boolean;
     error?: ReactNode | ReactNode[];
     description?: string;
@@ -12,19 +12,17 @@ type FormRowProps = {
 
 export const FormRow = ({
     children,
-    label,
-    isInvalid,
+    title,
     error,
-    ...rest
+    description,
+    required,
 }: FormRowProps) => {
-    // TODO: readd required, description, classname
     return (
-        <div {...(rest as HTMLAttributes<HTMLElement>)}>
-            {label && (
-                <label>
-                    {label} {isInvalid && '!!!'}
-                </label>
-            )}
+        <div>
+            <label>
+                {title} {required && <span style={{ color: 'red' }}>*</span>}
+            </label>
+            {description && <div>{description}</div>}
             {children}
             {error}
         </div>

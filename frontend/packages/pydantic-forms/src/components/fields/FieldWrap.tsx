@@ -8,9 +8,7 @@
  *
  */
 import React from 'react';
-import type { ControllerFieldState } from 'react-hook-form';
 
-import ResetNullableFieldTrigger from '@/components/form/ResetNullableFieldTrigger';
 import { usePydanticFormContext } from '@/core';
 import { PydanticFormField } from '@/types';
 
@@ -18,36 +16,27 @@ import { FormRow } from './FormRow';
 
 interface FieldWrapProps {
     pydanticFormField: PydanticFormField;
-    fieldState: ControllerFieldState;
     children: React.ReactNode;
 }
 
-export const FieldWrap = ({
-    pydanticFormField,
-    fieldState,
-    children,
-}: FieldWrapProps) => {
-    const { errorDetails } = usePydanticFormContext();
-
+export const FieldWrap = ({ pydanticFormField, children }: FieldWrapProps) => {
+    const { errorDetails, rhf, config } = usePydanticFormContext();
+    const RowRenderer = config?.rowRenderer ? config.rowRenderer : FormRow;
+    const fieldState = rhf.getFieldState(pydanticFormField.id);
     const errorMsg =
         errorDetails?.mapped?.[pydanticFormField.id]?.msg ??
         fieldState.error?.message;
     const isInvalid = errorMsg ?? fieldState.invalid;
 
     return (
-        <FormRow
-            label={
-                <>
-                    {pydanticFormField.title}
-                    <ResetNullableFieldTrigger field={pydanticFormField} />
-                </>
-            }
+        <RowRenderer
+            title={pydanticFormField.title}
             description={pydanticFormField.description}
             required={pydanticFormField.required}
             isInvalid={!!isInvalid}
             error={errorMsg as string}
         >
             <div>{children}</div>
-        </FormRow>
+        </RowRenderer>
     );
 };

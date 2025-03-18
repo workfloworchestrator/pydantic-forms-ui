@@ -83,7 +83,7 @@ export enum PydanticFormState {
 
 export interface PydanticFormField {
     id: string;
-    title?: string;
+    title: string;
     description?: string;
     type: PydanticFormFieldType;
     format: PydanticFormFieldFormat;
@@ -249,6 +249,15 @@ export type PydanticFormZodValidationFn = (
     rhf?: ReturnType<typeof useForm>,
 ) => z.ZodTypeAny;
 
+export type RowRenderer = React.JSXElementConstructor<{
+    title: string;
+    description?: string;
+    required?: boolean;
+    isInvalid?: boolean;
+    error?: string;
+    children: React.ReactNode;
+}>;
+
 export interface PydanticFormZodValidationPresets {
     [type: string]: PydanticFormZodValidationFn;
 }
@@ -286,6 +295,7 @@ export interface PydanticFormsContextConfig {
 
     formRenderer?: FormRenderer;
     footerRenderer?: React.JSXElementConstructor<object>;
+    rowRenderer?: RowRenderer;
 
     // Extend field definitions
     fieldDetailProvider?: PydanticFormFieldDetailProvider;
@@ -308,11 +318,9 @@ interface PydanticFormComponent {
 
 export type PydanticFormComponents = PydanticFormComponent[];
 
-export type PydanticFormCustomDataProvider = () => Promise<PydanticFormLabels>;
-
-export interface PydanticFormLabels {
-    [key: string]: string[] | number[] | string | number | null;
-}
+export type PydanticFormCustomDataProvider = () => Promise<
+    PydanticFormLabelProviderResponse['data']
+>;
 
 export type PydanticFormLabelProvider = ({
     formKey,
@@ -320,8 +328,7 @@ export type PydanticFormLabelProvider = ({
 }: {
     formKey: string;
     id?: string | null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}) => Promise<Record<string, any>>;
+}) => Promise<PydanticFormLabelProviderResponse>;
 
 // will return column
 export type PydanticFormLayoutColumnProvider = (fieldId: string) => number;
@@ -359,6 +366,11 @@ export type PydanticFormCustomValidationRuleFn = (
     fieldConfig: PydanticFormField,
     rhf?: ReturnType<typeof useForm>,
 ) => Zod.ZodTypeAny | undefined;
+
+export interface PydanticFormLabelProviderResponse {
+    labels: Record<string, string>;
+    data: Record<string, string>;
+}
 
 export interface PydanticFormApiResponse {
     detail?: string;

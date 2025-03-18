@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 /**
  * Pydantic Forms
  *
@@ -16,7 +14,10 @@
  */
 import useSWR, { SWRConfiguration } from 'swr';
 
-import { PydanticFormLabelProvider } from '@/types';
+import {
+    PydanticFormLabelProvider,
+    PydanticFormLabelProviderResponse,
+} from '@/types';
 
 export function useLabelProvider(
     labelProvider?: PydanticFormLabelProvider,
@@ -25,7 +26,7 @@ export function useLabelProvider(
     cacheKey?: number,
     swrConfig?: SWRConfiguration,
 ) {
-    return useSWR<Record<string, string> | undefined>(
+    return useSWR<PydanticFormLabelProviderResponse | undefined>(
         // cache key
         [labelProvider, formKey, id, swrConfig, cacheKey],
 

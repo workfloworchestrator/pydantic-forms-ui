@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 /**
  * Pydantic Forms
  *
@@ -22,12 +20,7 @@ import type {
     PydanticFormMetaData,
 } from '@/types';
 
-const ignoreApiErrors = async (
-    req: Promise<unknown>,
-    // ignoreCodes: number[],
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<any> => {
-    //  TODO: What to use these for: ignoreCodes
+const ignoreApiErrors = async (req: Promise<unknown>): Promise<unknown> => {
     try {
         return await req;
     } catch (error) {

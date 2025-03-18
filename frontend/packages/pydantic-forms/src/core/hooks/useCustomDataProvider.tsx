@@ -1,12 +1,15 @@
 import useSWR from 'swr';
 
-import { PydanticFormCustomDataProvider, PydanticFormLabels } from '@/types';
+import {
+    PydanticFormCustomDataProvider,
+    PydanticFormLabelProviderResponse,
+} from '@/types';
 
 export const useCustomDataProvider = (
     customDataProviderCacheKey: number,
     customDataProvider?: PydanticFormCustomDataProvider,
 ) => {
-    return useSWR<PydanticFormLabels>(
+    return useSWR<PydanticFormLabelProviderResponse['data']>(
         // cache key
         [`pydanticFormsDataProvider-${customDataProviderCacheKey}`],
 

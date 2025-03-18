@@ -54,11 +54,12 @@ const parseProperties = (
 
             const parsedProperty: PydanticFormField = {
                 id,
-                title: translateLabel(
-                    propertyId,
-                    propertySchema.title,
-                    formLabels,
-                ),
+                title:
+                    translateLabel(
+                        propertyId,
+                        propertySchema.title,
+                        formLabels,
+                    ) || propertyId,
                 description: translateLabel(
                     `${propertyId}_info`,
                     propertySchema.description,
