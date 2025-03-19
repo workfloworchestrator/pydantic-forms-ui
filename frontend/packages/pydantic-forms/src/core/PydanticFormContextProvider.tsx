@@ -64,6 +64,7 @@ function PydanticFormContextProvider({
     sendLabel,
     headerComponent,
     footerComponent,
+    loadingComponent,
     successNotice,
     onSuccess,
     onCancel,
@@ -311,6 +312,12 @@ function PydanticFormContextProvider({
         isParsingSchema ||
         (customDataProvider ? isLoadingCustomData : false);
 
+    const clearForm = useCallback(() => {
+        setFormInputData([]);
+        setIsFullFilled(false);
+        setRawSchema(undefined);
+    }, []);
+
     const PydanticFormContextState = {
         // to prevent an issue where the sending state hangs
         // we check both the SWR hook state as our manual state
@@ -320,6 +327,7 @@ function PydanticFormContextProvider({
         pydanticFormSchema,
         headerComponent,
         footerComponent,
+        loadingComponent,
         onCancel,
         title,
         sendLabel,
@@ -338,6 +346,7 @@ function PydanticFormContextProvider({
         setSaveToLeavePageInCurrentState,
         formKey,
         formIdKey,
+        clearForm,
     };
 
     return (

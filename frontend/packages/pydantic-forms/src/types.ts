@@ -28,8 +28,8 @@ export interface PydanticFormInitialContextProps {
     children: (props: PydanticFormContextProps) => React.ReactNode;
     headerComponent?: React.ReactNode;
     footerComponent?: React.ReactNode;
+    loadingComponent?: React.ReactNode;
     hasCardWrapper?: boolean;
-
     config: PydanticFormsContextConfig;
 }
 
@@ -65,6 +65,7 @@ export interface PydanticFormContextProps {
     successNotice?: React.ReactNode;
     headerComponent?: React.ReactNode;
     footerComponent?: React.ReactNode;
+    loadingComponent?: React.ReactNode;
     allowUntouchedSubmit?: boolean;
     skipSuccessNotice?: boolean;
     footerCtaPrimaryVariant?: string;
@@ -73,6 +74,8 @@ export interface PydanticFormContextProps {
     config?: PydanticFormsContextConfig;
     formKey: string;
     formIdKey?: string;
+    clearForm: () => void;
+    resetAfterSubmit?: boolean;
 }
 
 export enum PydanticFormState {
@@ -305,6 +308,8 @@ export interface PydanticFormsContextConfig {
 
     // have an option to change the layout columns of fields
     formStructureMutator?: PydanticFormStructureMutator;
+
+    resetAfterSubmit?: boolean;
 }
 
 export type FormRenderer = React.JSXElementConstructor<{

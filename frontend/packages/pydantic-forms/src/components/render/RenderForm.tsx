@@ -26,21 +26,33 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         title,
         headerComponent,
         skipSuccessNotice,
+        loadingComponent,
+        clearForm,
     } = contextProps;
+    const {
+        formRenderer,
+        footerRenderer,
+        componentMatcher: customComponentMatcher,
+        resetAfterSubmit,
+    } = config || {};
+
+    const LoadingComponent = loadingComponent ?? (
+        <div>Formulier aan het ophalen...</div>
+    );
 
     if (isLoading && !isSending) {
-        return <div>Formulier aan het ophalen... A</div>;
+        return LoadingComponent;
     }
 
-    if (!pydanticFormSchema) {
-        return <div>Formulier aan het ophalen... B</div>;
-    }
-
-    if (isSending) {
-        return <div>Formulier aan het verzenden...</div>;
+    if (!pydanticFormSchema || isSending) {
+        return LoadingComponent;
     }
 
     if (isFullFilled) {
+        if (resetAfterSubmit) {
+            clearForm();
+        }
+
         if (skipSuccessNotice) {
             return <></>;
         }
@@ -50,11 +62,6 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         );
     }
 
-    const {
-        formRenderer,
-        footerRenderer,
-        componentMatcher: customComponentMatcher,
-    } = config || {};
     const Renderer = formRenderer ?? FormRenderer;
     const FooterRenderer = footerRenderer ?? Footer;
 
