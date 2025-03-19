@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.15
+
+### Patch Changes
+
+-   9dc37c0: Adds option to clear form after submission
+
 ## 0.0.14
 
 ### Patch Changes
