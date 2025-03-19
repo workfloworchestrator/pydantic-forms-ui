@@ -7,8 +7,6 @@
  */
 import React from 'react';
 
-import Link from 'next/link';
-
 import { componentMatcher } from '@/components/componentMatcher';
 import Footer from '@/components/form/Footer';
 import RenderFormErrors from '@/components/render/RenderFormErrors';
@@ -60,10 +58,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         }
 
         return (
-            <div>
-                {successNotice ?? 'Je inzending is succesvol ontvangen'}
-                <Link href="/">overnieuw</Link>
-            </div>
+            <div>{successNotice ?? 'Je inzending is succesvol ontvangen'}</div>
         );
     }
 
