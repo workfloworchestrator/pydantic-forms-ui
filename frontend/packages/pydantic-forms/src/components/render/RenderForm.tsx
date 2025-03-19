@@ -7,6 +7,8 @@
  */
 import React from 'react';
 
+import Link from 'next/link';
+
 import { componentMatcher } from '@/components/componentMatcher';
 import Footer from '@/components/form/Footer';
 import RenderFormErrors from '@/components/render/RenderFormErrors';
@@ -27,7 +29,14 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         headerComponent,
         skipSuccessNotice,
         loadingComponent,
+        clearForm,
     } = contextProps;
+    const {
+        formRenderer,
+        footerRenderer,
+        componentMatcher: customComponentMatcher,
+        resetAfterSubmit,
+    } = config || {};
 
     const LoadingComponent = loadingComponent ?? (
         <div>Formulier aan het ophalen...</div>
@@ -42,20 +51,22 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
     }
 
     if (isFullFilled) {
+        if (resetAfterSubmit) {
+            clearForm();
+        }
+
         if (skipSuccessNotice) {
             return <></>;
         }
 
         return (
-            <div>{successNotice ?? 'Je inzending is succesvol ontvangen'}</div>
+            <div>
+                {successNotice ?? 'Je inzending is succesvol ontvangen'}
+                <Link href="/">overnieuw</Link>
+            </div>
         );
     }
 
-    const {
-        formRenderer,
-        footerRenderer,
-        componentMatcher: customComponentMatcher,
-    } = config || {};
     const Renderer = formRenderer ?? FormRenderer;
     const FooterRenderer = footerRenderer ?? Footer;
 
