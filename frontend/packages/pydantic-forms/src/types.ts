@@ -28,6 +28,7 @@ export interface PydanticFormInitialContextProps {
     children: (props: PydanticFormContextProps) => React.ReactNode;
     headerComponent?: React.ReactNode;
     footerComponent?: React.ReactNode;
+    loadingComponent?: React.ReactNode;
     hasCardWrapper?: boolean;
 
     config: PydanticFormsContextConfig;
@@ -65,6 +66,7 @@ export interface PydanticFormContextProps {
     successNotice?: React.ReactNode;
     headerComponent?: React.ReactNode;
     footerComponent?: React.ReactNode;
+    loadingComponent?: React.ReactNode;
     allowUntouchedSubmit?: boolean;
     skipSuccessNotice?: boolean;
     footerCtaPrimaryVariant?: string;

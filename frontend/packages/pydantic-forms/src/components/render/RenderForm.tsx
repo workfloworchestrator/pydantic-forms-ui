@@ -26,18 +26,19 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         title,
         headerComponent,
         skipSuccessNotice,
+        loadingComponent,
     } = contextProps;
 
+    const LoadingComponent = loadingComponent ?? (
+        <div>Formulier aan het ophalen...</div>
+    );
+
     if (isLoading && !isSending) {
-        return <div>Formulier aan het ophalen... A</div>;
+        return LoadingComponent;
     }
 
-    if (!pydanticFormSchema) {
-        return <div>Formulier aan het ophalen... B</div>;
-    }
-
-    if (isSending) {
-        return <div>Formulier aan het verzenden...</div>;
+    if (!pydanticFormSchema || isSending) {
+        return LoadingComponent;
     }
 
     if (isFullFilled) {
