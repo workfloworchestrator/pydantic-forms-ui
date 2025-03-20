@@ -156,6 +156,7 @@ function PydanticFormContextProvider({
         mode: 'all',
     });
 
+    // Adds watch subscripton on form values
     useEffect(() => {
         const sub = rhf.watch((values) => {
             setSaveToLeavePageInCurrentState(false);
@@ -181,18 +182,22 @@ function PydanticFormContextProvider({
     */
     // handle successfull submits
     useEffect(() => {
-        if (!isFullFilled || !onSuccess) {
+        if (!isFullFilled) {
             return;
         }
-        const values = rhf.getValues();
 
-        if (skipSuccessNotice) {
-            onSuccess(values, apiResponse || {});
-        } else {
-            setTimeout(() => {
-                onSuccess?.(values, apiResponse || {});
-            }, 1500); // Delay to allow notice to show first
+        if (onSuccess) {
+            const values = rhf.getValues();
+            if (skipSuccessNotice) {
+                onSuccess(values, apiResponse || {});
+            } else {
+                setTimeout(() => {
+                    onSuccess?.(values, apiResponse || {});
+                }, 1500); // Delay to allow notice to show first
+            }
         }
+
+        rhf.reset();
     }, [apiResponse, isFullFilled, onSuccess, rhf, skipSuccessNotice]);
 
     // a useeffect for whenever the error response updates
@@ -367,4 +372,5 @@ export function usePydanticFormContext() {
 
     return context;
 }
+
 export default PydanticFormContextProvider;

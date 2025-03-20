@@ -27,13 +27,11 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         headerComponent,
         skipSuccessNotice,
         loadingComponent,
-        clearForm,
     } = contextProps;
     const {
         formRenderer,
         footerRenderer,
         componentMatcher: customComponentMatcher,
-        resetAfterSubmit,
     } = config || {};
 
     const LoadingComponent = loadingComponent ?? (
@@ -49,10 +47,6 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
     }
 
     if (isFullFilled) {
-        if (resetAfterSubmit) {
-            clearForm();
-        }
-
         if (skipSuccessNotice) {
             return <></>;
         }
