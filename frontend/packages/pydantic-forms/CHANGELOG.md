@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.16
+
+### Patch Changes
+
+-   111007d: Adds better way to reset after form submission
+
 ## 0.0.15
 
 ### Patch Changes
