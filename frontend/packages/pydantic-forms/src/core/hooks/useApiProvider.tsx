@@ -71,8 +71,8 @@ export function useApiProvider(
         {
             fallback: {},
 
-            // we dont want to refresh the form structure automatically
-            revalidateIfStale: false,
+            // We revalidate to make sure the form updates when we use it a second time
+            revalidateIfStale: true,
             revalidateOnReconnect: false,
             revalidateOnFocus: false,
             keepPreviousData: true,
