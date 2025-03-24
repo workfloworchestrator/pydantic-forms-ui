@@ -88,13 +88,6 @@ function PydanticFormContextProvider({
         cancelButton,
     } = config;
 
-    // TODO: Fix this again
-    // option to enable the debug mode on the fly in the browser
-    // by setting localStorage.setItem("pydanticFormsDebugMode", "true")
-    // reload is required
-    const debugMode = false;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [formInputData, setFormInputData] = useState<object[]>([]);
 
     const addFormInputData = (formInput: object) => {
@@ -336,7 +329,6 @@ function PydanticFormContextProvider({
         onCancel,
         title,
         sendLabel,
-        debugMode,
         isFullFilled,
         customDataProvider,
         errorDetails,
