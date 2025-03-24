@@ -75,7 +75,9 @@ export function useApiProvider(
             revalidateIfStale: true,
             revalidateOnReconnect: false,
             revalidateOnFocus: false,
-            keepPreviousData: true,
+            // We want to make sure the correct data is showing so we don't want to prefill with stale data
+            // we dont use the previous data because of that
+            keepPreviousData: false,
             shouldRetryOnError: false,
 
             ...swrConfig,
