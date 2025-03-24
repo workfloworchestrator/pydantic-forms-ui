@@ -53,7 +53,6 @@ export interface PydanticFormContextProps {
     rhf: ReturnType<typeof useForm>;
     errorDetails?: PydanticFormValidationErrorDetails;
     pydanticFormSchema?: PydanticFormSchema;
-    debugMode?: boolean;
     title?: string | boolean;
     sendLabel?: string;
     onCancel?: () => void;
