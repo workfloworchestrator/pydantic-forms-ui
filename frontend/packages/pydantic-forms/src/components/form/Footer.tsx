@@ -12,6 +12,7 @@ const Footer = () => {
         resetForm,
         rhf,
         onCancel,
+        onPrevious,
         cancelButton,
         resetButtonAlternative,
         sendLabel,
@@ -23,6 +24,15 @@ const Footer = () => {
         <div style={{ height: '200px' }}>
             {footerComponent && <div>{footerComponent}</div>}{' '}
             <div>
+                {rhf.formState.isValid &&
+                    !allowUntouchedSubmit &&
+                    !rhf.formState.isDirty && (
+                        <div>Het formulier is nog niet aangepast</div>
+                    )}
+
+                <button type="button" onClick={() => onPrevious?.()} style={{ padding: '4px' }}>
+                    Back
+                </button>
                 {resetButtonAlternative ?? (
                     <button
                         type="button"
@@ -35,12 +45,6 @@ const Footer = () => {
                         Reset
                     </button>
                 )}
-
-                {rhf.formState.isValid &&
-                    !allowUntouchedSubmit &&
-                    !rhf.formState.isDirty && (
-                        <div>Het formulier is nog niet aangepast</div>
-                    )}
 
                 {!!onCancel &&
                     (cancelButton ?? (

@@ -55,6 +55,7 @@ export interface PydanticFormContextProps {
     pydanticFormSchema?: PydanticFormSchema;
     title?: string | boolean;
     sendLabel?: string;
+    onPrevious?: () => void;
     onCancel?: () => void;
     cancelButton?: React.ReactNode;
     resetButtonAlternative?: React.ReactNode;

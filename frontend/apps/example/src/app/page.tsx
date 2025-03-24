@@ -94,6 +94,7 @@ export default function Home() {
                     alert('Form cancelled');
                 }}
                 config={{
+                    allowUntouchedSubmit: true,
                     apiProvider: pydanticFormApiProvider,
                     labelProvider: pydanticLabelProvider,
                     customDataProvider: pydanticCustomDataProvider,
