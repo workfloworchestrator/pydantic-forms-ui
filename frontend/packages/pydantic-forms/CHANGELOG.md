@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.17
+
+### Patch Changes
+
+-   487a561: Refetches form definiton everytime the form is loaded
+
 ## 0.0.16
 
 ### Patch Changes
