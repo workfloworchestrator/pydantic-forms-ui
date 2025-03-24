@@ -88,10 +88,40 @@ function PydanticFormContextProvider({
         cancelButton,
     } = config;
 
+    const [formInputHistory, setFormInputHistory] = useState(new Map<string, object>());
     const [formInputData, setFormInputData] = useState<object[]>([]);
+
+    const getHashForArray = async (array: object[]) => {
+        const arrayString = JSON.stringify(array);
+        const arrayBuffer = new TextEncoder().encode(arrayString);
+
+        const digest = await crypto.subtle.digest('SHA-256', arrayBuffer)
+        const hashHex = Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, '0')).join('');
+
+        return hashHex
+    }
+
+    const updateHistory = async (formInput: object, previousSteps: object[]) => {
+        const hashOfPreviousSteps = await getHashForArray(previousSteps);
+
+        console.log('Saving combination', {hashOfPreviousSteps, formInput})
+
+        setFormInputHistory((prevState) => prevState.set(hashOfPreviousSteps, formInput));
+
+    }
+
+    const goToPreviousStep = (formInput: object) => {
+        console.log('Going back one step');
+        setFormInputData((prevState) => {
+            updateHistory(formInput, prevState)
+            return prevState.slice(0, -1);
+        })
+    }
 
     const addFormInputData = (formInput: object) => {
         setFormInputData((currentInputs) => {
+            console.log('addFormInputData', { formInput, currentInputs });
+            updateHistory(formInput, currentInputs)
             return [...currentInputs, formInput];
         });
     };
@@ -233,6 +263,18 @@ function PydanticFormContextProvider({
     useEffect(() => {
         // this makes sure default values are set.
         resetFormData();
+        getHashForArray(formInputData).then(hash => {
+            const currentStepFromHistory = formInputHistory.get(hash);
+
+            if(currentStepFromHistory) {
+                console.log('Found history', {currentStepFromHistory})
+
+                Object.entries(currentStepFromHistory).forEach(([fieldName, fieldValue]) => {
+                    console.log('forEach loop:', {fieldName, fieldValue})
+                    rhf.setValue(fieldName, fieldValue, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+                })
+            }
+        })
     }, [resetFormData]);
 
     // this is to show an error whenever there is an unexpected error from the backend
@@ -326,6 +368,7 @@ function PydanticFormContextProvider({
         headerComponent,
         footerComponent,
         loadingComponent,
+        onPrevious: () => goToPreviousStep(rhf?.getValues()),
         onCancel,
         title,
         sendLabel,
