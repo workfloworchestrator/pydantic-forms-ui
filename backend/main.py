@@ -129,12 +129,19 @@ async def form(form_data: list[dict] = []):
         class TestForm0(FormPage):
             model_config = ConfigDict(title="Form Title Page 0")
 
-            firstnumber: NumberExample = 3
+            text0: Annotated[int, Ge(18), Le(99)] = 17
 
         form_data_0 = yield TestForm0
 
         class TestForm1(FormPage):
             model_config = ConfigDict(title="Form Title Page 1")
+
+            text1: Annotated[int, Ge(18), Le(99)] = 17
+
+        form_data_1 = yield TestForm1
+
+        class TestForm2(FormPage):
+            model_config = ConfigDict(title="Form Title Page 2")
 
             number: NumberExample = 3
             text: Annotated[str, Field(min_length=3, max_length=12)] = "Default text"
@@ -153,13 +160,6 @@ async def form(form_data: list[dict] = []):
             # list: choice_list(ListChoices) = [0, 1]
 
             person: Person
-
-        form_data_1 = yield TestForm1
-
-        class TestForm2(FormPage):
-            model_config = ConfigDict(title="Form Title Page 2")
-
-            anothernumber: NumberExample = 3
 
         form_data_2 = yield TestForm2
 
