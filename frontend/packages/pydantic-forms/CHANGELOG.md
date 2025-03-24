@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.18
+
+### Patch Changes
+
+-   d2f0839: Disables using previous form definition while new one is loading
+
 ## 0.0.17
 
 ### Patch Changes
