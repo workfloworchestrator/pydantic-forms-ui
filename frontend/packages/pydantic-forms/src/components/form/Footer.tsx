@@ -30,7 +30,11 @@ const Footer = () => {
                         <div>Het formulier is nog niet aangepast</div>
                     )}
 
-                <button type="button" onClick={() => onPrevious?.()} style={{ padding: '4px' }}>
+                <button
+                    type="button"
+                    onClick={() => onPrevious?.()}
+                    style={{ padding: '4px' }}
+                >
                     Back
                 </button>
                 {resetButtonAlternative ?? (
