@@ -308,7 +308,6 @@ function PydanticFormContextProvider({
 
     const resetForm = useCallback(
         (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-            // todo reset the history for the current page -- clear all and jump to step 1
             e.preventDefault();
             resetFormData();
             setErrorDetails(undefined);
