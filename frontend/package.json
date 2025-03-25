@@ -1,7 +1,7 @@
 {
     "private": true,
     "scripts": {
-        "dev": "turbo dev --filter=example",
+        "dev": "turbo dev",
         "test": "turbo test",
         "tsc": "turbo run tsc",
         "lint": "turbo lint",

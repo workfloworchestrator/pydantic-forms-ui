@@ -39,7 +39,6 @@ const Footer = () => {
                         onClick={(e) => {
                             resetForm(e);
                         }}
-                        disabled={!rhf.formState.isDirty}
                         style={{ padding: '4px' }}
                     >
                         Reset

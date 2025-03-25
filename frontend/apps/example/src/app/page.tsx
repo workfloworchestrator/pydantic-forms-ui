@@ -53,14 +53,6 @@ export default function Home() {
         });
     };
 
-    const ResetButtonAlternative = () => (
-        <button type="button">Alternative reset</button>
-    );
-
-    const CancelButtonAlternative = () => (
-        <button type="button">Alternative cancel</button>
-    );
-
     const componentMatcher = (
         currentMatchers: PydanticComponentMatcher[],
     ): PydanticComponentMatcher[] => {
@@ -98,8 +90,6 @@ export default function Home() {
                     apiProvider: pydanticFormApiProvider,
                     labelProvider: pydanticLabelProvider,
                     customDataProvider: pydanticCustomDataProvider,
-                    resetButtonAlternative: ResetButtonAlternative(),
-                    cancelButton: CancelButtonAlternative(),
                     componentMatcher: componentMatcher,
                 }}
             />
