@@ -16,7 +16,7 @@ export const TextArea: PydanticFormControlledElement = ({
 }: PydanticFormControlledElementProps) => {
     return (
         <textarea
-            defaultValue={value}
+            value={value}
             onChange={(e) => onChange(e.target.value)}
             style={{
                 width: '450px',

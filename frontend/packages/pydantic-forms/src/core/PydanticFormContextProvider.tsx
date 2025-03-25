@@ -103,15 +103,10 @@ function PydanticFormContextProvider({
 
     const updateHistory = async (formInput: object, previousSteps: object[]) => {
         const hashOfPreviousSteps = await getHashForArray(previousSteps);
-
-        console.log('Saving combination', {hashOfPreviousSteps, formInput})
-
         setFormInputHistory((prevState) => prevState.set(hashOfPreviousSteps, formInput));
-
     }
 
     const goToPreviousStep = (formInput: object) => {
-        console.log('Going back one step');
         setFormInputData((prevState) => {
             updateHistory(formInput, prevState)
             return prevState.slice(0, -1);
@@ -120,7 +115,6 @@ function PydanticFormContextProvider({
 
     const addFormInputData = (formInput: object) => {
         setFormInputData((currentInputs) => {
-            console.log('addFormInputData', { formInput, currentInputs });
             updateHistory(formInput, currentInputs)
             return [...currentInputs, formInput];
         });
@@ -220,6 +214,7 @@ function PydanticFormContextProvider({
             }
         }
 
+        setFormInputHistory(new Map<string, object>());
         rhf.reset();
     }, [apiResponse, isFullFilled, onSuccess, rhf, skipSuccessNotice]);
 
@@ -267,12 +262,13 @@ function PydanticFormContextProvider({
             const currentStepFromHistory = formInputHistory.get(hash);
 
             if(currentStepFromHistory) {
-                console.log('Found history', {currentStepFromHistory})
-
-                Object.entries(currentStepFromHistory).forEach(([fieldName, fieldValue]) => {
-                    console.log('forEach loop:', {fieldName, fieldValue})
-                    rhf.setValue(fieldName, fieldValue, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
-                })
+                Object.entries(currentStepFromHistory)
+                    .forEach(([fieldName, fieldValue]) => rhf.setValue(fieldName, fieldValue, {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                        shouldValidate: true
+                    }
+                ))
             }
         })
     }, [resetFormData]);
@@ -313,6 +309,7 @@ function PydanticFormContextProvider({
 
     const resetForm = useCallback(
         (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            // todo reset the history for the current page -- clear all and jump to step 1
             e.preventDefault();
             resetFormData();
             setErrorDetails(undefined);
