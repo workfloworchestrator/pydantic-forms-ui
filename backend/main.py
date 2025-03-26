@@ -129,14 +129,14 @@ async def form(form_data: list[dict] = []):
         class TestForm0(FormPage):
             model_config = ConfigDict(title="Form Title Page 0")
 
-            text0: Annotated[int, Ge(18), Le(99)] = 17
+            number0: Annotated[int, Ge(18), Le(99)] = 17
 
         form_data_0 = yield TestForm0
 
         class TestForm1(FormPage):
             model_config = ConfigDict(title="Form Title Page 1")
 
-            text1: Annotated[int, Ge(18), Le(99)] = 17
+            number1: Annotated[int, Ge(18), Le(99)] = 17
 
         form_data_1 = yield TestForm1
 
