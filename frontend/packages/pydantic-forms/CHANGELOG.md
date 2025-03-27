@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.19
+
+### Patch Changes
+
+-   7b6a1fc: 1682 - Back button implementation. Caching steps when browsing between previous and next pages
+
 ## 0.0.18
 
 ### Patch Changes
