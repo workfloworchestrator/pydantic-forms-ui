@@ -34,8 +34,11 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         componentMatcher: customComponentMatcher,
     } = config || {};
 
+    // const t = useTranslations('newTranslations')
+
     const LoadingComponent = loadingComponent ?? (
-        <div>Formulier aan het ophalen...</div>
+        // <div>{t('loading')}</div>
+        <div></div>
     );
 
     if (isLoading && !isSending) {
@@ -65,6 +68,10 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         pydanticFormSchema.properties,
         customComponentMatcher,
     );
+
+    console.log('pydanticFormComponents', pydanticFormComponents);
+    console.log("pydanticFormSchema", pydanticFormSchema)
+    console.log("customComponentMatcher", customComponentMatcher)
 
     return (
         <form action={''} onSubmit={submitForm}>

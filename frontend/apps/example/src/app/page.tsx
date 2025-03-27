@@ -100,6 +100,7 @@ export default function Home() {
                     resetButtonAlternative: ResetButtonAlternative(),
                     cancelButton: CancelButtonAlternative(),
                     componentMatcher: componentMatcher,
+                    translations :  {} // key-value thing this will override the messages
                 }}
             />
         </div>
