@@ -91,6 +91,7 @@ export default function Home() {
                     labelProvider: pydanticLabelProvider,
                     customDataProvider: pydanticCustomDataProvider,
                     componentMatcher: componentMatcher,
+                    translations :  {} // key-value thing this will override the messages
                 }}
             />
         </div>

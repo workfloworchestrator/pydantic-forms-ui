@@ -42,6 +42,7 @@ import {
 import { getHashForArray } from '@/utils';
 
 import translation from './translations/nl.json';
+import {TranslationsProvider} from "@/core/translations/translationsProvider";
 
 // lng and resources key depend on your locale.
 i18next.init({
@@ -148,7 +149,10 @@ function PydanticFormContextProvider({
     const [rawSchema, setRawSchema] = useState<PydanticFormSchemaRawJson>();
 
     // extract the JSON schema to a more usable custom schema
-    const { pydanticFormSchema, isLoading: isParsingSchema } =
+
+    const { pydanticFormSchema, isLoading: isParsingSchema } = //rawSchema is the response from the backend
+
+        //form labels are matched to the definition
         usePydanticFormParser(
             rawSchema,
             formLabels?.labels,
@@ -385,9 +389,11 @@ function PydanticFormContextProvider({
     };
 
     return (
-        <PydanticFormContext.Provider value={PydanticFormContextState}>
-            {children(PydanticFormContextState)}
-        </PydanticFormContext.Provider>
+        <TranslationsProvider>
+            <PydanticFormContext.Provider value={PydanticFormContextState}>
+                {children(PydanticFormContextState)}
+            </PydanticFormContext.Provider>
+        </TranslationsProvider>
     );
 }
 

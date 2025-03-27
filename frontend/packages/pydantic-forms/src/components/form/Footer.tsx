@@ -20,6 +20,8 @@ const Footer = () => {
         allowUntouchedSubmit,
     } = usePydanticFormContext();
 
+    // const t = useTranslations('nms.services.ports');
+
     return (
         <div style={{ height: '200px' }}>
             {footerComponent && <div>{footerComponent}</div>}{' '}

@@ -109,8 +109,5 @@
         "never": "never",
         "map": "map",
         "set": "set"
-    },
-    "newTranslations": {
-      "loading": "Formulier aan het ophalen..."
     }
 }
