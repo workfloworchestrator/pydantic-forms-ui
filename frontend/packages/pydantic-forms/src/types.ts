@@ -307,6 +307,9 @@ export interface PydanticFormsContextConfig {
 
     // have an option to change the layout columns of fields
     formStructureMutator?: PydanticFormStructureMutator;
+
+    // translations
+    translations?: TranslationsJSON;
 }
 
 export type FormRenderer = React.JSXElementConstructor<{
@@ -505,3 +508,12 @@ export type CustomValidationRule = (
     field: PydanticFormField,
     rhf?: ReturnType<typeof useForm>,
 ) => Zod.ZodTypeAny | undefined;
+
+export type TranslationsJSON = {
+    [key: string]: string | TranslationsJSON;
+};
+
+export enum Locale {
+    enGB = 'en-GB',
+    nlNL = 'nl-NL',
+}

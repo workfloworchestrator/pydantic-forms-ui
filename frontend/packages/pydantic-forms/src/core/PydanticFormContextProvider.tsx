@@ -389,11 +389,9 @@ function PydanticFormContextProvider({
     };
 
     return (
-        <TranslationsProvider>
             <PydanticFormContext.Provider value={PydanticFormContextState}>
-                {children(PydanticFormContextState)}
+                    {children(PydanticFormContextState)}
             </PydanticFormContext.Provider>
-        </TranslationsProvider>
     );
 }
 

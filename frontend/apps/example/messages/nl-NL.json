@@ -1,0 +1,13 @@
+{
+  "footer": {
+    "cancel": "Annuleren",
+    "send": "Verzenden CUSTOM",
+    "reset": "Resetten",
+    "notModifiedYet": "Het formulier is nog niet aangepast",
+    "notFilledYet": "Het formulier is nog niet ingevuld"
+},
+  "renderForm" : {
+    "loading": "Formulier wordt geladen...",
+    "successfullySent": "'Je inzending is succesvol ontvangen'"
+  }
+}

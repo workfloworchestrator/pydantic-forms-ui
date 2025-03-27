@@ -1,0 +1,21 @@
+{
+  "footer": {
+    "cancel": "Default Cancel",
+    "send": "Default Send",
+    "reset": "Default Reset",
+    "notModifiedYet": "Default Het formulier is nog niet aangepast",
+    "notFilledYet": "Default Het formulier is nog niet ingevuld",
+    "yola": {
+      "poweredBy": "Default Powered by"
+    },
+    "hola": {
+      "dolla": {
+        "poweredBy": "Default Powered by"
+      }
+    }
+  },
+  "renderForm" : {
+    "loading": "Default Formulier wordt geladen...",
+    "successfullySent": "'Je inzending is succesvol ontvangen'"
+  }
+}
