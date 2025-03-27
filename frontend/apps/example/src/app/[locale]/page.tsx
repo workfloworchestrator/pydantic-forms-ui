@@ -13,10 +13,17 @@ import type {
 } from 'pydantic-forms';
 
 import { TextArea } from '@/fields';
+import { useParams } from "next/navigation";
 
-import styles from './page.module.css';
+import NLnl from '../../../messages/nl-NL.json';
 
-export default function Home() {
+
+import styles from '../page.module.css';
+
+export default function Home({ messages }: { messages: Record<string, string> }) {
+    const params = useParams();
+    const locale = params?.locale as string; // Get locale from URL params
+
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
         requestBody,
     }) => {
@@ -53,6 +60,7 @@ export default function Home() {
         });
     };
 
+
     const ResetButtonAlternative = () => (
         <button type="button">Alternative reset</button>
     );
@@ -82,9 +90,13 @@ export default function Home() {
         ];
     };
 
+    // const translations = getMessages(locale);
+    // console.log('NEW translations', translations);
+
+
     return (
         <div className={styles.page}>
-            <h1 style={{ marginBottom: '20px' }}>Pydantic Form</h1>
+            <h1 style={{marginBottom: "20px"}}>Pydantic Form ({locale})</h1>
 
             <PydanticForm
                 id="theForm"
@@ -100,7 +112,7 @@ export default function Home() {
                     resetButtonAlternative: ResetButtonAlternative(),
                     cancelButton: CancelButtonAlternative(),
                     componentMatcher: componentMatcher,
-                    translations :  {} // key-value thing this will override the messages
+                    translations : NLnl
                 }}
             />
         </div>

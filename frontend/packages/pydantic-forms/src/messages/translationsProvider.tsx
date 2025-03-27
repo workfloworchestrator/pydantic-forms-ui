@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 
 import { merge } from 'lodash';
 import {IntlErrorCode, NextIntlClientProvider} from 'next-intl';
-import nlNL from '../../messages/nl-NL.json';
-import enGB from '../../messages/en-GB.json';
+import nlNL from './nl-NL.json';
+import enGB from './en-GB.json';
 import {TranslationsJSON} from "@/types";
 
 export enum Locale {
