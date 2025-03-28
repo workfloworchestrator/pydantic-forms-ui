@@ -1,21 +1,21 @@
 {
-  "footer": {
-    "cancel": "Annuleren",
-    "send": "Verzenden",
-    "reset": "Resetten",
-    "notModifiedYet": "Het formulier is nog niet aangepast",
-    "notFilledYet": "Het formulier is nog niet ingevuld",
-    "yola": {
-        "poweredBy": "Powered by"
+    "footer": {
+        "cancel": "Annuleren",
+        "send": "Verzenden",
+        "reset": "Resetten",
+        "notModifiedYet": "Het formulier is nog niet aangepast",
+        "notFilledYet": "Het formulier is nog niet ingevuld",
+        "yola": {
+            "poweredBy": "Powered by"
+        },
+        "hola": {
+            "dolla": {
+                "poweredBy": "Powered by"
+            }
+        }
     },
-    "hola": {
-      "dolla": {
-        "poweredBy": "Powered by"
-      }
+    "renderForm": {
+        "loading": "Formulier wordt geladen...",
+        "successfullySent": "'Je inzending is succesvol ontvangen'"
     }
-},
-  "renderForm" : {
-    "loading": "Formulier wordt geladen...",
-    "successfullySent": "'Je inzending is succesvol ontvangen'"
-  }
 }

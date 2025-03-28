@@ -519,7 +519,7 @@ export type TranslationsJSON = {
 export type PydanticFormTranslationsWithLocale = {
     locale: string;
     translations: TranslationsJSON;
-}
+};
 
 export enum Locale {
     enGB = 'en-GB',

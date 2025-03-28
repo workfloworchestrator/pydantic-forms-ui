@@ -1,6 +1,7 @@
 'use client';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useParams } from 'next/navigation';
 import {
     PydanticForm,
@@ -9,14 +10,22 @@ import {
 } from 'pydantic-forms';
 =======
 >>>>>>> 6b4540b (Cleanup)
+=======
+import { useParams } from 'next/navigation';
+>>>>>>> 305eba5 (prettier)
 import type {
     PydanticComponentMatcher,
     PydanticFormApiProvider,
     PydanticFormCustomDataProvider,
     PydanticFormLabelProvider,
 } from 'pydantic-forms';
-import {PydanticForm, PydanticFormFieldFormat, PydanticFormFieldType,} from 'pydantic-forms';
+import {
+    PydanticForm,
+    PydanticFormFieldFormat,
+    PydanticFormFieldType,
+} from 'pydantic-forms';
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 import { TextArea } from '@/fields';
 
@@ -24,10 +33,16 @@ import NLnl from '../../../messages/nl-NL.json';
 =======
 import {TextArea} from '@/fields';
 import {useParams} from "next/navigation";
+=======
+import {
+    handleInvalidLocale,
+    useGetTranslationMessages,
+} from '@/app/[locale]/useGetTranslationMessages';
+import { TextArea } from '@/fields';
+>>>>>>> 305eba5 (prettier)
 
 >>>>>>> 6b4540b (Cleanup)
 import styles from '../page.module.css';
-import {handleInvalidLocale, useGetTranslationMessages} from "@/app/[locale]/useGetTranslationMessages";
 
 <<<<<<< HEAD
 export default function Home({
@@ -39,7 +54,7 @@ export default function Home({
     const locale = params?.locale as string; // Get locale from URL params
 =======
 export default function Home() {
-    const {locale} = useParams();
+    const { locale } = useParams();
     const validLocale = handleInvalidLocale(locale);
 >>>>>>> 6b4540b (Cleanup)
 
@@ -79,6 +94,17 @@ export default function Home() {
         });
     };
 
+<<<<<<< HEAD
+=======
+    const ResetButtonAlternative = () => (
+        <button type="button">Alternative reset</button>
+    );
+
+    const CancelButtonAlternative = () => (
+        <button type="button">Alternative cancel</button>
+    );
+
+>>>>>>> 305eba5 (prettier)
     const componentMatcher = (
         currentMatchers: PydanticComponentMatcher[],
     ): PydanticComponentMatcher[] => {
@@ -125,6 +151,7 @@ export default function Home() {
                     componentMatcher: componentMatcher,
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     translations: NLnl,
 =======
                     translations : useGetTranslationMessages(validLocale)
@@ -133,6 +160,10 @@ export default function Home() {
                     translations : useGetTranslationMessages(validLocale), //Comment this line for default translations
                     locale: validLocale
 >>>>>>> 07848e9 (Some refactor)
+=======
+                    translations: useGetTranslationMessages(validLocale), //Comment this line for default translations
+                    locale: validLocale,
+>>>>>>> 305eba5 (prettier)
                 }}
             />
         </div>
