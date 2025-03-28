@@ -1,21 +1,28 @@
 'use client';
 
+import { useParams } from 'next/navigation';
 import type {
     PydanticComponentMatcher,
     PydanticFormApiProvider,
     PydanticFormCustomDataProvider,
     PydanticFormLabelProvider,
 } from 'pydantic-forms';
-import {PydanticForm, PydanticFormFieldFormat, PydanticFormFieldType,} from 'pydantic-forms';
+import {
+    PydanticForm,
+    PydanticFormFieldFormat,
+    PydanticFormFieldType,
+} from 'pydantic-forms';
 
-import {TextArea} from '@/fields';
-import {useParams} from "next/navigation";
+import {
+    handleInvalidLocale,
+    useGetTranslationMessages,
+} from '@/app/[locale]/useGetTranslationMessages';
+import { TextArea } from '@/fields';
 
 import styles from '../page.module.css';
-import {handleInvalidLocale, useGetTranslationMessages} from "@/app/[locale]/useGetTranslationMessages";
 
 export default function Home() {
-    const {locale} = useParams();
+    const { locale } = useParams();
     const validLocale = handleInvalidLocale(locale);
 
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
@@ -54,7 +61,6 @@ export default function Home() {
         });
     };
 
-
     const ResetButtonAlternative = () => (
         <button type="button">Alternative reset</button>
     );
@@ -86,7 +92,7 @@ export default function Home() {
 
     return (
         <div className={styles.page}>
-            <h1 style={{marginBottom: "20px"}}>Pydantic Form ({locale})</h1>
+            <h1 style={{ marginBottom: '20px' }}>Pydantic Form ({locale})</h1>
 
             <PydanticForm
                 id="theForm"
@@ -102,8 +108,8 @@ export default function Home() {
                     resetButtonAlternative: ResetButtonAlternative(),
                     cancelButton: CancelButtonAlternative(),
                     componentMatcher: componentMatcher,
-                    translations : useGetTranslationMessages(validLocale), //Comment this line for default translations
-                    locale: validLocale
+                    translations: useGetTranslationMessages(validLocale), //Comment this line for default translations
+                    locale: validLocale,
                 }}
             />
         </div>

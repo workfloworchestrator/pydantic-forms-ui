@@ -1,13 +1,13 @@
 {
-  "footer": {
-    "cancel": "Cancel",
-    "send": "Send",
-    "reset": "Reset",
-    "notModifiedYet": "The form has not been modified yet",
-    "notFilledYet": "The form has not been filled in yet"
-  },
-  "renderForm": {
-    "loading": "Form is loading...",
-    "successfullySent": "Your submission has been successfully received"
-  }
+    "footer": {
+        "cancel": "Cancel",
+        "send": "Send",
+        "reset": "Reset",
+        "notModifiedYet": "The form has not been modified yet",
+        "notFilledYet": "The form has not been filled in yet"
+    },
+    "renderForm": {
+        "loading": "Form is loading...",
+        "successfullySent": "Your submission has been successfully received"
+    }
 }

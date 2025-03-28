@@ -1,13 +1,13 @@
 {
-  "footer": {
-    "cancel": "Cancel CUSTOM",
-    "send": "Send CUSTOM",
-    "reset": "Reset CUSTOM",
-    "notModifiedYet": "The form has not been modified yet CUSTOM",
-    "notFilledYet": "The form has not been filled in yet CUSTOM"
-  },
-  "renderForm": {
-    "loading": "Form is loading... CUSTOM",
-    "successfullySent": "Your submission has been successfully received CUSTOM"
-  }
+    "footer": {
+        "cancel": "Cancel CUSTOM",
+        "send": "Send CUSTOM",
+        "reset": "Reset CUSTOM",
+        "notModifiedYet": "The form has not been modified yet CUSTOM",
+        "notFilledYet": "The form has not been filled in yet CUSTOM"
+    },
+    "renderForm": {
+        "loading": "Form is loading... CUSTOM",
+        "successfullySent": "Your submission has been successfully received CUSTOM"
+    }
 }

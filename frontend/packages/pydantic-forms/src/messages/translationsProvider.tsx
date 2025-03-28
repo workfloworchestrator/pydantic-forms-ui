@@ -2,10 +2,12 @@ import React from 'react';
 import type { ReactNode } from 'react';
 
 import { merge } from 'lodash';
-import {IntlErrorCode, NextIntlClientProvider} from 'next-intl';
-import nlNL from './nl-NL.json';
+import { IntlErrorCode, NextIntlClientProvider } from 'next-intl';
+
+import { TranslationsJSON } from '@/types';
+
 import enGB from './en-GB.json';
-import {TranslationsJSON} from "@/types";
+import nlNL from './nl-NL.json';
 
 export enum Locale {
     enGB = 'en-GB',
@@ -25,10 +27,9 @@ export const TranslationsProvider = ({
     locale = Locale.enGB,
     children,
 }: TranslationsProviderProps) => {
-
     const getCustomMessages = (translations: TranslationsJSON | undefined) => {
         return translations;
-    }
+    };
     const getLocalMessages = (locale: string) => {
         switch (locale) {
             case Locale.enGB:

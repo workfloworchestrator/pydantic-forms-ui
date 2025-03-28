@@ -5,8 +5,9 @@
  */
 import React from 'react';
 
+import { useTranslations } from 'next-intl';
+
 import { usePydanticFormContext } from '@/core';
-import {useTranslations} from "next-intl";
 
 const Footer = () => {
     const {
@@ -41,9 +42,7 @@ const Footer = () => {
 
                 {rhf.formState.isValid &&
                     !allowUntouchedSubmit &&
-                    !rhf.formState.isDirty && (
-                        <div>{t('notModifiedYet')}</div>
-                    )}
+                    !rhf.formState.isDirty && <div>{t('notModifiedYet')}</div>}
 
                 {!!onCancel &&
                     (cancelButton ?? (
