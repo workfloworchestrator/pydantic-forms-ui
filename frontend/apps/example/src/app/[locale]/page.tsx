@@ -1,23 +1,35 @@
 'use client';
 
+<<<<<<< HEAD
 import { useParams } from 'next/navigation';
 import {
     PydanticForm,
     PydanticFormFieldFormat,
     PydanticFormFieldType,
 } from 'pydantic-forms';
+=======
+>>>>>>> 6b4540b (Cleanup)
 import type {
     PydanticComponentMatcher,
     PydanticFormApiProvider,
     PydanticFormCustomDataProvider,
     PydanticFormLabelProvider,
 } from 'pydantic-forms';
+import {PydanticForm, PydanticFormFieldFormat, PydanticFormFieldType,} from 'pydantic-forms';
 
+<<<<<<< HEAD
 import { TextArea } from '@/fields';
 
 import NLnl from '../../../messages/nl-NL.json';
-import styles from '../page.module.css';
+=======
+import {TextArea} from '@/fields';
+import {useParams} from "next/navigation";
 
+>>>>>>> 6b4540b (Cleanup)
+import styles from '../page.module.css';
+import {handleInvalidLocale, useGetTranslationMessages} from "@/app/[locale]/useGetTranslationMessages";
+
+<<<<<<< HEAD
 export default function Home({
     messages,
 }: {
@@ -25,6 +37,11 @@ export default function Home({
 }) {
     const params = useParams();
     const locale = params?.locale as string; // Get locale from URL params
+=======
+export default function Home() {
+    const {locale} = useParams();
+    const validLocale = handleInvalidLocale(locale);
+>>>>>>> 6b4540b (Cleanup)
 
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
         requestBody,
@@ -83,9 +100,12 @@ export default function Home({
         ];
     };
 
+<<<<<<< HEAD
     // const translations = getMessages(locale);
     // console.log('NEW translations', translations);
 
+=======
+>>>>>>> 6b4540b (Cleanup)
     return (
         <div className={styles.page}>
             <h1 style={{ marginBottom: '20px' }}>Pydantic Form ({locale})</h1>
@@ -103,7 +123,11 @@ export default function Home({
                     labelProvider: pydanticLabelProvider,
                     customDataProvider: pydanticCustomDataProvider,
                     componentMatcher: componentMatcher,
+<<<<<<< HEAD
                     translations: NLnl,
+=======
+                    translations : useGetTranslationMessages(validLocale)
+>>>>>>> 6b4540b (Cleanup)
                 }}
             />
         </div>
