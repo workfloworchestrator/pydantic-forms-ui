@@ -310,6 +310,9 @@ export interface PydanticFormsContextConfig {
 
     // translations
     translations?: TranslationsJSON;
+
+    // locale
+    locale?: string;
 }
 
 export type FormRenderer = React.JSXElementConstructor<{
@@ -512,6 +515,11 @@ export type CustomValidationRule = (
 export type TranslationsJSON = {
     [key: string]: string | TranslationsJSON;
 };
+
+export type PydanticFormTranslationsWithLocale = {
+    locale: string;
+    translations: TranslationsJSON;
+}
 
 export enum Locale {
     enGB = 'en-GB',

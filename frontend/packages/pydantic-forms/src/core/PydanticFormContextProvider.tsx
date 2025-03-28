@@ -42,8 +42,6 @@ import {
 import { getHashForArray } from '@/utils';
 
 import translation from './translations/nl.json';
-import {TranslationsProvider} from "@/core/translations/translationsProvider";
-
 // lng and resources key depend on your locale.
 i18next.init({
     lng: 'nl',

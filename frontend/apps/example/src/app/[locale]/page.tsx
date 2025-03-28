@@ -124,10 +124,15 @@ export default function Home() {
                     customDataProvider: pydanticCustomDataProvider,
                     componentMatcher: componentMatcher,
 <<<<<<< HEAD
+<<<<<<< HEAD
                     translations: NLnl,
 =======
                     translations : useGetTranslationMessages(validLocale)
 >>>>>>> 6b4540b (Cleanup)
+=======
+                    translations : useGetTranslationMessages(validLocale), //Comment this line for default translations
+                    locale: validLocale
+>>>>>>> 07848e9 (Some refactor)
                 }}
             />
         </div>

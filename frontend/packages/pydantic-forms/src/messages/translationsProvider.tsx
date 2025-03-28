@@ -12,27 +12,29 @@ export enum Locale {
     nlNL = 'nl-NL',
 }
 
+const DEFAULT_TIMEZONE = 'Europe/Amsterdam';
+
 interface TranslationsProviderProps {
     translations: TranslationsJSON | undefined;
+    locale?: string;
     children: ReactNode;
 }
 
 export const TranslationsProvider = ({
     translations,
+    locale = Locale.enGB,
     children,
 }: TranslationsProviderProps) => {
 
-    const locale: Locale = Locale.nlNL; // TODO: get locale from router
     const getCustomMessages = (translations: TranslationsJSON | undefined) => {
         return translations;
     }
-    const getLocalMessages = (locale: Locale) => {
+    const getLocalMessages = (locale: string) => {
         switch (locale) {
             case Locale.enGB:
                 return enGB;
             case Locale.nlNL:
                 return nlNL;
-
             default:
                 return enGB;
         }
@@ -59,6 +61,7 @@ export const TranslationsProvider = ({
         <NextIntlClientProvider
             locale={locale || Locale.enGB}
             messages={messages}
+            timeZone={DEFAULT_TIMEZONE}
             onError={onError}
         >
             {children}
