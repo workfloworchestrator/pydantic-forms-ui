@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import {NextIntlClientProvider} from 'next-intl';
-
 import '../globals.css';
-import {notFound} from "next/navigation";
+import {handleInvalidLocale} from "@/app/[locale]/useGetTranslationMessages";
 import {hasLocale} from "next-intl";
 import {routing} from "@/i18n/routing";
+import {notFound} from "next/navigation";
 
 const geistSans = localFont({
     src: '../fonts/GeistVF.woff',
@@ -35,18 +34,10 @@ export default async function RootLayout({
         notFound();
     }
 
-    const messages = (await import(`../../../messages/${locale}.json`)).default;
-
-    console.log('locale', locale);
-    console.log("MESSAGE HERE", messages);
-
-
     return (
         <html lang={locale}>
             <body className={`${geistSans.variable} ${geistMono.variable}`}>
-            <NextIntlClientProvider locale={locale} messages={messages}>
                 {children}
-            </NextIntlClientProvider>
             </body>
         </html>
     );

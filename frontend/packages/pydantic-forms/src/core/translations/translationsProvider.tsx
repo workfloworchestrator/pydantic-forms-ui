@@ -59,6 +59,7 @@ export const TranslationsProvider = ({
         <NextIntlClientProvider
             locale={locale || Locale.enGB}
             messages={messages}
+            timeZone={'Europe/Amsterdam'}
             onError={onError}
         >
             {children}

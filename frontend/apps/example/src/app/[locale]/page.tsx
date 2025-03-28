@@ -1,28 +1,22 @@
 'use client';
 
-import {
-    PydanticForm,
-    PydanticFormFieldFormat,
-    PydanticFormFieldType,
-} from 'pydantic-forms';
 import type {
     PydanticComponentMatcher,
     PydanticFormApiProvider,
     PydanticFormCustomDataProvider,
     PydanticFormLabelProvider,
 } from 'pydantic-forms';
+import {PydanticForm, PydanticFormFieldFormat, PydanticFormFieldType,} from 'pydantic-forms';
 
-import { TextArea } from '@/fields';
-import { useParams } from "next/navigation";
-
-import NLnl from '../../../messages/nl-NL.json';
-
+import {TextArea} from '@/fields';
+import {useParams} from "next/navigation";
 
 import styles from '../page.module.css';
+import {handleInvalidLocale, useGetTranslationMessages} from "@/app/[locale]/useGetTranslationMessages";
 
-export default function Home({ messages }: { messages: Record<string, string> }) {
-    const params = useParams();
-    const locale = params?.locale as string; // Get locale from URL params
+export default function Home() {
+    const {locale} = useParams();
+    const validLocale = handleInvalidLocale(locale);
 
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
         requestBody,
@@ -90,10 +84,6 @@ export default function Home({ messages }: { messages: Record<string, string> })
         ];
     };
 
-    // const translations = getMessages(locale);
-    // console.log('NEW translations', translations);
-
-
     return (
         <div className={styles.page}>
             <h1 style={{marginBottom: "20px"}}>Pydantic Form ({locale})</h1>
@@ -112,7 +102,7 @@ export default function Home({ messages }: { messages: Record<string, string> })
                     resetButtonAlternative: ResetButtonAlternative(),
                     cancelButton: CancelButtonAlternative(),
                     componentMatcher: componentMatcher,
-                    translations : NLnl
+                    translations : useGetTranslationMessages(validLocale)
                 }}
             />
         </div>
