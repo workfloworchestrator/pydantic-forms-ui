@@ -69,10 +69,6 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         customComponentMatcher,
     );
 
-    console.log('pydanticFormComponents', pydanticFormComponents);
-    console.log("pydanticFormSchema", pydanticFormSchema)
-    console.log("customComponentMatcher", customComponentMatcher)
-
     return (
         <form action={''} onSubmit={submitForm}>
             {title !== false &&

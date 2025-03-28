@@ -14,7 +14,7 @@ import type {
     PydanticFormInitialContextProps,
     PydanticFormMetaData,
 } from '@/types';
-import {TranslationsProvider} from "@/core/translations/translationsProvider";
+import {TranslationsProvider} from "@/messages/translationsProvider";
 
 export interface PydanticFormProps
     extends Omit<PydanticFormInitialContextProps, 'formKey' | 'children'> {
@@ -27,7 +27,7 @@ export const PydanticForm = ({
     metaData,
     ...contextProps
 }: PydanticFormProps) => (
-    <TranslationsProvider translations={contextProps.config.translations}>
+    <TranslationsProvider translations={contextProps.config.translations} locale={contextProps.config.locale}>
         <PydanticFormContextProvider
             {...contextProps}
             formKey={id}

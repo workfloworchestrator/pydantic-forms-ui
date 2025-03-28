@@ -102,7 +102,8 @@ export default function Home() {
                     resetButtonAlternative: ResetButtonAlternative(),
                     cancelButton: CancelButtonAlternative(),
                     componentMatcher: componentMatcher,
-                    translations : useGetTranslationMessages(validLocale)
+                    translations : useGetTranslationMessages(validLocale), //Comment this line for default translations
+                    locale: validLocale
                 }}
             />
         </div>
