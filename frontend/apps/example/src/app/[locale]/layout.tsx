@@ -2,9 +2,6 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import '../globals.css';
 import {handleInvalidLocale} from "@/app/[locale]/useGetTranslationMessages";
-import {hasLocale} from "next-intl";
-import {routing} from "@/i18n/routing";
-import {notFound} from "next/navigation";
 
 const geistSans = localFont({
     src: '../fonts/GeistVF.woff',
@@ -27,15 +24,13 @@ export default async function RootLayout({
     params
 }: Readonly<{
     children: React.ReactNode;
-    params: { locale: string };
+    params: Promise<{ locale: string }>;
 }>) {
     const {locale} = await params;
-    if (!hasLocale(routing.locales, locale)) {
-        notFound();
-    }
+    const validLocale = handleInvalidLocale(locale);
 
     return (
-        <html lang={locale}>
+        <html lang={validLocale}>
             <body className={`${geistSans.variable} ${geistMono.variable}`}>
                 {children}
             </body>
