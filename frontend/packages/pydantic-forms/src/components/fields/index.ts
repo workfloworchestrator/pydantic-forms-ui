@@ -11,3 +11,5 @@ export * from './DropdownField';
 export * from './RadioField';
 export * from './MultiCheckboxField';
 export * from './ListField';
+export * from './ObjectField';
+export * from './ArrayField';
