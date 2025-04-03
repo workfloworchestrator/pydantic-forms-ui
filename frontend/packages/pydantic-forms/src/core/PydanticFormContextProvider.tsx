@@ -149,11 +149,7 @@ function PydanticFormContextProvider({
 
     // extract the JSON schema to a more usable custom schema
 
-    const {
-        pydanticFormSchema,
-        isLoading: isParsingSchema,
-    } = //rawSchema is the response from the backend
-        //form labels are matched to the definition
+    const { pydanticFormSchema, isLoading: isParsingSchema } =
         usePydanticFormParser(
             rawSchema,
             formLabels?.labels,

@@ -28,7 +28,7 @@ export const PydanticForm = ({
     ...contextProps
 }: PydanticFormProps) => (
     <TranslationsProvider
-        translations={contextProps.config.translations}
+        customTranslations={contextProps.config.customTranslations}
         locale={contextProps.config.locale}
     >
         <PydanticFormContextProvider

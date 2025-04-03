@@ -17,19 +17,16 @@ export enum Locale {
 const DEFAULT_TIMEZONE = 'Europe/Amsterdam';
 
 interface TranslationsProviderProps {
-    translations: TranslationsJSON | undefined;
+    customTranslations: TranslationsJSON | undefined;
     locale?: string;
     children: ReactNode;
 }
 
 export const TranslationsProvider = ({
-    translations,
+    customTranslations,
     locale = Locale.enGB,
     children,
 }: TranslationsProviderProps) => {
-    const getCustomMessages = (translations: TranslationsJSON | undefined) => {
-        return translations;
-    };
     const getLocalMessages = (locale: string) => {
         switch (locale) {
             case Locale.enGB:
@@ -49,14 +46,11 @@ export const TranslationsProvider = ({
             error.code !== IntlErrorCode.MISSING_MESSAGE &&
             error.code !== IntlErrorCode.INSUFFICIENT_PATH
         ) {
-            // Missing translations are expected and normal in the context of the
-            // forms module (see UserInputForm.tsx) so we silently discard them
-            // TODO: Think of a place to better log missing translations keys that shouldn't be missing
             console.error(error);
         }
     };
 
-    const messages = merge(localMessages, getCustomMessages(translations));
+    const messages = merge(localMessages, customTranslations);
 
     return (
         <NextIntlClientProvider

@@ -1,5 +1,6 @@
 'use client';
 
+<<<<<<< HEAD:frontend/apps/example/src/app/[locale]/page.tsx
 <<<<<<< HEAD
 <<<<<<< HEAD
 import { useParams } from 'next/navigation';
@@ -14,6 +15,10 @@ import {
 import { useParams } from 'next/navigation';
 >>>>>>> 305eba5 (prettier)
 import type {
+=======
+import {
+    Locale,
+>>>>>>> faa8b5a (Resolved comments):frontend/apps/example/src/app/page.tsx
     PydanticComponentMatcher,
     PydanticFormApiProvider,
     PydanticFormCustomDataProvider,
@@ -25,6 +30,7 @@ import {
     PydanticFormFieldType,
 } from 'pydantic-forms';
 
+<<<<<<< HEAD:frontend/apps/example/src/app/[locale]/page.tsx
 <<<<<<< HEAD
 <<<<<<< HEAD
 import { TextArea } from '@/fields';
@@ -38,11 +44,17 @@ import {
     handleInvalidLocale,
     useGetTranslationMessages,
 } from '@/app/[locale]/useGetTranslationMessages';
+=======
+>>>>>>> faa8b5a (Resolved comments):frontend/apps/example/src/app/page.tsx
 import { TextArea } from '@/fields';
 >>>>>>> 305eba5 (prettier)
 
+<<<<<<< HEAD:frontend/apps/example/src/app/[locale]/page.tsx
 >>>>>>> 6b4540b (Cleanup)
 import styles from '../page.module.css';
+=======
+import styles from './page.module.css';
+>>>>>>> faa8b5a (Resolved comments):frontend/apps/example/src/app/page.tsx
 
 <<<<<<< HEAD
 export default function Home({
@@ -54,10 +66,13 @@ export default function Home({
     const locale = params?.locale as string; // Get locale from URL params
 =======
 export default function Home() {
+<<<<<<< HEAD:frontend/apps/example/src/app/[locale]/page.tsx
     const { locale } = useParams();
     const validLocale = handleInvalidLocale(locale);
 >>>>>>> 6b4540b (Cleanup)
 
+=======
+>>>>>>> faa8b5a (Resolved comments):frontend/apps/example/src/app/page.tsx
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
         requestBody,
     }) => {
@@ -126,15 +141,26 @@ export default function Home() {
         ];
     };
 
+<<<<<<< HEAD:frontend/apps/example/src/app/[locale]/page.tsx
 <<<<<<< HEAD
     // const translations = getMessages(locale);
     // console.log('NEW translations', translations);
 
 =======
 >>>>>>> 6b4540b (Cleanup)
+=======
+    const customTranslations = {
+        renderForm: {
+            loading: 'The form is loading. Please wait.',
+        },
+    };
+
+    const locale = Locale.enGB;
+
+>>>>>>> faa8b5a (Resolved comments):frontend/apps/example/src/app/page.tsx
     return (
         <div className={styles.page}>
-            <h1 style={{ marginBottom: '20px' }}>Pydantic Form ({locale})</h1>
+            <h1 style={{ marginBottom: '20px' }}>Pydantic Form </h1>
 
             <PydanticForm
                 id="theForm"
@@ -149,6 +175,7 @@ export default function Home() {
                     labelProvider: pydanticLabelProvider,
                     customDataProvider: pydanticCustomDataProvider,
                     componentMatcher: componentMatcher,
+<<<<<<< HEAD:frontend/apps/example/src/app/[locale]/page.tsx
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -164,6 +191,10 @@ export default function Home() {
                     translations: useGetTranslationMessages(validLocale), //Comment this line for default translations
                     locale: validLocale,
 >>>>>>> 305eba5 (prettier)
+=======
+                    customTranslations: customTranslations,
+                    locale: locale,
+>>>>>>> faa8b5a (Resolved comments):frontend/apps/example/src/app/page.tsx
                 }}
             />
         </div>
