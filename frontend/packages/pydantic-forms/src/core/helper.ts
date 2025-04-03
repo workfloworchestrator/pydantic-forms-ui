@@ -225,6 +225,11 @@ export const getFieldValidation = (
             if (properties.multipleOf)
                 validation.multipleOf = properties.multipleOf;
         }
+        if (fieldProperties.type === PydanticFormFieldType.ARRAY) {
+            validation.minItems = properties.minItems;
+            validation.maxItems = properties.maxItems;
+            validation.uniqueItems = properties.uniqueItems;
+       }
     }
 
     return validation;

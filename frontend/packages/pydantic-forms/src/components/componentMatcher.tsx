@@ -36,7 +36,7 @@ export const getClientSideValidationRule = (
 
     const componentMatch = matcher(field);
 
-    let validationRule = componentMatch?.validator?.(field, rhf) ?? z.string();
+    let validationRule = componentMatch?.validator?.(field, rhf) ?? z.unknown();
 
     if (!field.required) {
         validationRule = validationRule.optional();
