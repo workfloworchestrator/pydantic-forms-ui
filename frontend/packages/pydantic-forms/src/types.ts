@@ -308,7 +308,7 @@ export interface PydanticFormsContextConfig {
     formStructureMutator?: PydanticFormStructureMutator;
 
     // translations
-    translations?: TranslationsJSON;
+    customTranslations?: TranslationsJSON;
 
     // locale
     locale?: string;

@@ -1,7 +1,7 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import type {
+import {
+    Locale,
     PydanticComponentMatcher,
     PydanticFormApiProvider,
     PydanticFormCustomDataProvider,
@@ -13,18 +13,11 @@ import {
     PydanticFormFieldType,
 } from 'pydantic-forms';
 
-import {
-    handleInvalidLocale,
-    useGetTranslationMessages,
-} from '@/app/[locale]/useGetTranslationMessages';
 import { TextArea } from '@/fields';
 
-import styles from '../page.module.css';
+import styles from './page.module.css';
 
 export default function Home() {
-    const { locale } = useParams();
-    const validLocale = handleInvalidLocale(locale);
-
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
         requestBody,
     }) => {
@@ -90,9 +83,17 @@ export default function Home() {
         ];
     };
 
+    const customTranslations = {
+        renderForm: {
+            loading: 'The form is loading. Please wait.',
+        },
+    };
+
+    const locale = Locale.enGB;
+
     return (
         <div className={styles.page}>
-            <h1 style={{ marginBottom: '20px' }}>Pydantic Form ({locale})</h1>
+            <h1 style={{ marginBottom: '20px' }}>Pydantic Form </h1>
 
             <PydanticForm
                 id="theForm"
@@ -108,8 +109,8 @@ export default function Home() {
                     resetButtonAlternative: ResetButtonAlternative(),
                     cancelButton: CancelButtonAlternative(),
                     componentMatcher: componentMatcher,
-                    translations: useGetTranslationMessages(validLocale), //Comment this line for default translations
-                    locale: validLocale,
+                    customTranslations: customTranslations,
+                    locale: locale,
                 }}
             />
         </div>
