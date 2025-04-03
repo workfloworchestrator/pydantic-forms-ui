@@ -177,7 +177,6 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         matcher(field) {
             return field.type === PydanticFormFieldType.ARRAY;
         },
-        validator: zodValidationPresets.array,
     },
 ];
 

@@ -187,6 +187,9 @@ export interface PydanticFormFieldValidations {
     exclusiveMinimum?: number;
     exclusiveMaximum?: number;
     multipleOf?: number;
+    minItems?: number;
+    maxItems?: number;
+    uniqueItems?: boolean;
 }
 
 export interface PydanticFormFieldAttributes

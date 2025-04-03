@@ -1,44 +1,53 @@
 import React from 'react';
 import { useFieldArray } from 'react-hook-form';
 
+import { init } from 'next/dist/compiled/webpack/webpack';
+import { array } from 'zod';
+
 import { usePydanticFormContext } from '@/core';
 import { PydanticFormElementProps } from '@/types';
 
 // import { RenderFields } from '../render';
 
-export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
+export const ArrayField = ({
+    pydanticFormField,
+    onChange,
+}: PydanticFormElementProps) => {
     const { rhf } = usePydanticFormContext();
-    const { control } = rhf;
+    const { control, watch } = rhf;
+
+    const arrayName = pydanticFormField.id;
+    // const arrayNameValue = watch(arrayName);
+
     const { fields, append, remove } = useFieldArray({
         control,
-        name: 'test',
+        name: arrayName,
     });
-
-    console.log('ArrayField', pydanticFormField);
 
     return (
         <div>
-            <h1>{pydanticFormField.title}</h1>
-
-            {fields.map((item, index) => {
+            {fields.map((field, index) => {
                 return (
-                    <div key={item.id}>
-                        <h2>{item.id}</h2>
+                    <div key={field.id}>
+                        <input
+                            type="text"
+                            {...rhf.register(`${arrayName}.${index}`, {
+                                validate: async () => {
+                                    return 'HAHAHAHAHA';
+                                },
+                            })}
+                        />
                         <span onClick={() => remove(index)}>Remove</span>
                     </div>
                 );
             })}
 
-            <div>
-                Controls:{' '}
-                <span
-                    onClick={() => {
-                        console.log('append');
-                        append({ name: 'test' });
-                    }}
-                >
-                    Add
-                </span>
+            <div
+                onClick={() => {
+                    append('');
+                }}
+            >
+                Add
             </div>
         </div>
     );

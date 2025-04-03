@@ -16,6 +16,7 @@ import { getClientSideValidationRule } from '@/components/componentMatcher';
 import {
     CustomValidationRule,
     Properties,
+    PydanticFormFieldType,
     PydanticFormSchema,
     PydanticFormsContextConfig,
 } from '@/types';
@@ -33,6 +34,7 @@ const getZodValidationObject = (
     customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ) => {
     const pydanticFormFields = Object.values(properties);
+
     if (!pydanticFormFields) return {};
 
     const validationObject: ZodRawShape = {};
@@ -41,7 +43,7 @@ const getZodValidationObject = (
         const id =
             pydanticFormField.id.split('.').pop() || pydanticFormField.id;
 
-        if (pydanticFormField.type === 'object') {
+        if (pydanticFormField.type === PydanticFormFieldType.OBJECT) {
             validationObject[id] = z.object(
                 getZodValidationObject(
                     pydanticFormField.properties || {},
