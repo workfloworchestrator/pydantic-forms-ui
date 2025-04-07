@@ -10,6 +10,7 @@ import React from 'react';
 
 import RenderForm from '@/components/render/RenderForm';
 import PydanticFormContextProvider from '@/core/PydanticFormContextProvider';
+import { TranslationsProvider } from '@/messages/translationsProvider';
 import type {
     PydanticFormInitialContextProps,
     PydanticFormMetaData,
@@ -26,13 +27,18 @@ export const PydanticForm = ({
     metaData,
     ...contextProps
 }: PydanticFormProps) => (
-    <PydanticFormContextProvider
-        {...contextProps}
-        formKey={id}
-        metaData={metaData}
+    <TranslationsProvider
+        customTranslations={contextProps.config.customTranslations}
+        locale={contextProps.config.locale}
     >
-        {RenderForm}
-    </PydanticFormContextProvider>
+        <PydanticFormContextProvider
+            {...contextProps}
+            formKey={id}
+            metaData={metaData}
+        >
+            {RenderForm}
+        </PydanticFormContextProvider>
+    </TranslationsProvider>
 );
 
 export default PydanticForm;

@@ -7,6 +7,8 @@
  */
 import React from 'react';
 
+import { useTranslations } from 'next-intl';
+
 import { componentMatcher } from '@/components/componentMatcher';
 import Footer from '@/components/form/Footer';
 import RenderFormErrors from '@/components/render/RenderFormErrors';
@@ -34,9 +36,9 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         componentMatcher: customComponentMatcher,
     } = config || {};
 
-    const LoadingComponent = loadingComponent ?? (
-        <div>Formulier aan het ophalen...</div>
-    );
+    const t = useTranslations('renderForm');
+
+    const LoadingComponent = loadingComponent ?? <div>{t('loading')}</div>;
 
     if (isLoading && !isSending) {
         return LoadingComponent;
@@ -51,9 +53,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
             return <></>;
         }
 
-        return (
-            <div>{successNotice ?? 'Je inzending is succesvol ontvangen'}</div>
-        );
+        return <div>{successNotice ?? t('successfullySent')}</div>;
     }
 
     const Renderer = formRenderer ?? FormRenderer;
@@ -81,7 +81,6 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
             <div>
                 <Renderer pydanticFormComponents={pydanticFormComponents} />
             </div>
-
             <FooterRenderer />
         </form>
     );

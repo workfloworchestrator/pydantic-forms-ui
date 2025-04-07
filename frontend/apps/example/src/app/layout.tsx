@@ -19,13 +19,13 @@ export const metadata: Metadata = {
     description: 'Generates forms from Pydantic models',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html>
             <body className={`${geistSans.variable} ${geistMono.variable}`}>
                 {children}
             </body>

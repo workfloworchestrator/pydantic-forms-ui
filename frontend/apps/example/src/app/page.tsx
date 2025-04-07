@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    Locale,
     PydanticForm,
     PydanticFormFieldFormat,
     PydanticFormFieldType,
@@ -74,9 +75,16 @@ export default function Home() {
         ];
     };
 
+    const customTranslations = {
+        renderForm: {
+            loading: 'The form is loading. Please wait.',
+        },
+    };
+    const locale = Locale.enGB;
+
     return (
         <div className={styles.page}>
-            <h1 style={{ marginBottom: '20px' }}>Pydantic Form</h1>
+            <h1 style={{ marginBottom: '20px' }}>Pydantic Form </h1>
 
             <PydanticForm
                 id="theForm"
@@ -91,6 +99,8 @@ export default function Home() {
                     labelProvider: pydanticLabelProvider,
                     customDataProvider: pydanticCustomDataProvider,
                     componentMatcher: componentMatcher,
+                    customTranslations: customTranslations,
+                    locale: locale,
                 }}
             />
         </div>

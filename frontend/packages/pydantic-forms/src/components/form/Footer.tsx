@@ -5,6 +5,8 @@
  */
 import React from 'react';
 
+import { useTranslations } from 'next-intl';
+
 import { usePydanticFormContext } from '@/core';
 
 const Footer = () => {
@@ -19,6 +21,8 @@ const Footer = () => {
         footerComponent,
         allowUntouchedSubmit,
     } = usePydanticFormContext();
+
+    const t = useTranslations('footer');
 
     return (
         <div style={{ height: '200px' }}>
@@ -45,14 +49,13 @@ const Footer = () => {
                         }}
                         style={{ padding: '4px' }}
                     >
-                        Reset
+                        {t('reset')}
                     </button>
                 )}
-
                 {!!onCancel &&
                     (cancelButton ?? (
                         <button type="button" onClick={onCancel}>
-                            Annuleren
+                            {t('cancel')}
                         </button>
                     ))}
 
@@ -65,11 +68,11 @@ const Footer = () => {
                             !rhf.formState.isSubmitting)
                     }
                 >
-                    {sendLabel ?? 'Verzenden'}
+                    {sendLabel ?? t('send')}
                 </button>
             </div>
             {!rhf.formState.isValid && rhf.formState.isDirty && (
-                <div>Het formulier is nog niet correct ingevuld</div>
+                <div>{t('notFilledYet')}</div>
             )}
         </div>
     );

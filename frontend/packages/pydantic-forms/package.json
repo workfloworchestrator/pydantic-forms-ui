@@ -58,6 +58,8 @@
         "@hookform/resolvers": "^3.9.1",
         "dayjs": "^1.11.13",
         "i18next": "^24.1.2",
+        "lodash": "^4.17.21",
+        "next-intl": "^4.0.2",
         "react-hook-form": "^7.54.1",
         "swr": "^2.3.0",
         "zod": "^3.24.1",
