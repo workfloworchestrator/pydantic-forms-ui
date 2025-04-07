@@ -312,7 +312,7 @@ export interface PydanticFormsContextConfig {
     customTranslations?: TranslationsJSON;
 
     // locale
-    locale?: string;
+    locale?: Locale;
 }
 
 export type FormRenderer = React.JSXElementConstructor<{
@@ -517,7 +517,7 @@ export type TranslationsJSON = {
 };
 
 export type PydanticFormTranslationsWithLocale = {
-    locale: string;
+    locale: Locale;
     translations: TranslationsJSON;
 };
 
