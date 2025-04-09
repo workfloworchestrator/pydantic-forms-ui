@@ -111,12 +111,18 @@ function PydanticFormContextProvider({
         });
     };
 
-    const addFormInputData = (formInput: object) => {
-        setFormInputData((currentInputs) => {
-            updateHistory(formInput, currentInputs);
-            return [...currentInputs, formInput];
-        });
-    };
+    const addFormInputData = useCallback(
+        (formInput: object, replaceInsteadOfAdd = false) => {
+            setFormInputData((currentInputs) => {
+                const data = replaceInsteadOfAdd
+                    ? currentInputs.slice(0, -1)
+                    : currentInputs;
+                updateHistory(formInput, data);
+                return [...data, formInput];
+            });
+        },
+        [],
+    );
 
     const [errorDetails, setErrorDetails] =
         useState<PydanticFormValidationErrorDetails>();
@@ -289,10 +295,10 @@ function PydanticFormContextProvider({
 
     const submitFormFn = useCallback(() => {
         setIsSending(true);
-        addFormInputData(rhf?.getValues());
+        addFormInputData(rhf?.getValues(), !!errorDetails);
 
         window.scrollTo(0, 0);
-    }, [rhf]);
+    }, [rhf, errorDetails, addFormInputData]);
 
     const onClientSideError = useCallback(
         (data?: FieldValues) => {
