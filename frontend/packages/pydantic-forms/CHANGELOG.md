@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.0.20
+
+### Patch Changes
+
+-   88d5a7f: Adds translations for general text
+
 ## 0.0.19
 
 ### Patch Changes
