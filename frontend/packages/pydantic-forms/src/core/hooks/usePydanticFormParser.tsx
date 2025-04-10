@@ -15,11 +15,11 @@ import {
  *
  */
 import type {
+    ParsedProperties,
     Properties,
     PydanticFormField,
-    PydanticFormPropertySchemaParsed,
+    PydanticFormFieldAnyOfItemParsed,
     PydanticFormSchema,
-    PydanticFormSchemaParsed,
     PydanticFormSchemaRawJson,
     PydanticFormsContextConfig,
 } from '@/types';
@@ -38,14 +38,15 @@ const translateLabel = (
 };
 
 const parseProperties = (
-    parsedSchema: PydanticFormSchemaParsed | PydanticFormPropertySchemaParsed,
+    properties: ParsedProperties | PydanticFormFieldAnyOfItemParsed,
+    requiredFields: string[] = [],
     formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
     prefix: string = '',
 ) => {
-    if (!parsedSchema || !parsedSchema.properties) return {};
+    if (!properties) return {};
 
-    const schemaProperties = Object.entries(parsedSchema.properties);
+    const schemaProperties = Object.entries(properties);
     const parsedProperties = schemaProperties.reduce(
         (propertiesObject: Properties, [propertyId, propertySchema]) => {
             const options = getFieldOptions(propertySchema);
@@ -78,19 +79,54 @@ const parseProperties = (
                 required:
                     propertySchema.type === PydanticFormFieldType.OBJECT
                         ? false
-                        : !!parsedSchema.required?.includes(propertyId),
+                        : !!requiredFields?.includes(propertyId),
                 attributes: getFieldAttributes(propertySchema),
                 schema: propertySchema,
                 validations: getFieldValidation(propertySchema),
                 columns: 6, // TODO: Is this still relevant?
                 properties: parseProperties(
-                    propertySchema || {},
+                    propertySchema.properties || {},
+                    propertySchema.required || [],
                     formLabels,
                     fieldDetailProvider,
                     id,
                 ),
                 ...fieldDetailProvider?.[propertyId],
             };
+
+            if (propertySchema.type === PydanticFormFieldType.ARRAY) {
+                // When the property is an array, we need to parse the item that is an array element
+                // Currently we only support arrays of single field types so items can never be multiple items
+                const itemProperties =
+                    propertySchema.items as PydanticFormFieldAnyOfItemParsed;
+                const itemOptions = getFieldOptions(itemProperties);
+                parsedProperty.arrayItem = {
+                    id: id,
+                    title: itemProperties.title,
+                    type: itemProperties.type,
+                    format: itemProperties.format,
+                    options: itemOptions.options,
+                    isEnumField: itemOptions.isOptionsField,
+                    default: itemProperties.default,
+                    // TODO: I think object properties should never be required only their properties are or aren't. Should we fix this in the backend?
+                    required:
+                        propertySchema.type === PydanticFormFieldType.OBJECT
+                            ? false
+                            : !!itemProperties.required?.includes(propertyId),
+                    attributes: getFieldAttributes(itemProperties),
+                    schema: itemProperties,
+                    validations: getFieldValidation(itemProperties),
+                    columns: 6, // TODO: Is this still relevant?
+                    properties: parseProperties(
+                        itemProperties.properties || {},
+                        itemProperties.required || [],
+                        formLabels,
+                        fieldDetailProvider,
+                        id,
+                    ),
+                    ...fieldDetailProvider?.[propertyId],
+                };
+            }
 
             propertiesObject[id] = parsedProperty;
             return propertiesObject;
@@ -126,7 +162,8 @@ export const usePydanticFormParser = (
             additionalProperties: parsedSchema?.additionalProperties,
             required: parsedSchema?.required,
             properties: parseProperties(
-                parsedSchema,
+                parsedSchema.properties || {},
+                parsedSchema.required || [],
                 formLabels,
                 fieldDetailProvider,
             ),
