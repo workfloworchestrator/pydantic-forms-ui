@@ -229,7 +229,7 @@ export const getFieldValidation = (
             validation.minItems = properties.minItems;
             validation.maxItems = properties.maxItems;
             validation.uniqueItems = properties.uniqueItems;
-       }
+        }
     }
 
     return validation;
