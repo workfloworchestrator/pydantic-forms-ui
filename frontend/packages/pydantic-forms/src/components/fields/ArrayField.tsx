@@ -8,11 +8,9 @@ import { PydanticFormElementProps } from '@/types';
 import { RenderFields } from '../render';
 
 export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
-    const { rhf } = usePydanticFormContext();
-    const { config } = usePydanticFormContext();
+    const { rhf, config } = usePydanticFormContext();
     const { control } = rhf;
-    const arrayName = pydanticFormField.id;
-    const arrayItem = pydanticFormField.arrayItem;
+    const { id: arrayName, arrayItem } = pydanticFormField;
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -30,7 +28,10 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
         <div>
             {fields.map((field, index) => {
                 return (
-                    <div key={field.id}>
+                    <div
+                        key={field.id}
+                        style={{ display: 'flex', gap: '10px' }}
+                    >
                         <RenderFields
                             components={[
                                 {
@@ -42,7 +43,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                                 },
                             ]}
                         />
-                        <span onClick={() => remove(index)}>Remove</span>
+                        <span onClick={() => remove(index)}>-</span>
                     </div>
                 );
             })}
@@ -51,8 +52,12 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                 onClick={() => {
                     append({ [arrayName]: pydanticFormField.default });
                 }}
+                style={{
+                    cursor: 'pointer',
+                    fontSize: '20px',
+                }}
             >
-                Add
+                +
             </div>
         </div>
     );
