@@ -7,12 +7,7 @@ import { PydanticFormElementProps } from '@/types';
 
 import { RenderFields } from '../render';
 
-export const ArrayField = ({
-    pydanticFormField,
-    value,
-    onChange,
-}: // onChange,
-PydanticFormElementProps) => {
+export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
     const { rhf } = usePydanticFormContext();
     const { config } = usePydanticFormContext();
     const { control } = rhf;

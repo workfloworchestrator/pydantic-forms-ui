@@ -52,6 +52,17 @@ const getZodValidationObject = (
                     customComponentMatcher,
                 ),
             );
+        } else if (pydanticFormField.type === PydanticFormFieldType.ARRAY) {
+            const arrayItem = pydanticFormField.arrayItem;
+            const itemSchema = arrayItem
+                ? getClientSideValidationRule(
+                      arrayItem,
+                      rhf,
+                      customComponentMatcher,
+                  )
+                : z.unknown();
+
+            validationObject[id] = z.array(itemSchema);
         } else {
             const fieldRules =
                 customValidationRule?.(pydanticFormField, rhf) ??
@@ -64,6 +75,7 @@ const getZodValidationObject = (
             validationObject[id] = fieldRules;
         }
     });
+
     return validationObject;
 };
 
