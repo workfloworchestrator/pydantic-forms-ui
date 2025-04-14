@@ -54,15 +54,36 @@ const getZodValidationObject = (
             );
         } else if (pydanticFormField.type === PydanticFormFieldType.ARRAY) {
             const arrayItem = pydanticFormField.arrayItem;
-            const itemSchema = arrayItem
-                ? getClientSideValidationRule(
-                      arrayItem,
-                      rhf,
-                      customComponentMatcher,
-                  )
-                : z.unknown();
+            let itemSchema = customValidationRule?.(pydanticFormField, rhf);
 
-            validationObject[id] = z.array(itemSchema);
+            if (!itemSchema) {
+                if (arrayItem) {
+                    itemSchema = getClientSideValidationRule(
+                        arrayItem,
+                        rhf,
+                        customComponentMatcher,
+                    );
+                } else {
+                    itemSchema = z.unknown();
+                }
+            }
+            validationObject[id] = z
+                .array(itemSchema)
+                .superRefine((array, context) => {
+                    const { uniqueItems } = pydanticFormField.validations;
+                    if (uniqueItems) {
+                        const uniqueArray = [...new Set(array)];
+
+                        if (uniqueArray.length !== array.length) {
+                            context.addIssue({
+                                code: z.ZodIssueCode.custom,
+                                message: 'Array items must be unique',
+                                fatal: true,
+                            });
+                            return z.NEVER;
+                        }
+                    }
+                });
         } else {
             const fieldRules =
                 customValidationRule?.(pydanticFormField, rhf) ??

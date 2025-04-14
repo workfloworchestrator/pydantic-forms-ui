@@ -11,7 +11,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
     const { rhf, config } = usePydanticFormContext();
     const { control } = rhf;
     const { id: arrayName, arrayItem } = pydanticFormField;
-
+    const { minItems, maxItems } = pydanticFormField.validations;
     const { fields, append, remove } = useFieldArray({
         control,
         name: arrayName,
@@ -42,23 +42,31 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                                     },
                                 },
                             ]}
+                            extraTriggerFields={[arrayName]}
                         />
-                        <span onClick={() => remove(index)}>-</span>
+                        {!minItems ||
+                            (minItems && fields.length > minItems && (
+                                <span onClick={() => remove(index)}>-</span>
+                            ))}
                     </div>
                 );
             })}
 
-            <div
-                onClick={() => {
-                    append({ [arrayName]: pydanticFormField.default });
-                }}
-                style={{
-                    cursor: 'pointer',
-                    fontSize: '20px',
-                }}
-            >
-                +
-            </div>
+            {(!maxItems || (maxItems && fields.length < maxItems)) && (
+                <div
+                    onClick={() => {
+                        append({
+                            arrayName: pydanticFormField.default,
+                        });
+                    }}
+                    style={{
+                        cursor: 'pointer',
+                        fontSize: '20px',
+                    }}
+                >
+                    +
+                </div>
+            )}
         </div>
     );
 };
