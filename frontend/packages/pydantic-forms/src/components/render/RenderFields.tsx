@@ -11,9 +11,13 @@ import { PydanticFormComponents, PydanticFormField } from '@/types';
 
 interface RenderFieldsProps {
     components: PydanticFormComponents;
+    extraTriggerFields?: string[]; // The use case for this is that we want to trigger the array field aswell as the array item field
 }
 
-export function RenderFields({ components }: RenderFieldsProps) {
+export function RenderFields({
+    components,
+    extraTriggerFields,
+}: RenderFieldsProps) {
     return components.map((component) => {
         const { Element, isControlledElement } = component.Element;
         const field: PydanticFormField = component.pydanticFormField;
@@ -28,6 +32,7 @@ export function RenderFields({ components }: RenderFieldsProps) {
                     <WrapFieldElement
                         PydanticFormControlledElement={Element}
                         pydanticFormField={field}
+                        extraTriggerFields={extraTriggerFields}
                     />
                 </div>
             );
