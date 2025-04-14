@@ -9,7 +9,7 @@ import React from 'react';
 
 import { useTranslations } from 'next-intl';
 
-import { componentMatcher } from '@/components/componentMatcher';
+import { componentsMatcher } from '@/components/componentMatcher';
 import Footer from '@/components/form/Footer';
 import RenderFormErrors from '@/components/render/RenderFormErrors';
 import { PydanticFormComponents, PydanticFormContextProps } from '@/types';
@@ -61,7 +61,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
 
     // Map schema to get fields
 
-    const pydanticFormComponents: PydanticFormComponents = componentMatcher(
+    const pydanticFormComponents: PydanticFormComponents = componentsMatcher(
         pydanticFormSchema.properties,
         customComponentMatcher,
     );

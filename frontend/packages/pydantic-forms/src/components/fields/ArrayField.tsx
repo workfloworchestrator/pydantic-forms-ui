@@ -1,41 +1,51 @@
 import React from 'react';
 import { useFieldArray } from 'react-hook-form';
 
-import { init } from 'next/dist/compiled/webpack/webpack';
-import { array } from 'zod';
-
 import { usePydanticFormContext } from '@/core';
+import { fieldToComponentMatcher } from '@/core';
 import { PydanticFormElementProps } from '@/types';
 
-// import { RenderFields } from '../render';
+import { RenderFields } from '../render';
 
 export const ArrayField = ({
     pydanticFormField,
+    value,
     onChange,
-}: PydanticFormElementProps) => {
+}: // onChange,
+PydanticFormElementProps) => {
     const { rhf } = usePydanticFormContext();
-    const { control, watch } = rhf;
-
+    const { config } = usePydanticFormContext();
+    const { control } = rhf;
     const arrayName = pydanticFormField.id;
-    // const arrayNameValue = watch(arrayName);
+    const arrayItem = pydanticFormField.arrayItem;
 
     const { fields, append, remove } = useFieldArray({
         control,
         name: arrayName,
     });
 
+    if (!arrayItem) return '';
+
+    const component = fieldToComponentMatcher(
+        arrayItem,
+        config?.componentMatcher,
+    );
+
     return (
         <div>
             {fields.map((field, index) => {
                 return (
                     <div key={field.id}>
-                        <input
-                            type="text"
-                            {...rhf.register(`${arrayName}.${index}`, {
-                                validate: async () => {
-                                    return 'HAHAHAHAHA';
+                        <RenderFields
+                            components={[
+                                {
+                                    Element: component.Element,
+                                    pydanticFormField: {
+                                        ...component.pydanticFormField,
+                                        id: `${arrayName}.${index}`,
+                                    },
                                 },
-                            })}
+                            ]}
                         />
                         <span onClick={() => remove(index)}>Remove</span>
                     </div>
@@ -44,7 +54,7 @@ export const ArrayField = ({
 
             <div
                 onClick={() => {
-                    append('');
+                    append({ [arrayName]: pydanticFormField.default });
                 }}
             >
                 Add

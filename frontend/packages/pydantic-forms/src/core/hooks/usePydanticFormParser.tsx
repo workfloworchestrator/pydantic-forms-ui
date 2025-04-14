@@ -105,7 +105,7 @@ const parseProperties = (
                     title: itemProperties.title,
                     type: itemProperties.type,
                     format: itemProperties.format,
-                    options: itemOptions.options,
+                    options: itemOptions.options || [],
                     isEnumField: itemOptions.isOptionsField,
                     default: itemProperties.default,
                     // TODO: I think object properties should never be required only their properties are or aren't. Should we fix this in the backend?

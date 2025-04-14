@@ -49,30 +49,39 @@ export const getClientSideValidationRule = (
     return validationRule;
 };
 
-export const componentMatcher = (
+export const componentsMatcher = (
     properties: Properties,
     customComponentMatcher: PydanticFormsContextConfig['componentMatcher'],
 ): PydanticFormComponents => {
-    const matcher = getMatcher(customComponentMatcher);
-
     const components: PydanticFormComponents = Object.entries(properties).map(
         ([, pydanticFormField]) => {
-            const matchedComponent = matcher(pydanticFormField);
-
-            const ElementMatch: ElementMatch = matchedComponent
-                ? matchedComponent.ElementMatch
-                : {
-                      Element: TextField,
-                      isControlledElement: true,
-                  };
-
-            // Defaults to textField when there are no matches
-            return {
-                Element: ElementMatch,
-                pydanticFormField: pydanticFormField,
-            };
+            return fieldToComponentMatcher(
+                pydanticFormField,
+                customComponentMatcher,
+            );
         },
     );
 
     return components;
+};
+
+export const fieldToComponentMatcher = (
+    pydanticFormField: PydanticFormField,
+    customComponentMatcher: PydanticFormsContextConfig['componentMatcher'],
+) => {
+    const matcher = getMatcher(customComponentMatcher);
+    const matchedComponent = matcher(pydanticFormField);
+
+    const ElementMatch: ElementMatch = matchedComponent
+        ? matchedComponent.ElementMatch
+        : {
+              Element: TextField,
+              isControlledElement: true,
+          };
+
+    // Defaults to textField when there are no matches
+    return {
+        Element: ElementMatch,
+        pydanticFormField: pydanticFormField,
+    };
 };
