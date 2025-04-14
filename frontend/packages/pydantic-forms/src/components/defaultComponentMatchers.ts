@@ -11,8 +11,8 @@ import {
     HiddenField,
     IntegerField,
     LabelField,
-    ListField,
     MultiCheckboxField,
+    MultiSelectField,
     ObjectField,
     RadioField,
     TextAreaField,
@@ -142,12 +142,12 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
                 field.options.length <= 5
             );
         },
-        validator: zodValidationPresets.array,
+        validator: zodValidationPresets.multiSelect,
     },
     {
         id: 'list',
         ElementMatch: {
-            Element: ListField,
+            Element: MultiSelectField,
             isControlledElement: true,
         },
         matcher(field) {
@@ -156,7 +156,7 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
                 field.type === PydanticFormFieldType.ARRAY
             );
         },
-        validator: zodValidationPresets.array,
+        validator: zodValidationPresets.multiSelect,
     },
     {
         id: 'object',
