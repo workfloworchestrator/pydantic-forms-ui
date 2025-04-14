@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { usePydanticFormContext } from '@/core';
-import { componentMatcher } from '@/core';
+import { componentsMatcher } from '@/core';
 import { PydanticFormElementProps } from '@/types';
 
 import { RenderFields } from '../render';
@@ -11,7 +11,7 @@ export const ObjectField = ({
 }: PydanticFormElementProps) => {
     const { config } = usePydanticFormContext();
 
-    const components = componentMatcher(
+    const components = componentsMatcher(
         pydanticFormField.properties || {},
         config?.componentMatcher,
     );
