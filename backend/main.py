@@ -28,6 +28,7 @@ from pydantic_forms.validators import (
     Hidden,
     Choice,
     choice_list,
+    unique_conlist
 )
 
 # Choice,
@@ -81,7 +82,6 @@ NumberExample = Annotated[
     int, Ge(1), Le(10), MultipleOf(multiple_of=3), Predicate(example_backend_validation)
 ]
 
-
 class DropdownChoices(Choice):
     _1 = ("1", "Option 1")
     _2 = ("2", "Option 2")
@@ -122,6 +122,20 @@ class Person(BaseModel):
     age: Annotated[int, Ge(18), Le(99)]
     education: Education
 
+def example_list_validation(val: int) -> bool:
+    return True
+
+TestList = Annotated[
+    unique_conlist(str, min_items=2, max_items=5), Predicate(example_backend_validation)
+]
+
+TestExampleNumberList = Annotated[
+    unique_conlist(NumberExample, min_items=2, max_items=5), Predicate(example_list_validation)
+]
+
+TestPersonList = Annotated[
+    unique_conlist(Person, min_items=2, max_items=5), Predicate(example_list_validation)
+]
 
 @app.post("/form")
 async def form(form_data: list[dict] = []):
@@ -129,7 +143,11 @@ async def form(form_data: list[dict] = []):
         class TestForm0(FormPage):
             model_config = ConfigDict(title="Form Title Page 0")
 
-            number0: Annotated[int, Ge(18), Le(99)] = 17
+            numberList: TestExampleNumberList
+            # personList: TestPersonList = []
+            # ingleNumber: NumberExample
+
+            # number0: Annotated[int, Ge(18), Le(99)] = 17
 
         form_data_0 = yield TestForm0
 
