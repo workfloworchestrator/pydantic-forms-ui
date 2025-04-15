@@ -71,6 +71,9 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                 border: 'thin solid green',
                 padding: '1rem',
                 marginTop: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                flexGrow: 1,
             }}
         >
             {fields.map((field, index) => {
@@ -79,7 +82,12 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                 return (
                     <div
                         key={field.id}
-                        style={{ display: 'flex', gap: '10px' }}
+                        style={{
+                            display: 'flex',
+                            gap: '10px',
+                            alignItems: 'center',
+                            margin: '4px 0',
+                        }}
                     >
                         <RenderFields
                             components={[
@@ -92,7 +100,12 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                         />
                         {!minItems ||
                             (minItems && fields.length > minItems && (
-                                <span onClick={() => remove(index)}>-</span>
+                                <span
+                                    style={{ fontSize: '24px' }}
+                                    onClick={() => remove(index)}
+                                >
+                                    -
+                                </span>
                             ))}
                     </div>
                 );

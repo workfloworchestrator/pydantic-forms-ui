@@ -22,6 +22,9 @@ export const ObjectField = ({
                 border: 'thin dotted grey',
                 padding: '1rem',
                 marginTop: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                flexGrow: 1,
             }}
         >
             <h1>{pydanticFormField.title}</h1>

@@ -59,15 +59,13 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
     const Renderer = formRenderer ?? FormRenderer;
     const FooterRenderer = footerRenderer ?? Footer;
 
-    // Map schema to get fields
-
     const pydanticFormComponents: PydanticFormComponents = componentsMatcher(
         pydanticFormSchema.properties,
         customComponentMatcher,
     );
 
     return (
-        <form action={''} onSubmit={submitForm}>
+        <form action={''} onSubmit={submitForm} style={{ width: '500px' }}>
             {title !== false &&
                 title !== 'undefined' &&
                 title !== 'unknown' && (
