@@ -17,7 +17,13 @@ export const ObjectField = ({
     );
 
     return (
-        <div>
+        <div
+            style={{
+                border: 'thin dotted grey',
+                padding: '1rem',
+                marginTop: '16px',
+            }}
+        >
             <h1>{pydanticFormField.title}</h1>
             <RenderFields components={components} />
         </div>

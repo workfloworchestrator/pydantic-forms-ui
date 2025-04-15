@@ -27,7 +27,7 @@ const Footer = () => {
     return (
         <div style={{ height: '200px' }}>
             {footerComponent && <div>{footerComponent}</div>}{' '}
-            <div>
+            <div style={{ display: 'flex', gap: '16px' }}>
                 {rhf.formState.isValid &&
                     !allowUntouchedSubmit &&
                     !rhf.formState.isDirty && (
@@ -37,7 +37,7 @@ const Footer = () => {
                 <button
                     type="button"
                     onClick={() => onPrevious?.()}
-                    style={{ padding: '4px' }}
+                    style={{ padding: '12px' }}
                 >
                     Back
                 </button>
@@ -47,20 +47,25 @@ const Footer = () => {
                         onClick={(e) => {
                             resetForm(e);
                         }}
-                        style={{ padding: '4px' }}
+                        style={{ padding: '12px' }}
                     >
                         {t('reset')}
                     </button>
                 )}
                 {!!onCancel &&
                     (cancelButton ?? (
-                        <button type="button" onClick={onCancel}>
+                        <button
+                            type="button"
+                            onClick={onCancel}
+                            style={{ padding: '12px' }}
+                        >
                             {t('cancel')}
                         </button>
                     ))}
 
                 <button
                     type="submit"
+                    style={{ padding: '12px' }}
                     disabled={
                         !rhf.formState.isValid ||
                         (!allowUntouchedSubmit &&

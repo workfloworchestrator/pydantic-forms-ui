@@ -66,7 +66,13 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
     };
 
     return (
-        <div>
+        <div
+            style={{
+                border: 'thin solid green',
+                padding: '1rem',
+                marginTop: '16px',
+            }}
+        >
             {fields.map((field, index) => {
                 const arrayField = itemizeArrayItem(index);
 
@@ -101,7 +107,12 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                     }}
                     style={{
                         cursor: 'pointer',
-                        fontSize: '20px',
+                        fontSize: '32px',
+                        display: 'flex',
+                        justifyContent: 'end',
+                        marginTop: '8px',
+                        marginBottom: '8px',
+                        padding: '16px',
                     }}
                 >
                     +
