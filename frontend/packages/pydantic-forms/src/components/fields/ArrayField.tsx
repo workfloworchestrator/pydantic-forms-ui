@@ -69,7 +69,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
         <div>
             {fields.map((field, index) => {
                 const arrayField = itemizeArrayItem(index);
-                console.log('arrayField', arrayField);
+
                 return (
                     <div
                         key={field.id}
