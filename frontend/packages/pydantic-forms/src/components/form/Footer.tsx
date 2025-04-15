@@ -76,9 +76,18 @@ const Footer = () => {
                     {sendLabel ?? t('send')}
                 </button>
             </div>
-            {!rhf.formState.isValid && rhf.formState.isDirty && (
-                <div>{t('notFilledYet')}</div>
-            )}
+            <div
+                style={{
+                    margin: '8px 0',
+                    color: 'red',
+                    fontWeight: '600',
+                    fontSize: '24px',
+                }}
+            >
+                {!rhf.formState.isValid && rhf.formState.isDirty && (
+                    <div>{t('notFilledYet')}</div>
+                )}
+            </div>
         </div>
     );
 };
