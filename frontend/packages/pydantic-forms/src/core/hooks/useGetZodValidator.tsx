@@ -54,19 +54,18 @@ const getZodValidationObject = (
             );
         } else if (pydanticFormField.type === PydanticFormFieldType.ARRAY) {
             const arrayItem = pydanticFormField.arrayItem;
-            let itemSchema = customValidationRule?.(pydanticFormField, rhf);
-
-            if (!itemSchema) {
-                if (arrayItem) {
-                    itemSchema = getClientSideValidationRule(
-                        arrayItem,
+            const customRule = customValidationRule?.(pydanticFormField, rhf);
+            const itemSchema =
+                customRule ??
+                z.object(
+                    getZodValidationObject(
+                        arrayItem?.properties || {},
                         rhf,
+                        customValidationRule,
                         customComponentMatcher,
-                    );
-                } else {
-                    itemSchema = z.unknown();
-                }
-            }
+                    ),
+                );
+
             validationObject[id] = z
                 .array(itemSchema)
                 .superRefine((array, context) => {
