@@ -97,6 +97,7 @@ const parseProperties = (
             if (propertySchema.type === PydanticFormFieldType.ARRAY) {
                 // When the property is an array, we need to parse the item that is an array element
                 // Currently we only support arrays of single field types so items can never be multiple items
+                // TODO: Only in the case of an optional property do we have a an array of null |  Item so we should add a case for that
                 const itemProperties =
                     propertySchema.items as PydanticFormFieldAnyOfItemParsed;
                 const itemOptions = getFieldOptions(itemProperties);
