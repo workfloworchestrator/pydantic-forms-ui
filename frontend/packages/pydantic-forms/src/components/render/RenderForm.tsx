@@ -71,14 +71,16 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
             {title !== false &&
                 title !== 'undefined' &&
                 title !== 'unknown' && (
-                    <h2>{title ?? pydanticFormSchema.title}</h2>
+                    <h2 style={{ margin: '1rem 0' }}>
+                        {title ?? pydanticFormSchema.title}
+                    </h2>
                 )}
 
             {headerComponent}
 
             <RenderFormErrors />
 
-            <div>
+            <div style={{ marginBottom: '24px' }}>
                 <Renderer pydanticFormComponents={pydanticFormComponents} />
             </div>
             <FooterRenderer />
