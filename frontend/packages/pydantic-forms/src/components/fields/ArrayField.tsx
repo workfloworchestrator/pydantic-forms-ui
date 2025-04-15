@@ -3,7 +3,7 @@ import { useFieldArray } from 'react-hook-form';
 
 import { usePydanticFormContext } from '@/core';
 import { fieldToComponentMatcher } from '@/core';
-import { PydanticFormElementProps } from '@/types';
+import { PydanticFormElementProps, PydanticFormField } from '@/types';
 
 import { RenderFields } from '../render';
 
@@ -16,7 +16,6 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
         control,
         name: arrayName,
     });
-
     if (!arrayItem) return '';
 
     const component = fieldToComponentMatcher(
@@ -24,9 +23,35 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
         config?.componentMatcher,
     );
 
+    const itemizeArrayItem = (arrayIndex: number): PydanticFormField => {
+        const itemId = `${arrayItem.id}.${arrayIndex}`;
+
+        const properties = arrayItem.properties
+            ? Object.entries(arrayItem.properties).reduce(
+                  (itemizedProperties, [key, value]) => {
+                      const itemizedKey = `${itemId}.${key.split('.').pop()}`;
+                      itemizedProperties[itemizedKey] = {
+                          ...value,
+                          id: itemizedKey,
+                      };
+                      return itemizedProperties;
+                  },
+                  {} as Record<string, PydanticFormField>,
+              )
+            : {};
+
+        return {
+            ...arrayItem,
+            id: itemId,
+            properties,
+        };
+    };
+
     return (
         <div>
             {fields.map((field, index) => {
+                const arrayField = itemizeArrayItem(index);
+
                 return (
                     <div
                         key={field.id}
@@ -36,10 +61,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                             components={[
                                 {
                                     Element: component.Element,
-                                    pydanticFormField: {
-                                        ...component.pydanticFormField,
-                                        id: `${arrayName}.${index}`,
-                                    },
+                                    pydanticFormField: arrayField,
                                 },
                             ]}
                             extraTriggerFields={[arrayName]}
