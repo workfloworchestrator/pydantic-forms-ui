@@ -28,10 +28,11 @@ export const getMatcher = (
 };
 
 export const getClientSideValidationRule = (
-    field: PydanticFormField,
+    field: PydanticFormField | undefined,
     rhf?: ReturnType<typeof useForm>,
     customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ) => {
+    if (!field) return z.unknown();
     const matcher = getMatcher(customComponentMatcher);
 
     const componentMatch = matcher(field);
