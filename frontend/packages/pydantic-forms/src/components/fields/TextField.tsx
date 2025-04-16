@@ -21,5 +21,9 @@ export const TextField = ({
         disabled={disabled}
         value={value}
         type="text"
+        style={{
+            padding: '8px',
+            margin: '8px 0',
+        }}
     />
 );
