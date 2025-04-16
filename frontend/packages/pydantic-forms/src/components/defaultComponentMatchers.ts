@@ -16,6 +16,7 @@ import {
     ObjectField,
     RadioField,
     TextAreaField,
+    TextField,
 } from '@/components/fields';
 import {
     PydanticComponentMatcher,
@@ -177,6 +178,17 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         matcher(field) {
             return field.type === PydanticFormFieldType.ARRAY;
         },
+    },
+    {
+        id: 'text',
+        ElementMatch: {
+            Element: TextField,
+            isControlledElement: true,
+        },
+        matcher(field) {
+            return field.type === PydanticFormFieldType.STRING;
+        },
+        validator: zodValidationPresets.string,
     },
 ];
 
