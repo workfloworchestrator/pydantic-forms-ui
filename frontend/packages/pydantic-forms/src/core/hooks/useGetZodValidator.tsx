@@ -57,13 +57,10 @@ const getZodValidationObject = (
             const customRule = customValidationRule?.(pydanticFormField, rhf);
             const itemSchema =
                 customRule ??
-                z.object(
-                    getZodValidationObject(
-                        arrayItem?.properties || {},
-                        rhf,
-                        customValidationRule,
-                        customComponentMatcher,
-                    ),
+                getClientSideValidationRule(
+                    arrayItem,
+                    rhf,
+                    customComponentMatcher,
                 );
 
             validationObject[id] = z
