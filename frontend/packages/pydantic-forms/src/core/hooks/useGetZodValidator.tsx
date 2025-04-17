@@ -69,6 +69,18 @@ const getZodValidationObject = (
                             customComponentMatcher,
                         ),
                     );
+                } else if (
+                    arrayItem &&
+                    arrayItem.arrayItem &&
+                    arrayItem.type === PydanticFormFieldType.ARRAY
+                ) {
+                    itemSchema = z.array(
+                        getClientSideValidationRule(
+                            arrayItem.arrayItem,
+                            rhf,
+                            customComponentMatcher,
+                        ),
+                    );
                 } else if (arrayItem) {
                     itemSchema = getClientSideValidationRule(
                         arrayItem,
