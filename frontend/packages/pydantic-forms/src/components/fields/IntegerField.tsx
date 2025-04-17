@@ -18,7 +18,7 @@ export const IntegerField = ({
                 onChange(value);
             }}
             disabled={disabled}
-            value={!isObject(value) ? value : undefined} // Value can be an object when it is created from an ArrayField
+            value={!isObject(value) ? value : ''} // Value can be an object when it is created from an ArrayField
             type="number"
             style={{
                 padding: '8px',

@@ -33,14 +33,17 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
         itemId: string,
     ): Properties | undefined => {
         const itemizedProperties = Object.entries(properties).reduce(
-            (itemizedProperties, [key, property]) => {
+            (itemizedProperties, [key, property], index) => {
                 const itemizedKey = `${itemId}.${key.split('.').pop()}`;
 
                 if (property.type === PydanticFormFieldType.ARRAY) {
                     if (property.arrayItem) {
                         itemizedProperties[itemizedKey] = {
                             ...property,
-                            arrayItem: itemize(property.arrayItem, itemizedKey),
+                            arrayItem: itemize(
+                                property.arrayItem,
+                                `${itemizedKey}.${index}`,
+                            ),
                             id: itemizedKey,
                         };
                     }
@@ -68,7 +71,9 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
         const properties = item.properties
             ? itemizeProperties(item.properties, itemId)
             : undefined;
-
+        item.arrayItem = item.arrayItem
+            ? itemize(item.arrayItem, itemId)
+            : undefined;
         return {
             ...item,
             id: itemId,
