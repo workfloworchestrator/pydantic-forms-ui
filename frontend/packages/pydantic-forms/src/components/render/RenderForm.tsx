@@ -9,7 +9,7 @@ import React from 'react';
 
 import { useTranslations } from 'next-intl';
 
-import { componentMatcher } from '@/components/componentMatcher';
+import { componentsMatcher } from '@/components/componentMatcher';
 import Footer from '@/components/form/Footer';
 import RenderFormErrors from '@/components/render/RenderFormErrors';
 import { PydanticFormComponents, PydanticFormContextProps } from '@/types';
@@ -59,26 +59,26 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
     const Renderer = formRenderer ?? FormRenderer;
     const FooterRenderer = footerRenderer ?? Footer;
 
-    // Map schema to get fields
-
-    const pydanticFormComponents: PydanticFormComponents = componentMatcher(
+    const pydanticFormComponents: PydanticFormComponents = componentsMatcher(
         pydanticFormSchema.properties,
         customComponentMatcher,
     );
 
     return (
-        <form action={''} onSubmit={submitForm}>
+        <form action={''} onSubmit={submitForm} style={{ width: '500px' }}>
             {title !== false &&
                 title !== 'undefined' &&
                 title !== 'unknown' && (
-                    <h2>{title ?? pydanticFormSchema.title}</h2>
+                    <h2 style={{ margin: '1rem 0' }}>
+                        {title ?? pydanticFormSchema.title}
+                    </h2>
                 )}
 
             {headerComponent}
 
             <RenderFormErrors />
 
-            <div>
+            <div style={{ marginBottom: '24px' }}>
                 <Renderer pydanticFormComponents={pydanticFormComponents} />
             </div>
             <FooterRenderer />

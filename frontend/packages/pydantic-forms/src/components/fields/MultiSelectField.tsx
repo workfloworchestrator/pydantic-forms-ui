@@ -10,7 +10,7 @@ import {
     PydanticFormFieldOption,
 } from '@/types';
 
-export const ListField = ({
+export const MultiSelectField = ({
     value,
     onChange,
     onBlur,
@@ -19,20 +19,20 @@ export const ListField = ({
 }: PydanticFormControlledElementProps & {
     options?: Array<{ value: string; label: string }>;
 }) => {
-    const [listItems, setListItems] = useState(value || []);
+    const [multiSelectItems, setMultiSelectItems] = useState(value || []);
 
     return (
         <div>
             <select
                 onBlur={onBlur}
                 disabled={disabled}
-                value={listItems}
+                value={multiSelectItems}
                 onChange={(e) => {
                     const selectedValues = Array.from(
                         e.currentTarget.selectedOptions,
                         (option) => option.value,
                     );
-                    setListItems(selectedValues);
+                    setMultiSelectItems(selectedValues);
                     onChange(selectedValues);
                 }}
                 multiple

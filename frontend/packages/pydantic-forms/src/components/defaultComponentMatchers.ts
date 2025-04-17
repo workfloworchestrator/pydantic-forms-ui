@@ -4,16 +4,19 @@
  * We will search for the first field that returns a positive match
  */
 import {
+    ArrayField,
     CheckboxField,
     DividerField,
     DropdownField,
     HiddenField,
     IntegerField,
     LabelField,
-    ListField,
     MultiCheckboxField,
+    MultiSelectField,
+    ObjectField,
     RadioField,
     TextAreaField,
+    TextField,
 } from '@/components/fields';
 import {
     PydanticComponentMatcher,
@@ -21,7 +24,6 @@ import {
     PydanticFormFieldType,
 } from '@/types';
 
-import { ObjectField } from './fields/ObjectField';
 import { zodValidationPresets } from './zodValidationsPresets';
 
 const defaultComponentMatchers: PydanticComponentMatcher[] = [
@@ -137,21 +139,25 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         matcher(field) {
             return (
                 field.type === PydanticFormFieldType.ARRAY &&
+                field.options.length > 0 &&
                 field.options.length <= 5
             );
         },
-        validator: zodValidationPresets.array,
+        validator: zodValidationPresets.multiSelect,
     },
     {
         id: 'list',
         ElementMatch: {
-            Element: ListField,
+            Element: MultiSelectField,
             isControlledElement: true,
         },
         matcher(field) {
-            return field.type === PydanticFormFieldType.ARRAY;
+            return (
+                field.options.length > 0 &&
+                field.type === PydanticFormFieldType.ARRAY
+            );
         },
-        validator: zodValidationPresets.array,
+        validator: zodValidationPresets.multiSelect,
     },
     {
         id: 'object',
@@ -162,6 +168,27 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         matcher(field) {
             return field.type === PydanticFormFieldType.OBJECT;
         },
+    },
+    {
+        id: 'array',
+        ElementMatch: {
+            Element: ArrayField,
+            isControlledElement: true,
+        },
+        matcher(field) {
+            return field.type === PydanticFormFieldType.ARRAY;
+        },
+    },
+    {
+        id: 'text',
+        ElementMatch: {
+            Element: TextField,
+            isControlledElement: true,
+        },
+        matcher(field) {
+            return field.type === PydanticFormFieldType.STRING;
+        },
+        validator: zodValidationPresets.string,
     },
 ];
 

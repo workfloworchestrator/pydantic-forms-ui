@@ -16,6 +16,7 @@ import { getClientSideValidationRule } from '@/components/componentMatcher';
 import {
     CustomValidationRule,
     Properties,
+    PydanticFormFieldType,
     PydanticFormSchema,
     PydanticFormsContextConfig,
 } from '@/types';
@@ -33,6 +34,7 @@ const getZodValidationObject = (
     customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ) => {
     const pydanticFormFields = Object.values(properties);
+
     if (!pydanticFormFields) return {};
 
     const validationObject: ZodRawShape = {};
@@ -41,7 +43,7 @@ const getZodValidationObject = (
         const id =
             pydanticFormField.id.split('.').pop() || pydanticFormField.id;
 
-        if (pydanticFormField.type === 'object') {
+        if (pydanticFormField.type === PydanticFormFieldType.OBJECT) {
             validationObject[id] = z.object(
                 getZodValidationObject(
                     pydanticFormField.properties || {},
@@ -50,6 +52,63 @@ const getZodValidationObject = (
                     customComponentMatcher,
                 ),
             );
+        } else if (pydanticFormField.type === PydanticFormFieldType.ARRAY) {
+            const arrayItem = pydanticFormField.arrayItem;
+            let itemSchema = customValidationRule?.(pydanticFormField, rhf);
+
+            if (!itemSchema) {
+                if (
+                    arrayItem &&
+                    arrayItem.type === PydanticFormFieldType.OBJECT
+                ) {
+                    itemSchema = z.object(
+                        getZodValidationObject(
+                            arrayItem.properties || {},
+                            rhf,
+                            customValidationRule,
+                            customComponentMatcher,
+                        ),
+                    );
+                } else if (
+                    arrayItem &&
+                    arrayItem.arrayItem &&
+                    arrayItem.type === PydanticFormFieldType.ARRAY
+                ) {
+                    itemSchema = z.array(
+                        getClientSideValidationRule(
+                            arrayItem.arrayItem,
+                            rhf,
+                            customComponentMatcher,
+                        ),
+                    );
+                } else if (arrayItem) {
+                    itemSchema = getClientSideValidationRule(
+                        arrayItem,
+                        rhf,
+                        customComponentMatcher,
+                    );
+                } else {
+                    itemSchema = z.unknown();
+                }
+            }
+
+            validationObject[id] = z
+                .array(itemSchema)
+                .superRefine((array, context) => {
+                    const { uniqueItems } = pydanticFormField.validations;
+                    if (uniqueItems) {
+                        const uniqueArray = [...new Set(array)];
+
+                        if (uniqueArray.length !== array.length) {
+                            context.addIssue({
+                                code: z.ZodIssueCode.custom,
+                                message: 'Array items must be unique',
+                                fatal: true,
+                            });
+                            return z.NEVER;
+                        }
+                    }
+                });
         } else {
             const fieldRules =
                 customValidationRule?.(pydanticFormField, rhf) ??
@@ -62,6 +121,7 @@ const getZodValidationObject = (
             validationObject[id] = fieldRules;
         }
     });
+
     return validationObject;
 };
 

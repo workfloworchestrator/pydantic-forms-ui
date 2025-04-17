@@ -108,7 +108,7 @@ export interface PydanticFormField {
         sensitive: boolean;
         password: boolean;
     };
-
+    arrayItem?: PydanticFormField;
     properties?: Properties;
 }
 
@@ -187,6 +187,9 @@ export interface PydanticFormFieldValidations {
     exclusiveMinimum?: number;
     exclusiveMaximum?: number;
     multipleOf?: number;
+    minItems?: number;
+    maxItems?: number;
+    uniqueItems?: boolean;
 }
 
 export interface PydanticFormFieldAttributes
@@ -462,6 +465,10 @@ export interface PydanticFormFieldAnyOfItemParsed
     };
     title: string;
     type: PydanticFormListFieldType;
+    format: PydanticFormFieldFormat;
+    default?: string | null;
+    required?: string[];
+    properties?: ParsedProperties;
 }
 
 export interface PydanticFormPropertySchemaRawJson
