@@ -3,12 +3,8 @@ import { useFieldArray } from 'react-hook-form';
 
 import { usePydanticFormContext } from '@/core';
 import { fieldToComponentMatcher } from '@/core';
-import {
-    Properties,
-    PydanticFormElementProps,
-    PydanticFormField,
-    PydanticFormFieldType,
-} from '@/types';
+import { PydanticFormElementProps } from '@/types';
+import { itemizeArrayItem } from '@/utils';
 
 import { RenderFields } from '../render';
 
@@ -28,67 +24,6 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
         config?.componentMatcher,
     );
 
-    const itemizeProperties = (
-        properties: Properties,
-        itemId: string,
-    ): Properties | undefined => {
-        const itemizedProperties = Object.entries(properties).reduce(
-            (itemizedProperties, [key, property], index) => {
-                const itemizedKey = `${itemId}.${key.split('.').pop()}`;
-
-                if (property.type === PydanticFormFieldType.ARRAY) {
-                    if (property.arrayItem) {
-                        itemizedProperties[itemizedKey] = {
-                            ...property,
-                            arrayItem: itemize(
-                                property.arrayItem,
-                                `${itemizedKey}.${index}`,
-                            ),
-                            id: itemizedKey,
-                        };
-                    }
-                } else {
-                    itemizedProperties[itemizedKey] = {
-                        ...property,
-                        properties: property.properties
-                            ? itemizeProperties(
-                                  property.properties,
-                                  itemizedKey,
-                              )
-                            : undefined,
-                        id: itemizedKey,
-                    };
-                }
-
-                return itemizedProperties;
-            },
-            {} as Record<string, PydanticFormField>,
-        );
-        return itemizedProperties;
-    };
-
-    const itemize = (item: PydanticFormField, itemId: string) => {
-        const properties = item.properties
-            ? itemizeProperties(item.properties, itemId)
-            : undefined;
-        item.arrayItem = item.arrayItem
-            ? itemize(item.arrayItem, itemId)
-            : undefined;
-        return {
-            ...item,
-            id: itemId,
-            properties,
-        };
-    };
-
-    const itemizeArrayItem = (
-        arrayIndex: number,
-        item: PydanticFormField = arrayItem,
-    ): PydanticFormField => {
-        const itemId = `${item.id}.${arrayIndex}`;
-        return itemize(item, itemId);
-    };
-
     return (
         <div
             style={{
@@ -101,7 +36,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
             }}
         >
             {fields.map((field, index) => {
-                const arrayField = itemizeArrayItem(index);
+                const arrayField = itemizeArrayItem(index, arrayItem);
 
                 return (
                     <div

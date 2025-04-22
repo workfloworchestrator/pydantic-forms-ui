@@ -1,4 +1,5 @@
-import { PydanticFormField } from '@/types';
+import type { Properties, PydanticFormField } from '@/types';
+import { PydanticFormFieldType } from '@/types';
 
 export const insertItemAtIndex = (
     fields: PydanticFormField[],
@@ -27,4 +28,62 @@ export const getHashForArray = async (array: object[]) => {
     ).join('');
 
     return hashHex;
+};
+
+export const itemizeProperties = (
+    properties: Properties,
+    itemId: string,
+): Properties | undefined => {
+    const itemizedProperties = Object.entries(properties).reduce(
+        (itemizedProperties, [key, property], index) => {
+            const itemizedKey = `${itemId}.${key.split('.').pop()}`;
+
+            if (property.type === PydanticFormFieldType.ARRAY) {
+                if (property.arrayItem) {
+                    itemizedProperties[itemizedKey] = {
+                        ...property,
+                        arrayItem: itemize(
+                            property.arrayItem,
+                            `${itemizedKey}.${index}`,
+                        ),
+                        id: itemizedKey,
+                    };
+                }
+            } else {
+                itemizedProperties[itemizedKey] = {
+                    ...property,
+                    properties: property.properties
+                        ? itemizeProperties(property.properties, itemizedKey)
+                        : undefined,
+                    id: itemizedKey,
+                };
+            }
+
+            return itemizedProperties;
+        },
+        {} as Record<string, PydanticFormField>,
+    );
+    return itemizedProperties;
+};
+
+export const itemize = (item: PydanticFormField, itemId: string) => {
+    const properties = item.properties
+        ? itemizeProperties(item.properties, itemId)
+        : undefined;
+    item.arrayItem = item.arrayItem
+        ? itemize(item.arrayItem, itemId)
+        : undefined;
+    return {
+        ...item,
+        id: itemId,
+        properties,
+    };
+};
+
+export const itemizeArrayItem = (
+    arrayIndex: number,
+    item: PydanticFormField,
+): PydanticFormField => {
+    const itemId = `${item.id}.${arrayIndex}`;
+    return itemize(item, itemId);
 };
