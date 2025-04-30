@@ -1,7 +1,7 @@
 import React from 'react';
 import type { ReactNode } from 'react';
 
-import { merge } from 'lodash';
+import _ from 'lodash';
 import { IntlErrorCode, NextIntlClientProvider } from 'next-intl';
 
 import { TranslationsJSON } from '@/types';
@@ -50,7 +50,7 @@ export const TranslationsProvider = ({
         }
     };
 
-    const messages = merge(localMessages, customTranslations);
+    const messages = _.merge(localMessages, customTranslations);
 
     return (
         <NextIntlClientProvider
