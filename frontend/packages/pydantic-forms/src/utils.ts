@@ -66,16 +66,20 @@ export const itemizeProperties = (
     return itemizedProperties;
 };
 
-export const itemize = (item: PydanticFormField, itemId: string) => {
+export const itemize = (
+    item: PydanticFormField,
+    itemId: string,
+): PydanticFormField => {
     const properties = item.properties
         ? itemizeProperties(item.properties, itemId)
         : undefined;
-    item.arrayItem = item.arrayItem
+    const arrayItem = item.arrayItem
         ? itemize(item.arrayItem, itemId)
         : undefined;
     return {
         ...item,
         id: itemId,
+        arrayItem,
         properties,
     };
 };

@@ -24,6 +24,41 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
         config?.componentMatcher,
     );
 
+    const renderField = (field: Record<'id', string>, index: number) => {
+        const arrayField = itemizeArrayItem(index, arrayItem);
+
+        return (
+            <div
+                key={field.id}
+                style={{
+                    display: 'flex',
+                    gap: '10px',
+                    alignItems: 'center',
+                    margin: '4px 0',
+                }}
+            >
+                <RenderFields
+                    components={[
+                        {
+                            Element: component.Element,
+                            pydanticFormField: arrayField,
+                        },
+                    ]}
+                    extraTriggerFields={[arrayName]}
+                />
+                {!minItems ||
+                    (minItems && fields.length > minItems && (
+                        <span
+                            style={{ fontSize: '24px' }}
+                            onClick={() => remove(index)}
+                        >
+                            -
+                        </span>
+                    ))}
+            </div>
+        );
+    };
+
     return (
         <div
             style={{
@@ -35,40 +70,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                 flexGrow: 1,
             }}
         >
-            {fields.map((field, index) => {
-                const arrayField = itemizeArrayItem(index, arrayItem);
-
-                return (
-                    <div
-                        key={field.id}
-                        style={{
-                            display: 'flex',
-                            gap: '10px',
-                            alignItems: 'center',
-                            margin: '4px 0',
-                        }}
-                    >
-                        <RenderFields
-                            components={[
-                                {
-                                    Element: component.Element,
-                                    pydanticFormField: arrayField,
-                                },
-                            ]}
-                            extraTriggerFields={[arrayName]}
-                        />
-                        {!minItems ||
-                            (minItems && fields.length > minItems && (
-                                <span
-                                    style={{ fontSize: '24px' }}
-                                    onClick={() => remove(index)}
-                                >
-                                    -
-                                </span>
-                            ))}
-                    </div>
-                );
-            })}
+            {fields.map(renderField)}
 
             {(!maxItems || (maxItems && fields.length < maxItems)) && (
                 <div

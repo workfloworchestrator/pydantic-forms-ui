@@ -5,8 +5,6 @@
  */
 import React from 'react';
 
-import { isObject } from 'lodash';
-
 import { PydanticFormControlledElementProps } from '@/types';
 
 export const TextField = ({
@@ -21,7 +19,7 @@ export const TextField = ({
             onChange(t.currentTarget.value);
         }}
         disabled={disabled}
-        value={!isObject(value) ? value : ''}
+        value={value}
         type="text"
         style={{
             padding: '8px',

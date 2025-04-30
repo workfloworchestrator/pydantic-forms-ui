@@ -125,6 +125,7 @@ const parseProperties = (
                 // When the property is an array, we need to parse the item that is an array element
                 // Currently we only support arrays of single field types so items can never be multiple items
                 // TODO: Only in the case of an optional property do we have a an array of null |  Item so we should add a case for that
+                // https://github.com/workfloworchestrator/orchestrator-ui-library/issues/1890
                 const itemProperties =
                     propertySchema.items as PydanticFormFieldAnyOfItemParsed;
                 pydanticFormField.arrayItem = getPydanticFormField(
