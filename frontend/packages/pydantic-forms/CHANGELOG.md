@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.1.2
+
+### Patch Changes
+
+-   46b7fdb: Bugfix
+
 ## 0.1.1
 
 ### Patch Changes
