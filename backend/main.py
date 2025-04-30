@@ -159,15 +159,6 @@ TestPersonList = Annotated[
 ]
 
 
-def is_maurits(val: str) -> bool:
-    if val != "Maurits":
-        raise ValueError("Has to be Maurits!")
-    return True
-
-
-StringExample = Annotated[str, Predicate(is_maurits)]
-
-
 @app.post("/form")
 async def form(form_data: list[dict] = []):
     def form_generator(state: State):
