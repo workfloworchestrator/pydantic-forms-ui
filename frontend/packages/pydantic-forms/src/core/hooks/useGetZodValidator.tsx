@@ -10,15 +10,77 @@
 import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { ZodRawShape, z } from 'zod';
+import { ZodRawShape, ZodTypeAny, z } from 'zod';
 
 import { getClientSideValidationRule } from '@/components/componentMatcher';
 import {
     CustomValidationRule,
     Properties,
+    PydanticFormField,
+    PydanticFormFieldType,
     PydanticFormSchema,
     PydanticFormsContextConfig,
 } from '@/types';
+
+const getZodRule = (
+    pydanticFormField: PydanticFormField,
+    rhf: ReturnType<typeof useForm>,
+    customValidationRule?: CustomValidationRule,
+    customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
+): ZodTypeAny => {
+    const customRule = customValidationRule?.(pydanticFormField, rhf);
+
+    if (customRule) {
+        return customRule;
+    }
+
+    if (pydanticFormField.type === PydanticFormFieldType.OBJECT) {
+        const objectValidationObject = getZodValidationObject(
+            pydanticFormField.properties || {},
+            rhf,
+            customValidationRule,
+            customComponentMatcher,
+        );
+        return objectValidationObject;
+    }
+    if (pydanticFormField.type === PydanticFormFieldType.ARRAY) {
+        const arrayItem = pydanticFormField.arrayItem;
+        const arrayItemRule = arrayItem
+            ? getZodRule(
+                  arrayItem,
+                  rhf,
+                  customValidationRule,
+                  customComponentMatcher,
+              )
+            : z.unknown();
+        const arrayRule = z
+            .array(arrayItemRule)
+            .superRefine((array, context) => {
+                const { uniqueItems } = pydanticFormField.validations;
+
+                if (uniqueItems) {
+                    const uniqueArray = [...new Set(array)];
+
+                    if (uniqueArray.length !== array.length) {
+                        context.addIssue({
+                            code: z.ZodIssueCode.custom,
+                            message: 'not_unique',
+                            fatal: true,
+                        });
+                        return z.NEVER;
+                    }
+                }
+            });
+
+        return arrayRule;
+    }
+
+    return getClientSideValidationRule(
+        pydanticFormField,
+        rhf,
+        customComponentMatcher,
+    );
+};
 
 /**
  * Generates a Zod validation object from an array of Pydantic form fields.
@@ -28,41 +90,29 @@ import {
  */
 const getZodValidationObject = (
     properties: Properties,
-    rhf?: ReturnType<typeof useForm>,
+    rhf: ReturnType<typeof useForm>,
     customValidationRule?: CustomValidationRule,
     customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ) => {
     const pydanticFormFields = Object.values(properties);
-    if (!pydanticFormFields) return {};
+    if (!pydanticFormFields) return z.unknown();
 
     const validationObject: ZodRawShape = {};
-
     pydanticFormFields.forEach((pydanticFormField) => {
         const id =
             pydanticFormField.id.split('.').pop() || pydanticFormField.id;
 
-        if (pydanticFormField.type === 'object') {
-            validationObject[id] = z.object(
-                getZodValidationObject(
-                    pydanticFormField.properties || {},
-                    rhf,
-                    customValidationRule,
-                    customComponentMatcher,
-                ),
-            );
-        } else {
-            const fieldRules =
-                customValidationRule?.(pydanticFormField, rhf) ??
-                getClientSideValidationRule(
-                    pydanticFormField,
-                    rhf,
-                    customComponentMatcher,
-                );
+        const zodRules = getZodRule(
+            pydanticFormField,
+            rhf,
+            customValidationRule,
+            customComponentMatcher,
+        );
 
-            validationObject[id] = fieldRules;
-        }
+        validationObject[id] = zodRules;
     });
-    return validationObject;
+
+    return z.object(validationObject);
 };
 
 export const useGetZodValidator = (
@@ -72,7 +122,7 @@ export const useGetZodValidator = (
     customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ) => {
     return useMemo(() => {
-        if (!pydanticFormSchema) {
+        if (!pydanticFormSchema || !rhf) {
             return z.object({});
         }
         // Get all fields ids including the nested ones to generate the correct validation schema
@@ -82,6 +132,7 @@ export const useGetZodValidator = (
             customValidationRule,
             customComponentMatcher,
         );
-        return z.object(validationObject);
+
+        return validationObject;
     }, [customComponentMatcher, customValidationRule, pydanticFormSchema, rhf]);
 };

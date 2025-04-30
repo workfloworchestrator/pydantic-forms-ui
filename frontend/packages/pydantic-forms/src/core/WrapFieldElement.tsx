@@ -9,9 +9,11 @@ import { usePydanticFormContext } from './PydanticFormContextProvider';
 export const WrapFieldElement = ({
     PydanticFormControlledElement,
     pydanticFormField,
+    extraTriggerFields,
 }: {
     PydanticFormControlledElement: PydanticFormControlledElement;
     pydanticFormField: PydanticFormField;
+    extraTriggerFields?: string[];
 }) => {
     const { rhf } = usePydanticFormContext();
     return (
@@ -22,6 +24,10 @@ export const WrapFieldElement = ({
                 const { onChange, onBlur, value, name, ref } = field;
                 const onChangeHandle = (val: string) => {
                     onChange(val);
+
+                    extraTriggerFields?.forEach((extraField) => {
+                        rhf.trigger(extraField);
+                    });
 
                     // it seems we need this because the 2nd error would get stale..
                     // https://github.com/react-hook-form/react-hook-form/issues/8170

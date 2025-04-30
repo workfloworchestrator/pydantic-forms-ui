@@ -15,11 +15,12 @@ import {
  *
  */
 import type {
+    ParsedProperties,
     Properties,
     PydanticFormField,
+    PydanticFormFieldAnyOfItemParsed,
     PydanticFormPropertySchemaParsed,
     PydanticFormSchema,
-    PydanticFormSchemaParsed,
     PydanticFormSchemaRawJson,
     PydanticFormsContextConfig,
 } from '@/types';
@@ -37,62 +38,107 @@ const translateLabel = (
         : label;
 };
 
+const getPydanticFormField = (
+    propertySchema: PydanticFormPropertySchemaParsed,
+    propertyId: string,
+    id: string,
+    requiredFields: string[],
+    formLabels?: Record<string, string>,
+    fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
+) => {
+    const options = getFieldOptions(propertySchema);
+    const fieldOptionsEntry = getFieldAllOfAnyOfEntry(propertySchema);
+
+    const pydanticFormField: PydanticFormField = {
+        id,
+        title:
+            translateLabel(propertyId, propertySchema.title, formLabels) ||
+            propertyId,
+        description: translateLabel(
+            `${propertyId}_info`,
+            propertySchema.description,
+            formLabels,
+        ),
+        arrayItem: propertySchema.items
+            ? getPydanticFormField(
+                  propertySchema.items,
+                  propertyId,
+                  id,
+                  requiredFields,
+                  formLabels,
+                  fieldDetailProvider,
+              )
+            : undefined,
+        format: propertySchema.format ?? fieldOptionsEntry?.[0]?.format,
+        type:
+            propertySchema.type ??
+            fieldOptionsEntry?.[0]?.type ??
+            fieldOptionsEntry?.[0]?.items?.type,
+        options: options.options,
+        isEnumField: options.isOptionsField,
+        default: propertySchema.default,
+        // TODO: I think object properties should never be required only their properties are or aren't. Should we fix this in the backend?
+        required:
+            propertySchema.type === PydanticFormFieldType.OBJECT
+                ? false
+                : !!requiredFields?.includes(propertyId),
+        attributes: getFieldAttributes(propertySchema),
+        schema: propertySchema,
+        validations: getFieldValidation(propertySchema),
+        columns: 6, // TODO: Is this still relevant? https://github.com/workfloworchestrator/orchestrator-ui-library/issues/1891
+        properties: parseProperties(
+            propertySchema.properties || {},
+            propertySchema.required || [],
+            formLabels,
+            fieldDetailProvider,
+            id,
+        ),
+        ...fieldDetailProvider?.[propertyId],
+    };
+
+    return pydanticFormField;
+};
+
 const parseProperties = (
-    parsedSchema: PydanticFormSchemaParsed | PydanticFormPropertySchemaParsed,
+    properties: ParsedProperties | PydanticFormFieldAnyOfItemParsed,
+    requiredFields: string[] = [],
     formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
     prefix: string = '',
 ) => {
-    if (!parsedSchema || !parsedSchema.properties) return {};
+    if (!properties) return {};
 
-    const schemaProperties = Object.entries(parsedSchema.properties);
+    const schemaProperties = Object.entries(properties);
+
     const parsedProperties = schemaProperties.reduce(
         (propertiesObject: Properties, [propertyId, propertySchema]) => {
-            const options = getFieldOptions(propertySchema);
-            const fieldOptionsEntry = getFieldAllOfAnyOfEntry(propertySchema);
             const id = `${prefix && prefix + '.'}${propertyId}`;
-
-            const parsedProperty: PydanticFormField = {
+            const pydanticFormField = getPydanticFormField(
+                propertySchema,
+                propertyId,
                 id,
-                title:
-                    translateLabel(
-                        propertyId,
-                        propertySchema.title,
-                        formLabels,
-                    ) || propertyId,
-                description: translateLabel(
-                    `${propertyId}_info`,
-                    propertySchema.description,
-                    formLabels,
-                ),
-
-                format: propertySchema.format ?? fieldOptionsEntry?.[0]?.format,
-                type:
-                    propertySchema.type ??
-                    fieldOptionsEntry?.[0]?.type ??
-                    fieldOptionsEntry?.[0]?.items?.type,
-                options: options.options,
-                isEnumField: options.isOptionsField,
-                default: propertySchema.default,
-                // TODO: I think object properties should never be required only their properties are or aren't. Should we fix this in the backend?
-                required:
-                    propertySchema.type === PydanticFormFieldType.OBJECT
-                        ? false
-                        : !!parsedSchema.required?.includes(propertyId),
-                attributes: getFieldAttributes(propertySchema),
-                schema: propertySchema,
-                validations: getFieldValidation(propertySchema),
-                columns: 6, // TODO: Is this still relevant?
-                properties: parseProperties(
-                    propertySchema || {},
+                requiredFields,
+                formLabels,
+                fieldDetailProvider,
+            );
+            if (propertySchema.type === PydanticFormFieldType.ARRAY) {
+                // When the property is an array, we need to parse the item that is an array element
+                // Currently we only support arrays of single field types so items can never be multiple items
+                // TODO: Only in the case of an optional property do we have a an array of null |  Item so we should add a case for that
+                // https://github.com/workfloworchestrator/orchestrator-ui-library/issues/1890
+                const itemProperties =
+                    propertySchema.items as PydanticFormFieldAnyOfItemParsed;
+                pydanticFormField.arrayItem = getPydanticFormField(
+                    itemProperties,
+                    propertyId,
+                    id,
+                    requiredFields,
                     formLabels,
                     fieldDetailProvider,
-                    id,
-                ),
-                ...fieldDetailProvider?.[propertyId],
-            };
+                );
+            }
 
-            propertiesObject[id] = parsedProperty;
+            propertiesObject[propertyId] = pydanticFormField;
             return propertiesObject;
         },
         {},
@@ -126,7 +172,8 @@ export const usePydanticFormParser = (
             additionalProperties: parsedSchema?.additionalProperties,
             required: parsedSchema?.required,
             properties: parseProperties(
-                parsedSchema,
+                parsedSchema.properties || {},
+                parsedSchema.required || [],
                 formLabels,
                 fieldDetailProvider,
             ),

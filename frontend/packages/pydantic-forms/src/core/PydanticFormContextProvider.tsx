@@ -277,7 +277,7 @@ function PydanticFormContextProvider({
                 );
             }
         });
-    }, [resetFormData]);
+    }, [formInputData, formInputHistory, resetFormData, rhf]);
 
     // this is to show an error whenever there is an unexpected error from the backend
     // for instance a 500

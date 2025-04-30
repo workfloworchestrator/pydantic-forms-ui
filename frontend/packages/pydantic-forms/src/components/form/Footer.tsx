@@ -24,56 +24,90 @@ const Footer = () => {
 
     const t = useTranslations('footer');
 
+    const PreviousButton = () => (
+        <button
+            type="button"
+            onClick={() => onPrevious?.()}
+            style={{ padding: '12px' }}
+        >
+            {t('previous')}
+        </button>
+    );
+
+    const ResetButton = () => {
+        return (
+            resetButtonAlternative ?? (
+                <button
+                    type="button"
+                    onClick={(e) => {
+                        resetForm(e);
+                    }}
+                    style={{ padding: '12px' }}
+                >
+                    {t('reset')}
+                </button>
+            )
+        );
+    };
+
+    const CancelButton = () => {
+        return (
+            cancelButton ?? (
+                <button
+                    type="button"
+                    onClick={onCancel}
+                    style={{ padding: '12px' }}
+                >
+                    {t('cancel')}
+                </button>
+            )
+        );
+    };
+
+    const SubmitButton = () => (
+        <button
+            type="submit"
+            style={{ padding: '12px' }}
+            disabled={
+                !rhf.formState.isValid ||
+                (!allowUntouchedSubmit &&
+                    !rhf.formState.isDirty &&
+                    !rhf.formState.isSubmitting)
+            }
+        >
+            {sendLabel ?? t('send')}
+        </button>
+    );
+
     return (
         <div style={{ height: '200px' }}>
             {footerComponent && <div>{footerComponent}</div>}{' '}
-            <div>
+            <div style={{ display: 'flex', gap: '16px' }}>
                 {rhf.formState.isValid &&
                     !allowUntouchedSubmit &&
                     !rhf.formState.isDirty && (
                         <div>Het formulier is nog niet aangepast</div>
                     )}
 
-                <button
-                    type="button"
-                    onClick={() => onPrevious?.()}
-                    style={{ padding: '4px' }}
-                >
-                    Back
-                </button>
-                {resetButtonAlternative ?? (
-                    <button
-                        type="button"
-                        onClick={(e) => {
-                            resetForm(e);
-                        }}
-                        style={{ padding: '4px' }}
-                    >
-                        {t('reset')}
-                    </button>
-                )}
-                {!!onCancel &&
-                    (cancelButton ?? (
-                        <button type="button" onClick={onCancel}>
-                            {t('cancel')}
-                        </button>
-                    ))}
+                <PreviousButton />
+                <ResetButton />
 
-                <button
-                    type="submit"
-                    disabled={
-                        !rhf.formState.isValid ||
-                        (!allowUntouchedSubmit &&
-                            !rhf.formState.isDirty &&
-                            !rhf.formState.isSubmitting)
-                    }
-                >
-                    {sendLabel ?? t('send')}
-                </button>
+                {!!onCancel && <CancelButton />}
+
+                <SubmitButton />
             </div>
-            {!rhf.formState.isValid && rhf.formState.isDirty && (
-                <div>{t('notFilledYet')}</div>
-            )}
+            <div
+                style={{
+                    margin: '8px 0',
+                    color: 'red',
+                    fontWeight: '600',
+                    fontSize: '24px',
+                }}
+            >
+                {!rhf.formState.isValid && rhf.formState.isDirty && (
+                    <div>{t('notFilledYet')}</div>
+                )}
+            </div>
         </div>
     );
 };

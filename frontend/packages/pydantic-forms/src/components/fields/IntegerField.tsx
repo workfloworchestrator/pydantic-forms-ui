@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { isObject } from 'lodash';
+
 import type { PydanticFormControlledElementProps } from '@/types';
 
 export const IntegerField = ({
@@ -16,8 +18,12 @@ export const IntegerField = ({
                 onChange(value);
             }}
             disabled={disabled}
-            value={value}
+            value={!isObject(value) ? value : ''} // Value can be an object when it is created from an ArrayField
             type="number"
+            style={{
+                padding: '8px',
+                margin: '8px 0',
+            }}
         />
     );
 };

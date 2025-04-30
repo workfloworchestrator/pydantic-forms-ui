@@ -110,7 +110,7 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
 
         return validationRule;
     },
-    array: (field) => {
+    multiSelect: (field) => {
         const { minimum, maximum } = field?.validations ?? {};
 
         let validationRule = z.array(z.boolean());

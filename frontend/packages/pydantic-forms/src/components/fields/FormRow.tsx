@@ -19,10 +19,21 @@ export const FormRow = ({
 }: FormRowProps) => {
     return (
         <div>
-            <label>
-                {title} {required && <span style={{ color: 'red' }}>*</span>}
-            </label>
-            {description && <div>{description}</div>}
+            {title && (
+                <label
+                    style={{
+                        margin: '8px 0',
+                        display: 'block',
+                        fontWeight: '600',
+                    }}
+                >
+                    {title}{' '}
+                    {required && <span style={{ color: 'red' }}>*</span>}
+                </label>
+            )}
+            {description && (
+                <div style={{ margin: '4px 0' }}>{description}</div>
+            )}
             {children}
             {error}
         </div>
