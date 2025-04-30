@@ -5,6 +5,8 @@
  */
 import React from 'react';
 
+import { isObject } from 'lodash';
+
 import { PydanticFormControlledElementProps } from '@/types';
 
 export const TextField = ({
@@ -19,7 +21,8 @@ export const TextField = ({
             onChange(t.currentTarget.value);
         }}
         disabled={disabled}
-        value={value}
+        // Value will be an object when it is added by an array field. We do this be able to add more than one empty field
+        value={isObject(value) ? '' : value}
         type="text"
         style={{
             padding: '8px',

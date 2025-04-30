@@ -76,7 +76,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                 <div
                     onClick={() => {
                         append({
-                            [arrayName]: undefined,
+                            [arrayName]: arrayItem.default ?? undefined,
                         });
                     }}
                     style={{
