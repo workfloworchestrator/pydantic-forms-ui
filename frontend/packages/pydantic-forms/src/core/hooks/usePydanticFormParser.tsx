@@ -85,7 +85,7 @@ const getPydanticFormField = (
         attributes: getFieldAttributes(propertySchema),
         schema: propertySchema,
         validations: getFieldValidation(propertySchema),
-        columns: 6, // TODO: Is this still relevant?
+        columns: 6, // TODO: Is this still relevant? https://github.com/workfloworchestrator/orchestrator-ui-library/issues/1891
         properties: parseProperties(
             propertySchema.properties || {},
             propertySchema.required || [],

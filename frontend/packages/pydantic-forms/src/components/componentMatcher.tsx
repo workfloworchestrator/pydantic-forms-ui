@@ -66,6 +66,11 @@ export const componentsMatcher = (
     return components;
 };
 
+const defaultComponent: ElementMatch = {
+    Element: TextField,
+    isControlledElement: true,
+};
+
 export const fieldToComponentMatcher = (
     pydanticFormField: PydanticFormField,
     customComponentMatcher: PydanticFormsContextConfig['componentMatcher'],
@@ -75,12 +80,8 @@ export const fieldToComponentMatcher = (
 
     const ElementMatch: ElementMatch = matchedComponent
         ? matchedComponent.ElementMatch
-        : {
-              Element: TextField,
-              isControlledElement: true,
-          };
+        : defaultComponent; // Defaults to textField when there are no matches
 
-    // Defaults to textField when there are no matches
     return {
         Element: ElementMatch,
         pydanticFormField: pydanticFormField,
