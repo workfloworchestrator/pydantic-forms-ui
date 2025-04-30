@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.1.0
+
+### Minor Changes
+
+-   29ffb3f: Adds array field
+
 ## 0.0.20
 
 ### Patch Changes
