@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.1.1
+
+### Patch Changes
+
+-   abdd8fb: Fixes array field value error
+
 ## 0.1.0
 
 ### Minor Changes
