@@ -3,6 +3,8 @@
         "cancel": "Cancel",
         "send": "Send",
         "reset": "Reset",
+        "previous": "Previous",
+        "next": "Next",
         "notModifiedYet": "The form has not been modified yet",
         "notFilledYet": "The form has not been filled in yet"
     },
