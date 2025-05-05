@@ -1,7 +1,6 @@
 {
     "name": "pydantic-forms",
     "version": "0.1.2",
-    "type": "module",
     "description": "Library that turns JSONSchema into frontend forms",
     "author": {
         "name": "Workflow Orchestrator Programme",
@@ -60,7 +59,7 @@
         "dayjs": "^1.11.13",
         "i18next": "^24.1.2",
         "lodash": "^4.17.21",
-        "next-intl": "^4.0.2",
+        "next-intl": "^3.26.5",
         "react-hook-form": "^7.54.1",
         "swr": "^2.3.0",
         "zod": "^3.24.1",
