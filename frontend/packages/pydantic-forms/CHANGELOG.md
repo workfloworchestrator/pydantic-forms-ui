@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.1.3
+
+### Patch Changes
+
+-   0039c7f: Downgrades next-intl to version 3.x
+
 ## 0.1.2
 
 ### Patch Changes
