@@ -267,6 +267,10 @@ export interface PydanticFormZodValidationPresets {
     [type: string]: PydanticFormZodValidationFn;
 }
 
+export type ComponentMatcher = (
+    currentMatchers: PydanticComponentMatcher[],
+) => PydanticComponentMatcher[];
+
 export interface PydanticFormsContextConfig {
     // use a custom method for providing the form definition
     apiProvider: PydanticFormApiProvider;
@@ -294,9 +298,7 @@ export interface PydanticFormsContextConfig {
 
     resetButtonAlternative?: React.ReactNode;
 
-    componentMatcher?: (
-        currentMatchers: PydanticComponentMatcher[],
-    ) => PydanticComponentMatcher[];
+    componentMatcher?: ComponentMatcher;
 
     formRenderer?: FormRenderer;
     footerRenderer?: React.JSXElementConstructor<object>;
