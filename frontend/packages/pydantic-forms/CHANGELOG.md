@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.1.4
+
+### Patch Changes
+
+-   cf0da35: Exports component matcher type
+
 ## 0.1.3
 
 ### Patch Changes
