@@ -80,7 +80,7 @@ const Footer = () => {
     );
 
     return (
-        <div style={{ height: '200px' }}>
+        <div style={{ height: '200px', marginTop: '24px' }}>
             {footerComponent && <div>{footerComponent}</div>}{' '}
             <div style={{ display: 'flex', gap: '16px' }}>
                 {rhf.formState.isValid &&

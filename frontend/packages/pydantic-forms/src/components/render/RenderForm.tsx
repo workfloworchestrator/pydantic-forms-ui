@@ -65,7 +65,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
     );
 
     return (
-        <form action={''} onSubmit={submitForm} style={{ width: '500px' }}>
+        <form action={''} onSubmit={submitForm}>
             {title !== false &&
                 title !== 'undefined' &&
                 title !== 'unknown' && (
@@ -78,7 +78,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
 
             <RenderFormErrors />
 
-            <div style={{ marginBottom: '24px' }}>
+            <div>
                 <Renderer pydanticFormComponents={pydanticFormComponents} />
             </div>
             <FooterRenderer />
