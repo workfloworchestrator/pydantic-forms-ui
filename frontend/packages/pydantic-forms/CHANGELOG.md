@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.1.5
+
+### Patch Changes
+
+-   af0069e: Removes default styling
+
 ## 0.1.4
 
 ### Patch Changes
