@@ -5,7 +5,6 @@ module.exports = {
     rootDir: './',
     testMatch: ['**/*.spec.ts', '**/*.spec.tsx'],
 
-    // 👇 Override the transformer for TS/TSX files to use ts-jest
     transform: {
         '^.+\\.tsx?$': ['ts-jest', {
             tsconfig: 'tsconfig.json',
