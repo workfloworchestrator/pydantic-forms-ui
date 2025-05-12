@@ -21,7 +21,7 @@ export const WrapFieldElement = ({
             name={pydanticFormField.id}
             control={rhf.control}
             render={({ field }) => {
-                const { onChange, onBlur, value, name, ref } = field;
+                const { onChange, onBlur, value, name } = field;
                 const onChangeHandle = (val: string) => {
                     onChange(val);
 
@@ -43,7 +43,6 @@ export const WrapFieldElement = ({
                             value={value || ''}
                             disabled={!!pydanticFormField.attributes.disabled}
                             name={name}
-                            ref={ref}
                             pydanticFormField={pydanticFormField}
                         />
                     </FieldWrap>

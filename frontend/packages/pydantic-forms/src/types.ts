@@ -40,7 +40,10 @@ export type PydanticFormElementProps = {
 export type PydanticFormElement =
     React.JSXElementConstructor<PydanticFormElementProps>;
 
-export type PydanticFormControlledElementProps = ControllerRenderProps &
+export type PydanticFormControlledElementProps = Omit<
+    ControllerRenderProps,
+    'ref'
+> &
     PydanticFormElementProps;
 
 export type PydanticFormControlledElement =
