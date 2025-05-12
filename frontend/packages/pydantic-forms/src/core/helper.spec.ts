@@ -232,7 +232,7 @@ describe('optionsToOption', () => {
             { value: 'Maybe Later', label: 'Maybe ⏳' },
         ]);
     });
-
+gs
     it('sorts correctly even if enums include extra or missing keys', () => {
         const input = {
             THREE: 'Three',
