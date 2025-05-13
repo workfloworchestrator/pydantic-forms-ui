@@ -1,5 +1,12 @@
 # pydantic-forms
 
+## 0.1.6
+
+### Patch Changes
+
+-   1d7f1c3: Resolves warning that refs cant be passed to function components
+-   53a77aa: Small README update
+
 ## 0.1.5
 
 ### Patch Changes
