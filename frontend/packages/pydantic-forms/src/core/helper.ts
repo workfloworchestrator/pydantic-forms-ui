@@ -8,11 +8,9 @@ import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 import {
     Properties,
     PydanticFormApiResponse,
-    PydanticFormComponents,
     PydanticFormField,
     PydanticFormFieldAttributes,
     PydanticFormFieldOption,
-    PydanticFormFieldSection,
     PydanticFormFieldType,
     PydanticFormFieldValidations,
     PydanticFormPropertySchemaParsed,
@@ -242,61 +240,6 @@ export const getFieldValidation = (
  */
 export const isNullableField = (field: PydanticFormField) =>
     !!field.validations.isNullable;
-
-/**
- * Sort field per section for displaying
- *
- * This function will organize the fields per section
- * every time a field comes by that starts with label_
- * we start a new section
- */
-export const getFieldBySection = (components: PydanticFormComponents) => {
-    const sections: PydanticFormFieldSection[] = [];
-    let curSection = 0;
-
-    // Ids will be nested at this point. We look at the last part of the id
-    for (const component of components) {
-        const id = component.pydanticFormField.id.split('.').pop();
-        const field = component.pydanticFormField;
-
-        if (id && id.startsWith('label_')) {
-            curSection++;
-            sections.push({
-                id,
-
-                // strange as it is, the backend will put the
-                // correct label in the 'default' prop
-                title: field.default ?? field.title,
-
-                components: [],
-            });
-
-            continue;
-        }
-
-        if (curSection === 0) {
-            // if we are here there was no first label field,
-            // we'll create a label / section to prevent errors
-
-            sections.push({
-                id: 'auto-created-section',
-                title: '',
-                components: [],
-            });
-
-            // Make sure new fields are pushed into this section and
-            // prevent empty sections created
-            curSection = 1;
-        }
-
-        // since we start at 0, and the first label will add
-        const targetSection = curSection - 1;
-
-        sections[targetSection].components.push(component);
-    }
-
-    return sections;
-};
 
 /**
  * Will return a Record map of [fieldId]: "Fieldvalue"
