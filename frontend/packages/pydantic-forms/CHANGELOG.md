@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.2.1
+
+### Patch Changes
+
+-   b3374b5: Exports zodPresets
+
 ## 0.2.0
 
 ### Minor Changes
