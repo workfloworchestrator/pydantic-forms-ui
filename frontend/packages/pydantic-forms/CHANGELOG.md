@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.2.0
+
+### Minor Changes
+
+-   dadbdb8: Fixes label fields by removing section logic
+
 ## 0.1.6
 
 ### Patch Changes
