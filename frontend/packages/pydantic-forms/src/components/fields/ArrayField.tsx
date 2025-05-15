@@ -38,7 +38,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                 }}
             >
                 <RenderFields
-                    components={[
+                    pydanticFormComponents={[
                         {
                             Element: component.Element,
                             pydanticFormField: arrayField,

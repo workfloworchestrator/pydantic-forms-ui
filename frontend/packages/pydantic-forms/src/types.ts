@@ -115,12 +115,6 @@ export interface PydanticFormField {
     properties?: Properties;
 }
 
-export interface PydanticFormFieldSection {
-    id: string;
-    title: string;
-    components: PydanticFormComponents;
-}
-
 export enum PydanticFormFieldType {
     // Primitive types https://json-schema.org/understanding-json-schema/reference/type
     STRING = 'string',
