@@ -41,9 +41,9 @@ jobs:
               run: cd frontend && npm ci && pwd
             - name: Create Release Pull Request or Publish
               id: changesets
-              uses: changesets/action@v1
+              uses: changesets/action@e0538e686673de0265c8a3e2904b8c76beaa43fd
               with:
-                  publish: pwd && ls -al frontend && npm run packages:publish
+                  publish: npm run packages:publish
                   cwd: /home/runner/work/pydantic-forms-ui/pydantic-forms-ui/frontend
               env:
                   GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
