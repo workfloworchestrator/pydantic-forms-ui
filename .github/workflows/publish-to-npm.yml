@@ -38,12 +38,13 @@ jobs:
               env:
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
             - name: Installing dependencies
-              run: cd frontend && npm ci
+              run: cd frontend && npm ci && pwd
             - name: Create Release Pull Request or Publish
               id: changesets
               uses: changesets/action@v1
               with:
                   publish: npm run packages:publish
+                  cwd: ~/frontend
               env:
                   GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
