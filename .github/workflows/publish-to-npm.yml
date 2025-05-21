@@ -43,8 +43,7 @@ jobs:
               id: changesets
               uses: changesets/action@v1
               with:
-                  publish: npm run packages:publish
-                  cwd: ./frontend
+                  publish: cd frontend && npm run packages:publish
               env:
                   GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
