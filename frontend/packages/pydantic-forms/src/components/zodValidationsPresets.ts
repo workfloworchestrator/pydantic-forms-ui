@@ -37,7 +37,7 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
             try {
                 validationRule = validationRule?.regex(
                     new RegExp(pattern),
-                    'De invoer is niet volgens het juiste formaat',
+                    `De invoer is niet volgens het juiste formaat: ${pattern}`,
                 );
             } catch (error) {
                 console.error(

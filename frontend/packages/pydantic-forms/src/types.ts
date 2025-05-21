@@ -106,11 +106,7 @@ export interface PydanticFormField {
     oneOf?: PydanticFormFieldAnyOfDef[];
     allOf?: PydanticFormFieldAnyOfDef[];
 
-    uniforms?: {
-        disabled: boolean;
-        sensitive: boolean;
-        password: boolean;
-    };
+    uniforms?: UniformProperties;
     arrayItem?: PydanticFormField;
     properties?: Properties;
 }
@@ -436,11 +432,7 @@ export interface PydanticFormPropertySchemaParsed
     default?: string | null;
     format: PydanticFormFieldFormat;
 
-    uniforms?: {
-        disabled: boolean;
-        sensitive: boolean;
-        password: boolean;
-    };
+    uniforms?: UniformProperties;
 
     properties?: ParsedProperties;
 }
@@ -470,6 +462,13 @@ export interface PydanticFormFieldAnyOfItemParsed
     properties?: ParsedProperties;
 }
 
+type UniformProperties = {
+    disabled: boolean;
+    sensitive: boolean;
+    password: boolean;
+    [key: string]: string | boolean | number;
+};
+
 export interface PydanticFormPropertySchemaRawJson
     extends Omit<PydanticFormBaseSchema, 'type'>,
         PydanticFormFieldValidations,
@@ -483,11 +482,7 @@ export interface PydanticFormPropertySchemaRawJson
     default?: string | null;
     format: PydanticFormFieldFormat;
 
-    uniforms?: {
-        disabled: boolean;
-        sensitive: boolean;
-        password: boolean;
-    };
+    uniforms?: UniformProperties;
 
     properties?: RawJsonProperties;
 }

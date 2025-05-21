@@ -46,15 +46,9 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                     ]}
                     extraTriggerFields={[arrayName]}
                 />
-                {!minItems ||
-                    (minItems && fields.length > minItems && (
-                        <span
-                            style={{ fontSize: '24px' }}
-                            onClick={() => remove(index)}
-                        >
-                            -
-                        </span>
-                    ))}
+                {(!minItems || (minItems && fields.length > minItems)) && (
+                    <span onClick={() => remove(index)}>-</span>
+                )}
             </div>
         );
     };
