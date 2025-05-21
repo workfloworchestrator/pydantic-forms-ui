@@ -1,5 +1,12 @@
 # pydantic-forms
 
+## 0.2.2
+
+### Patch Changes
+
+-   15e40bd: Exports util functions and RenderFields component. Bugfixes
+-   5505ea2: Show minus button in ArrayField even if min_items value is not provided.
+
 ## 0.2.1
 
 ### Patch Changes
