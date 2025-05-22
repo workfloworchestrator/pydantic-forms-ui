@@ -2,7 +2,7 @@ import React from 'react';
 import { useFieldArray } from 'react-hook-form';
 
 import { usePydanticFormContext } from '@/core';
-import { fieldToComponentMatcher } from '@/core';
+import { fieldToComponentMatcher } from '@/core/helper';
 import { PydanticFormElementProps } from '@/types';
 import { itemizeArrayItem } from '@/utils';
 

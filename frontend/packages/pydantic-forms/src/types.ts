@@ -317,7 +317,7 @@ export type FormRenderer = React.JSXElementConstructor<{
     pydanticFormComponents: PydanticFormComponents;
 }>;
 
-interface PydanticFormComponent {
+export interface PydanticFormComponent {
     Element: ElementMatch;
     pydanticFormField: PydanticFormField;
 }

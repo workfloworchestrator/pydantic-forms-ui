@@ -9,9 +9,9 @@ import React from 'react';
 
 import { useTranslations } from 'next-intl';
 
-import { componentsMatcher } from '@/components/componentMatcher';
 import Footer from '@/components/form/Footer';
 import RenderFormErrors from '@/components/render/RenderFormErrors';
+import { getPydanticFormComponents } from '@/core/helper';
 import { PydanticFormComponents, PydanticFormContextProps } from '@/types';
 
 import { FormRenderer } from './FormRenderer';
@@ -30,11 +30,13 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         skipSuccessNotice,
         loadingComponent,
     } = contextProps;
-    const {
-        formRenderer,
-        footerRenderer,
-        componentMatcher: customComponentMatcher,
-    } = config || {};
+    const { formRenderer, footerRenderer } = config || {};
+
+    const pydanticFormComponents: PydanticFormComponents =
+        getPydanticFormComponents(
+            pydanticFormSchema?.properties || {},
+            config?.componentMatcher,
+        );
 
     const t = useTranslations('renderForm');
 
@@ -58,11 +60,6 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
 
     const Renderer = formRenderer ?? FormRenderer;
     const FooterRenderer = footerRenderer ?? Footer;
-
-    const pydanticFormComponents: PydanticFormComponents = componentsMatcher(
-        pydanticFormSchema.properties,
-        customComponentMatcher,
-    );
 
     return (
         <form action={''} onSubmit={submitForm}>

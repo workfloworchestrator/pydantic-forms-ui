@@ -12,7 +12,10 @@ import { useForm } from 'react-hook-form';
 
 import { ZodRawShape, ZodTypeAny, z } from 'zod';
 
-import { getClientSideValidationRule } from '@/components/componentMatcher';
+import {
+    getClientSideValidationRule,
+    getPydanticFormComponents,
+} from '@/core/helper';
 import {
     CustomValidationRule,
     Properties,
@@ -94,11 +97,18 @@ const getZodValidationObject = (
     customValidationRule?: CustomValidationRule,
     customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ) => {
-    const pydanticFormFields = Object.values(properties);
-    if (!pydanticFormFields) return z.unknown();
+    const pydanticFormComponents = getPydanticFormComponents(
+        properties,
+        customComponentMatcher,
+    );
+    if (!pydanticFormComponents) return z.unknown();
 
     const validationObject: ZodRawShape = {};
-    pydanticFormFields.forEach((pydanticFormField) => {
+    pydanticFormComponents.forEach((component) => {
+        const { Element, pydanticFormField } = component;
+
+        if (!pydanticFormField || !Element.isControlledElement) return;
+
         const id =
             pydanticFormField.id.split('.').pop() || pydanticFormField.id;
 
