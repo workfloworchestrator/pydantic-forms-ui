@@ -50,7 +50,7 @@ const getZodRule = (
         const arrayItem = pydanticFormField.arrayItem;
         const arrayItemRule = arrayItem
             ? getZodRule(
-                  pydanticFormField,
+                  arrayItem,
                   rhf,
                   customValidationRule,
                   customComponentMatcher,
