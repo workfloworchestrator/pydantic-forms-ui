@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 
 import { ZodRawShape, ZodTypeAny, z } from 'zod';
 
-import { getClientSideValidationRule } from '@/components/componentMatcher';
+import { getClientSideValidationRule } from '@/core/helper';
 import {
     CustomValidationRule,
     Properties,

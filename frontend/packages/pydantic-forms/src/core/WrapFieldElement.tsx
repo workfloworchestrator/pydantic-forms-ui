@@ -2,9 +2,8 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 
 import { FieldWrap } from '@/components/fields';
+import { usePydanticFormContext } from '@/core/hooks';
 import type { PydanticFormControlledElement, PydanticFormField } from '@/types';
-
-import { usePydanticFormContext } from './PydanticFormContextProvider';
 
 export const WrapFieldElement = ({
     PydanticFormControlledElement,
