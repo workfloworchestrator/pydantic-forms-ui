@@ -2,6 +2,7 @@
     "footer": {
         "cancel": "Annuleren",
         "send": "Verzenden",
+        "submit": "Indienen",
         "reset": "Resetten",
         "notModifiedYet": "Het formulier is nog niet aangepast",
         "notFilledYet": "Het formulier is nog niet ingevuld",

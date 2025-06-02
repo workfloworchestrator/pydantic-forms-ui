@@ -151,6 +151,7 @@ function PydanticFormContextProvider({
     // we cache the form scheme so when there is an error, we still have the form
     // the form is not in the error response
     const [rawSchema, setRawSchema] = useState<PydanticFormSchemaRawJson>();
+    const [hasNext, setHasNext] = useState<boolean>(false);
 
     // extract the JSON schema to a more usable custom schema
 
@@ -235,6 +236,9 @@ function PydanticFormContextProvider({
         // when we receive a form from the JSON, we fully reset the scheme
         if (apiResponse?.form) {
             setRawSchema(apiResponse.form);
+            if (apiResponse.meta) {
+                setHasNext(!!apiResponse.meta.hasNext);
+            }
             setErrorDetails(undefined);
         }
 
@@ -362,6 +366,7 @@ function PydanticFormContextProvider({
         setFormInputData([]);
         setIsFullFilled(false);
         setRawSchema(undefined);
+        setHasNext(false);
     }, []);
 
     const PydanticFormContextState = {
@@ -393,6 +398,8 @@ function PydanticFormContextProvider({
         formKey,
         formIdKey,
         clearForm,
+        formInputData,
+        hasNext,
     };
 
     return (

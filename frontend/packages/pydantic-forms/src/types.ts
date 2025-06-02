@@ -78,6 +78,8 @@ export interface PydanticFormContextProps {
     formKey: string;
     formIdKey?: string;
     clearForm: () => void;
+    hasNext: boolean;
+    formInputData: object[];
 }
 
 export enum PydanticFormState {
@@ -384,6 +386,9 @@ export interface PydanticFormApiResponse {
     form: PydanticFormSchemaRawJson;
     success?: boolean;
     validation_errors: PydanticFormApiValidationError[];
+    meta?: {
+        hasNext?: boolean;
+    };
 }
 
 export interface PydanticFormBaseSchema {
