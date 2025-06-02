@@ -293,7 +293,7 @@ export interface PydanticFormsContextConfig {
 
     componentMatcher?: ComponentMatcher;
 
-    formRenderer?: FormRenderer;
+    formRenderer?: Renderer;
     footerRenderer?: React.JSXElementConstructor<object>;
     rowRenderer?: RowRenderer;
 
@@ -313,7 +313,7 @@ export interface PydanticFormsContextConfig {
     locale?: Locale;
 }
 
-export type FormRenderer = React.JSXElementConstructor<{
+export type Renderer = React.JSXElementConstructor<{
     pydanticFormComponents: PydanticFormComponents;
 }>;
 
