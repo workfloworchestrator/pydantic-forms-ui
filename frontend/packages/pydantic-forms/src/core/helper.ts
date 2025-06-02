@@ -403,8 +403,8 @@ export const getPydanticFormComponents = (
     properties: Properties,
     componentMatcher: PydanticFormsContextConfig['componentMatcher'],
 ): PydanticFormComponents => {
-    const components: PydanticFormComponents = Object.entries(properties).map(
-        ([, pydanticFormField]) => {
+    const components: PydanticFormComponents = Object.values(properties).map(
+        (pydanticFormField) => {
             return fieldToComponentMatcher(pydanticFormField, componentMatcher);
         },
     );
