@@ -1,5 +1,15 @@
 # pydantic-forms
 
+## 0.3.0
+
+### Minor Changes
+
+-   2cd70d8: Adds hasNext property for multistep forms
+
+### Patch Changes
+
+-   4b473f9: Exports components from components/render folder
+
 ## 0.2.3
 
 ### Patch Changes
