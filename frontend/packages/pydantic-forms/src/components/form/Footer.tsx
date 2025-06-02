@@ -23,8 +23,9 @@ const Footer = () => {
         hasNext,
         formInputData,
     } = usePydanticFormContext();
-    const t = useTranslations('footer');
 
+    const t = useTranslations('footer');
+    const submitButtonLabel = sendLabel ?? hasNext ? t('send') : t('submit');
     const PreviousButton = () => (
         <button
             type="button"
@@ -76,7 +77,7 @@ const Footer = () => {
                     !rhf.formState.isSubmitting)
             }
         >
-            {sendLabel ?? hasNext ? t('send') : t('submit')}
+            {submitButtonLabel}
         </button>
     );
 
