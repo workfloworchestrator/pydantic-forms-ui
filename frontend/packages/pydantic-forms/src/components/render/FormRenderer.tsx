@@ -1,8 +1,10 @@
 import React from 'react';
 
 import { RenderFields } from '@/components/render';
-import type { FormRenderer as Renderer } from '@/types';
+import type { FormRenderComponent } from '@/types';
 
-export const FormRenderer: Renderer = ({ pydanticFormComponents }) => {
+export const FormRenderer: FormRenderComponent = ({
+    pydanticFormComponents,
+}) => {
     return <RenderFields pydanticFormComponents={pydanticFormComponents} />;
 };

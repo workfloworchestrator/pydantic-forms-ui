@@ -20,10 +20,12 @@ const Footer = () => {
         sendLabel,
         footerComponent,
         allowUntouchedSubmit,
+        hasNext,
+        formInputData,
     } = usePydanticFormContext();
 
     const t = useTranslations('footer');
-
+    const submitButtonLabel = sendLabel ?? hasNext ? t('send') : t('submit');
     const PreviousButton = () => (
         <button
             type="button"
@@ -75,7 +77,7 @@ const Footer = () => {
                     !rhf.formState.isSubmitting)
             }
         >
-            {sendLabel ?? t('send')}
+            {submitButtonLabel}
         </button>
     );
 
@@ -88,8 +90,10 @@ const Footer = () => {
                     !rhf.formState.isDirty && (
                         <div>Het formulier is nog niet aangepast</div>
                     )}
+                {formInputData && formInputData.length > 0 && (
+                    <PreviousButton />
+                )}
 
-                <PreviousButton />
                 <ResetButton />
 
                 {!!onCancel && <CancelButton />}

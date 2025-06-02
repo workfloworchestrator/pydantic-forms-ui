@@ -256,10 +256,14 @@ export const isNullableField = (field: PydanticFormField) =>
  * And labelData (this holds the current values from API)
  */
 export const getFormValuesFromFieldOrLabels = (
-    pydanticFormSchema: PydanticFormSchema,
+    pydanticFormSchema?: PydanticFormSchema,
     labelData?: Record<string, string>,
     componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ) => {
+    if (!pydanticFormSchema) {
+        return {};
+    }
+
     const fieldValues: Record<string, string> = {};
 
     const includedFields: string[] = [];

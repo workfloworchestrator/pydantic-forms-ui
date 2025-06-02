@@ -78,6 +78,8 @@ export interface PydanticFormContextProps {
     formKey: string;
     formIdKey?: string;
     clearForm: () => void;
+    hasNext: boolean;
+    formInputData: object[];
 }
 
 export enum PydanticFormState {
@@ -247,7 +249,7 @@ export type PydanticFormZodValidationFn = (
     rhf?: ReturnType<typeof useForm>,
 ) => z.ZodTypeAny;
 
-export type RowRenderer = React.JSXElementConstructor<{
+export type RowRenderComponent = React.JSXElementConstructor<{
     title: string;
     description?: string;
     required?: boolean;
@@ -293,9 +295,9 @@ export interface PydanticFormsContextConfig {
 
     componentMatcher?: ComponentMatcher;
 
-    formRenderer?: FormRenderer;
+    formRenderer?: FormRenderComponent;
     footerRenderer?: React.JSXElementConstructor<object>;
-    rowRenderer?: RowRenderer;
+    rowRenderer?: RowRenderComponent;
 
     // Extend field definitions
     fieldDetailProvider?: PydanticFormFieldDetailProvider;
@@ -313,7 +315,7 @@ export interface PydanticFormsContextConfig {
     locale?: Locale;
 }
 
-export type FormRenderer = React.JSXElementConstructor<{
+export type FormRenderComponent = React.JSXElementConstructor<{
     pydanticFormComponents: PydanticFormComponents;
 }>;
 
@@ -384,6 +386,9 @@ export interface PydanticFormApiResponse {
     form: PydanticFormSchemaRawJson;
     success?: boolean;
     validation_errors: PydanticFormApiValidationError[];
+    meta?: {
+        hasNext?: boolean;
+    };
 }
 
 export interface PydanticFormBaseSchema {
