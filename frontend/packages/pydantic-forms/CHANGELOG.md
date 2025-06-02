@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.2.3
+
+### Patch Changes
+
+-   4c6c076: Prevents uncontrolled elements from being added to formstate
+
 ## 0.2.2
 
 ### Patch Changes
