@@ -9,6 +9,7 @@ import React, {
     createContext,
     useCallback,
     useEffect,
+    useMemo,
     useRef,
     useState,
 } from 'react';
@@ -173,10 +174,24 @@ function PydanticFormContextProvider({
         componentMatcher,
     );
 
+    const initialData = useMemo(
+        () =>
+            getFormValuesFromFieldOrLabels(
+                pydanticFormSchema,
+                {
+                    ...formLabels?.data,
+                    ...customData,
+                },
+                componentMatcher,
+            ),
+        [componentMatcher, customData, formLabels?.data, pydanticFormSchema],
+    );
+
     // initialize the react-hook-form
     const rhf = useForm({
         resolver: zodResolver(resolver),
         mode: 'all',
+        values: initialData,
     });
 
     // Adds watch subscripton on form values
@@ -221,8 +236,15 @@ function PydanticFormContextProvider({
         }
 
         setFormInputHistory(new Map<string, object>());
-        rhf.reset();
-    }, [apiResponse, isFullFilled, onSuccess, rhf, skipSuccessNotice]);
+        rhf.reset(initialData);
+    }, [
+        apiResponse,
+        initialData,
+        isFullFilled,
+        onSuccess,
+        rhf,
+        skipSuccessNotice,
+    ]);
 
     // a useeffect for whenever the error response updates
     // sometimes we need to update the form,
@@ -255,26 +277,16 @@ function PydanticFormContextProvider({
             return;
         }
 
-        const initialData = getFormValuesFromFieldOrLabels(
-            pydanticFormSchema,
-            {
-                ...formLabels?.data,
-                ...customData,
-            },
-            componentMatcher,
-        );
-
-        rhf.reset(initialData);
-    }, [customData, formLabels, pydanticFormSchema, rhf, componentMatcher]);
+        rhf.reset(undefined, { keepDefaultValues: true });
+    }, [pydanticFormSchema, rhf]);
 
     // a useeffect for filling data whenever formdefinition or labels update
     useEffect(() => {
-        // this makes sure default values are set.
-        resetFormData();
         getHashForArray(formInputData).then((hash) => {
             const currentStepFromHistory = formInputHistory.get(hash);
 
             if (currentStepFromHistory) {
+                rhf.reset();
                 Object.entries(currentStepFromHistory).forEach(
                     ([fieldName, fieldValue]) =>
                         rhf.setValue(fieldName, fieldValue, {
@@ -304,7 +316,6 @@ function PydanticFormContextProvider({
     const submitFormFn = useCallback(() => {
         setIsSending(true);
         addFormInputData(rhf?.getValues(), !!errorDetails);
-
         window.scrollTo(0, 0);
     }, [rhf, errorDetails, addFormInputData]);
 
