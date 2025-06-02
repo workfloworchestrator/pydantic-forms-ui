@@ -8,7 +8,6 @@
 import React, {
     createContext,
     useCallback,
-    useContext,
     useEffect,
     useRef,
     useState,
@@ -164,6 +163,7 @@ function PydanticFormContextProvider({
         );
 
     const rhfRef = useRef<ReturnType<typeof useForm>>();
+
     // build validation rules based on custom schema
     const resolver = useGetZodValidator(
         pydanticFormSchema,
@@ -251,13 +251,17 @@ function PydanticFormContextProvider({
             return;
         }
 
-        const initialData = getFormValuesFromFieldOrLabels(pydanticFormSchema, {
-            ...formLabels?.data,
-            ...customData,
-        });
+        const initialData = getFormValuesFromFieldOrLabels(
+            pydanticFormSchema,
+            {
+                ...formLabels?.data,
+                ...customData,
+            },
+            componentMatcher,
+        );
 
         rhf.reset(initialData);
-    }, [customData, formLabels, pydanticFormSchema, rhf]);
+    }, [customData, formLabels, pydanticFormSchema, rhf, componentMatcher]);
 
     // a useeffect for filling data whenever formdefinition or labels update
     useEffect(() => {
@@ -396,18 +400,6 @@ function PydanticFormContextProvider({
             {children(PydanticFormContextState)}
         </PydanticFormContext.Provider>
     );
-}
-
-export function usePydanticFormContext() {
-    const context = useContext(PydanticFormContext);
-
-    if (!context) {
-        throw new Error(
-            'usePydanticFormContext must be used within a PydanticFormProvider',
-        );
-    }
-
-    return context;
 }
 
 export default PydanticFormContextProvider;

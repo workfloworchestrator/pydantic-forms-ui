@@ -5,9 +5,16 @@
  */
 import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
+import { z } from 'zod';
+
+import defaultComponentMatchers from '@/components/defaultComponentMatchers';
+import { TextField } from '@/components/fields';
 import {
+    ElementMatch,
     Properties,
+    PydanticComponentMatcher,
     PydanticFormApiResponse,
+    PydanticFormComponents,
     PydanticFormField,
     PydanticFormFieldAttributes,
     PydanticFormFieldOption,
@@ -15,6 +22,7 @@ import {
     PydanticFormFieldValidations,
     PydanticFormPropertySchemaParsed,
     PydanticFormSchema,
+    PydanticFormsContextConfig,
 } from '@/types';
 
 /**
@@ -250,20 +258,28 @@ export const isNullableField = (field: PydanticFormField) =>
 export const getFormValuesFromFieldOrLabels = (
     pydanticFormSchema: PydanticFormSchema,
     labelData?: Record<string, string>,
+    componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
 ) => {
     const fieldValues: Record<string, string> = {};
 
     const includedFields: string[] = [];
 
-    for (const [, field] of Object.entries(pydanticFormSchema.properties)) {
-        includedFields.push(field.id);
+    const pydanticFormComponents = getPydanticFormComponents(
+        pydanticFormSchema.properties,
+        componentMatcher,
+    );
 
-        if (typeof field.default === 'undefined') {
-            continue;
+    pydanticFormComponents.forEach((component) => {
+        const { Element, pydanticFormField } = component;
+
+        if (Element.isControlledElement) {
+            includedFields.push(pydanticFormField.id);
+
+            if (typeof pydanticFormField.default !== 'undefined') {
+                fieldValues[pydanticFormField.id] = pydanticFormField.default;
+            }
         }
-
-        fieldValues[field.id] = field.default;
-    }
+    });
 
     if (labelData) {
         for (const fieldId in labelData) {
@@ -324,3 +340,74 @@ export const rhfTriggerValidationsOnChange =
         // https://github.com/react-hook-form/react-hook-form/issues/10832
         rhf.trigger(field.name);
     };
+
+export const getMatcher = (
+    customComponentMatcher: PydanticFormsContextConfig['componentMatcher'],
+) => {
+    const componentMatchers = customComponentMatcher
+        ? customComponentMatcher(defaultComponentMatchers)
+        : defaultComponentMatchers;
+
+    return (field: PydanticFormField): PydanticComponentMatcher | undefined => {
+        return componentMatchers.find(({ matcher }) => {
+            return matcher(field);
+        });
+    };
+};
+
+export const getClientSideValidationRule = (
+    field: PydanticFormField | undefined,
+    rhf?: ReturnType<typeof useForm>,
+    customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
+) => {
+    if (!field) return z.unknown();
+    const matcher = getMatcher(customComponentMatcher);
+
+    const componentMatch = matcher(field);
+
+    let validationRule = componentMatch?.validator?.(field, rhf) ?? z.unknown();
+
+    if (!field.required) {
+        validationRule = validationRule.optional();
+    }
+
+    if (field.validations.isNullable) {
+        validationRule = validationRule.nullable();
+    }
+
+    return validationRule;
+};
+
+const defaultComponent: ElementMatch = {
+    Element: TextField,
+    isControlledElement: true,
+};
+
+export const fieldToComponentMatcher = (
+    pydanticFormField: PydanticFormField,
+    customComponentMatcher: PydanticFormsContextConfig['componentMatcher'],
+) => {
+    const matcher = getMatcher(customComponentMatcher);
+    const matchedComponent = matcher(pydanticFormField);
+
+    const ElementMatch: ElementMatch = matchedComponent
+        ? matchedComponent.ElementMatch
+        : defaultComponent; // Defaults to textField when there are no matches
+
+    return {
+        Element: ElementMatch,
+        pydanticFormField: pydanticFormField,
+    };
+};
+export const getPydanticFormComponents = (
+    properties: Properties,
+    componentMatcher: PydanticFormsContextConfig['componentMatcher'],
+): PydanticFormComponents => {
+    const components: PydanticFormComponents = Object.entries(properties).map(
+        ([, pydanticFormField]) => {
+            return fieldToComponentMatcher(pydanticFormField, componentMatcher);
+        },
+    );
+
+    return components;
+};
