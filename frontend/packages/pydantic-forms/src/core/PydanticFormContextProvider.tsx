@@ -9,7 +9,6 @@ import React, {
     createContext,
     useCallback,
     useEffect,
-    useMemo,
     useRef,
     useState,
 } from 'react';
@@ -174,17 +173,13 @@ function PydanticFormContextProvider({
         componentMatcher,
     );
 
-    const initialData = useMemo(
-        () =>
-            getFormValuesFromFieldOrLabels(
-                pydanticFormSchema,
-                {
-                    ...formLabels?.data,
-                    ...customData,
-                },
-                componentMatcher,
-            ),
-        [componentMatcher, customData, formLabels?.data, pydanticFormSchema],
+    const initialData = getFormValuesFromFieldOrLabels(
+        pydanticFormSchema,
+        {
+            ...formLabels?.data,
+            ...customData,
+        },
+        componentMatcher,
     );
 
     // initialize the react-hook-form
@@ -203,6 +198,14 @@ function PydanticFormContextProvider({
 
         return () => sub.unsubscribe();
     }, [rhf, onChange]);
+
+    const resetFormData = useCallback(() => {
+        if (!pydanticFormSchema) {
+            return;
+        }
+
+        rhf.reset();
+    }, [pydanticFormSchema, rhf]);
 
     rhfRef.current = rhf;
 
@@ -236,12 +239,12 @@ function PydanticFormContextProvider({
         }
 
         setFormInputHistory(new Map<string, object>());
-        rhf.reset(initialData);
+        resetFormData();
     }, [
         apiResponse,
-        initialData,
         isFullFilled,
         onSuccess,
+        resetFormData,
         rhf,
         skipSuccessNotice,
     ]);
@@ -257,6 +260,7 @@ function PydanticFormContextProvider({
 
         // when we receive a form from the JSON, we fully reset the scheme
         if (apiResponse?.form) {
+            resetFormData();
             setRawSchema(apiResponse.form);
             if (apiResponse.meta) {
                 setHasNext(!!apiResponse.meta.hasNext);
@@ -270,15 +274,7 @@ function PydanticFormContextProvider({
         }
 
         setIsSending(false);
-    }, [apiResponse, onSuccess, rhf, skipSuccessNotice]);
-
-    const resetFormData = useCallback(() => {
-        if (!pydanticFormSchema) {
-            return;
-        }
-
-        rhf.reset(undefined, { keepDefaultValues: true });
-    }, [pydanticFormSchema, rhf]);
+    }, [apiResponse, onSuccess, resetFormData, rhf, skipSuccessNotice]);
 
     // a useeffect for filling data whenever formdefinition or labels update
     useEffect(() => {
@@ -286,7 +282,7 @@ function PydanticFormContextProvider({
             const currentStepFromHistory = formInputHistory.get(hash);
 
             if (currentStepFromHistory) {
-                rhf.reset();
+                resetFormData();
                 Object.entries(currentStepFromHistory).forEach(
                     ([fieldName, fieldValue]) =>
                         rhf.setValue(fieldName, fieldValue, {
