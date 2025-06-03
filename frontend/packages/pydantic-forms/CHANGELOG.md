@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.3.1
+
+### Patch Changes
+
+-   1101ac0: Fixes data reset bug
+
 ## 0.3.0
 
 ### Minor Changes
