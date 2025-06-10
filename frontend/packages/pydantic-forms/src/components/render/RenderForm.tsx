@@ -10,11 +10,10 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 
 import Footer from '@/components/form/Footer';
-import RenderFormErrors from '@/components/render/RenderFormErrors';
+import { Form } from '@/components/form/Form';
+import Header from '@/components/form/Header';
 import { getPydanticFormComponents } from '@/core/helper';
 import { PydanticFormComponents, PydanticFormContextProps } from '@/types';
-
-import { FormRenderer } from './FormRenderer';
 
 const RenderForm = (contextProps: PydanticFormContextProps) => {
     const {
@@ -25,12 +24,10 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         isFullFilled,
         successNotice,
         isSending,
-        title,
-        headerComponent,
         skipSuccessNotice,
         loadingComponent,
     } = contextProps;
-    const { formRenderer, footerRenderer } = config || {};
+    const { formRenderer, footerRenderer, headerRenderer } = config || {};
 
     const pydanticFormComponents: PydanticFormComponents =
         getPydanticFormComponents(
@@ -58,26 +55,14 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         return <div>{successNotice ?? t('successfullySent')}</div>;
     }
 
-    const Renderer = formRenderer ?? FormRenderer;
+    const FormRenderer = formRenderer ?? Form;
     const FooterRenderer = footerRenderer ?? Footer;
+    const HeaderRenderer = headerRenderer ?? Header;
 
     return (
         <form action={''} onSubmit={submitForm}>
-            {title !== false &&
-                title !== 'undefined' &&
-                title !== 'unknown' && (
-                    <h2 style={{ margin: '1rem 0' }}>
-                        {title ?? pydanticFormSchema.title}
-                    </h2>
-                )}
-
-            {headerComponent}
-
-            <RenderFormErrors />
-
-            <div>
-                <Renderer pydanticFormComponents={pydanticFormComponents} />
-            </div>
+            <HeaderRenderer />
+            <FormRenderer pydanticFormComponents={pydanticFormComponents} />
             <FooterRenderer />
         </form>
     );
