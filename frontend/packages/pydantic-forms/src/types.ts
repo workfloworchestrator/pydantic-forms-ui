@@ -26,8 +26,6 @@ export interface PydanticFormInitialContextProps {
     onCancel?: () => void;
     onChange?: (fieldValues: FieldValues) => void;
     children: (props: PydanticFormContextProps) => React.ReactNode;
-    headerComponent?: React.ReactNode;
-    footerComponent?: React.ReactNode;
     loadingComponent?: React.ReactNode;
     hasCardWrapper?: boolean;
     config: PydanticFormsContextConfig;
@@ -66,8 +64,6 @@ export interface PydanticFormContextProps {
     submitForm: FormEventHandler<HTMLFormElement>;
     resetForm: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     successNotice?: React.ReactNode;
-    headerComponent?: React.ReactNode;
-    footerComponent?: React.ReactNode;
     loadingComponent?: React.ReactNode;
     allowUntouchedSubmit?: boolean;
     skipSuccessNotice?: boolean;
@@ -297,6 +293,7 @@ export interface PydanticFormsContextConfig {
 
     formRenderer?: FormRenderComponent;
     footerRenderer?: React.JSXElementConstructor<object>;
+    headerRenderer?: React.JSXElementConstructor<object>;
     rowRenderer?: RowRenderComponent;
 
     // Extend field definitions
