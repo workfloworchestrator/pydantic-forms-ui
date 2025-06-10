@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.3.2
+
+### Patch Changes
+
+-   115232d: Expands configurable header component to include title. Aligns render components.
+
 ## 0.3.1
 
 ### Patch Changes
