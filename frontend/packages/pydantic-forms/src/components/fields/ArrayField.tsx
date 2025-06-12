@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFieldArray } from 'react-hook-form';
 
 import { usePydanticFormContext } from '@/core';
@@ -10,6 +10,7 @@ import { RenderFields } from '../render';
 
 export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
     const { rhf, config } = usePydanticFormContext();
+    const [isInitialized, setInitialized] = useState(false);
     const { control } = rhf;
     const { id: arrayName, arrayItem } = pydanticFormField;
     const { minItems, maxItems } = pydanticFormField.validations;
@@ -17,6 +18,29 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
         control,
         name: arrayName,
     });
+
+    useEffect(() => {
+        if (!isInitialized) {
+            const arrayValueObject = {
+                [arrayName]: arrayItem?.default,
+            };
+            const minItemCount = minItems || 1;
+            const initialArray = Array.from(
+                { length: minItemCount },
+                () => arrayValueObject,
+            );
+            append(initialArray);
+            setInitialized(true);
+        }
+    }, [
+        append,
+        arrayItem?.default,
+        arrayName,
+        fields.length,
+        isInitialized,
+        minItems,
+    ]);
+
     if (!arrayItem) return '';
 
     const component = fieldToComponentMatcher(
@@ -25,7 +49,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
     );
 
     const renderField = (field: Record<'id', string>, index: number) => {
-        const arrayField = itemizeArrayItem(index, arrayItem);
+        const arrayItemField = itemizeArrayItem(index, arrayItem);
 
         return (
             <div
@@ -41,13 +65,19 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                     pydanticFormComponents={[
                         {
                             Element: component.Element,
-                            pydanticFormField: arrayField,
+                            pydanticFormField: arrayItemField,
                         },
                     ]}
                     extraTriggerFields={[arrayName]}
                 />
                 {(!minItems || (minItems && fields.length > minItems)) && (
-                    <span onClick={() => remove(index)}>-</span>
+                    <span
+                        onClick={() => {
+                            remove(index);
+                        }}
+                    >
+                        -
+                    </span>
                 )}
             </div>
         );
