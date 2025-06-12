@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.3.3
+
+### Patch Changes
+
+-   b486bad: Exposes fieldToComponents function
+
 ## 0.3.2
 
 ### Patch Changes
