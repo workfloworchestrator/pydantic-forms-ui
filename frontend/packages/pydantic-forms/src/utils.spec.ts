@@ -70,14 +70,14 @@ describe('getFormFieldValue', () => {
     it('gets the value by fieldName', () => {
         const field = getPydanticFormFieldDummy({ id: 'name' });
         const fieldName = 'name';
-        const value = getFormFieldValue(fieldName, formValues, field);
+        const value = getFormFieldValue(formValues, field, fieldName);
         expect(value).toBe('John Doe');
     });
 
     it('returns undefined for unknown fields', () => {
         const field = getPydanticFormFieldDummy({ id: 'name' });
         const fieldName = 'UNKNOWN_FIELD';
-        const value = getFormFieldValue(fieldName, formValues, field);
+        const value = getFormFieldValue(formValues, field, fieldName);
         expect(value).toBe(undefined);
     });
 
@@ -104,14 +104,14 @@ describe('getFormFieldValue', () => {
         const field = getPydanticFormFieldDummy({
             id: 'company.contactPersons.0.name',
         });
-        const value = getFormFieldValue('age', complexValues, field);
+        const value = getFormFieldValue(complexValues, field, 'age');
         expect(value).toEqual(25);
 
         const field2 = getPydanticFormFieldDummy({
             id: 'company.contactPersons.1.name',
         });
 
-        const value2 = getFormFieldValue('licenses', complexValues, field2);
+        const value2 = getFormFieldValue(complexValues, field2, 'licenses');
         expect(value2).toEqual(['C']);
     });
 
@@ -129,9 +129,9 @@ describe('getFormFieldValue', () => {
             id: 'company.contactIds.0',
         });
         const valueFromFirstListElement = getFormFieldValue(
-            'age',
             complexValues,
             firstListElementField,
+            'age',
         );
         expect(valueFromFirstListElement).toEqual(30);
 
@@ -139,9 +139,9 @@ describe('getFormFieldValue', () => {
             id: 'company.contactIds.1',
         });
         const valueFromSecondListElement = getFormFieldValue(
-            'age',
             complexValues,
             secondListElementField,
+            'age',
         );
         expect(valueFromSecondListElement).toEqual(30);
 
@@ -149,9 +149,9 @@ describe('getFormFieldValue', () => {
             id: 'company.name',
         });
         const valueFromNameElement = getFormFieldValue(
-            'age',
             complexValues,
             nameElementField,
+            'age',
         );
         expect(valueFromNameElement).toEqual(30);
 
@@ -159,10 +159,56 @@ describe('getFormFieldValue', () => {
             id: 'company.contactIds',
         });
         const ownValue = getFormFieldValue(
-            'contactIds',
             complexValues,
             contactIdsElementField,
+            'contactIds',
         );
         expect(ownValue).toEqual(['123', '456']);
+    });
+
+    it('gets its own value based on the pydanticform definition if no fieldName is provided', () => {
+        const complexValues = {
+            company: {
+                name: 'John Deer',
+                age: 30,
+                contactIds: ['123', '456'],
+            },
+            age: 666,
+        };
+
+        const companyField = getPydanticFormFieldDummy({
+            id: 'company',
+        });
+        const valueFromCompanyElement = getFormFieldValue(
+            complexValues,
+            companyField,
+        );
+        expect(valueFromCompanyElement).toEqual({
+            name: 'John Deer',
+            age: 30,
+            contactIds: ['123', '456'],
+        });
+
+        const secondListElementField = getPydanticFormFieldDummy({
+            id: 'company.contactIds.1',
+        });
+
+        const valueFromSecondListElement = getFormFieldValue(
+            complexValues,
+            secondListElementField,
+        );
+
+        expect(valueFromSecondListElement).toEqual(['123', '456']);
+
+        const firstListElementField = getPydanticFormFieldDummy({
+            id: 'company.contactIds.0',
+        });
+
+        const valueFromListElement = getFormFieldValue(
+            complexValues,
+            firstListElementField,
+        );
+
+        expect(valueFromListElement).toEqual(['123', '456']);
     });
 });
