@@ -28,7 +28,7 @@ export function RenderFields({
 
         if (isControlledElement) {
             return (
-                <div key={field.id}>
+                <div css={{ width: '100%' }} key={field.id}>
                     <WrapFieldElement
                         PydanticFormControlledElement={Element}
                         pydanticFormField={field}

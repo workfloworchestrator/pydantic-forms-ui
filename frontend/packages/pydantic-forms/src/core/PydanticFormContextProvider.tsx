@@ -336,6 +336,10 @@ function PydanticFormContextProvider({
         [resetFormData, rhf],
     );
 
+    const resetErrorDetails = useCallback(() => {
+        setErrorDetails(undefined);
+    }, []);
+
     // with this we have the possibility to have listeners for specific fields
     // this could be used to trigger validations of related fields, casting changes to elsewhere, etc.
     useEffect(() => {
@@ -389,6 +393,7 @@ function PydanticFormContextProvider({
         isFullFilled,
         customDataProvider,
         errorDetails,
+        resetErrorDetails,
         successNotice,
         submitForm,
         resetForm,

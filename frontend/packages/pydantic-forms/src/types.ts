@@ -53,6 +53,7 @@ export interface PydanticFormContextProps {
     isFullFilled: boolean;
     rhf: ReturnType<typeof useForm>;
     errorDetails?: PydanticFormValidationErrorDetails;
+    resetErrorDetails: () => void;
     pydanticFormSchema?: PydanticFormSchema;
     title?: string | boolean;
     sendLabel?: string;
