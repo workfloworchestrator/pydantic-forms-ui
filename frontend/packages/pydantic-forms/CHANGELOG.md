@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.3.4
+
+### Patch Changes
+
+-   0415932: Adds getFormFieldValue function
+
 ## 0.3.3
 
 ### Patch Changes
