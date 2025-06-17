@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.4.0
+
+### Minor Changes
+
+-   42c007a: Set width to 100% for RenderFields, add resetErrorDetails
+
 ## 0.3.6
 
 ### Patch Changes
