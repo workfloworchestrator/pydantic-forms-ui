@@ -104,9 +104,13 @@ export const itemizeArrayItem = (
 export function getFormFieldValue(
     fieldName: string,
     formValues: FieldValues,
-    field: PydanticFormField,
+    pydanticFormField: PydanticFormField,
 ) {
-    const pathToParent = field.id.split('.').slice(0, -1);
+    // Determine by the path if we are part of an array. If we are, we need to chop of one more element
+    const pathSegments = pydanticFormField.id.split('.');
+    const lastSegment = pathSegments[pathSegments.length - 1];
+    const sliceParts = isNaN(Number(lastSegment)) ? 1 : 2;
+    const pathToParent = pydanticFormField.id.split('.').slice(0, -sliceParts);
     let current: FieldValues = { ...formValues };
 
     for (const segment of pathToParent) {
