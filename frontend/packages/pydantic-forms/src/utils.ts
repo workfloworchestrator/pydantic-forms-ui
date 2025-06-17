@@ -94,6 +94,13 @@ export const itemizeArrayItem = (
     return itemize(item, itemId);
 };
 
+/**
+ * This functions returns a fields value but taking into account the position
+ * of the field in any tree it might be in. For example when requesting the
+ * 'age' field it will return the sibling field called 'age'. This is relevant
+ * if the field is part of an array or object where there might be more 'age'
+ * fields on other levels
+ * */
 export function getFormFieldValue(
     fieldName: string,
     formValues: FieldValues,
@@ -103,7 +110,7 @@ export function getFormFieldValue(
     let current: FieldValues = { ...formValues };
 
     for (const segment of pathToParent) {
-        // Try to convert numeric strings to numbers for array indexing
+        // Convert numeric strings to numbers for array indexing
         const key = isNaN(Number(segment)) ? segment : Number(segment);
         if (current && key in current) {
             current = current[key];
