@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.3.6
+
+### Patch Changes
+
+-   282f974: When calling getFormFieldValue defaults to own value if no fielName is passed
+
 ## 0.3.5
 
 ### Patch Changes
