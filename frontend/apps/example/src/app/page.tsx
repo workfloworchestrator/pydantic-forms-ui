@@ -21,10 +21,14 @@ export default function Home() {
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
         requestBody,
     }) => {
-        const fetchResult = await fetch('http://localhost:8000/form', {
+        const portsUrl =
+            'https://orchestrator.dev.automation.surf.net/api/processes/create_sn8_service_port?productId=9a8bd1ea-6650-4900-b820-3c7f0f16ef1d';
+        const localUrl = 'http://localhost:8000/form';
+        const fetchResult = await fetch(localUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                Authorization: 'Bearer INSERT_YOUR_JWT_TOKEN_HERE', // Replace with your JWT token
             },
             body: JSON.stringify(requestBody),
         });
