@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.3.5
+
+### Patch Changes
+
+-   3983ace: Fixes getFormFieldValue to handle arrayItem fields better
+
 ## 0.3.4
 
 ### Patch Changes
