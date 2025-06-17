@@ -1,3 +1,5 @@
+import type { FieldValues } from 'react-hook-form';
+
 import type { Properties, PydanticFormField } from '@/types';
 import { PydanticFormFieldType } from '@/types';
 
@@ -91,3 +93,31 @@ export const itemizeArrayItem = (
     const itemId = `${item.id}.${arrayIndex}`;
     return itemize(item, itemId);
 };
+
+/**
+ * This functions returns a fields value but taking into account the position
+ * of the field in any tree it might be in. For example when requesting the
+ * 'age' field it will return the sibling field called 'age'. This is relevant
+ * if the field is part of an array or object where there might be more 'age'
+ * fields on other levels
+ * */
+export function getFormFieldValue(
+    fieldName: string,
+    formValues: FieldValues,
+    field: PydanticFormField,
+) {
+    const pathToParent = field.id.split('.').slice(0, -1);
+    let current: FieldValues = { ...formValues };
+
+    for (const segment of pathToParent) {
+        // Convert numeric strings to numbers for array indexing
+        const key = isNaN(Number(segment)) ? segment : Number(segment);
+        if (current && key in current) {
+            current = current[key];
+        } else {
+            return undefined;
+        }
+    }
+
+    return current?.[fieldName];
+}
