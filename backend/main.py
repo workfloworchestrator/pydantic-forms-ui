@@ -80,7 +80,7 @@ def example_backend_validation(val: int) -> bool:
 
 NumberExample = Annotated[
     int,
-    Ge(8),
+    Ge(18),
     Le(99),
     MultipleOf(multiple_of=3),
     Predicate(example_backend_validation),
@@ -165,61 +165,61 @@ async def form(form_data: list[dict] = []):
         class TestForm0(FormPage):
             model_config = ConfigDict(title="Form Title Page 1")
 
-            number: NumberExample = ["1", "2", "3"]
-            personList: TestPersonList
+            number: NumberExample
+            list: TestExampleNumberList
+            # list_list: unique_conlist(TestExampleNumberList, min_items=1, max_items=5)
+            # list_list_list: unique_conlist(
+            # unique_conlist(Person2, min_items=1, max_items=5),
+            # min_items=1,
+            # max_items=2,
+            # ) = [1, 2]
+            test: TestString
+            textList: unique_conlist(TestString, min_items=1, max_items=5)
+            # numberList: TestExampleNumberList = [1, 2]
+            person: Person2
+            personList: unique_conlist(Person2, min_items=2, max_items=5)
+            # ingleNumber: NumberExample
+            # number0: Annotated[int, Ge(18), Le(99)] = 17
 
         form_data_0 = yield TestForm0
 
         class TestForm1(FormPage):
             model_config = ConfigDict(title="Form Title Page 1")
 
-            contact_name2: TestString = "RRR"
+            contact_name2: StringExample
             options: ListChoices
 
         form_data_1 = yield TestForm1
 
-        class TestForm2(SubmitFormPage):
+        class TestForm2(FormPage):
             model_config = ConfigDict(title="Form Title Page 2")
 
-            contact_name3: TestString = "Ruben"
+            contact_name3: StringExample
             age: NumberExample
 
         form_data_2 = yield TestForm2
+
+        class TestForm3(FormPage):
+            model_config = ConfigDict(title="Form Title Page 3")
+
+            contact_person: Person
+
+        form_data_3 = yield TestForm3
+
+        class TestForm5(FormPage):
+            model_config = ConfigDict(title="Form Title Page 4")
+
+            contact_person_list: TestPersonList
+
+        form_data_5 = yield TestForm5
 
         return (
             form_data_0.model_dump()
             | form_data_1.model_dump()
             | form_data_2.model_dump()
+            | form_data_3.model_dump()
+            | form_data_5.model_dump()
         )
 
     post_form(form_generator, state={}, user_inputs=form_data)
     return "OK!"
-
-    # list: TestExampleNumberList
-    # list_list: unique_conlist(TestExampleNumberList, min_items=1, max_items=5)
-    # list_list_list: unique_conlist(
-    # unique_conlist(Person2, min_items=1, max_items=5),
-    # min_items=1,
-    # max_items=2,
-    # ) = [1, 2]
-    # test: TestString
-    # textList: unique_conlist(TestString, min_items=1, max_items=5)
-    # numberList: TestExampleNumberList = [1, 2]
-    # person: Person2
-    # personList: unique_conlist(Person2, min_items=2, max_items=5)
-    # ingleNumber: NumberExample
-    # number0: Annotated[int, Ge(18), Le(99)] = 17
-
-    # class TestForm3(FormPage):
-    #    model_config = ConfigDict(title="Form Title Page 3")
-
-    #   contact_person: Person
-
-    # form_data_3 = yield TestForm3
-
-    # class TestForm5(FormPage):
-    #   model_config = ConfigDict(title="Form Title Page 4")
-
-    #  contact_person_list: TestPersonList
-
-    # form_data_5 = yield TestForm5
