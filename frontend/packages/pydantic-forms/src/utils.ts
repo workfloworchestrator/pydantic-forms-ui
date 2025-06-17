@@ -1,3 +1,5 @@
+import type { FieldValues } from 'react-hook-form';
+
 import type { Properties, PydanticFormField } from '@/types';
 import { PydanticFormFieldType } from '@/types';
 
@@ -91,3 +93,24 @@ export const itemizeArrayItem = (
     const itemId = `${item.id}.${arrayIndex}`;
     return itemize(item, itemId);
 };
+
+export function getFormFieldValue(
+    fieldName: string,
+    formValues: FieldValues,
+    field: PydanticFormField,
+) {
+    const pathToParent = field.id.split('.').slice(0, -1);
+    let current: FieldValues = { ...formValues };
+
+    for (const segment of pathToParent) {
+        // Try to convert numeric strings to numbers for array indexing
+        const key = isNaN(Number(segment)) ? segment : Number(segment);
+        if (current && key in current) {
+            current = current[key];
+        } else {
+            return undefined;
+        }
+    }
+
+    return current?.[fieldName];
+}
