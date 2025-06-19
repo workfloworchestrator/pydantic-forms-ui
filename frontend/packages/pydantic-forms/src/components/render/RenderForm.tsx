@@ -5,7 +5,7 @@
  *
  * Here we define the outline of the form
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useTranslations } from 'next-intl';
 
@@ -26,8 +26,13 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         isSending,
         skipSuccessNotice,
         loadingComponent,
+        rhf,
     } = contextProps;
     const { formRenderer, footerRenderer, headerRenderer } = config || {};
+
+    useEffect(() => {
+        rhf.trigger();
+    }, [rhf, pydanticFormSchema]);
 
     const pydanticFormComponents: PydanticFormComponents =
         getPydanticFormComponents(
