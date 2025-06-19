@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.4.1
+
+### Patch Changes
+
+-   86d702c: Triggers form validation on default values
+
 ## 0.4.0
 
 ### Minor Changes
