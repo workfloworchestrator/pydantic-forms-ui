@@ -98,7 +98,7 @@ export default function Home() {
                     apiProvider: pydanticFormApiProvider,
                     labelProvider: pydanticLabelProvider,
                     customDataProvider: pydanticCustomDataProvider,
-                    componentMatcher: componentMatcher,
+                    componentMatcherExtender: componentMatcher,
                     customTranslations: customTranslations,
                     locale: locale,
                 }}

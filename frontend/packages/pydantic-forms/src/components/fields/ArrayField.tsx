@@ -45,7 +45,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
 
     const component = fieldToComponentMatcher(
         arrayItem,
-        config?.componentMatcher,
+        config?.componentMatcherExtender,
     );
 
     const renderField = (field: Record<'id', string>, index: number) => {
