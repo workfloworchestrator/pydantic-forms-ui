@@ -258,7 +258,7 @@ export const isNullableField = (field: PydanticFormField) =>
 export const getFormValuesFromFieldOrLabels = (
     pydanticFormSchema?: PydanticFormSchema,
     labelData?: Record<string, string>,
-    componentMatcher?: PydanticFormsContextConfig['componentMatcher'],
+    componentMatcherExtender?: PydanticFormsContextConfig['componentMatcherExtender'],
 ) => {
     if (!pydanticFormSchema) {
         return {};
@@ -270,7 +270,7 @@ export const getFormValuesFromFieldOrLabels = (
 
     const pydanticFormComponents = getPydanticFormComponents(
         pydanticFormSchema.properties,
-        componentMatcher,
+        componentMatcherExtender,
     );
 
     pydanticFormComponents.forEach((component) => {
@@ -346,10 +346,10 @@ export const rhfTriggerValidationsOnChange =
     };
 
 export const getMatcher = (
-    customComponentMatcher: PydanticFormsContextConfig['componentMatcher'],
+    componentMatcherExtender: PydanticFormsContextConfig['componentMatcherExtender'],
 ) => {
-    const componentMatchers = customComponentMatcher
-        ? customComponentMatcher(defaultComponentMatchers)
+    const componentMatchers = componentMatcherExtender
+        ? componentMatcherExtender(defaultComponentMatchers)
         : defaultComponentMatchers;
 
     return (field: PydanticFormField): PydanticComponentMatcher | undefined => {
@@ -362,10 +362,10 @@ export const getMatcher = (
 export const getClientSideValidationRule = (
     field: PydanticFormField | undefined,
     rhf?: ReturnType<typeof useForm>,
-    customComponentMatcher?: PydanticFormsContextConfig['componentMatcher'],
+    componentMatcherExtender?: PydanticFormsContextConfig['componentMatcherExtender'],
 ) => {
     if (!field) return z.unknown();
-    const matcher = getMatcher(customComponentMatcher);
+    const matcher = getMatcher(componentMatcherExtender);
 
     const componentMatch = matcher(field);
 
@@ -389,9 +389,9 @@ const defaultComponent: ElementMatch = {
 
 export const fieldToComponentMatcher = (
     pydanticFormField: PydanticFormField,
-    customComponentMatcher: PydanticFormsContextConfig['componentMatcher'],
+    componentMatcherExtender: PydanticFormsContextConfig['componentMatcherExtender'],
 ) => {
-    const matcher = getMatcher(customComponentMatcher);
+    const matcher = getMatcher(componentMatcherExtender);
     const matchedComponent = matcher(pydanticFormField);
 
     const ElementMatch: ElementMatch = matchedComponent
@@ -405,11 +405,14 @@ export const fieldToComponentMatcher = (
 };
 export const getPydanticFormComponents = (
     properties: Properties,
-    componentMatcher: PydanticFormsContextConfig['componentMatcher'],
+    componentMatcherExtender: PydanticFormsContextConfig['componentMatcherExtender'],
 ): PydanticFormComponents => {
     const components: PydanticFormComponents = Object.values(properties).map(
         (pydanticFormField) => {
-            return fieldToComponentMatcher(pydanticFormField, componentMatcher);
+            return fieldToComponentMatcher(
+                pydanticFormField,
+                componentMatcherExtender,
+            );
         },
     );
 

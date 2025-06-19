@@ -37,7 +37,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
     const pydanticFormComponents: PydanticFormComponents =
         getPydanticFormComponents(
             pydanticFormSchema?.properties || {},
-            config?.componentMatcher,
+            config?.componentMatcherExtender,
         );
 
     const t = useTranslations('renderForm');

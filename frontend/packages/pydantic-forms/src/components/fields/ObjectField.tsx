@@ -12,7 +12,7 @@ export const ObjectField = ({
     const { config } = usePydanticFormContext();
     const components = getPydanticFormComponents(
         pydanticFormField.properties || {},
-        config?.componentMatcher,
+        config?.componentMatcherExtender,
     );
 
     return (

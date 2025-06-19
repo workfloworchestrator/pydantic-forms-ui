@@ -259,7 +259,7 @@ export interface PydanticFormZodValidationPresets {
     [type: string]: PydanticFormZodValidationFn;
 }
 
-export type ComponentMatcher = (
+export type ComponentMatcherExtender = (
     currentMatchers: PydanticComponentMatcher[],
 ) => PydanticComponentMatcher[];
 
@@ -290,7 +290,7 @@ export interface PydanticFormsContextConfig {
 
     resetButtonAlternative?: React.ReactNode;
 
-    componentMatcher?: ComponentMatcher;
+    componentMatcherExtender?: ComponentMatcherExtender;
 
     formRenderer?: FormRenderComponent;
     footerRenderer?: React.JSXElementConstructor<object>;
