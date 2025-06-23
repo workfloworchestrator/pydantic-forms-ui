@@ -82,7 +82,7 @@ function PydanticFormContextProvider({
         customValidationRules,
         allowUntouchedSubmit,
         skipSuccessNotice,
-        componentMatcher,
+        componentMatcherExtender,
         cancelButton,
     } = config;
 
@@ -168,7 +168,7 @@ function PydanticFormContextProvider({
         pydanticFormSchema,
         rhfRef.current,
         customValidationRules,
-        componentMatcher,
+        componentMatcherExtender,
     );
 
     const initialData = getFormValuesFromFieldOrLabels(
@@ -177,7 +177,7 @@ function PydanticFormContextProvider({
             ...formLabels?.data,
             ...customData,
         },
-        componentMatcher,
+        componentMatcherExtender,
     );
 
     // initialize the react-hook-form
