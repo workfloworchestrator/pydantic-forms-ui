@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.5.1
+
+### Patch Changes
+
+-   dad865d: Fixes title and description on array items
+
 ## 0.5.0
 
 ### Minor Changes
