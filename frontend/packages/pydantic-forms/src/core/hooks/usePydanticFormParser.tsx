@@ -45,7 +45,7 @@ const getPydanticFormField = (
     requiredFields: string[],
     formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
-    isArrayItem: boolean = false,
+    isArrayItem: boolean = false, // Arrayitems should not have titles or descriptions. Their properties will have them instead
 ) => {
     const options = getFieldOptions(propertySchema);
     const fieldOptionsEntry = getFieldAllOfAnyOfEntry(propertySchema);
