@@ -45,20 +45,24 @@ const getPydanticFormField = (
     requiredFields: string[],
     formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
+    isArrayItem: boolean = false, // Arrayitems should not have titles or descriptions. Their properties will have them instead
 ) => {
     const options = getFieldOptions(propertySchema);
     const fieldOptionsEntry = getFieldAllOfAnyOfEntry(propertySchema);
 
     const pydanticFormField: PydanticFormField = {
         id,
-        title:
-            translateLabel(propertyId, propertySchema.title, formLabels) ||
-            propertyId,
-        description: translateLabel(
-            `${propertyId}_info`,
-            propertySchema.description,
-            formLabels,
-        ),
+        title: !isArrayItem
+            ? translateLabel(propertyId, propertySchema.title, formLabels) ||
+              propertyId
+            : '',
+        description: !isArrayItem
+            ? translateLabel(
+                  `${propertyId}_info`,
+                  propertySchema.description,
+                  formLabels,
+              )
+            : '',
         arrayItem: propertySchema.items
             ? getPydanticFormField(
                   propertySchema.items,
@@ -121,6 +125,7 @@ const parseProperties = (
                 formLabels,
                 fieldDetailProvider,
             );
+
             if (propertySchema.type === PydanticFormFieldType.ARRAY) {
                 // When the property is an array, we need to parse the item that is an array element
                 // Currently we only support arrays of single field types so items can never be multiple items
@@ -135,6 +140,7 @@ const parseProperties = (
                     requiredFields,
                     formLabels,
                     fieldDetailProvider,
+                    true,
                 );
             }
 
