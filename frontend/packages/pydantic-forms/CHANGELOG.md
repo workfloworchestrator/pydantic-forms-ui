@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.5.0
+
+### Minor Changes
+
+-   8cf1046: Rename componentMatcher to componentMatcherExtender
+
 ## 0.4.1
 
 ### Patch Changes
