@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.5.2
+
+### Patch Changes
+
+-   ce409ce: Fixes formInput values reference bug
+
 ## 0.5.1
 
 ### Patch Changes
