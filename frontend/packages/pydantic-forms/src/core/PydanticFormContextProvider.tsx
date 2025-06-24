@@ -16,6 +16,7 @@ import { FieldValues, useForm } from 'react-hook-form';
 import { Subscription } from 'react-hook-form/dist/utils/createSubject';
 
 import i18next from 'i18next';
+import _ from 'lodash';
 import { z } from 'zod';
 import { zodI18nMap } from 'zod-i18n-map';
 
@@ -309,7 +310,10 @@ function PydanticFormContextProvider({
 
     const submitFormFn = useCallback(() => {
         setIsSending(true);
-        addFormInputData(rhf?.getValues(), !!errorDetails);
+        const rhfValues = rhf.getValues();
+        // Note. If we don't use cloneDeep here we are adding a reference to the rhfValues
+        // that changes on every change in the form and triggering effects before we want to.
+        addFormInputData(_.cloneDeep(rhfValues), !!errorDetails);
         window.scrollTo(0, 0);
     }, [rhf, errorDetails, addFormInputData]);
 
