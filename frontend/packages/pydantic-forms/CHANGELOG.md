@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.5.3
+
+### Patch Changes
+
+-   8112444: Improves context check in hook to avoid false negatives
+
 ## 0.5.2
 
 ### Patch Changes
