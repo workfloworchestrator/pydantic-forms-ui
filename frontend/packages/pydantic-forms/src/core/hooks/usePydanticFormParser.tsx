@@ -109,7 +109,7 @@ const parseProperties = (
     formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
     prefix: string = '',
-) => {
+): Properties => {
     if (!properties) return {};
 
     const schemaProperties = Object.entries(properties);
