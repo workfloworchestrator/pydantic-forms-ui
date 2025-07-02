@@ -80,7 +80,6 @@ function PydanticFormContextProvider({
         fieldDetailProvider,
         onFieldChangeHandler,
         resetButtonAlternative,
-        customValidationRules,
         allowUntouchedSubmit,
         skipSuccessNotice,
         componentMatcherExtender,
@@ -168,7 +167,6 @@ function PydanticFormContextProvider({
     const resolver = useGetZodValidator(
         pydanticFormSchema,
         rhfRef.current,
-        customValidationRules,
         componentMatcherExtender,
     );
 

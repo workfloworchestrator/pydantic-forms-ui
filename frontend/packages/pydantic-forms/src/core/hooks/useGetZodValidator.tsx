@@ -17,7 +17,6 @@ import {
     getPydanticFormComponents,
 } from '@/core/helper';
 import {
-    CustomValidationRule,
     Properties,
     PydanticFormField,
     PydanticFormFieldType,
@@ -28,20 +27,12 @@ import {
 export const getZodRule = (
     pydanticFormField: PydanticFormField,
     rhf: ReturnType<typeof useForm>,
-    customValidationRule?: CustomValidationRule,
     componentMatcherExtender?: PydanticFormsContextConfig['componentMatcherExtender'],
 ): ZodTypeAny => {
-    const customRule = customValidationRule?.(pydanticFormField, rhf);
-
-    if (customRule) {
-        return customRule;
-    }
-
     if (pydanticFormField.type === PydanticFormFieldType.OBJECT) {
         const objectValidationObject = getZodValidationObject(
             pydanticFormField.properties || {},
             rhf,
-            customValidationRule,
             componentMatcherExtender,
         );
         return objectValidationObject;
@@ -49,12 +40,7 @@ export const getZodRule = (
     if (pydanticFormField.type === PydanticFormFieldType.ARRAY) {
         const arrayItem = pydanticFormField.arrayItem;
         const arrayItemRule = arrayItem
-            ? getZodRule(
-                  arrayItem,
-                  rhf,
-                  customValidationRule,
-                  componentMatcherExtender,
-              )
+            ? getZodRule(arrayItem, rhf, componentMatcherExtender)
             : z.unknown();
         const arrayRule = z
             .array(arrayItemRule)
@@ -94,7 +80,6 @@ export const getZodRule = (
 export const getZodValidationObject = (
     properties: Properties,
     rhf: ReturnType<typeof useForm>,
-    customValidationRule?: CustomValidationRule,
     componentMatcherExtender?: PydanticFormsContextConfig['componentMatcherExtender'],
 ) => {
     const pydanticFormComponents = getPydanticFormComponents(
@@ -109,13 +94,11 @@ export const getZodValidationObject = (
 
         if (!pydanticFormField || !Element.isControlledElement) return;
 
-        const id =
-            pydanticFormField.id.split('.').pop() || pydanticFormField.id;
+        const id = pydanticFormField.id;
 
         const zodRules = getZodRule(
             pydanticFormField,
             rhf,
-            customValidationRule,
             componentMatcherExtender,
         );
 
@@ -128,7 +111,6 @@ export const getZodValidationObject = (
 export const useGetZodValidator = (
     pydanticFormSchema?: PydanticFormSchema,
     rhf?: ReturnType<typeof useForm>,
-    customValidationRule?: CustomValidationRule,
     componentMatcherExtender?: PydanticFormsContextConfig['componentMatcherExtender'],
 ) => {
     return useMemo(() => {
@@ -139,15 +121,9 @@ export const useGetZodValidator = (
         const validationObject = getZodValidationObject(
             pydanticFormSchema.properties,
             rhf,
-            customValidationRule,
             componentMatcherExtender,
         );
 
         return validationObject;
-    }, [
-        componentMatcherExtender,
-        customValidationRule,
-        pydanticFormSchema,
-        rhf,
-    ]);
+    }, [componentMatcherExtender, pydanticFormSchema, rhf]);
 };
