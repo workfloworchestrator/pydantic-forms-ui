@@ -25,7 +25,7 @@ import {
     PydanticFormsContextConfig,
 } from '@/types';
 
-const getZodRule = (
+export const getZodRule = (
     pydanticFormField: PydanticFormField,
     rhf: ReturnType<typeof useForm>,
     customValidationRule?: CustomValidationRule,
@@ -91,7 +91,7 @@ const getZodRule = (
  * @param pydanticFormFields - An array of Pydantic form fields.
  * @returns A ZodRawShape object representing the validation schema.
  */
-const getZodValidationObject = (
+export const getZodValidationObject = (
     properties: Properties,
     rhf: ReturnType<typeof useForm>,
     customValidationRule?: CustomValidationRule,
