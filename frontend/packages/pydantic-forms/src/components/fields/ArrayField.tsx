@@ -10,19 +10,20 @@ import { RenderFields } from '../render';
 
 export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
     const { rhf, config } = usePydanticFormContext();
+
     const [isInitialized, setInitialized] = useState(false);
     const { control } = rhf;
-    const { id: arrayName, arrayItem } = pydanticFormField;
+    const { id, arrayItem } = pydanticFormField;
     const { minItems, maxItems } = pydanticFormField.validations;
     const { fields, append, remove } = useFieldArray({
         control,
-        name: arrayName,
+        name: id,
     });
 
     useEffect(() => {
         if (!isInitialized) {
             const arrayValueObject = {
-                [arrayName]: arrayItem?.default,
+                [id]: arrayItem?.default,
             };
             const minItemCount = minItems || 1;
             const initialArray = Array.from(
@@ -35,7 +36,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
     }, [
         append,
         arrayItem?.default,
-        arrayName,
+        id,
         fields.length,
         isInitialized,
         minItems,
@@ -49,7 +50,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
     );
 
     const renderField = (field: Record<'id', string>, index: number) => {
-        const arrayItemField = itemizeArrayItem(index, arrayItem);
+        const arrayItemField = itemizeArrayItem(index, arrayItem, id);
 
         return (
             <div
@@ -68,7 +69,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                             pydanticFormField: arrayItemField,
                         },
                     ]}
-                    extraTriggerFields={[arrayName]}
+                    extraTriggerFields={[id]}
                 />
                 {(!minItems || (minItems && fields.length > minItems)) && (
                     <span
@@ -100,7 +101,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                 <div
                     onClick={() => {
                         append({
-                            [arrayName]: arrayItem.default ?? undefined,
+                            [id]: arrayItem.default ?? undefined,
                         });
                     }}
                     style={{

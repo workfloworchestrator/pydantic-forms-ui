@@ -41,7 +41,6 @@ const translateLabel = (
 const getPydanticFormField = (
     propertySchema: PydanticFormPropertySchemaParsed,
     propertyId: string,
-    id: string,
     requiredFields: string[],
     formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
@@ -51,7 +50,7 @@ const getPydanticFormField = (
     const fieldOptionsEntry = getFieldAllOfAnyOfEntry(propertySchema);
 
     const pydanticFormField: PydanticFormField = {
-        id,
+        id: propertyId,
         title: !isArrayItem
             ? translateLabel(propertyId, propertySchema.title, formLabels) ||
               propertyId
@@ -67,7 +66,6 @@ const getPydanticFormField = (
             ? getPydanticFormField(
                   propertySchema.items,
                   propertyId,
-                  id,
                   requiredFields,
                   formLabels,
                   fieldDetailProvider,
@@ -95,7 +93,6 @@ const getPydanticFormField = (
             propertySchema.required || [],
             formLabels,
             fieldDetailProvider,
-            id,
         ),
         ...fieldDetailProvider?.[propertyId],
     };
@@ -108,7 +105,6 @@ const parseProperties = (
     requiredFields: string[] = [],
     formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
-    prefix: string = '',
 ): Properties => {
     if (!properties) return {};
 
@@ -116,11 +112,9 @@ const parseProperties = (
 
     const parsedProperties = schemaProperties.reduce(
         (propertiesObject: Properties, [propertyId, propertySchema]) => {
-            const id = `${prefix && prefix + '.'}${propertyId}`;
             const pydanticFormField = getPydanticFormField(
                 propertySchema,
                 propertyId,
-                id,
                 requiredFields,
                 formLabels,
                 fieldDetailProvider,
@@ -136,7 +130,6 @@ const parseProperties = (
                 pydanticFormField.arrayItem = getPydanticFormField(
                     itemProperties,
                     propertyId,
-                    id,
                     requiredFields,
                     formLabels,
                     fieldDetailProvider,
