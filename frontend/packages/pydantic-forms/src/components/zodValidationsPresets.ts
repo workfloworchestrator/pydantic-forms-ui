@@ -7,7 +7,7 @@
  * With these presets you can use this for both the textfield, as the list text field.
  * Numbers might have a max&min num, etc.
  */
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 import { PydanticFormZodValidationPresets } from '@/types';
 
@@ -66,12 +66,7 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
             multipleOf,
         } = field?.validations ?? {};
 
-        let validationRule = z
-            .number({
-                required_error: 'Dit veld is verplicht',
-                invalid_type_error: 'Dit veld moet een integer zijn',
-            })
-            .int();
+        let validationRule = z.number().int();
 
         if (minimum) {
             validationRule = validationRule.gte(

@@ -6,8 +6,7 @@ import type {
     useForm,
 } from 'react-hook-form';
 
-import { z } from 'zod';
-import type Zod from 'zod';
+import { z } from 'zod/v4';
 
 export type PydanticFormMetaData = {
     [key: string | number]: PydanticFormFieldValue;

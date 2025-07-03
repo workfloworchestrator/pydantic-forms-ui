@@ -5,7 +5,8 @@
  */
 import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
-import { z } from 'zod';
+import { z } from 'zod/v4';
+import type { ZodType } from 'zod/v4';
 
 import defaultComponentMatchers from '@/components/defaultComponentMatchers';
 import { TextField } from '@/components/fields';
@@ -259,12 +260,12 @@ export const getFormValuesFromFieldOrLabels = (
     pydanticFormSchema?: PydanticFormSchema,
     labelData?: Record<string, string>,
     componentMatcherExtender?: PydanticFormsContextConfig['componentMatcherExtender'],
-) => {
+): FieldValues => {
     if (!pydanticFormSchema) {
         return {};
     }
 
-    const fieldValues: Record<string, string> = {};
+    const fieldValues: FieldValues = {};
 
     const includedFields: string[] = [];
 
@@ -363,7 +364,7 @@ export const getClientSideValidationRule = (
     pydanticFormField: PydanticFormField | undefined,
     rhf?: ReturnType<typeof useForm>,
     componentMatcherExtender?: PydanticFormsContextConfig['componentMatcherExtender'],
-) => {
+): ZodType => {
     if (!pydanticFormField) return z.unknown();
     const matcher = getMatcher(componentMatcherExtender);
 

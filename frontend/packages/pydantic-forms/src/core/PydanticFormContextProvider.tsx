@@ -15,10 +15,8 @@ import React, {
 import { FieldValues, useForm } from 'react-hook-form';
 import { Subscription } from 'react-hook-form/dist/utils/createSubject';
 
-import i18next from 'i18next';
 import _ from 'lodash';
-import { z } from 'zod';
-import { zodI18nMap } from 'zod-i18n-map';
+import { z } from 'zod/v4';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -41,18 +39,7 @@ import {
 } from '@/types';
 import { getHashForArray } from '@/utils';
 
-import translation from './translations/nl.json';
-
-// lng and resources key depend on your locale.
-i18next.init({
-    lng: 'nl',
-    resources: {
-        nl: {
-            zod: translation,
-        },
-    },
-});
-z.setErrorMap(zodI18nMap);
+z.config(z.locales.nl());
 
 export const PydanticFormContext =
     createContext<PydanticFormContextProps | null>(null);
