@@ -407,19 +407,6 @@ describe('parseProperties', () => {
     // - turns each property into a PydanticFormField by calling getPydanticFormField
     // - turns each arrayItem into a PydanticFormField by calling getPydanticFormField
 });
-
 describe('getPydanticFormField', () => {
-    // Turns one ParsedProperty | PydanticFormFieldAnyOfItemParsed into one Property
-    // Recurses into properties and arrayItems
-    // - turns each property into a PydanticFormField
-    // - turns each arrayItem into a PydanticFormField
-    // --- arrayItems should not have titles or descriptions. Their parent will have them instead
-    // --- Something about the id that I don't understand yet
+    // Turns one ParsedProperty | PydanticFormFieldAnyOfItemParsed into a pydanticFormField
 });
-
-describe('getZodValidationObject', () => {
-    // Returns a Zod object that matches the shape of the PydanticFormSchema
-    // Recurses into properties and arrayItems
-});
-
-// getPydanticFormComponents from helper.ts?
