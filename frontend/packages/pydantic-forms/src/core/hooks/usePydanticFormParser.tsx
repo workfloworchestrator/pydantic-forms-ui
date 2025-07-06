@@ -45,19 +45,20 @@ const getPydanticFormField = (
     formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
     isArrayItem: boolean = false, // Arrayitems should not have titles or descriptions. Their properties will have them instead
+    prefix: string = '',
 ) => {
     const options = getFieldOptions(propertySchema);
     const fieldOptionsEntry = getFieldAllOfAnyOfEntry(propertySchema);
-
+    const propertyName = propertyId.split('.').pop() || propertyId;
     const pydanticFormField: PydanticFormField = {
         id: propertyId,
         title: !isArrayItem
-            ? translateLabel(propertyId, propertySchema.title, formLabels) ||
-              propertyId
+            ? translateLabel(propertyName, propertySchema.title, formLabels) ||
+              propertyName
             : '',
         description: !isArrayItem
             ? translateLabel(
-                  `${propertyId}_info`,
+                  `${propertyName}_info`,
                   propertySchema.description,
                   formLabels,
               )
@@ -69,6 +70,7 @@ const getPydanticFormField = (
                   requiredFields,
                   formLabels,
                   fieldDetailProvider,
+                  true,
               )
             : undefined,
         format: propertySchema.format ?? fieldOptionsEntry?.[0]?.format,
@@ -93,6 +95,7 @@ const getPydanticFormField = (
             propertySchema.required || [],
             formLabels,
             fieldDetailProvider,
+            prefix,
         ),
         ...fieldDetailProvider?.[propertyId],
     };
@@ -100,11 +103,12 @@ const getPydanticFormField = (
     return pydanticFormField;
 };
 
-const parseProperties = (
+export const parseProperties = (
     properties: ParsedProperties | PydanticFormFieldAnyOfItemParsed,
     requiredFields: string[] = [],
     formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
+    prefix: string = '',
 ): Properties => {
     if (!properties) return {};
 
@@ -112,32 +116,19 @@ const parseProperties = (
 
     const parsedProperties = schemaProperties.reduce(
         (propertiesObject: Properties, [propertyId, propertySchema]) => {
+            const propertyKey = `${prefix ? prefix + '.' : ''}${propertyId}`;
+
             const pydanticFormField = getPydanticFormField(
                 propertySchema,
-                propertyId,
+                propertyKey,
                 requiredFields,
                 formLabels,
                 fieldDetailProvider,
+                false, // We are not dealing with array items here
+                propertyKey,
             );
 
-            if (propertySchema.type === PydanticFormFieldType.ARRAY) {
-                // When the property is an array, we need to parse the item that is an array element
-                // Currently we only support arrays of single field types so items can never be multiple items
-                // TODO: Only in the case of an optional property do we have a an array of null |  Item so we should add a case for that
-                // https://github.com/workfloworchestrator/orchestrator-ui-library/issues/1890
-                const itemProperties =
-                    propertySchema.items as PydanticFormFieldAnyOfItemParsed;
-                pydanticFormField.arrayItem = getPydanticFormField(
-                    itemProperties,
-                    propertyId,
-                    requiredFields,
-                    formLabels,
-                    fieldDetailProvider,
-                    true,
-                );
-            }
-
-            propertiesObject[propertyId] = pydanticFormField;
+            propertiesObject[propertyKey] = pydanticFormField;
             return propertiesObject;
         },
         {},
@@ -164,6 +155,7 @@ export const usePydanticFormParser = (
 
     const pydanticFormSchema = useMemo((): PydanticFormSchema | undefined => {
         if (!parsedSchema) return undefined;
+
         const pydanticFormSchema: PydanticFormSchema = {
             type: PydanticFormFieldType.OBJECT,
             title: parsedSchema?.title,

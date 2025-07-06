@@ -40,9 +40,10 @@ export const getZodRule = (
     }
     if (pydanticFormField.type === PydanticFormFieldType.ARRAY) {
         const arrayItem = pydanticFormField.arrayItem;
+
         const arrayItemRule = arrayItem
             ? getZodRule(arrayItem, rhf, componentMatcherExtender)
-            : z.unknown();
+            : z.any();
         const arrayRule = z
             .array(arrayItemRule || z.unknown())
             .superRefine((array, context) => {
@@ -61,7 +62,6 @@ export const getZodRule = (
                     }
                 }
             });
-
         return arrayRule;
     }
 
@@ -93,20 +93,27 @@ export const getZodValidationObject = (
     const validationObject: { [k: string]: z.ZodTypeAny } = {};
     pydanticFormComponents.forEach((component) => {
         const { Element, pydanticFormField } = component;
-
-        if (!pydanticFormField || !Element.isControlledElement) return;
+        // The field is not added to the schema if it's not controlled unless it has properties or an arrayItem
+        // that we need to iterate over further
+        if (
+            !pydanticFormField ||
+            (!Element.isControlledElement &&
+                (!pydanticFormField.properties ||
+                    Object.keys(pydanticFormField.properties).length === 0) &&
+                !pydanticFormField.arrayItem)
+        )
+            return;
 
         const id = pydanticFormField.id;
-
+        const key = id.split('.').pop() || id; // Get the last part of the id in case of nested fields
         const zodRule = getZodRule(
             pydanticFormField,
             rhf,
             componentMatcherExtender,
         );
 
-        validationObject[id] = zodRule ?? z.any();
+        validationObject[key] = zodRule ?? z.any();
     });
-
     return z.object(validationObject);
 };
 

@@ -8,7 +8,7 @@ import {
     itemizeArrayItem,
 } from './utils';
 
-const getPydanticFormFieldDummy = (
+export const getPydanticFormFieldDummy = (
     props: Partial<PydanticFormField>,
 ): PydanticFormField => {
     return {
@@ -16,11 +16,14 @@ const getPydanticFormFieldDummy = (
         type: PydanticFormFieldType.STRING,
         format: PydanticFormFieldFormat.LONG,
         title: 'Dummy Field',
-        required: false,
+        default: undefined,
+        description: undefined,
+        arrayItem: undefined,
         properties: {},
+        required: false,
         options: [],
         isEnumField: false,
-        columns: 1,
+        columns: 6,
         schema: {
             type: PydanticFormFieldType.STRING,
             format: PydanticFormFieldFormat.DEFAULT,

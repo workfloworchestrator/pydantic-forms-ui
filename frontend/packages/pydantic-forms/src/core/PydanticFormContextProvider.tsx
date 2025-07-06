@@ -151,7 +151,7 @@ function PydanticFormContextProvider({
     const rhfRef = useRef<ReturnType<typeof useForm>>();
 
     // build validation rules based on custom schema
-    const resolver = useGetZodValidator(
+    const zodSchema = useGetZodValidator(
         pydanticFormSchema,
         rhfRef.current,
         componentMatcherExtender,
@@ -168,7 +168,7 @@ function PydanticFormContextProvider({
 
     // initialize the react-hook-form
     const rhf = useForm({
-        resolver: zodResolver(resolver),
+        resolver: zodResolver(zodSchema),
         mode: 'all',
         values: initialData,
     });
