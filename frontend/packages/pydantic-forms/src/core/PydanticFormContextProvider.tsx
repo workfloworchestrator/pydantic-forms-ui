@@ -173,6 +173,19 @@ function PydanticFormContextProvider({
         values: initialData,
     });
 
+    const resetFormData = useCallback(
+        (inputData: object = {}) => {
+            if (!pydanticFormSchema) {
+                return;
+            }
+
+            rhf.reset(inputData);
+        },
+        [pydanticFormSchema, rhf],
+    );
+
+    rhfRef.current = rhf;
+
     // Adds watch subscripton on form values
     useEffect(() => {
         const sub = rhf.watch((values) => {
@@ -182,16 +195,6 @@ function PydanticFormContextProvider({
 
         return () => sub.unsubscribe();
     }, [rhf, onChange]);
-
-    const resetFormData = useCallback(() => {
-        if (!pydanticFormSchema) {
-            return;
-        }
-
-        rhf.reset();
-    }, [pydanticFormSchema, rhf]);
-
-    rhfRef.current = rhf;
 
     /* TODO: Reimplement
     // prevent user from navigating away when there are unsaved changes
@@ -205,6 +208,7 @@ function PydanticFormContextProvider({
         'Er zijn aanpassingen in het formulier. \nWeet je zeker dat je de pagina wilt verlaten?',
     );
     */
+
     // handle successfull submits
     useEffect(() => {
         if (!isFullFilled) {
@@ -261,20 +265,13 @@ function PydanticFormContextProvider({
     }, [apiResponse, onSuccess, resetFormData, rhf, skipSuccessNotice]);
 
     // a useeffect for filling data whenever formdefinition or labels update
+
     useEffect(() => {
         getHashForArray(formInputData).then((hash) => {
             const currentStepFromHistory = formInputHistory.get(hash);
 
             if (currentStepFromHistory) {
-                resetFormData();
-                Object.entries(currentStepFromHistory).forEach(
-                    ([fieldName, fieldValue]) =>
-                        rhf.setValue(fieldName, fieldValue, {
-                            shouldDirty: true,
-                            shouldTouch: true,
-                            shouldValidate: true,
-                        }),
-                );
+                resetFormData(currentStepFromHistory);
             }
         });
     }, [formInputData, formInputHistory, resetFormData, rhf]);
