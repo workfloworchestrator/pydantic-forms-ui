@@ -688,15 +688,17 @@ describe('getZodValidationObject', () => {
         );
     });
 
-    it.skip('Works for arrays of objects that have array properties', () => {
+    it('Works for arrays of objects that have array properties', () => {
         const nameField = getPydanticFormFieldDummy({
             type: PydanticFormFieldType.STRING,
             id: 'name',
+            required: true,
         });
         const languageSpokenField = getPydanticFormFieldDummy({
             type: PydanticFormFieldType.ARRAY,
             id: 'languageSpoken',
             arrayItem: nameField,
+            required: true,
         });
 
         const personObjectField = getPydanticFormFieldDummy({
