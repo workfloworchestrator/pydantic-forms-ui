@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.6.1
+
+### Patch Changes
+
+-   0164485: Updates zod dependencies to avoid collisions
+
 ## 0.6.0
 
 ### Minor Changes
