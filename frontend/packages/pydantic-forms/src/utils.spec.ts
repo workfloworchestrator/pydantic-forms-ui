@@ -402,14 +402,3 @@ describe('itemizeArrayItem', () => {
         }
     });
 });
-
-describe('parseProperties', () => {
-    // Turns ParsedProperties | PydanticFormFieldAnyOfItemParsed into Properties
-    // Receives required fields and applies then correctly per property?
-    // Recurses into properties and arrayItems
-    // - turns each property into a PydanticFormField by calling getPydanticFormField
-    // - turns each arrayItem into a PydanticFormField by calling getPydanticFormField
-});
-describe('getPydanticFormField', () => {
-    // Turns one ParsedProperty | PydanticFormFieldAnyOfItemParsed into a pydanticFormField
-});
