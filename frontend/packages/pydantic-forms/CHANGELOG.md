@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.6.0
+
+### Minor Changes
+
+-   a06e777: Fixes history navigation. Fixes array item validations and rendering.
+
 ## 0.5.3
 
 ### Patch Changes
