@@ -20,7 +20,8 @@ export function RenderFields({
 }: RenderFieldsProps) {
     return pydanticFormComponents.map((component) => {
         const { Element, isControlledElement } = component.Element;
-        const field: PydanticFormField = component.pydanticFormField;
+        const pydanticFormField: PydanticFormField =
+            component.pydanticFormField;
 
         if (!Element) {
             return undefined;
@@ -28,16 +29,21 @@ export function RenderFields({
 
         if (isControlledElement) {
             return (
-                <div css={{ width: '100%' }} key={field.id}>
+                <div css={{ width: '100%' }} key={pydanticFormField.id}>
                     <WrapFieldElement
                         PydanticFormControlledElement={Element}
-                        pydanticFormField={field}
+                        pydanticFormField={pydanticFormField}
                         extraTriggerFields={extraTriggerFields}
                     />
                 </div>
             );
         } else {
-            return <Element pydanticFormField={field} key={field.id} />;
+            return (
+                <Element
+                    pydanticFormField={pydanticFormField}
+                    key={pydanticFormField.id}
+                />
+            );
         }
     });
 }

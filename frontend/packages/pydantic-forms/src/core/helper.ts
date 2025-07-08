@@ -5,7 +5,8 @@
  */
 import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
-import { z } from 'zod';
+import { z } from 'zod/v4';
+import type { ZodType } from 'zod/v4';
 
 import defaultComponentMatchers from '@/components/defaultComponentMatchers';
 import { TextField } from '@/components/fields';
@@ -259,12 +260,12 @@ export const getFormValuesFromFieldOrLabels = (
     pydanticFormSchema?: PydanticFormSchema,
     labelData?: Record<string, string>,
     componentMatcherExtender?: PydanticFormsContextConfig['componentMatcherExtender'],
-) => {
+): FieldValues => {
     if (!pydanticFormSchema) {
         return {};
     }
 
-    const fieldValues: Record<string, string> = {};
+    const fieldValues: FieldValues = {};
 
     const includedFields: string[] = [];
 
@@ -360,22 +361,23 @@ export const getMatcher = (
 };
 
 export const getClientSideValidationRule = (
-    field: PydanticFormField | undefined,
+    pydanticFormField: PydanticFormField | undefined,
     rhf?: ReturnType<typeof useForm>,
     componentMatcherExtender?: PydanticFormsContextConfig['componentMatcherExtender'],
-) => {
-    if (!field) return z.unknown();
+): ZodType => {
+    if (!pydanticFormField) return z.unknown();
     const matcher = getMatcher(componentMatcherExtender);
 
-    const componentMatch = matcher(field);
+    const componentMatch = matcher(pydanticFormField);
 
-    let validationRule = componentMatch?.validator?.(field, rhf) ?? z.unknown();
+    let validationRule =
+        componentMatch?.validator?.(pydanticFormField, rhf) ?? z.unknown();
 
-    if (!field.required) {
+    if (!pydanticFormField.required) {
         validationRule = validationRule.optional();
     }
 
-    if (field.validations.isNullable) {
+    if (pydanticFormField.validations.isNullable) {
         validationRule = validationRule.nullable();
     }
 

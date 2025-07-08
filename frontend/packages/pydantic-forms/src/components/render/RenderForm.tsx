@@ -31,7 +31,10 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
     const { formRenderer, footerRenderer, headerRenderer } = config || {};
 
     useEffect(() => {
-        rhf.trigger();
+        if (rhf.getValues().length === 0) {
+            // Only trigger validations if there are values
+            rhf.trigger();
+        }
     }, [rhf, pydanticFormSchema]);
 
     const pydanticFormComponents: PydanticFormComponents =

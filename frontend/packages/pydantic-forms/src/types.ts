@@ -6,7 +6,7 @@ import type {
     useForm,
 } from 'react-hook-form';
 
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 export type PydanticFormMetaData = {
     [key: string | number]: PydanticFormFieldValue;
@@ -277,9 +277,6 @@ export interface PydanticFormsContextConfig {
     // whenever a fieldvalue changes, do something
     onFieldChangeHandler?: onPydanticFormFieldChangeHandlerFn;
 
-    // provide custom validation rules for fields
-    customValidationRules?: CustomValidationRule;
-
     // whether to skip the short 'successfull send notice'
     skipSuccessNotice?: boolean;
 
@@ -367,11 +364,6 @@ export type onPydanticFormFieldChangeHandlerFnFieldProp = {
     type?: string;
     value: PydanticFormFieldValue;
 };
-
-export type PydanticFormCustomValidationRuleFn = (
-    fieldConfig: PydanticFormField,
-    rhf?: ReturnType<typeof useForm>,
-) => Zod.ZodTypeAny | undefined;
 
 export interface PydanticFormLabelProviderResponse {
     labels: Record<string, string>;
@@ -510,11 +502,6 @@ export interface PydanticFormFieldAnyOfDef {
 export interface JsonSchemaRef {
     $ref: string;
 }
-
-export type CustomValidationRule = (
-    field: PydanticFormField,
-    rhf?: ReturnType<typeof useForm>,
-) => Zod.ZodTypeAny | undefined;
 
 export type TranslationsJSON = {
     [key: string]: string | TranslationsJSON;
