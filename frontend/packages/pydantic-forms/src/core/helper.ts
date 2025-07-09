@@ -313,6 +313,10 @@ export const getFieldAttributes = function (
         attributes.disabled = true;
     }
 
+    if (schemaField.const) {
+        attributes.disabled = true;
+    }
+
     if (schemaField.uniforms?.sensitive) {
         attributes.sensitive = true;
     }
