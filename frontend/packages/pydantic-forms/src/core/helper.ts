@@ -52,11 +52,13 @@ export const getErrorDetailsFromResponse = function (
 
 /**
  * This functions looks to see if the field has any of the anyOf, allOf or oneOf keys. If it
- * does hoists these properties to the root level. This is for use cases where we get field definitions
+ * does hoists these properties to the root level. When hoisting the root level properties win over the
+ * hoisted one. This is for use cases where we get field definitions
  * like this:
  * {
  *     "id": "bfd",
  *    "type": "object",
+ *    "required": ["enabled"],
  *    "allOf": [
  *        {... propertySchemaParsed}
  *        {type: "null"}
