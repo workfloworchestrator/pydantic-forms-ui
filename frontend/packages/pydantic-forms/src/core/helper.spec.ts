@@ -1,7 +1,8 @@
 import {
     enumToOption,
+    flattenSchemaCombinators,
     getErrorDetailsFromResponse,
-    getFieldAllOfAnyOfEntry,
+    isNullable,
     optionsToOption,
 } from '@/core/helper';
 import {
@@ -71,67 +72,6 @@ describe('getErrorDetailsFromResponse', () => {
         expect(result.detail).toBe('');
         expect(result.source).toEqual([]);
         expect(result.mapped).toEqual({});
-    });
-});
-
-describe('getFieldAllOfAnyOfEntry', () => {
-    const baseField: Omit<
-        PydanticFormPropertySchemaParsed,
-        'anyOf' | 'oneOf' | 'allOf'
-    > = {
-        type: PydanticFormFieldType.STRING,
-        format: PydanticFormFieldFormat.DEFAULT,
-        uniforms: {
-            disabled: false,
-            sensitive: false,
-            password: false,
-        },
-    };
-
-    it('returns anyOf if present', () => {
-        const input: PydanticFormPropertySchemaParsed = {
-            ...baseField,
-            anyOf: [{ type: PydanticFormFieldType.NUMBER }],
-        };
-        const result = getFieldAllOfAnyOfEntry(input);
-        expect(result).toEqual([{ type: PydanticFormFieldType.NUMBER }]);
-    });
-
-    it('returns oneOf if anyOf is undefined', () => {
-        const input: PydanticFormPropertySchemaParsed = {
-            ...baseField,
-            oneOf: [{ type: PydanticFormFieldType.DATE }],
-        };
-        const result = getFieldAllOfAnyOfEntry(input);
-        expect(result).toEqual([{ type: PydanticFormFieldType.DATE }]);
-    });
-
-    it('returns allOf if anyOf and oneOf are undefined', () => {
-        const input: PydanticFormPropertySchemaParsed = {
-            ...baseField,
-            allOf: [{ type: PydanticFormFieldType.STRING }],
-        };
-        const result = getFieldAllOfAnyOfEntry(input);
-        expect(result).toEqual([{ type: PydanticFormFieldType.STRING }]);
-    });
-
-    it('returns undefined if all are undefined', () => {
-        const input: PydanticFormPropertySchemaParsed = {
-            ...baseField,
-        };
-        const result = getFieldAllOfAnyOfEntry(input);
-        expect(result).toBeUndefined();
-    });
-
-    it('returns the first defined entry in priority order', () => {
-        const input: PydanticFormPropertySchemaParsed = {
-            ...baseField,
-            anyOf: [{ type: PydanticFormFieldType.STRING }],
-            oneOf: [{ type: PydanticFormFieldType.NUMBER }],
-            allOf: [{ type: PydanticFormFieldType.DATE }],
-        };
-        const result = getFieldAllOfAnyOfEntry(input);
-        expect(result).toEqual([{ type: PydanticFormFieldType.STRING }]);
     });
 });
 
@@ -246,5 +186,373 @@ describe('optionsToOption', () => {
             { value: 'TWO', label: 'Two' },
             { value: 'THREE', label: 'Three' },
         ]);
+    });
+});
+
+describe('flattenSchemaCombinators', () => {
+    const getMockFormPropertySchemaParsed = (
+        overrides: Partial<PydanticFormPropertySchemaParsed> = {},
+    ): PydanticFormPropertySchemaParsed => ({
+        format: PydanticFormFieldFormat.DEFAULT,
+        ...overrides,
+    });
+
+    it('Doesnt change the schema if no combinator properties exist', () => {
+        const inputSchema = getMockFormPropertySchemaParsed();
+        const outputSchema = flattenSchemaCombinators(inputSchema);
+        expect(inputSchema).toEqual(outputSchema);
+    });
+
+    it('Adds properties found in combinators to root level', () => {
+        const inputSchema = getMockFormPropertySchemaParsed({
+            title: 'Test Schema Title',
+            allOf: [
+                {
+                    type: PydanticFormFieldType.STRING,
+                    enum: ['option1', 'option2'],
+                },
+            ],
+        });
+        const outputSchema = flattenSchemaCombinators(inputSchema);
+
+        const expectedSchema: PydanticFormPropertySchemaParsed = {
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            title: 'Test Schema Title',
+            enum: ['option1', 'option2'],
+            allOf: [
+                {
+                    type: PydanticFormFieldType.STRING,
+                    enum: ['option1', 'option2'],
+                },
+            ],
+        };
+
+        expect(outputSchema).toEqual(expectedSchema);
+    });
+
+    it('Lets root properties prevail over matching ones found in combinators', () => {
+        const inputSchema = getMockFormPropertySchemaParsed({
+            title: 'Test Schema Title',
+            allOf: [
+                {
+                    type: PydanticFormFieldType.STRING,
+                    title: 'Overridden Title',
+                },
+            ],
+        });
+        const outputSchema = flattenSchemaCombinators(inputSchema);
+
+        const expectedSchema: PydanticFormPropertySchemaParsed = {
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            title: 'Test Schema Title',
+            allOf: [
+                {
+                    type: PydanticFormFieldType.STRING,
+                    title: 'Overridden Title',
+                },
+            ],
+        };
+
+        expect(outputSchema).toEqual(expectedSchema);
+    });
+
+    it('Merges properties of allOf combinator together before merging with root properties', () => {
+        const inputSchema = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            allOf: [
+                {
+                    description: 'Test description',
+                },
+                {
+                    title: 'Overridden Title',
+                },
+            ],
+        });
+        const outputSchema = flattenSchemaCombinators(inputSchema);
+
+        const expectedSchema: PydanticFormPropertySchemaParsed = {
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            description: 'Test description',
+            title: 'Overridden Title',
+            allOf: [
+                {
+                    description: 'Test description',
+                },
+                {
+                    title: 'Overridden Title',
+                },
+            ],
+        };
+
+        expect(outputSchema).toEqual(expectedSchema);
+    });
+
+    it('Picks the first array item when it finds a oneOf key', () => {
+        const inputSchema = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            oneOf: [
+                {
+                    description: 'Test description',
+                },
+                {
+                    title: 'Overridden Title',
+                },
+            ],
+        });
+        const outputSchema = flattenSchemaCombinators(inputSchema);
+
+        const expectedSchema: PydanticFormPropertySchemaParsed = {
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            description: 'Test description',
+            oneOf: [
+                {
+                    description: 'Test description',
+                },
+                {
+                    title: 'Overridden Title',
+                },
+            ],
+        };
+
+        expect(outputSchema).toEqual(expectedSchema);
+    });
+
+    it('Picks the first array item when it finds a anyOf key', () => {
+        const inputSchema = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            anyOf: [
+                {
+                    description: 'Test description',
+                },
+                {
+                    title: 'Overridden Title',
+                },
+            ],
+        });
+        const outputSchema = flattenSchemaCombinators(inputSchema);
+
+        const expectedSchema: PydanticFormPropertySchemaParsed = {
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            description: 'Test description',
+            anyOf: [
+                {
+                    description: 'Test description',
+                },
+                {
+                    title: 'Overridden Title',
+                },
+            ],
+        };
+
+        expect(outputSchema).toEqual(expectedSchema);
+    });
+
+    it('Triggers a console warning when it finds a oneOf property with multiple entries except if the extra entry is null', () => {
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+        const inputSchema = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            oneOf: [
+                {
+                    description: 'Test description',
+                },
+                {
+                    title: 'Overridden Title',
+                },
+            ],
+        });
+        flattenSchemaCombinators(inputSchema);
+
+        expect(consoleWarnSpy).toHaveBeenCalled();
+
+        consoleWarnSpy.mockRestore();
+
+        const consoleWarnSpyNoCall = jest
+            .spyOn(console, 'warn')
+            .mockImplementation();
+
+        const inputSchemaWithNull = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            oneOf: [
+                {
+                    description: 'Test description',
+                },
+                {
+                    type: PydanticFormFieldType.NULL,
+                },
+            ],
+        });
+        flattenSchemaCombinators(inputSchemaWithNull);
+
+        expect(consoleWarnSpyNoCall).toHaveBeenCalledTimes(0);
+    });
+
+    it('Triggers a console warning when it finds a anyOf property with multiple entries except if the extra entry is null', () => {
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+        const inputSchema = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            anyOf: [
+                {
+                    description: 'Test description',
+                },
+                {
+                    title: 'Overridden Title',
+                },
+            ],
+        });
+        flattenSchemaCombinators(inputSchema);
+
+        expect(consoleWarnSpy).toHaveBeenCalled();
+
+        consoleWarnSpy.mockRestore();
+
+        const consoleWarnSpyNoCall = jest
+            .spyOn(console, 'warn')
+            .mockImplementation();
+
+        const inputSchemaWithNull = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            anyOf: [
+                {
+                    description: 'Test description',
+                },
+                {
+                    type: PydanticFormFieldType.NULL,
+                },
+            ],
+        });
+        flattenSchemaCombinators(inputSchemaWithNull);
+
+        expect(consoleWarnSpyNoCall).toHaveBeenCalledTimes(0);
+    });
+
+    it('Triggers a console warning when it finds an allOf and and anyOf property', () => {
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+        const inputSchema = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            allOf: [
+                {
+                    description: 'Test description',
+                },
+            ],
+            anyOf: [
+                {
+                    description: 'Test description',
+                },
+            ],
+        });
+        flattenSchemaCombinators(inputSchema);
+
+        expect(consoleWarnSpy).toHaveBeenCalled();
+
+        consoleWarnSpy.mockRestore();
+    });
+
+    it('Triggers a console warning when it finds an allOf and and oneOf property', () => {
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+        const inputSchema = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            allOf: [
+                {
+                    description: 'Test description',
+                },
+            ],
+            oneOf: [
+                {
+                    description: 'Test description',
+                },
+            ],
+        });
+        flattenSchemaCombinators(inputSchema);
+
+        expect(consoleWarnSpy).toHaveBeenCalled();
+
+        consoleWarnSpy.mockRestore();
+    });
+
+    it('Triggers a console warning when it finds an oneOf and and anyOf property', () => {
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+        const inputSchema = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            oneOf: [
+                {
+                    description: 'Test description',
+                },
+            ],
+            anyOf: [
+                {
+                    description: 'Test description',
+                },
+            ],
+        });
+        flattenSchemaCombinators(inputSchema);
+
+        expect(consoleWarnSpy).toHaveBeenCalled();
+
+        consoleWarnSpy.mockRestore();
+    });
+
+    describe('isNullable', () => {
+        it('returns true if the schema has a null type in anyOf', () => {
+            const inputSchema = getMockFormPropertySchemaParsed({
+                type: PydanticFormFieldType.STRING,
+                format: PydanticFormFieldFormat.DEFAULT,
+                anyOf: [
+                    {
+                        type: PydanticFormFieldType.STRING,
+                    },
+                    {
+                        type: PydanticFormFieldType.NULL,
+                    },
+                ],
+            });
+            const result: boolean = isNullable(inputSchema);
+            expect(result).toBe(true);
+        });
+
+        it('returns true if the schema has a null type in oneOf', () => {
+            const inputSchema = getMockFormPropertySchemaParsed({
+                type: PydanticFormFieldType.STRING,
+                format: PydanticFormFieldFormat.DEFAULT,
+                oneOf: [
+                    {
+                        type: PydanticFormFieldType.STRING,
+                    },
+                    {
+                        type: PydanticFormFieldType.NULL,
+                    },
+                ],
+            });
+            const result: boolean = isNullable(inputSchema);
+            expect(result).toBe(true);
+        });
+
+        it('returns false if the schema does not have a null type', () => {
+            const inputSchema = getMockFormPropertySchemaParsed({
+                type: PydanticFormFieldType.STRING,
+                format: PydanticFormFieldFormat.DEFAULT,
+            });
+            const result: boolean = isNullable(inputSchema);
+            expect(result).toBe(false);
+        });
     });
 });

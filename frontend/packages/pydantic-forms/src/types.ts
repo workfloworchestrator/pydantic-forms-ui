@@ -96,7 +96,6 @@ export interface PydanticFormField {
     default?: PydanticFormFieldValue;
     columns: number;
     required: boolean;
-    isEnumField: boolean;
     schema: PydanticFormPropertySchemaParsed;
     validations: PydanticFormFieldValidations;
     attributes: PydanticFormFieldAttributes;
@@ -412,49 +411,24 @@ export interface PydanticFormSchemaParsed extends PydanticFormBaseSchema {
 export interface PydanticFormPropertySchemaParsed
     extends Omit<PydanticFormBaseSchema, 'type'>,
         PydanticFormFieldValidations {
-    type: PydanticFormFieldType;
+    type?: PydanticFormFieldType;
 
-    anyOf?: PydanticFormFieldAnyOfDefParsed[];
-    oneOf?: PydanticFormFieldAnyOfDefParsed[];
-    allOf?: PydanticFormFieldAnyOfDefParsed[];
+    anyOf?: PydanticFormPropertySchemaParsed[];
+    oneOf?: PydanticFormPropertySchemaParsed[];
+    allOf?: PydanticFormPropertySchemaParsed[];
 
-    items?: PydanticFormFieldAnyOfItemParsed;
+    items?: PydanticFormPropertySchemaParsed;
     enum?: string[];
     options?: {
         [id: string]: string;
     };
 
     default?: string | null;
-    format: PydanticFormFieldFormat;
+    format?: PydanticFormFieldFormat;
     const?: number | string | boolean | null;
 
     uniforms?: UniformProperties;
 
-    properties?: ParsedProperties;
-}
-
-export interface PydanticFormFieldAnyOfDefParsed
-    extends PydanticFormFieldValidations {
-    items?: PydanticFormFieldAnyOfItemParsed;
-    enum?: string[];
-    options?: {
-        [id: string]: string;
-    };
-    format?: 'date' | 'date-time';
-    type: PydanticFormListFieldType;
-}
-
-export interface PydanticFormFieldAnyOfItemParsed
-    extends PydanticFormFieldValidations {
-    enum: string[];
-    options?: {
-        [id: string]: string;
-    };
-    title: string;
-    type: PydanticFormListFieldType;
-    format: PydanticFormFieldFormat;
-    default?: string | null;
-    required?: string[];
     properties?: ParsedProperties;
 }
 

@@ -22,7 +22,6 @@ export const getPydanticFormFieldDummy = (
         properties: {},
         required: false,
         options: [],
-        isEnumField: false,
         columns: 6,
         schema: {
             type: PydanticFormFieldType.STRING,
