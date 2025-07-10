@@ -51,27 +51,85 @@ export const getErrorDetailsFromResponse = function (
 };
 
 /**
- * Easy pluk options or format from the anyOf, allOf or oneOf keys
- *
- * @param field A field from the 'properties' key of the JSON Schema
- * @returns anyOf, allOf, or allOf value
+ * This functions looks to see if the field has any of the anyOf, allOf or oneOf keys. If it
+ * does hoists these properties to the root level. When hoisting the root level properties win over the
+ * hoisted one. This is for use cases where we get field definitions
+ * like this:
+ * {
+ *     "id": "bfd",
+ *    "type": "object",
+ *    "required": ["enabled"],
+ *    "allOf": [
+ *        {... propertySchemaParsed}
+ *        {type: "null"}
+ *     ]
+ * }
  */
-export const getFieldAllOfAnyOfEntry = (
+export const flattenSchemaCombinators = (
     propertySchemaParsed: PydanticFormPropertySchemaParsed,
-) => {
-    const optionFields = [
-        propertySchemaParsed.anyOf,
-        propertySchemaParsed.oneOf,
-        propertySchemaParsed.allOf,
-    ];
+): PydanticFormPropertySchemaParsed => {
+    if (propertySchemaParsed.allOf) {
+        const allOfProperties = propertySchemaParsed.allOf.reduce(
+            (mergedItem, allOfItem) => {
+                return { ...mergedItem, ...allOfItem };
+            },
+        );
 
-    for (const optionsDefs of optionFields) {
-        if (!optionsDefs) {
-            continue;
+        if (propertySchemaParsed.anyOf || propertySchemaParsed.oneOf) {
+            console.warn(
+                'Pydantic forms does not currently support combining allOf with anyOf or oneOf. This may lead to unexpected behavior.',
+            );
         }
 
-        return optionsDefs;
+        return {
+            ...allOfProperties,
+            ...propertySchemaParsed,
+        };
     }
+
+    if (propertySchemaParsed.oneOf) {
+        if (propertySchemaParsed.anyOf) {
+            console.warn(
+                'Pydantic forms does not support combining oneOf with anyOf. This may lead to unexpected behavior.',
+            );
+        }
+
+        if (
+            (containsNullableSchema(propertySchemaParsed.oneOf) &&
+                propertySchemaParsed.oneOf.length > 2) ||
+            (!containsNullableSchema(propertySchemaParsed.oneOf) &&
+                propertySchemaParsed.oneOf.length > 1)
+        ) {
+            console.warn(
+                "Pydantic forms does not support multiple oneOf schema's and defaults to the first one. This may lead to unexpected behavior.",
+            );
+        }
+
+        return {
+            ...propertySchemaParsed.oneOf[0],
+            ...propertySchemaParsed,
+        };
+    }
+
+    if (propertySchemaParsed.anyOf) {
+        if (
+            (containsNullableSchema(propertySchemaParsed.anyOf) &&
+                propertySchemaParsed.anyOf.length > 2) ||
+            (!containsNullableSchema(propertySchemaParsed.anyOf) &&
+                propertySchemaParsed.anyOf.length > 1)
+        ) {
+            console.warn(
+                "Pydantic forms does not support multiple anyOf schema's and defaults to the first one. This may lead to unexpected behavior.",
+            );
+        }
+
+        return {
+            ...propertySchemaParsed.anyOf[0],
+            ...propertySchemaParsed,
+        };
+    }
+
+    return propertySchemaParsed;
 };
 
 /**
@@ -82,20 +140,17 @@ export const getFieldAllOfAnyOfEntry = (
  */
 export const getFieldOptions = (
     propertySchemaParsed: PydanticFormPropertySchemaParsed,
-) => {
-    let isOptionsField = false;
+): PydanticFormFieldOption[] => {
     const options: PydanticFormFieldOption[] = [];
 
-    const optionDef = getFieldAllOfAnyOfEntry(propertySchemaParsed);
-
+    // NOTE: enum is the property described in the JSON Schema specification that stores possible values for a field.
+    // .options is a custom property that left here for backwards compatibility.
     const propertyEnums =
         propertySchemaParsed.enum ?? propertySchemaParsed.items?.enum;
     const propertyOptions =
         propertySchemaParsed.options ?? propertySchemaParsed.items?.options;
 
     if (propertyEnums && !propertyOptions) {
-        isOptionsField = true;
-
         options.push(...enumToOption(propertyEnums));
     }
 
@@ -103,50 +158,7 @@ export const getFieldOptions = (
         options.push(...optionsToOption(propertyOptions, propertyEnums));
     }
 
-    const hasEntryWithEnums = optionDef?.filter(
-        (option) => !!option.items?.enum || option?.enum,
-    );
-
-    if (propertySchemaParsed.items) {
-        isOptionsField = true;
-    }
-
-    if (!optionDef) {
-        return {
-            options,
-            isOptionsField: false,
-        };
-    }
-
-    for (const entry of optionDef) {
-        if (entry.type === 'null' && hasEntryWithEnums) {
-            continue;
-        }
-
-        if (entry.items) {
-            isOptionsField = true;
-        }
-
-        const itemFieldEnums = entry?.enum ?? entry.items?.enum;
-        const itemFieldOptions = entry?.options ?? entry.items?.options;
-
-        if (itemFieldEnums && !itemFieldOptions) {
-            isOptionsField = true;
-            // add all the other options to the options arr
-            options.push(...enumToOption(itemFieldEnums));
-        }
-
-        if (itemFieldOptions) {
-            isOptionsField = true;
-            // add all the other options to the options arr
-            options.push(...optionsToOption(itemFieldOptions, itemFieldEnums));
-        }
-    }
-
-    return {
-        options,
-        isOptionsField,
-    };
+    return options;
 };
 
 export const enumToOption = (enums: string[]) =>
@@ -195,48 +207,74 @@ export const getFlatFieldMap = (
 };
 
 /**
+ * Checks if the schema's type or one of the combinator props anyOf or oneOf contains a type of 'null'.
+ * This tells us if the field is allowed to be null or not.
+ *
+ * @returns true if the schema is nullable, false otherwise
+ */
+export const isNullable = (schema: PydanticFormPropertySchemaParsed) => {
+    // Check if the schema has a type of 'null' or if it has an anyOf with a type of 'null'
+    const isNullType = schema.type === PydanticFormFieldType.NULL;
+    const hasNullAnyOf = containsNullableSchema(schema.anyOf ?? []);
+    const hasNullOneOf = containsNullableSchema(schema.oneOf ?? []);
+
+    return isNullType || hasNullAnyOf || hasNullOneOf || false;
+};
+
+const containsNullableSchema = (
+    schemas: PydanticFormPropertySchemaParsed[],
+): boolean => {
+    return schemas.some((item) => item.type === PydanticFormFieldType.NULL);
+};
+
+/**
  * Field to validation object
  *
  * @param fieldProperties A field from the 'properties' key of the JSON Schema
  * @returns returns a validation object
  */
 export const getFieldValidation = (
-    fieldProperties: PydanticFormPropertySchemaParsed,
+    schema: PydanticFormPropertySchemaParsed,
 ) => {
     const validation: PydanticFormFieldValidations = {};
-    const propertyDef = getFieldAllOfAnyOfEntry(fieldProperties);
-    const isNullable = propertyDef?.filter((option) => option.type === 'null');
 
-    if (isNullable) {
+    if (isNullable(schema)) {
         validation.isNullable = true;
     }
+    const {
+        maxLength,
+        minLength,
+        pattern,
+        type,
+        minimum,
+        maximum,
+        exclusiveMaximum,
+        exclusiveMinimum,
+        multipleOf,
+        minItems,
+        maxItems,
+        uniqueItems,
+    } = schema;
 
-    for (const properties of [fieldProperties, ...(propertyDef ?? [])]) {
-        if (fieldProperties.type === PydanticFormFieldType.STRING) {
-            if (properties.maxLength)
-                validation.maxLength = properties.maxLength;
-            if (properties.minLength)
-                validation.minLength = properties.minLength;
-            if (properties.pattern) validation.pattern = properties.pattern;
-        }
-        if (
-            fieldProperties.type === PydanticFormFieldType.NUMBER ||
-            fieldProperties.type === PydanticFormFieldType.INTEGER
-        ) {
-            if (properties.minimum) validation.minimum = properties.minimum;
-            if (properties.maximum) validation.maximum = properties.maximum;
-            if (properties.exclusiveMinimum)
-                validation.exclusiveMinimum = properties.exclusiveMinimum;
-            if (properties.exclusiveMaximum)
-                validation.exclusiveMaximum = properties.exclusiveMaximum;
-            if (properties.multipleOf)
-                validation.multipleOf = properties.multipleOf;
-        }
-        if (fieldProperties.type === PydanticFormFieldType.ARRAY) {
-            validation.minItems = properties.minItems;
-            validation.maxItems = properties.maxItems;
-            validation.uniqueItems = properties.uniqueItems;
-        }
+    if (type === PydanticFormFieldType.STRING) {
+        if (maxLength) validation.maxLength = maxLength;
+        if (minLength) validation.minLength = minLength;
+        if (pattern) validation.pattern = pattern;
+    }
+    if (
+        type === PydanticFormFieldType.NUMBER ||
+        type === PydanticFormFieldType.INTEGER
+    ) {
+        if (minimum) validation.minimum = minimum;
+        if (maximum) validation.maximum = maximum;
+        if (exclusiveMinimum) validation.exclusiveMinimum = exclusiveMinimum;
+        if (exclusiveMaximum) validation.exclusiveMaximum = exclusiveMaximum;
+        if (multipleOf) validation.multipleOf = multipleOf;
+    }
+    if (type === PydanticFormFieldType.ARRAY) {
+        validation.minItems = minItems;
+        validation.maxItems = maxItems;
+        validation.uniqueItems = uniqueItems;
     }
 
     return validation;
