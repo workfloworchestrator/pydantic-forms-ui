@@ -426,6 +426,7 @@ export interface PydanticFormPropertySchemaParsed
 
     default?: string | null;
     format: PydanticFormFieldFormat;
+    const?: number | string | boolean | null;
 
     uniforms?: UniformProperties;
 
