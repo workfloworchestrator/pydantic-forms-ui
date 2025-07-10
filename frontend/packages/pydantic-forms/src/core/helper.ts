@@ -239,28 +239,40 @@ export const getFieldValidation = (
     if (isNullable(schema)) {
         validation.isNullable = true;
     }
+    const {
+        maxLength,
+        minLength,
+        pattern,
+        type,
+        minimum,
+        maximum,
+        exclusiveMaximum,
+        exclusiveMinimum,
+        multipleOf,
+        minItems,
+        maxItems,
+        uniqueItems,
+    } = schema;
 
-    if (schema.type === PydanticFormFieldType.STRING) {
-        if (schema.maxLength) validation.maxLength = schema.maxLength;
-        if (schema.minLength) validation.minLength = schema.minLength;
-        if (schema.pattern) validation.pattern = schema.pattern;
+    if (type === PydanticFormFieldType.STRING) {
+        if (maxLength) validation.maxLength = maxLength;
+        if (minLength) validation.minLength = minLength;
+        if (pattern) validation.pattern = pattern;
     }
     if (
-        schema.type === PydanticFormFieldType.NUMBER ||
-        schema.type === PydanticFormFieldType.INTEGER
+        type === PydanticFormFieldType.NUMBER ||
+        type === PydanticFormFieldType.INTEGER
     ) {
-        if (schema.minimum) validation.minimum = schema.minimum;
-        if (schema.maximum) validation.maximum = schema.maximum;
-        if (schema.exclusiveMinimum)
-            validation.exclusiveMinimum = schema.exclusiveMinimum;
-        if (schema.exclusiveMaximum)
-            validation.exclusiveMaximum = schema.exclusiveMaximum;
-        if (schema.multipleOf) validation.multipleOf = schema.multipleOf;
+        if (minimum) validation.minimum = minimum;
+        if (maximum) validation.maximum = maximum;
+        if (exclusiveMinimum) validation.exclusiveMinimum = exclusiveMinimum;
+        if (exclusiveMaximum) validation.exclusiveMaximum = exclusiveMaximum;
+        if (multipleOf) validation.multipleOf = multipleOf;
     }
-    if (schema.type === PydanticFormFieldType.ARRAY) {
-        validation.minItems = schema.minItems;
-        validation.maxItems = schema.maxItems;
-        validation.uniqueItems = schema.uniqueItems;
+    if (type === PydanticFormFieldType.ARRAY) {
+        validation.minItems = minItems;
+        validation.maxItems = maxItems;
+        validation.uniqueItems = uniqueItems;
     }
 
     return validation;
