@@ -204,6 +204,13 @@ export const getFlatFieldMap = (
     return fieldMap;
 };
 
+/**
+ * Checks if the schema's type or one of the combinator props anyOf or oneOf contains a type of 'null'.
+ * This tells us if the field is allowed to be null or not.
+ *
+ * @param schema A field from the 'properties' key of the JSON Schema
+ * @returns true if the schema is nullable, false otherwise
+ */
 export const isNullable = (schema: PydanticFormPropertySchemaParsed) => {
     // Check if the schema has a type of 'null' or if it has an anyOf with a type of 'null'
     const isNullType = schema.type === PydanticFormFieldType.NULL;
