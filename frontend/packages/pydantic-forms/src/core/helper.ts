@@ -93,9 +93,9 @@ export const flattenSchemaCombinators = (
         }
 
         if (
-            (isNullable(propertySchemaParsed) &&
+            (containsNullableSchema(propertySchemaParsed.oneOf) &&
                 propertySchemaParsed.oneOf.length > 2) ||
-            (!isNullable(propertySchemaParsed) &&
+            (!containsNullableSchema(propertySchemaParsed.oneOf) &&
                 propertySchemaParsed.oneOf.length > 1)
         ) {
             console.warn(
@@ -111,9 +111,9 @@ export const flattenSchemaCombinators = (
 
     if (propertySchemaParsed.anyOf) {
         if (
-            (isNullable(propertySchemaParsed) &&
+            (containsNullableSchema(propertySchemaParsed.anyOf) &&
                 propertySchemaParsed.anyOf.length > 2) ||
-            (!isNullable(propertySchemaParsed) &&
+            (!containsNullableSchema(propertySchemaParsed.anyOf) &&
                 propertySchemaParsed.anyOf.length > 1)
         ) {
             console.warn(
@@ -208,21 +208,21 @@ export const getFlatFieldMap = (
  * Checks if the schema's type or one of the combinator props anyOf or oneOf contains a type of 'null'.
  * This tells us if the field is allowed to be null or not.
  *
- * @param schema A field from the 'properties' key of the JSON Schema
  * @returns true if the schema is nullable, false otherwise
  */
 export const isNullable = (schema: PydanticFormPropertySchemaParsed) => {
     // Check if the schema has a type of 'null' or if it has an anyOf with a type of 'null'
     const isNullType = schema.type === PydanticFormFieldType.NULL;
-    const hasNullAnyOf = schema.anyOf?.some(
-        (item) => item.type === PydanticFormFieldType.NULL,
-    );
-
-    const hasNullOneOf = schema.oneOf?.some(
-        (item) => item.type === PydanticFormFieldType.NULL,
-    );
+    const hasNullAnyOf = containsNullableSchema(schema.anyOf ?? []);
+    const hasNullOneOf = containsNullableSchema(schema.oneOf ?? []);
 
     return isNullType || hasNullAnyOf || hasNullOneOf || false;
+};
+
+const containsNullableSchema = (
+    schemas: PydanticFormPropertySchemaParsed[],
+): boolean => {
+    return schemas.some((item) => item.type === PydanticFormFieldType.NULL);
 };
 
 /**
