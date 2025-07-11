@@ -1,5 +1,12 @@
 # pydantic-forms
 
+## 0.6.2
+
+### Patch Changes
+
+-   82d0a5a: Improves schema combinators anyOf, allOf and oneOf parsing
+-   32428b1: Add schemaField const to set disabled attribute
+
 ## 0.6.1
 
 ### Patch Changes
