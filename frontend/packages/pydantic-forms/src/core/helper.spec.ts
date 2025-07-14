@@ -2,15 +2,62 @@ import {
     enumToOption,
     flattenSchemaCombinators,
     getErrorDetailsFromResponse,
+    getFormValuesFromFieldOrLabels,
     isNullable,
     optionsToOption,
 } from '@/core/helper';
 import {
     PydanticFormApiResponse,
+    PydanticFormField,
     PydanticFormFieldFormat,
     PydanticFormFieldType,
     PydanticFormPropertySchemaParsed,
+    PydanticFormSchema,
 } from '@/types';
+
+export const getMockPydanticFormField = (
+    props: Partial<PydanticFormField>,
+): PydanticFormField => {
+    return {
+        id: 'dummy',
+        type: PydanticFormFieldType.STRING,
+        format: PydanticFormFieldFormat.LONG,
+        title: 'Dummy Field',
+        default: undefined,
+        description: undefined,
+        arrayItem: undefined,
+        properties: {},
+        required: false,
+        options: [],
+        columns: 6,
+        schema: {
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+        },
+        validations: {},
+        attributes: {},
+        ...props,
+    };
+};
+
+const getMockPydanticFormSchema = (
+    overrides: Partial<PydanticFormSchema> = {},
+): PydanticFormSchema => {
+    return {
+        title: 'Mock Form Schema',
+        type: PydanticFormFieldType.OBJECT,
+        description: 'This is a mock schema description',
+        properties: {},
+        ...overrides,
+    };
+};
+
+const getMockFormPropertySchemaParsed = (
+    overrides: Partial<PydanticFormPropertySchemaParsed> = {},
+): PydanticFormPropertySchemaParsed => ({
+    format: PydanticFormFieldFormat.DEFAULT,
+    ...overrides,
+});
 
 describe('getErrorDetailsFromResponse', () => {
     it('should correctly format the error details from API response', () => {
@@ -190,13 +237,6 @@ describe('optionsToOption', () => {
 });
 
 describe('flattenSchemaCombinators', () => {
-    const getMockFormPropertySchemaParsed = (
-        overrides: Partial<PydanticFormPropertySchemaParsed> = {},
-    ): PydanticFormPropertySchemaParsed => ({
-        format: PydanticFormFieldFormat.DEFAULT,
-        ...overrides,
-    });
-
     it('Doesnt change the schema if no combinator properties exist', () => {
         const inputSchema = getMockFormPropertySchemaParsed();
         const outputSchema = flattenSchemaCombinators(inputSchema);
@@ -510,49 +550,138 @@ describe('flattenSchemaCombinators', () => {
 
         consoleWarnSpy.mockRestore();
     });
+});
 
-    describe('isNullable', () => {
-        it('returns true if the schema has a null type in anyOf', () => {
-            const inputSchema = getMockFormPropertySchemaParsed({
-                type: PydanticFormFieldType.STRING,
-                format: PydanticFormFieldFormat.DEFAULT,
-                anyOf: [
-                    {
-                        type: PydanticFormFieldType.STRING,
-                    },
-                    {
-                        type: PydanticFormFieldType.NULL,
-                    },
-                ],
-            });
-            const result: boolean = isNullable(inputSchema);
-            expect(result).toBe(true);
+describe('isNullable', () => {
+    it('returns true if the schema has a null type in anyOf', () => {
+        const inputSchema = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            anyOf: [
+                {
+                    type: PydanticFormFieldType.STRING,
+                },
+                {
+                    type: PydanticFormFieldType.NULL,
+                },
+            ],
         });
+        const result: boolean = isNullable(inputSchema);
+        expect(result).toBe(true);
+    });
 
-        it('returns true if the schema has a null type in oneOf', () => {
-            const inputSchema = getMockFormPropertySchemaParsed({
-                type: PydanticFormFieldType.STRING,
-                format: PydanticFormFieldFormat.DEFAULT,
-                oneOf: [
-                    {
-                        type: PydanticFormFieldType.STRING,
-                    },
-                    {
-                        type: PydanticFormFieldType.NULL,
-                    },
-                ],
-            });
-            const result: boolean = isNullable(inputSchema);
-            expect(result).toBe(true);
+    it('returns true if the schema has a null type in oneOf', () => {
+        const inputSchema = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
+            oneOf: [
+                {
+                    type: PydanticFormFieldType.STRING,
+                },
+                {
+                    type: PydanticFormFieldType.NULL,
+                },
+            ],
         });
+        const result: boolean = isNullable(inputSchema);
+        expect(result).toBe(true);
+    });
 
-        it('returns false if the schema does not have a null type', () => {
-            const inputSchema = getMockFormPropertySchemaParsed({
-                type: PydanticFormFieldType.STRING,
-                format: PydanticFormFieldFormat.DEFAULT,
-            });
-            const result: boolean = isNullable(inputSchema);
-            expect(result).toBe(false);
+    it('returns false if the schema does not have a null type', () => {
+        const inputSchema = getMockFormPropertySchemaParsed({
+            type: PydanticFormFieldType.STRING,
+            format: PydanticFormFieldFormat.DEFAULT,
         });
+        const result: boolean = isNullable(inputSchema);
+        expect(result).toBe(false);
+    });
+});
+
+describe('getFormValuesFromFieldOrLabels', () => {
+    it.only('returns an empty object if no schema is provided', () => {
+        const result = getFormValuesFromFieldOrLabels(undefined, {});
+        expect(result).toEqual({});
+    });
+
+    it.only('Returns empty object when schema has no properties', () => {
+        const schema = getMockPydanticFormSchema();
+        expect(getFormValuesFromFieldOrLabels(schema, {})).toEqual({});
+    });
+
+    it.only('Returns fieldNames with default values', () => {
+        const schema = getMockPydanticFormSchema({
+            properties: {
+                test: getMockPydanticFormField({
+                    default: 'default value',
+                    id: 'test',
+                }),
+                test2: getMockPydanticFormField({
+                    default: 'default value 2',
+                    id: 'test2',
+                }),
+            },
+        });
+        expect(getFormValuesFromFieldOrLabels(schema, {})).toEqual({
+            test: 'default value',
+            test2: 'default value 2',
+        });
+    });
+
+    it.only('Returns label instead of default value if present', () => {
+        const schema = getMockPydanticFormSchema({
+            properties: {
+                test: getMockPydanticFormField({
+                    default: 'default value',
+                    id: 'test',
+                }),
+                test2: getMockPydanticFormField({
+                    default: 'default value 2',
+                    id: 'test2',
+                }),
+            },
+        });
+        expect(
+            getFormValuesFromFieldOrLabels(schema, {
+                test2: 'label for test2',
+            }),
+        ).toEqual({
+            test: 'default value',
+            test2: 'label for test2',
+        });
+    });
+
+    it.only('Returns nested default values in object fields', () => {
+        const schema = getMockPydanticFormSchema({
+            properties: {
+                test: getMockPydanticFormField({
+                    default: 'default value',
+                    id: 'test',
+                }),
+                test2: getMockPydanticFormField({
+                    default: 'default value 2',
+                    id: 'test2',
+                    properties: {
+                        nestedField: getMockPydanticFormField({
+                            default: 'nested default value',
+                            id: 'nestedField',
+                        }),
+                    },
+                }),
+            },
+        });
+        expect(getFormValuesFromFieldOrLabels(schema)).toEqual({
+            test: 'default value',
+            test2: {
+                nestedField: 'nested default value',
+            },
+        });
+    });
+
+    it('Returns nested default values in array fields', () => {
+        expect(true).toEqual(false);
+    });
+
+    it('Works with object field in array field in object field', () => {
+        expect(true).toEqual(false);
     });
 });

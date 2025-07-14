@@ -1,43 +1,18 @@
 import type { FieldValues } from 'react-hook-form';
 
-import type { PydanticFormField } from './types';
-import { PydanticFormFieldFormat, PydanticFormFieldType } from './types';
+import { getMockPydanticFormField } from './core/helper.spec';
+import { PydanticFormFieldType } from './types';
 import {
     getFormFieldValue,
     insertItemAtIndex,
     itemizeArrayItem,
 } from './utils';
 
-export const getPydanticFormFieldDummy = (
-    props: Partial<PydanticFormField>,
-): PydanticFormField => {
-    return {
-        id: 'dummy',
-        type: PydanticFormFieldType.STRING,
-        format: PydanticFormFieldFormat.LONG,
-        title: 'Dummy Field',
-        default: undefined,
-        description: undefined,
-        arrayItem: undefined,
-        properties: {},
-        required: false,
-        options: [],
-        columns: 6,
-        schema: {
-            type: PydanticFormFieldType.STRING,
-            format: PydanticFormFieldFormat.DEFAULT,
-        },
-        validations: {},
-        attributes: {},
-        ...props,
-    };
-};
-
 describe('insertItemAtIndex', () => {
-    const fieldA = getPydanticFormFieldDummy({ id: 'a' });
-    const fieldB = getPydanticFormFieldDummy({ id: 'b' });
-    const fieldC = getPydanticFormFieldDummy({ id: 'c' });
-    const newField = getPydanticFormFieldDummy({ id: 'new' });
+    const fieldA = getMockPydanticFormField({ id: 'a' });
+    const fieldB = getMockPydanticFormField({ id: 'b' });
+    const fieldC = getMockPydanticFormField({ id: 'c' });
+    const newField = getMockPydanticFormField({ id: 'new' });
 
     it('inserts at the beginning when anchorIndex is 0', () => {
         const result = insertItemAtIndex([fieldA, fieldB], newField, 0);
@@ -74,14 +49,14 @@ describe('getFormFieldValue', () => {
         isActive: true,
     };
     it('gets the value by fieldName', () => {
-        const field = getPydanticFormFieldDummy({ id: 'name' });
+        const field = getMockPydanticFormField({ id: 'name' });
         const fieldName = 'name';
         const value = getFormFieldValue(formValues, field, fieldName);
         expect(value).toBe('John Doe');
     });
 
     it('returns undefined for unknown fields', () => {
-        const field = getPydanticFormFieldDummy({ id: 'name' });
+        const field = getMockPydanticFormField({ id: 'name' });
         const fieldName = 'UNKNOWN_FIELD';
         const value = getFormFieldValue(formValues, field, fieldName);
         expect(value).toBe(undefined);
@@ -107,13 +82,13 @@ describe('getFormFieldValue', () => {
             },
         };
 
-        const field = getPydanticFormFieldDummy({
+        const field = getMockPydanticFormField({
             id: 'company.contactPersons.0.name',
         });
         const value = getFormFieldValue(complexValues, field, 'age');
         expect(value).toEqual(25);
 
-        const field2 = getPydanticFormFieldDummy({
+        const field2 = getMockPydanticFormField({
             id: 'company.contactPersons.1.name',
         });
 
@@ -131,7 +106,7 @@ describe('getFormFieldValue', () => {
             age: 666,
         };
 
-        const firstListElementField = getPydanticFormFieldDummy({
+        const firstListElementField = getMockPydanticFormField({
             id: 'company.contactIds.0',
         });
         const valueFromFirstListElement = getFormFieldValue(
@@ -141,7 +116,7 @@ describe('getFormFieldValue', () => {
         );
         expect(valueFromFirstListElement).toEqual(30);
 
-        const secondListElementField = getPydanticFormFieldDummy({
+        const secondListElementField = getMockPydanticFormField({
             id: 'company.contactIds.1',
         });
         const valueFromSecondListElement = getFormFieldValue(
@@ -151,7 +126,7 @@ describe('getFormFieldValue', () => {
         );
         expect(valueFromSecondListElement).toEqual(30);
 
-        const nameElementField = getPydanticFormFieldDummy({
+        const nameElementField = getMockPydanticFormField({
             id: 'company.name',
         });
         const valueFromNameElement = getFormFieldValue(
@@ -161,7 +136,7 @@ describe('getFormFieldValue', () => {
         );
         expect(valueFromNameElement).toEqual(30);
 
-        const contactIdsElementField = getPydanticFormFieldDummy({
+        const contactIdsElementField = getMockPydanticFormField({
             id: 'company.contactIds',
         });
         const ownValue = getFormFieldValue(
@@ -182,7 +157,7 @@ describe('getFormFieldValue', () => {
             age: 666,
         };
 
-        const companyField = getPydanticFormFieldDummy({
+        const companyField = getMockPydanticFormField({
             id: 'company',
         });
         const valueFromCompanyElement = getFormFieldValue(
@@ -195,7 +170,7 @@ describe('getFormFieldValue', () => {
             contactIds: ['123', '456'],
         });
 
-        const secondListElementField = getPydanticFormFieldDummy({
+        const secondListElementField = getMockPydanticFormField({
             id: 'company.contactIds.1',
         });
 
@@ -206,7 +181,7 @@ describe('getFormFieldValue', () => {
 
         expect(valueFromSecondListElement).toEqual(['123', '456']);
 
-        const firstListElementField = getPydanticFormFieldDummy({
+        const firstListElementField = getMockPydanticFormField({
             id: 'company.contactIds.0',
         });
 
@@ -225,32 +200,32 @@ describe('itemizeArrayItem', () => {
     // It will itemize only one level. Lower levels will be itemized when the item is rendered and the path from the parent
     // is passed in again making the id unique for that level
 
-    const stringField = getPydanticFormFieldDummy({
+    const stringField = getMockPydanticFormField({
         id: 'stringField',
         type: PydanticFormFieldType.STRING,
     });
 
-    const objectField = getPydanticFormFieldDummy({
+    const objectField = getMockPydanticFormField({
         id: 'objectField',
         properties: {
-            prop1: getPydanticFormFieldDummy({
+            prop1: getMockPydanticFormField({
                 id: 'prop1',
                 type: PydanticFormFieldType.STRING,
             }),
-            prop2: getPydanticFormFieldDummy({
+            prop2: getMockPydanticFormField({
                 id: 'prop2',
                 type: PydanticFormFieldType.STRING,
             }),
         },
     });
 
-    const arrayFieldWithArrayFieldArrayItem = getPydanticFormFieldDummy({
+    const arrayFieldWithArrayFieldArrayItem = getMockPydanticFormField({
         id: 'arrayFieldWithArrayArrayItem',
         type: PydanticFormFieldType.ARRAY,
-        arrayItem: getPydanticFormFieldDummy({
+        arrayItem: getMockPydanticFormField({
             id: 'arrayItemArrayField',
             type: PydanticFormFieldType.ARRAY,
-            arrayItem: getPydanticFormFieldDummy({
+            arrayItem: getMockPydanticFormField({
                 id: 'arrayItemArrayField',
                 type: PydanticFormFieldType.ARRAY,
                 arrayItem: stringField,
@@ -323,16 +298,16 @@ describe('itemizeArrayItem', () => {
     });
 
     it('Works with an arrayItem thats an object field that has an arrayItem that is an object field', () => {
-        const objectWithArrayWithObjectWithArrayItem =
-            getPydanticFormFieldDummy({
+        const objectWithArrayWithObjectWithArrayItem = getMockPydanticFormField(
+            {
                 id: 'object',
                 type: PydanticFormFieldType.OBJECT,
                 properties: {
                     level1prop1: stringField,
-                    level1prop2: getPydanticFormFieldDummy({
+                    level1prop2: getMockPydanticFormField({
                         id: 'arrayField',
                         type: PydanticFormFieldType.ARRAY,
-                        arrayItem: getPydanticFormFieldDummy({
+                        arrayItem: getMockPydanticFormField({
                             id: 'arrayItem',
                             type: PydanticFormFieldType.OBJECT,
                             properties: {
@@ -348,7 +323,8 @@ describe('itemizeArrayItem', () => {
                         }),
                     }),
                 },
-            });
+            },
+        );
         const itemizedItem = itemizeArrayItem(
             5,
             objectWithArrayWithObjectWithArrayItem,
