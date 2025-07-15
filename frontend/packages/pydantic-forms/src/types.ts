@@ -96,6 +96,7 @@ export interface PydanticFormField {
     default?: PydanticFormFieldValue;
     columns: number;
     required: boolean;
+    const?: PydanticFormFieldValue | null;
     schema: PydanticFormPropertySchemaParsed;
     validations: PydanticFormFieldValidations;
     attributes: PydanticFormFieldAttributes;
