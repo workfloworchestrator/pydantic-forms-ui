@@ -289,36 +289,56 @@ export const isNullableField = (field: PydanticFormField) =>
     !!field.validations.isNullable;
 
 /**
- * Will return a Record map of [fieldId]: "Fieldvalue"
+ * Returns the initial values for the form field based on the
+ * default values and const values found in the parsed PydanticFormSchema.
+ * Iterates over the properties and arrayItems of the schema.
  *
- * Requires both fieldsDef (these can have default values)
  * And labelData (this holds the current values from API)
  */
 export const getFormValuesFromFieldOrLabels = (
-    pydanticFormSchema?: PydanticFormSchema,
+    properties?: Properties,
     labelData?: Record<string, string>,
     componentMatcherExtender?: PydanticFormsContextConfig['componentMatcherExtender'],
 ): FieldValues => {
-    if (!pydanticFormSchema) {
+    if (!properties) {
         return {};
     }
+
+    const propertyHasProperties = (
+        pydanticFormField: PydanticFormField,
+    ): boolean => {
+        return pydanticFormField.properties &&
+            Object.keys(pydanticFormField.properties).length > 0
+            ? true
+            : false;
+    };
 
     const fieldValues: FieldValues = {};
 
     const includedFields: string[] = [];
 
     const pydanticFormComponents = getPydanticFormComponents(
-        pydanticFormSchema.properties,
+        properties,
         componentMatcherExtender,
     );
 
     pydanticFormComponents.forEach((component) => {
         const { Element, pydanticFormField } = component;
 
-        if (Element.isControlledElement) {
+        if (
+            Element.isControlledElement ||
+            propertyHasProperties(pydanticFormField) ||
+            pydanticFormField.arrayItem
+        ) {
             includedFields.push(pydanticFormField.id);
-
-            if (typeof pydanticFormField.default !== 'undefined') {
+            if (propertyHasProperties(pydanticFormField)) {
+                const nestedValues = getFormValuesFromFieldOrLabels(
+                    pydanticFormField.properties,
+                    labelData,
+                    componentMatcherExtender,
+                );
+                fieldValues[pydanticFormField.id] = nestedValues;
+            } else if (typeof pydanticFormField.default !== 'undefined') {
                 fieldValues[pydanticFormField.id] = pydanticFormField.default;
             }
         }

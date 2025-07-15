@@ -7,12 +7,12 @@ import {
     optionsToOption,
 } from '@/core/helper';
 import {
+    Properties,
     PydanticFormApiResponse,
     PydanticFormField,
     PydanticFormFieldFormat,
     PydanticFormFieldType,
     PydanticFormPropertySchemaParsed,
-    PydanticFormSchema,
 } from '@/types';
 
 export const getMockPydanticFormField = (
@@ -37,18 +37,6 @@ export const getMockPydanticFormField = (
         validations: {},
         attributes: {},
         ...props,
-    };
-};
-
-const getMockPydanticFormSchema = (
-    overrides: Partial<PydanticFormSchema> = {},
-): PydanticFormSchema => {
-    return {
-        title: 'Mock Form Schema',
-        type: PydanticFormFieldType.OBJECT,
-        description: 'This is a mock schema description',
-        properties: {},
-        ...overrides,
     };
 };
 
@@ -598,50 +586,47 @@ describe('isNullable', () => {
 });
 
 describe('getFormValuesFromFieldOrLabels', () => {
-    it.only('returns an empty object if no schema is provided', () => {
+    it('returns an empty object if no schema is provided', () => {
         const result = getFormValuesFromFieldOrLabels(undefined, {});
         expect(result).toEqual({});
     });
 
-    it.only('Returns empty object when schema has no properties', () => {
-        const schema = getMockPydanticFormSchema();
-        expect(getFormValuesFromFieldOrLabels(schema, {})).toEqual({});
+    it('Returns empty object when schema has no properties', () => {
+        const properties: Properties = {};
+        expect(getFormValuesFromFieldOrLabels(properties, {})).toEqual({});
     });
 
-    it.only('Returns fieldNames with default values', () => {
-        const schema = getMockPydanticFormSchema({
-            properties: {
-                test: getMockPydanticFormField({
-                    default: 'default value',
-                    id: 'test',
-                }),
-                test2: getMockPydanticFormField({
-                    default: 'default value 2',
-                    id: 'test2',
-                }),
-            },
-        });
-        expect(getFormValuesFromFieldOrLabels(schema, {})).toEqual({
+    it('Returns fieldNames with default values', () => {
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                default: 'default value',
+                id: 'test',
+            }),
+            test2: getMockPydanticFormField({
+                default: 'default value 2',
+                id: 'test2',
+            }),
+        };
+        expect(getFormValuesFromFieldOrLabels(properties, {})).toEqual({
             test: 'default value',
             test2: 'default value 2',
         });
     });
 
-    it.only('Returns label instead of default value if present', () => {
-        const schema = getMockPydanticFormSchema({
-            properties: {
-                test: getMockPydanticFormField({
-                    default: 'default value',
-                    id: 'test',
-                }),
-                test2: getMockPydanticFormField({
-                    default: 'default value 2',
-                    id: 'test2',
-                }),
-            },
-        });
+    it('Returns label instead of default value if present', () => {
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                default: 'default value',
+                id: 'test',
+            }),
+            test2: getMockPydanticFormField({
+                default: 'default value 2',
+                id: 'test2',
+            }),
+        };
+
         expect(
-            getFormValuesFromFieldOrLabels(schema, {
+            getFormValuesFromFieldOrLabels(properties, {
                 test2: 'label for test2',
             }),
         ).toEqual({
@@ -650,26 +635,24 @@ describe('getFormValuesFromFieldOrLabels', () => {
         });
     });
 
-    it.only('Returns nested default values in object fields', () => {
-        const schema = getMockPydanticFormSchema({
-            properties: {
-                test: getMockPydanticFormField({
-                    default: 'default value',
-                    id: 'test',
-                }),
-                test2: getMockPydanticFormField({
-                    default: 'default value 2',
-                    id: 'test2',
-                    properties: {
-                        nestedField: getMockPydanticFormField({
-                            default: 'nested default value',
-                            id: 'nestedField',
-                        }),
-                    },
-                }),
-            },
-        });
-        expect(getFormValuesFromFieldOrLabels(schema)).toEqual({
+    it('Returns nested default values in object fields', () => {
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                default: 'default value',
+                id: 'test',
+            }),
+            test2: getMockPydanticFormField({
+                default: 'default value 2',
+                id: 'test2',
+                properties: {
+                    nestedField: getMockPydanticFormField({
+                        default: 'nested default value',
+                        id: 'nestedField',
+                    }),
+                },
+            }),
+        };
+        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({
             test: 'default value',
             test2: {
                 nestedField: 'nested default value',
@@ -678,10 +661,25 @@ describe('getFormValuesFromFieldOrLabels', () => {
     });
 
     it('Returns nested default values in array fields', () => {
-        expect(true).toEqual(false);
-    });
-
-    it('Works with object field in array field in object field', () => {
-        expect(true).toEqual(false);
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                default: 'default value',
+                type: PydanticFormFieldType.STRING,
+                id: 'test',
+            }),
+            test2: getMockPydanticFormField({
+                id: 'test2',
+                type: PydanticFormFieldType.ARRAY,
+                default: [1, 2, 3],
+                arrayItem: getMockPydanticFormField({
+                    id: 'nestedField',
+                    type: PydanticFormFieldType.STRING,
+                }),
+            }),
+        };
+        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({
+            test: 'default value',
+            test2: [1, 2, 3],
+        });
     });
 });

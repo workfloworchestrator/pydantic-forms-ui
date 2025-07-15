@@ -158,7 +158,7 @@ function PydanticFormContextProvider({
     );
 
     const initialData = getFormValuesFromFieldOrLabels(
-        pydanticFormSchema,
+        pydanticFormSchema?.properties,
         {
             ...formLabels?.data,
             ...customData,
