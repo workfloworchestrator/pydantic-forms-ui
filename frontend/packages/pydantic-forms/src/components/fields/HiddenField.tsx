@@ -7,5 +7,11 @@ export const HiddenField = ({
     pydanticFormField,
 }: PydanticFormElementProps) => {
     const { rhf } = usePydanticFormContext();
-    return <input type="hidden" data-testid={pydanticFormField.id} {...rhf.register(pydanticFormField.id)} />;
+    return (
+        <input
+            type="hidden"
+            data-testid={pydanticFormField.id}
+            {...rhf.register(pydanticFormField.id)}
+        />
+    );
 };
