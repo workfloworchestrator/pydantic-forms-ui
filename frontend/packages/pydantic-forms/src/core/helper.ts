@@ -304,13 +304,25 @@ export const getFormValuesFromFieldOrLabels = (
         return {};
     }
 
+    const objectHasProperties = (object: Record<string, unknown>) => {
+        return object &&
+            typeof object === 'object' &&
+            Object.keys(object).length > 0
+            ? true
+            : false;
+    };
+
     const propertyHasProperties = (
         pydanticFormField: PydanticFormField,
     ): boolean => {
-        return pydanticFormField.properties &&
-            Object.keys(pydanticFormField.properties).length > 0
-            ? true
-            : false;
+        return objectHasProperties(pydanticFormField.properties || {});
+    };
+
+    const hasDefaultValue = (defaultFieldValue: unknown): boolean => {
+        return (
+            typeof defaultFieldValue !== 'undefined' &&
+            defaultFieldValue !== null
+        );
     };
 
     const fieldValues: FieldValues = {};
@@ -331,15 +343,56 @@ export const getFormValuesFromFieldOrLabels = (
             pydanticFormField.arrayItem
         ) {
             includedFields.push(pydanticFormField.id);
+            const defaultFieldValue = pydanticFormField.default;
+
             if (propertyHasProperties(pydanticFormField)) {
-                const nestedValues = getFormValuesFromFieldOrLabels(
-                    pydanticFormField.properties,
-                    labelData,
-                    componentMatcherExtender,
-                );
-                fieldValues[pydanticFormField.id] = nestedValues;
-            } else if (typeof pydanticFormField.default !== 'undefined') {
-                fieldValues[pydanticFormField.id] = pydanticFormField.default;
+                // If the field has properties and there is no default value for a property
+                // we try to get it from the property definition
+                const objectProperties = pydanticFormField.properties || {};
+                const objectDefaults: FieldValues = Object.entries(
+                    objectProperties,
+                ).reduce((defaults, [key, property]) => {
+                    if (
+                        hasDefaultValue(defaultFieldValue) &&
+                        hasDefaultValue(defaultFieldValue[key])
+                    ) {
+                        defaults[key] = defaultFieldValue[key];
+                    } else {
+                        const nestedDefault = getFormValuesFromFieldOrLabels(
+                            { [key]: property },
+                            labelData,
+                            componentMatcherExtender,
+                        );
+
+                        if (objectHasProperties(nestedDefault)) {
+                            defaults[key] = nestedDefault[key];
+                        }
+                    }
+                    return defaults;
+                }, {} as FieldValues);
+
+                if (objectHasProperties(objectDefaults)) {
+                    fieldValues[pydanticFormField.id] = objectDefaults;
+                }
+            } else if (pydanticFormField.arrayItem) {
+                // If there is no default value in the array field we get it from the arrayItem
+                if (hasDefaultValue(defaultFieldValue)) {
+                    fieldValues[pydanticFormField.id] = defaultFieldValue;
+                } else {
+                    const arrayItem = pydanticFormField.arrayItem;
+                    const arrayItemDefault = getFormValuesFromFieldOrLabels(
+                        { arrayItem },
+                        labelData,
+                        componentMatcherExtender,
+                    );
+                    if (objectHasProperties(arrayItemDefault)) {
+                        fieldValues[pydanticFormField.id] = [
+                            arrayItemDefault[arrayItem.id],
+                        ];
+                    }
+                }
+            } else if (hasDefaultValue(defaultFieldValue)) {
+                fieldValues[pydanticFormField.id] = defaultFieldValue;
             }
         }
     });

@@ -56,7 +56,7 @@ describe('parseProperties', () => {
 
         expect(properties).toEqual(expectedProperties);
     });
-    it('recursively transform properties of properties. Updates ids with correct path', () => {
+    it('recursively transform properties of properties.', () => {
         const parsedProperties: ParsedProperties = {
             person: getParsedPropertyMock({
                 type: PydanticFormFieldType.OBJECT,
@@ -93,15 +93,15 @@ describe('parseProperties', () => {
                     },
                 },
                 properties: {
-                    ['person.name']: getMockPydanticFormField({
+                    ['name']: getMockPydanticFormField({
                         type: PydanticFormFieldType.STRING,
-                        id: 'person.name',
+                        id: 'name',
                         format: PydanticFormFieldFormat.DEFAULT,
                         title: 'name',
                     }),
-                    ['person.age']: getMockPydanticFormField({
+                    ['age']: getMockPydanticFormField({
                         type: PydanticFormFieldType.INTEGER,
-                        id: 'person.age',
+                        id: 'age',
                         format: PydanticFormFieldFormat.DEFAULT,
                         title: 'age',
                         schema: {
@@ -114,16 +114,6 @@ describe('parseProperties', () => {
         };
         const properties = parseProperties(parsedProperties);
         expect(properties).toEqual(expectedProperties);
-    });
-
-    it('transforms arrayItem into pydanticForm field', () => {
-        const properties = parseProperties({});
-        expect(properties).toEqual({});
-    });
-
-    it('transforms object with array with object as expected', () => {
-        const properties = parseProperties({});
-        expect(properties).toEqual({});
     });
 });
 

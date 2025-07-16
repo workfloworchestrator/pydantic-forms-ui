@@ -635,15 +635,14 @@ describe('getFormValuesFromFieldOrLabels', () => {
         });
     });
 
-    it('Returns nested default values in object fields', () => {
+    it('Returns default values in object fields', () => {
+        // When an object fields has a default value that value should be used an the default value from the properties ignored
         const properties: Properties = {
             test: getMockPydanticFormField({
-                default: 'default value',
+                default: {
+                    nestedField: 'object field default',
+                },
                 id: 'test',
-            }),
-            test2: getMockPydanticFormField({
-                default: 'default value 2',
-                id: 'test2',
                 properties: {
                     nestedField: getMockPydanticFormField({
                         default: 'nested default value',
@@ -653,22 +652,17 @@ describe('getFormValuesFromFieldOrLabels', () => {
             }),
         };
         expect(getFormValuesFromFieldOrLabels(properties)).toEqual({
-            test: 'default value',
-            test2: {
-                nestedField: 'nested default value',
+            test: {
+                nestedField: 'object field default',
             },
         });
     });
 
-    it('Returns nested default values in array fields', () => {
+    it('Returns default values for array fields', () => {
+        // When an array field has a default value that value should be used and the default value from the arrayItem ignored
         const properties: Properties = {
             test: getMockPydanticFormField({
-                default: 'default value',
-                type: PydanticFormFieldType.STRING,
                 id: 'test',
-            }),
-            test2: getMockPydanticFormField({
-                id: 'test2',
                 type: PydanticFormFieldType.ARRAY,
                 default: [1, 2, 3],
                 arrayItem: getMockPydanticFormField({
@@ -678,8 +672,169 @@ describe('getFormValuesFromFieldOrLabels', () => {
             }),
         };
         expect(getFormValuesFromFieldOrLabels(properties)).toEqual({
-            test: 'default value',
-            test2: [1, 2, 3],
+            test: [1, 2, 3],
         });
+    });
+
+    it('Returns default values from properties if object field has no default values', () => {
+        // When an object fields has no default value the default value should be taken from its properties
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                id: 'test',
+                properties: {
+                    nestedField: getMockPydanticFormField({
+                        default: 'nested default value',
+                        id: 'nestedField',
+                    }),
+                },
+            }),
+        };
+        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({
+            test: {
+                nestedField: 'nested default value',
+            },
+        });
+    });
+
+    it('Returns default values from arrayItem if array field has no default values', () => {
+        // When an array fields has no default value the default value should be taken from the arrayItem
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                id: 'test',
+                type: PydanticFormFieldType.ARRAY,
+                arrayItem: getMockPydanticFormField({
+                    default: 'nested default value',
+                    id: 'nestedField',
+                    type: PydanticFormFieldType.STRING,
+                }),
+            }),
+        };
+        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({
+            test: ['nested default value'],
+        });
+    });
+
+    it('Returns empty object if arrayItem and array both have no default values', () => {
+        // When an array fields has no default value the default value should be taken from the arrayItem
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                id: 'test',
+                type: PydanticFormFieldType.ARRAY,
+                arrayItem: getMockPydanticFormField({
+                    id: 'nestedField',
+                    type: PydanticFormFieldType.STRING,
+                }),
+            }),
+        };
+        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({});
+    });
+
+    it('Returns empty object if object field and properties both have no default values', () => {
+        // When an array fields has no default value the default value should be taken from the arrayItem
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                id: 'test',
+                type: PydanticFormFieldType.OBJECT,
+                properties: {
+                    testChild: getMockPydanticFormField({
+                        id: 'nestedField',
+                        type: PydanticFormFieldType.STRING,
+                    }),
+                },
+            }),
+        };
+        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({});
+    });
+
+    it('Works with comlicated nested structures', () => {
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                id: 'test',
+                type: PydanticFormFieldType.OBJECT,
+                default: {
+                    name: 'Floris',
+                    age: 21,
+                    languages: [18, 21, 24],
+                    education: null,
+                },
+                properties: {
+                    name: getMockPydanticFormField({
+                        id: 'name',
+                        default: 'Ruben',
+                        type: PydanticFormFieldType.STRING,
+                    }),
+                    age: getMockPydanticFormField({
+                        id: 'age',
+                        default: 33,
+                        type: PydanticFormFieldType.INTEGER,
+                    }),
+                    languages: getMockPydanticFormField({
+                        id: 'languages',
+                        title: 'Languages',
+                        type: PydanticFormFieldType.ARRAY,
+                        default: [30, 33, 36],
+                        arrayItem: getMockPydanticFormField({
+                            id: 'languages',
+                            type: PydanticFormFieldType.INTEGER,
+                        }),
+                    }),
+                    education: getMockPydanticFormField({
+                        id: 'education',
+                        type: PydanticFormFieldType.OBJECT,
+                        properties: {
+                            degree: getMockPydanticFormField({
+                                id: 'degree',
+                                type: PydanticFormFieldType.STRING,
+                            }),
+                            languages: getMockPydanticFormField({
+                                id: 'languages',
+                                default: [30, 33],
+                                type: PydanticFormFieldType.ARRAY,
+                                arrayItem: getMockPydanticFormField({
+                                    id: 'languages',
+                                    type: PydanticFormFieldType.INTEGER,
+                                }),
+                            }),
+                            person: getMockPydanticFormField({
+                                id: 'person',
+                                title: 'Person',
+                                type: PydanticFormFieldType.OBJECT,
+                                properties: {
+                                    name: getMockPydanticFormField({
+                                        id: 'name',
+                                        default: 'Wouter',
+                                        type: PydanticFormFieldType.STRING,
+                                    }),
+                                    age: getMockPydanticFormField({
+                                        id: 'age',
+                                        default: 18,
+                                        type: PydanticFormFieldType.INTEGER,
+                                    }),
+                                },
+                            }),
+                        },
+                    }),
+                },
+            }),
+        };
+
+        const expectedInitialData = {
+            test: {
+                name: 'Floris',
+                age: 21,
+                languages: [18, 21, 24],
+                education: {
+                    languages: [30, 33],
+                    person: {
+                        name: 'Wouter',
+                        age: 18,
+                    },
+                },
+            },
+        };
+
+        const actual = getFormValuesFromFieldOrLabels(properties);
+
+        expect(actual).toEqual(expectedInitialData);
     });
 });

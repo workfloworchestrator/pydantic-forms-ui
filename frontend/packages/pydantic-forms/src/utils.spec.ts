@@ -259,11 +259,11 @@ describe('itemizeArrayItem', () => {
             properties: {
                 prop1: {
                     ...objectField.properties?.prop1,
-                    id: `${expectedId}.${objectField.properties?.prop1.id}`,
+                    id: `${objectField.properties?.prop1.id}`,
                 },
                 prop2: {
                     ...objectField.properties?.prop2,
-                    id: `${expectedId}.${objectField.properties?.prop2.id}`,
+                    id: `${objectField.properties?.prop2.id}`,
                 },
             },
         });
@@ -298,54 +298,40 @@ describe('itemizeArrayItem', () => {
     });
 
     it('Works with an arrayItem thats an object field that has an arrayItem that is an object field', () => {
-        const objectWithArrayWithObjectWithArrayItem = getMockPydanticFormField(
-            {
-                id: 'object',
-                type: PydanticFormFieldType.OBJECT,
-                properties: {
-                    level1prop1: stringField,
-                    level1prop2: getMockPydanticFormField({
+        const arrayItemWithObjectWithArrayItem = getMockPydanticFormField({
+            id: 'arrayItemWithObjectWithArrayItem',
+            type: PydanticFormFieldType.OBJECT,
+            properties: {
+                level1prop1: stringField,
+                level1prop2: getMockPydanticFormField({
+                    id: 'arrayField',
+                    type: PydanticFormFieldType.ARRAY,
+                    arrayItem: getMockPydanticFormField({
                         id: 'arrayField',
-                        type: PydanticFormFieldType.ARRAY,
-                        arrayItem: getMockPydanticFormField({
-                            id: 'arrayItem',
-                            type: PydanticFormFieldType.OBJECT,
-                            properties: {
-                                level2prop1: {
-                                    ...stringField,
-                                    id: 'level2prop1StringField',
-                                },
-                                level2prop2: {
-                                    ...stringField,
-                                    id: 'level2prop2StringField',
-                                },
+                        type: PydanticFormFieldType.OBJECT,
+                        properties: {
+                            level2prop1: {
+                                ...stringField,
+                                id: 'level2prop1StringField',
                             },
-                        }),
+                            level2prop2: {
+                                ...stringField,
+                                id: 'level2prop2StringField',
+                            },
+                        },
                     }),
-                },
+                }),
             },
-        );
+        });
         const itemizedItem = itemizeArrayItem(
             5,
-            objectWithArrayWithObjectWithArrayItem,
+            arrayItemWithObjectWithArrayItem,
             'PATH',
         );
 
         const expectedItemizedItem = {
-            ...objectWithArrayWithObjectWithArrayItem,
+            ...arrayItemWithObjectWithArrayItem,
             id: 'PATH.5',
-            properties: {
-                level1prop1: {
-                    ...objectWithArrayWithObjectWithArrayItem.properties
-                        ?.level1prop1,
-                    id: 'PATH.5.stringField',
-                },
-                level1prop2: {
-                    ...objectWithArrayWithObjectWithArrayItem.properties
-                        ?.level1prop2,
-                    id: 'PATH.5.arrayField',
-                },
-            },
         };
 
         expect(expectedItemizedItem).toEqual(itemizedItem);
@@ -355,25 +341,15 @@ describe('itemizeArrayItem', () => {
         if (subItem?.arrayItem) {
             const itemizedSubItem = itemizeArrayItem(
                 3,
-                subItem.arrayItem,
-                subItem?.id || '',
+                subItem?.arrayItem,
+                `${itemizedItem?.id}.${subItem.id}`, // in actual use the ${itemizedItem?.id} is added by feeding the component through the object field
             );
 
             const expectedSubItem = {
                 ...subItem.arrayItem,
                 id: 'PATH.5.arrayField.3',
-                properties: {
-                    level2prop1: {
-                        ...subItem.arrayItem?.properties?.level2prop1,
-                        id: 'PATH.5.arrayField.3.level2prop1StringField',
-                    },
-                    level2prop2: {
-                        ...subItem.arrayItem?.properties?.level2prop2,
-                        id: 'PATH.5.arrayField.3.level2prop2StringField',
-                    },
-                },
             };
-            expect(expectedSubItem).toEqual(itemizedSubItem);
+            expect(itemizedSubItem).toEqual(expectedSubItem);
         }
     });
 });

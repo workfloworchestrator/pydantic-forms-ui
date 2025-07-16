@@ -12,11 +12,13 @@ import { PydanticFormComponents, PydanticFormField } from '@/types';
 interface RenderFieldsProps {
     pydanticFormComponents: PydanticFormComponents;
     extraTriggerFields?: string[]; // The use case for this is that we want to trigger the array field aswell as the array item field
+    idPrefix?: string; // This is used to prefix the id of the field for nested fields
 }
 
 export function RenderFields({
     pydanticFormComponents,
     extraTriggerFields,
+    idPrefix = '',
 }: RenderFieldsProps) {
     return pydanticFormComponents.map((component) => {
         const { Element, isControlledElement } = component.Element;
@@ -27,23 +29,24 @@ export function RenderFields({
             return undefined;
         }
 
+        const field = {
+            ...pydanticFormField,
+            id: idPrefix
+                ? `${idPrefix}.${pydanticFormField.id}`
+                : pydanticFormField.id,
+        };
         if (isControlledElement) {
             return (
-                <div css={{ width: '100%' }} key={pydanticFormField.id}>
+                <div css={{ width: '100%' }} key={field.id}>
                     <WrapFieldElement
                         PydanticFormControlledElement={Element}
-                        pydanticFormField={pydanticFormField}
+                        pydanticFormField={field}
                         extraTriggerFields={extraTriggerFields}
                     />
                 </div>
             );
         } else {
-            return (
-                <Element
-                    pydanticFormField={pydanticFormField}
-                    key={pydanticFormField.id}
-                />
-            );
+            return <Element pydanticFormField={field} key={field.id} />;
         }
     });
 }
