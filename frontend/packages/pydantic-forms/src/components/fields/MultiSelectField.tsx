@@ -24,6 +24,7 @@ export const MultiSelectField = ({
     return (
         <div>
             <select
+                data-testid={pydanticFormField.id}
                 onBlur={onBlur}
                 disabled={disabled}
                 value={multiSelectItems}

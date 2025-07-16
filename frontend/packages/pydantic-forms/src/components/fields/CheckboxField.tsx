@@ -8,9 +8,11 @@ export const CheckboxField = ({
     value,
     name,
     disabled,
+    pydanticFormField,
 }: PydanticFormControlledElementProps) => {
     return (
         <input
+            data-testid={pydanticFormField.id}
             type="checkbox"
             checked={value}
             onChange={() => onChange(!value)}

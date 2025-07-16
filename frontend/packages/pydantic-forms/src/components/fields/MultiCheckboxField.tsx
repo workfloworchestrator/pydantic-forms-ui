@@ -35,6 +35,7 @@ export const MultiCheckboxField = ({
                 return (
                     <label key={optionId}>
                         <input
+                            data-testid={id}
                             type="checkbox"
                             id={optionId}
                             name={optionId}

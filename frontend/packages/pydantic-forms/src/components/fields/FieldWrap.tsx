@@ -35,6 +35,7 @@ export const FieldWrap = ({ pydanticFormField, children }: FieldWrapProps) => {
             required={pydanticFormField.required}
             isInvalid={!!isInvalid}
             error={errorMsg as string}
+            data-testid={pydanticFormField.id}
         >
             <div>{children}</div>
         </RowRenderer>

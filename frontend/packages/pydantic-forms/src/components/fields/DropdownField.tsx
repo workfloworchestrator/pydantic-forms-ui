@@ -14,6 +14,7 @@ export const DropdownField = ({
 }: PydanticFormControlledElementProps) => {
     return (
         <select
+            data-testid={pydanticFormField.id}
             value={value}
             onChange={(e) => {
                 onChange(e.target.value);

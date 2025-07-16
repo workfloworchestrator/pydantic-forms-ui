@@ -7,9 +7,11 @@ export const TextAreaField = ({
     onChange,
     onBlur,
     disabled,
+    pydanticFormField,
 }: PydanticFormControlledElementProps) => {
     return (
         <textarea
+            data-testid={pydanticFormField.id}
             onChange={(e) => onChange(e.target.value)}
             onBlur={onBlur}
             defaultValue={value}

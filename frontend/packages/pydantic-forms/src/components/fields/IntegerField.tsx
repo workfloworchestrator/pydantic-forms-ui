@@ -9,9 +9,11 @@ export const IntegerField = ({
     onChange,
     onBlur,
     disabled,
+    pydanticFormField,
 }: PydanticFormControlledElementProps) => {
     return (
         <input
+            data-testid={pydanticFormField.id}
             onBlur={onBlur}
             onChange={(t) => {
                 const value = parseInt(t.currentTarget.value);

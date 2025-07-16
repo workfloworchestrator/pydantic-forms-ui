@@ -14,8 +14,10 @@ export const TextField = ({
     onChange,
     onBlur,
     disabled,
+    pydanticFormField,
 }: PydanticFormControlledElementProps) => (
     <input
+        data-testid={pydanticFormField.id}
         onBlur={onBlur}
         onChange={(t) => {
             onChange(t.currentTarget.value);
