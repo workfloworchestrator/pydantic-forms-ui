@@ -1,6 +1,6 @@
 import type { FieldPath, FieldValues } from 'react-hook-form';
 
-import type { Properties, PydanticFormField } from '@/types';
+import type { PydanticFormField } from '@/types';
 
 export const insertItemAtIndex = (
     fields: PydanticFormField[],
@@ -31,53 +31,16 @@ export const getHashForArray = async (array: object[]) => {
     return hashHex;
 };
 
-export const itemizeProperties = (
-    properties: Properties,
-    itemId: string,
-): Properties | undefined => {
-    const itemizedProperties = Object.entries(properties).reduce(
-        (itemizedProperties, [key, property]) => {
-            const itemizedId = `${itemId}.${property.id}`;
-
-            itemizedProperties[key] = {
-                ...property,
-                properties: property.properties
-                    ? itemizeProperties(property.properties, itemizedId)
-                    : undefined,
-                id: itemizedId,
-            };
-
-            return itemizedProperties;
-        },
-        {} as Record<string, PydanticFormField>,
-    );
-    return itemizedProperties;
-};
-
-export const itemize = (
-    item: PydanticFormField,
-    itemId: string,
-): PydanticFormField => {
-    const properties = item.properties
-        ? itemizeProperties(item.properties, itemId)
-        : undefined;
-
-    const itemizedItem = {
-        ...item,
-        id: itemId,
-        ...(properties && { properties }),
-    };
-
-    return itemizedItem;
-};
-
 export const itemizeArrayItem = (
     arrayIndex: number,
     item: PydanticFormField,
     path: FieldPath<FieldValues>,
 ): PydanticFormField => {
     const itemId = `${path}.${arrayIndex}`;
-    return itemize(item, itemId);
+    return {
+        ...item,
+        id: itemId,
+    };
 };
 
 /**

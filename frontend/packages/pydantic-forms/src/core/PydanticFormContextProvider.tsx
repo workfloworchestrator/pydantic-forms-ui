@@ -9,6 +9,7 @@ import React, {
     createContext,
     useCallback,
     useEffect,
+    useMemo,
     useRef,
     useState,
 } from 'react';
@@ -157,14 +158,21 @@ function PydanticFormContextProvider({
         componentMatcherExtender,
     );
 
-    const initialData = getFormValuesFromFieldOrLabels(
-        pydanticFormSchema,
-        {
-            ...formLabels?.data,
-            ...customData,
-        },
+    const initialData = useMemo(() => {
+        return getFormValuesFromFieldOrLabels(
+            pydanticFormSchema?.properties,
+            {
+                ...formLabels?.data,
+                ...customData,
+            },
+            componentMatcherExtender,
+        );
+    }, [
         componentMatcherExtender,
-    );
+        customData,
+        formLabels?.data,
+        pydanticFormSchema?.properties,
+    ]);
 
     // initialize the react-hook-form
     const rhf = useForm({

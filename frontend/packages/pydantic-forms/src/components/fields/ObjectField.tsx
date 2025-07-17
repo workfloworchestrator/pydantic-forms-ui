@@ -28,7 +28,10 @@ export const ObjectField = ({
             }}
         >
             <h1>{pydanticFormField.title}</h1>
-            <RenderFields pydanticFormComponents={components} />
+            <RenderFields
+                pydanticFormComponents={components}
+                idPrefix={pydanticFormField.id}
+            />
         </div>
     );
 };

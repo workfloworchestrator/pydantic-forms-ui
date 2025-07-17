@@ -44,7 +44,6 @@ const getPydanticFormField = (
     formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
     isArrayItem: boolean = false, // Arrayitems should not have titles or descriptions. Their properties will have them instead
-    prefix: string = '',
 ) => {
     const flatSchema = flattenSchemaCombinators(propertySchema);
     const propertyName = propertyId.split('.').pop() || propertyId;
@@ -62,7 +61,6 @@ const getPydanticFormField = (
         flatSchema.required || [],
         formLabels,
         fieldDetailProvider,
-        prefix,
     );
     const title = !isArrayItem
         ? translateLabel(propertyName, flatSchema.title, formLabels) ||
@@ -76,6 +74,10 @@ const getPydanticFormField = (
               formLabels,
           )
         : '';
+
+    const addConstValue =
+        typeof flatSchema.const === 'undefined' ? false : true;
+
     const arrayItem = flatSchema.items
         ? getPydanticFormField(
               flatSchema.items,
@@ -107,6 +109,7 @@ const getPydanticFormField = (
         required,
         validations,
         columns: 6, // TODO: Is this still relevant? https://github.com/workfloworchestrator/orchestrator-ui-library/issues/1891
+        ...(addConstValue && { const: flatSchema.const }),
         properties,
         ...fieldDetailProvider?.[propertyId],
     };
@@ -118,7 +121,6 @@ export const parseProperties = (
     requiredFields: string[] = [],
     formLabels?: Record<string, string>,
     fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
-    prefix: string = '',
 ): Properties => {
     if (!properties) return {};
 
@@ -126,19 +128,16 @@ export const parseProperties = (
 
     const parsedProperties = schemaProperties.reduce(
         (propertiesObject: Properties, [propertyId, propertySchema]) => {
-            const propertyKey = `${prefix ? prefix + '.' : ''}${propertyId}`;
-
             const pydanticFormField = getPydanticFormField(
                 propertySchema,
-                propertyKey,
+                propertyId,
                 requiredFields,
                 formLabels,
                 fieldDetailProvider,
                 false, // We are not dealing with array items here
-                propertyKey,
             );
 
-            propertiesObject[propertyKey] = pydanticFormField;
+            propertiesObject[propertyId] = pydanticFormField;
             return propertiesObject;
         },
         {},

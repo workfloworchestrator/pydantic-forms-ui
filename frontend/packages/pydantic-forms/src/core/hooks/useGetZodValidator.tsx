@@ -105,14 +105,13 @@ export const getZodValidationObject = (
             return;
 
         const id = pydanticFormField.id;
-        const key = id.split('.').pop() || id; // Get the last part of the id in case of nested fields
         const zodRule = getZodRule(
             pydanticFormField,
             rhf,
             componentMatcherExtender,
         );
 
-        validationObject[key] = zodRule ?? z.any();
+        validationObject[id] = zodRule ?? z.any();
     });
     return z.object(validationObject);
 };

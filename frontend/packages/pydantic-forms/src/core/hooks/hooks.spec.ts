@@ -16,8 +16,8 @@ import {
     PydanticFormFieldType,
     PydanticFormPropertySchemaParsed,
 } from '@/types';
-import { getPydanticFormFieldDummy } from '@/utils.spec';
 
+import { getMockPydanticFormField } from '../helper.spec';
 import { getZodValidationObject } from './useGetZodValidator';
 import { parseProperties } from './usePydanticFormParser';
 
@@ -46,7 +46,7 @@ describe('parseProperties', () => {
         const properties = parseProperties(parsedProperties);
 
         const expectedProperties: Properties = {
-            test: getPydanticFormFieldDummy({
+            test: getMockPydanticFormField({
                 type: PydanticFormFieldType.STRING,
                 id: 'test',
                 format: PydanticFormFieldFormat.DEFAULT,
@@ -56,7 +56,7 @@ describe('parseProperties', () => {
 
         expect(properties).toEqual(expectedProperties);
     });
-    it('recursively transform properties of properties. Updates ids with correct path', () => {
+    it('recursively transform properties of properties.', () => {
         const parsedProperties: ParsedProperties = {
             person: getParsedPropertyMock({
                 type: PydanticFormFieldType.OBJECT,
@@ -73,7 +73,7 @@ describe('parseProperties', () => {
         };
 
         const expectedProperties: Properties = {
-            person: getPydanticFormFieldDummy({
+            person: getMockPydanticFormField({
                 type: PydanticFormFieldType.OBJECT,
                 format: PydanticFormFieldFormat.DEFAULT,
                 id: 'person',
@@ -93,15 +93,15 @@ describe('parseProperties', () => {
                     },
                 },
                 properties: {
-                    ['person.name']: getPydanticFormFieldDummy({
+                    ['name']: getMockPydanticFormField({
                         type: PydanticFormFieldType.STRING,
-                        id: 'person.name',
+                        id: 'name',
                         format: PydanticFormFieldFormat.DEFAULT,
                         title: 'name',
                     }),
-                    ['person.age']: getPydanticFormFieldDummy({
+                    ['age']: getMockPydanticFormField({
                         type: PydanticFormFieldType.INTEGER,
-                        id: 'person.age',
+                        id: 'age',
                         format: PydanticFormFieldFormat.DEFAULT,
                         title: 'age',
                         schema: {
@@ -114,16 +114,6 @@ describe('parseProperties', () => {
         };
         const properties = parseProperties(parsedProperties);
         expect(properties).toEqual(expectedProperties);
-    });
-
-    it('transforms arrayItem into pydanticForm field', () => {
-        const properties = parseProperties({});
-        expect(properties).toEqual({});
-    });
-
-    it('transforms object with array with object as expected', () => {
-        const properties = parseProperties({});
-        expect(properties).toEqual({});
     });
 });
 
@@ -176,19 +166,19 @@ describe('getZodValidationObject', () => {
         },
     ];
 
-    const nameField = getPydanticFormFieldDummy({
+    const nameField = getMockPydanticFormField({
         type: PydanticFormFieldType.STRING,
         id: 'name',
         required: true,
     });
 
-    const ageField = getPydanticFormFieldDummy({
+    const ageField = getMockPydanticFormField({
         type: PydanticFormFieldType.INTEGER,
         id: 'age',
         required: true,
     });
 
-    const personObjectField = getPydanticFormFieldDummy({
+    const personObjectField = getMockPydanticFormField({
         type: PydanticFormFieldType.OBJECT,
         id: 'person',
         required: true,
@@ -232,11 +222,11 @@ describe('getZodValidationObject', () => {
         ];
 
         const properties: Properties = {
-            uncontrolled: getPydanticFormFieldDummy({
+            uncontrolled: getMockPydanticFormField({
                 id: 'uncontrolled',
                 format: PydanticFormFieldFormat.LABEL,
             }),
-            controlled: getPydanticFormFieldDummy({
+            controlled: getMockPydanticFormField({
                 id: 'controlled',
                 type: PydanticFormFieldType.STRING,
                 required: true,
@@ -283,18 +273,18 @@ describe('getZodValidationObject', () => {
         ];
 
         const properties: Properties = {
-            uncontrolled: getPydanticFormFieldDummy({
+            uncontrolled: getMockPydanticFormField({
                 id: 'uncontrolled',
                 type: PydanticFormFieldType.OBJECT,
                 properties: {
-                    name: getPydanticFormFieldDummy({
+                    name: getMockPydanticFormField({
                         id: 'name',
                         type: PydanticFormFieldType.STRING,
                         required: true,
                     }),
                 },
             }),
-            uncontrolled2: getPydanticFormFieldDummy({
+            uncontrolled2: getMockPydanticFormField({
                 id: 'uncontrolled',
                 type: PydanticFormFieldType.OBJECT,
             }),
@@ -341,16 +331,16 @@ describe('getZodValidationObject', () => {
         ];
 
         const properties: Properties = {
-            uncontrolled: getPydanticFormFieldDummy({
+            uncontrolled: getMockPydanticFormField({
                 id: 'uncontrolled',
                 type: PydanticFormFieldType.ARRAY,
-                arrayItem: getPydanticFormFieldDummy({
+                arrayItem: getMockPydanticFormField({
                     id: 'name',
                     type: PydanticFormFieldType.STRING,
                     required: true, // This is the array item
                 }),
             }),
-            uncontrolled2: getPydanticFormFieldDummy({
+            uncontrolled2: getMockPydanticFormField({
                 id: 'uncontrolled2',
                 type: PydanticFormFieldType.ARRAY,
             }),
@@ -372,7 +362,7 @@ describe('getZodValidationObject', () => {
     });
 
     it('Returns zod object with any() rule for a property that doesnt map to a rule but has required prop', () => {
-        const pydanticFormField = getPydanticFormFieldDummy({
+        const pydanticFormField = getMockPydanticFormField({
             type: PydanticFormFieldType.STRING,
             id: 'test',
             required: true,
@@ -394,13 +384,13 @@ describe('getZodValidationObject', () => {
     });
 
     it('Returns zod object with the rule the field maps to', () => {
-        const pydanticFormStringField = getPydanticFormFieldDummy({
+        const pydanticFormStringField = getMockPydanticFormField({
             type: PydanticFormFieldType.STRING,
             id: 'string',
             required: true,
         });
 
-        const pydanticFormIntegerField = getPydanticFormFieldDummy({
+        const pydanticFormIntegerField = getMockPydanticFormField({
             type: PydanticFormFieldType.INTEGER,
             id: 'integer',
             required: true,
@@ -443,19 +433,19 @@ describe('getZodValidationObject', () => {
     });
 
     it('Works for nested objects', () => {
-        const locationField = getPydanticFormFieldDummy({
+        const locationField = getMockPydanticFormField({
             type: PydanticFormFieldType.STRING,
             id: 'location',
             required: true,
         });
 
-        const nameField = getPydanticFormFieldDummy({
+        const nameField = getMockPydanticFormField({
             type: PydanticFormFieldType.STRING,
             id: 'name',
             required: true,
         });
 
-        const schoolObjectField = getPydanticFormFieldDummy({
+        const schoolObjectField = getMockPydanticFormField({
             type: PydanticFormFieldType.OBJECT,
             id: 'school',
             required: true,
@@ -465,18 +455,18 @@ describe('getZodValidationObject', () => {
             },
         });
 
-        const degreeField = getPydanticFormFieldDummy({
+        const degreeField = getMockPydanticFormField({
             type: PydanticFormFieldType.STRING,
             id: 'degree',
             required: true,
         });
 
-        const yearField = getPydanticFormFieldDummy({
+        const yearField = getMockPydanticFormField({
             type: PydanticFormFieldType.INTEGER,
             id: 'year',
         });
 
-        const eductionObjectField = getPydanticFormFieldDummy({
+        const eductionObjectField = getMockPydanticFormField({
             type: PydanticFormFieldType.OBJECT,
             id: 'education',
             required: true,
@@ -487,13 +477,13 @@ describe('getZodValidationObject', () => {
             },
         });
 
-        const ageField = getPydanticFormFieldDummy({
+        const ageField = getMockPydanticFormField({
             type: PydanticFormFieldType.INTEGER,
             id: 'age',
             required: true,
         });
 
-        const personObjectField = getPydanticFormFieldDummy({
+        const personObjectField = getMockPydanticFormField({
             type: PydanticFormFieldType.OBJECT,
             id: 'person',
             properties: {
@@ -531,12 +521,12 @@ describe('getZodValidationObject', () => {
     });
 
     it('Works for array fields', () => {
-        const nameField = getPydanticFormFieldDummy({
+        const nameField = getMockPydanticFormField({
             type: PydanticFormFieldType.STRING,
             id: 'name',
             required: true,
         });
-        const personsArrayField = getPydanticFormFieldDummy({
+        const personsArrayField = getMockPydanticFormField({
             type: PydanticFormFieldType.ARRAY,
             id: 'persons',
             required: true,
@@ -559,17 +549,17 @@ describe('getZodValidationObject', () => {
     });
 
     it('Works for array of object fields', () => {
-        const nameField = getPydanticFormFieldDummy({
+        const nameField = getMockPydanticFormField({
             type: PydanticFormFieldType.STRING,
             id: 'name',
             required: true,
         });
-        const ageField = getPydanticFormFieldDummy({
+        const ageField = getMockPydanticFormField({
             type: PydanticFormFieldType.INTEGER,
             id: 'age',
             required: true,
         });
-        const personObjectField = getPydanticFormFieldDummy({
+        const personObjectField = getMockPydanticFormField({
             type: PydanticFormFieldType.OBJECT,
             id: 'person',
             required: true,
@@ -578,7 +568,7 @@ describe('getZodValidationObject', () => {
                 age: ageField,
             },
         });
-        const personsArrayField = getPydanticFormFieldDummy({
+        const personsArrayField = getMockPydanticFormField({
             type: PydanticFormFieldType.ARRAY,
             id: 'persons',
             required: true,
@@ -606,24 +596,24 @@ describe('getZodValidationObject', () => {
     });
 
     it('Works for array of array of array', () => {
-        const nameField = getPydanticFormFieldDummy({
+        const nameField = getMockPydanticFormField({
             type: PydanticFormFieldType.STRING,
             id: 'name',
             required: true,
         });
-        const personsArrayField = getPydanticFormFieldDummy({
+        const personsArrayField = getMockPydanticFormField({
             type: PydanticFormFieldType.ARRAY,
             id: 'personsArrayField',
             required: true,
             arrayItem: nameField,
         });
-        const personsArrayArrayField = getPydanticFormFieldDummy({
+        const personsArrayArrayField = getMockPydanticFormField({
             type: PydanticFormFieldType.ARRAY,
             id: 'personsArrayArrayField',
             required: true,
             arrayItem: personsArrayField,
         });
-        const personsArrayArrayArrayField = getPydanticFormFieldDummy({
+        const personsArrayArrayArrayField = getMockPydanticFormField({
             type: PydanticFormFieldType.ARRAY,
             id: 'personsArrayArrayArrayField',
             required: true,
@@ -646,19 +636,19 @@ describe('getZodValidationObject', () => {
     });
 
     it('Works for objects that have array properties', () => {
-        const nameField = getPydanticFormFieldDummy({
+        const nameField = getMockPydanticFormField({
             type: PydanticFormFieldType.STRING,
             id: 'name',
             required: true,
         });
-        const languageSpokenField = getPydanticFormFieldDummy({
+        const languageSpokenField = getMockPydanticFormField({
             type: PydanticFormFieldType.ARRAY,
             id: 'languageSpoken',
             required: true,
             arrayItem: nameField,
         });
 
-        const personObjectField = getPydanticFormFieldDummy({
+        const personObjectField = getMockPydanticFormField({
             type: PydanticFormFieldType.OBJECT,
             id: 'person',
             required: true,
@@ -689,19 +679,19 @@ describe('getZodValidationObject', () => {
     });
 
     it('Works for arrays of objects that have array properties', () => {
-        const nameField = getPydanticFormFieldDummy({
+        const nameField = getMockPydanticFormField({
             type: PydanticFormFieldType.STRING,
             id: 'name',
             required: true,
         });
-        const languageSpokenField = getPydanticFormFieldDummy({
+        const languageSpokenField = getMockPydanticFormField({
             type: PydanticFormFieldType.ARRAY,
             id: 'languageSpoken',
             arrayItem: nameField,
             required: true,
         });
 
-        const personObjectField = getPydanticFormFieldDummy({
+        const personObjectField = getMockPydanticFormField({
             type: PydanticFormFieldType.OBJECT,
             id: 'person',
             required: true,
@@ -711,7 +701,7 @@ describe('getZodValidationObject', () => {
             },
         });
 
-        const personsArrayField = getPydanticFormFieldDummy({
+        const personsArrayField = getMockPydanticFormField({
             type: PydanticFormFieldType.ARRAY,
             id: 'persons',
             required: true,
