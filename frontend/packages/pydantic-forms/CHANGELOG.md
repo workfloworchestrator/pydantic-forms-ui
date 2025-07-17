@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.6.3
+
+### Patch Changes
+
+-   cda50fe: Fixes getting default values
+
 ## 0.6.2
 
 ### Patch Changes
