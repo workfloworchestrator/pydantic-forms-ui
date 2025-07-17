@@ -1,5 +1,12 @@
 # pydantic-forms
 
+## 0.6.4
+
+### Patch Changes
+
+-   4b54738: Adds util for watching fields
+-   569bcdf: Resets the form with initial data in useEffect after render
+
 ## 0.6.3
 
 ### Patch Changes
