@@ -77,6 +77,7 @@ export interface PydanticFormContextProps {
     clearForm: () => void;
     hasNext: boolean;
     formInputData: object[];
+    initialData: FieldValues;
 }
 
 export enum PydanticFormState {
