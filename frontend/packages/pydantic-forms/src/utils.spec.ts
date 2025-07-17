@@ -3,6 +3,7 @@ import type { FieldValues } from 'react-hook-form';
 import { getMockPydanticFormField } from './core/helper.spec';
 import { PydanticFormFieldType } from './types';
 import {
+    getFormFieldIdWithPath,
     getFormFieldValue,
     insertItemAtIndex,
     itemizeArrayItem,
@@ -191,6 +192,26 @@ describe('getFormFieldValue', () => {
         );
 
         expect(valueFromListElement).toEqual(['123', '456']);
+    });
+});
+
+describe.only('getFormFieldIdWithPath', () => {
+    it('returns fieldname when no path is supplied', () => {
+        expect(getFormFieldIdWithPath('', 'name')).toBe('name');
+    });
+
+    it('returns the full field id from the sybling level', () => {
+        expect(getFormFieldIdWithPath('person.name', 'age')).toBe('person.age');
+    });
+
+    it('works with array', () => {
+        expect(getFormFieldIdWithPath('person.0', '')).toBe('person');
+    });
+
+    it('works with array of objects', () => {
+        expect(getFormFieldIdWithPath('person.0.name', 'age')).toBe(
+            'person.0.age',
+        );
     });
 });
 

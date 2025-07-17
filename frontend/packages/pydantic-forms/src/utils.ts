@@ -107,3 +107,26 @@ export function getFormFieldValue(
 
     return current?.[name];
 }
+
+/**
+ * Returns the full field id from the sibling level. Used to pass into rhfs watch function.
+ * This is relevant if the field is part of an array or object where there might be more
+ *
+ */
+export function getFormFieldIdWithPath(
+    pydanticFormFieldId: PydanticFormField['id'],
+    fieldName: string,
+): string {
+    const pathToParent = pydanticFormFieldId.split('.');
+    pathToParent.pop();
+
+    if (fieldName) {
+        return pathToParent?.length > 0
+            ? [pathToParent.join('.'), fieldName].join('.')
+            : fieldName;
+    } else if (pathToParent?.length > 0) {
+        return pathToParent.join('.'); // Return the full path without the last segment
+    }
+
+    return '';
+}
