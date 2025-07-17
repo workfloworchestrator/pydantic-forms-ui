@@ -27,6 +27,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         skipSuccessNotice,
         loadingComponent,
         rhf,
+        initialData,
     } = contextProps;
     const { formRenderer, footerRenderer, headerRenderer } = config || {};
 
@@ -36,6 +37,10 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
             rhf.trigger();
         }
     }, [rhf, pydanticFormSchema]);
+
+    useEffect(() => {
+        rhf.reset(initialData);
+    }, [rhf, initialData]);
 
     const pydanticFormComponents: PydanticFormComponents =
         getPydanticFormComponents(
