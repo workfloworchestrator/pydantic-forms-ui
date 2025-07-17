@@ -17,6 +17,7 @@ export const ObjectField = ({
 
     return (
         <div
+            data-testid={pydanticFormField.id}
             style={{
                 border: 'thin dotted grey',
                 padding: '1rem',

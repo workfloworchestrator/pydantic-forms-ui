@@ -1,5 +1,9 @@
 import React from 'react';
 
-export const DividerField = () => {
-    return <hr />;
+import type { PydanticFormElementProps } from '@/types';
+
+export const DividerField = ({
+    pydanticFormField,
+}: PydanticFormElementProps) => {
+    return <hr data-testid={pydanticFormField.id} />;
 };

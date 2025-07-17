@@ -19,6 +19,7 @@ export const RadioField = ({
             {options.map((option, key) => (
                 <div key={key}>
                     <input
+                        data-testid={`${id}-${option.value}`}
                         type="radio"
                         id={option.value}
                         name={id}

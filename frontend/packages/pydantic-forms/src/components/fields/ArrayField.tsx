@@ -81,6 +81,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
 
     return (
         <div
+            data-testid={arrayName}
             style={{
                 border: 'thin solid green',
                 padding: '1rem',
