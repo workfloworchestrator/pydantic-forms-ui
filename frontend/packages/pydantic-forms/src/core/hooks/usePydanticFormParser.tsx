@@ -75,7 +75,8 @@ const getPydanticFormField = (
           )
         : '';
 
-    const constValue = flatSchema.const || undefined;
+    const addConstValue =
+        typeof flatSchema.const === 'undefined' ? false : true;
 
     const arrayItem = flatSchema.items
         ? getPydanticFormField(
@@ -108,7 +109,7 @@ const getPydanticFormField = (
         required,
         validations,
         columns: 6, // TODO: Is this still relevant? https://github.com/workfloworchestrator/orchestrator-ui-library/issues/1891
-        ...(constValue && { const: constValue }),
+        ...(addConstValue && { const: flatSchema.const }),
         properties,
         ...fieldDetailProvider?.[propertyId],
     };
