@@ -27,20 +27,16 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         skipSuccessNotice,
         loadingComponent,
         rhf,
-        initialData,
     } = contextProps;
+
     const { formRenderer, footerRenderer, headerRenderer } = config || {};
 
     useEffect(() => {
-        if (rhf.getValues().length === 0) {
+        if (rhf.getValues().length !== 0) {
             // Only trigger validations if there are values
             rhf.trigger();
         }
     }, [rhf, pydanticFormSchema]);
-
-    useEffect(() => {
-        rhf.reset(initialData);
-    }, [rhf, initialData]);
 
     const pydanticFormComponents: PydanticFormComponents =
         getPydanticFormComponents(
