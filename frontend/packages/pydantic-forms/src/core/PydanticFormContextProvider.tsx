@@ -255,8 +255,7 @@ function PydanticFormContextProvider({
             return;
         }
 
-        // when we receive a form from the JSON, we fully reset the scheme
-        // when we receive a new form from the JSON, we fully reset the scheme
+        // when we receive a new form from JSON, we fully reset the form
         if (apiResponse?.form && rawSchema !== apiResponse.form) {
             resetFormData();
             setRawSchema(apiResponse.form);
