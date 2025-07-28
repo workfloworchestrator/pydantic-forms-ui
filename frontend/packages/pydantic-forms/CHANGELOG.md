@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.6.5
+
+### Patch Changes
+
+-   6202fd8: Removes form reset after render to avoid losing values on errors
+
 ## 0.6.4
 
 ### Patch Changes
