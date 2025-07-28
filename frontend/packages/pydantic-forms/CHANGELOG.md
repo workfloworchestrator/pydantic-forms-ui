@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.6.6
+
+### Patch Changes
+
+-   cbe2019: Fix error where resetForm is called to often clearing initialData in some cases
+
 ## 0.6.5
 
 ### Patch Changes
