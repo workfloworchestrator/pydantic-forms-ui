@@ -178,6 +178,8 @@ function PydanticFormContextProvider({
     const rhf = useForm({
         resolver: zodResolver(zodSchema),
         mode: 'all',
+        defaultValues: initialData,
+        values: initialData,
     });
 
     const resetFormData = useCallback(
