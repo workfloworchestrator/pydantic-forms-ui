@@ -9,15 +9,6 @@ import { itemizeArrayItem } from '@/utils';
 import { RenderFields } from '../render';
 
 export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
-    // TODO/NOTE: Default array values on nested object fields are not displayed correctly.
-    // This looks like its a react-hook-form issue. It doesn't - so far - occur in WFO context so we
-    // will not fix for now. Observed behavior:
-    // - The default values are set.
-    // - The array shows without items
-    // - As soon as one item is added, the other items are automatically shown.
-    // As possible fix is to do a setValue of the array field in useEffect.
-    // Running a rhf.reset() in the RenderForm component works but introduces other issues, resetting the form when errors occur.
-
     const { rhf, config } = usePydanticFormContext();
 
     const { control } = rhf;

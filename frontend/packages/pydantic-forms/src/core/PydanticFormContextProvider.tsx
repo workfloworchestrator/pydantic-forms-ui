@@ -255,7 +255,16 @@ function PydanticFormContextProvider({
             return;
         }
 
-        // when we receive a form from the JSON, we fully reset the scheme
+        // when we receive a new form from JSON, we fully reset the form
+        if (apiResponse?.form && rawSchema !== apiResponse.form) {
+            resetFormData();
+            setRawSchema(apiResponse.form);
+            if (apiResponse.meta) {
+                setHasNext(!!apiResponse.meta.hasNext);
+            }
+            setErrorDetails(undefined);
+        }
+
         if (apiResponse?.form) {
             resetFormData();
             setRawSchema(apiResponse.form);
@@ -271,7 +280,8 @@ function PydanticFormContextProvider({
         }
 
         setIsSending(false);
-    }, [apiResponse, onSuccess, resetFormData, rhf, skipSuccessNotice]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [apiResponse]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
 
     // a useeffect for filling data whenever formdefinition or labels update
 
