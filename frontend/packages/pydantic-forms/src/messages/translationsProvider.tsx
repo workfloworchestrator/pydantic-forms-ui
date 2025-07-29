@@ -54,7 +54,7 @@ export const TranslationsProvider = ({
 
     return (
         <NextIntlClientProvider
-            locale={locale || Locale.enGB}
+            locale={locale}
             messages={messages}
             timeZone={DEFAULT_TIMEZONE}
             onError={onError}

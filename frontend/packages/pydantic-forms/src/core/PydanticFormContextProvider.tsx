@@ -33,14 +33,13 @@ import {
     usePydanticFormParser,
 } from '@/core/hooks';
 import {
+    Locale,
     PydanticFormContextProps,
     PydanticFormInitialContextProps,
     PydanticFormSchemaRawJson,
     PydanticFormValidationErrorDetails,
 } from '@/types';
 import { getHashForArray } from '@/utils';
-
-z.config(z.locales.nl());
 
 export const PydanticFormContext =
     createContext<PydanticFormContextProps | null>(null);
@@ -71,6 +70,7 @@ function PydanticFormContextProvider({
         allowUntouchedSubmit,
         skipSuccessNotice,
         componentMatcherExtender,
+        locale,
         cancelButton,
     } = config;
 
@@ -89,6 +89,21 @@ function PydanticFormContextProvider({
             formRef.current = formKey;
         }
     }, [formKey]);
+
+    useEffect(() => {
+        const getLocale = () => {
+            switch (locale) {
+                case Locale.enGB:
+                    return z.locales.en();
+                case Locale.nlNL:
+                    return z.locales.nl();
+                default:
+                    return z.locales.en();
+            }
+        };
+
+        z.config(getLocale());
+    }, [locale]);
 
     const updateHistory = async (
         formInput: object,
