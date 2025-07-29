@@ -79,6 +79,17 @@ function PydanticFormContextProvider({
     );
     const [formInputData, setFormInputData] = useState<object[]>([]);
 
+    const formRef = useRef<string>(formKey);
+
+    useEffect(() => {
+        if (formKey !== formRef.current) {
+            // When the formKey changes we need to reset the form input data
+            setFormInputData([]);
+            setFormInputHistory(new Map<string, object>());
+            formRef.current = formKey;
+        }
+    }, [formKey]);
+
     const updateHistory = async (
         formInput: object,
         previousSteps: object[],
