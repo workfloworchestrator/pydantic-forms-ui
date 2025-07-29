@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.6.8
+
+### Patch Changes
+
+-   94d7623: Removes custom translations and fallsback to standard translations provided by zod
+
 ## 0.6.7
 
 ### Patch Changes
