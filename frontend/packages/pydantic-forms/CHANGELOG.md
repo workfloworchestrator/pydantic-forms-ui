@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.6.7
+
+### Patch Changes
+
+-   fecf9f1: Resets form if formKey changes
+
 ## 0.6.6
 
 ### Patch Changes
