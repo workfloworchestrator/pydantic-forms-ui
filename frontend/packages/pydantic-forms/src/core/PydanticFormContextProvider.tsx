@@ -209,8 +209,9 @@ function PydanticFormContextProvider({
     });
 
     const resetFormData = useCallback(
-        (inputData: object = {}) => {
-            rhf.reset(inputData);
+        (inputData?: object) => {
+            // Resetting without inputData will reset to defaultValues
+            rhf.reset(inputData || undefined);
         },
         [rhf],
     );
