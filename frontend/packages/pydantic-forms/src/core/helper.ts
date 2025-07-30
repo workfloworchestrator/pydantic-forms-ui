@@ -477,7 +477,6 @@ export const getMatcher = (
 
 export const getClientSideValidationRule = (
     pydanticFormField: PydanticFormField | undefined,
-    rhf?: ReturnType<typeof useForm>,
     componentMatcherExtender?: PydanticFormsContextConfig['componentMatcherExtender'],
 ): ZodType => {
     if (!pydanticFormField) return z.unknown();
@@ -486,7 +485,7 @@ export const getClientSideValidationRule = (
     const componentMatch = matcher(pydanticFormField);
 
     let validationRule =
-        componentMatch?.validator?.(pydanticFormField, rhf) ?? z.unknown();
+        componentMatch?.validator?.(pydanticFormField) ?? z.unknown();
 
     if (!pydanticFormField.required) {
         validationRule = validationRule.optional();
