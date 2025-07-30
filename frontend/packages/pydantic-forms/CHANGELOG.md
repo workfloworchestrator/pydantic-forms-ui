@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.6.9
+
+### Patch Changes
+
+-   1acbbb6: Removes double function call
+
 ## 0.6.8
 
 ### Patch Changes
