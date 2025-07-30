@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.6.11
+
+### Patch Changes
+
+-   5888345: Fixes resetting form data
+
 ## 0.6.10
 
 ### Patch Changes
