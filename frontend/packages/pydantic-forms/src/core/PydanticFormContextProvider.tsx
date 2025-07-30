@@ -82,15 +82,6 @@ function PydanticFormContextProvider({
     const formRef = useRef<string>(formKey);
 
     useEffect(() => {
-        if (formKey !== formRef.current) {
-            // When the formKey changes we need to reset the form input data
-            setFormInputData([]);
-            setFormInputHistory(new Map<string, object>());
-            formRef.current = formKey;
-        }
-    }, [formKey]);
-
-    useEffect(() => {
         const getLocale = () => {
             switch (locale) {
                 case Locale.enGB:
@@ -208,13 +199,15 @@ function PydanticFormContextProvider({
         values: initialData,
     });
 
-    const resetFormData = useCallback(
-        (inputData?: object) => {
-            // Resetting without inputData will reset to defaultValues
-            rhf.reset(inputData || undefined);
-        },
-        [rhf],
-    );
+    useEffect(() => {
+        if (formKey !== formRef.current) {
+            // When the formKey changes we need to reset the form input data
+            setFormInputData([]);
+            setFormInputHistory(new Map<string, object>());
+            rhf?.reset({});
+            formRef.current = formKey;
+        }
+    }, [formKey, rhf]);
 
     rhfRef.current = rhf;
 
@@ -259,15 +252,8 @@ function PydanticFormContextProvider({
         }
 
         setFormInputHistory(new Map<string, object>());
-        resetFormData();
-    }, [
-        apiResponse,
-        isFullFilled,
-        onSuccess,
-        resetFormData,
-        rhf,
-        skipSuccessNotice,
-    ]);
+        rhf.reset({});
+    }, [apiResponse, isFullFilled, onSuccess, rhf, skipSuccessNotice]);
 
     // a useeffect for whenever the error response updates
     // sometimes we need to update the form,
@@ -280,7 +266,7 @@ function PydanticFormContextProvider({
 
         // when we receive a new form from JSON, we fully reset the form
         if (apiResponse?.form && rawSchema !== apiResponse.form) {
-            resetFormData();
+            rhf.reset({});
             setRawSchema(apiResponse.form);
             if (apiResponse.meta) {
                 setHasNext(!!apiResponse.meta.hasNext);
@@ -304,10 +290,10 @@ function PydanticFormContextProvider({
             const currentStepFromHistory = formInputHistory.get(hash);
 
             if (currentStepFromHistory) {
-                resetFormData(currentStepFromHistory);
+                rhf.reset(currentStepFromHistory);
             }
         });
-    }, [formInputData, formInputHistory, resetFormData, rhf]);
+    }, [formInputData, formInputHistory, rhf]);
 
     // this is to show an error whenever there is an unexpected error from the backend
     // for instance a 500
@@ -348,11 +334,11 @@ function PydanticFormContextProvider({
     const resetForm = useCallback(
         (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             e.preventDefault();
-            resetFormData();
             setErrorDetails(undefined);
+            rhf.reset();
             rhf.trigger();
         },
-        [resetFormData, rhf],
+        [rhf],
     );
 
     const resetErrorDetails = useCallback(() => {

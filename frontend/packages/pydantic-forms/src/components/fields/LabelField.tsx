@@ -5,7 +5,7 @@ import type { PydanticFormElementProps } from '@/types';
 export const LabelField = ({ pydanticFormField }: PydanticFormElementProps) => {
     return (
         <div data-testid={pydanticFormField.id}>
-            <label>{pydanticFormField?.default}</label>
+            <label>{pydanticFormField?.title}</label>
         </div>
     );
 };
