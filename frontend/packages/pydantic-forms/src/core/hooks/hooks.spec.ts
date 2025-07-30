@@ -1,5 +1,3 @@
-import { useForm } from 'react-hook-form';
-
 import { z } from 'zod/v4';
 
 import { jest } from '@jest/globals';
@@ -139,8 +137,6 @@ describe('getZodValidationObject', () => {
         };
     };
 
-    const rhf = useForm();
-
     const basicMatchers: PydanticComponentMatcher[] = [
         {
             id: 'stringMatcher',
@@ -189,7 +185,7 @@ describe('getZodValidationObject', () => {
     });
 
     it('Returns undefined when no properties are passed', () => {
-        const zodObject = getZodValidationObject({}, rhf, getMockMatcher());
+        const zodObject = getZodValidationObject({}, getMockMatcher());
         const expectedZodObject = z.any();
         expect(z.toJSONSchema(zodObject)).toEqual(
             z.toJSONSchema(expectedZodObject),
@@ -235,7 +231,6 @@ describe('getZodValidationObject', () => {
 
         const schema = getZodValidationObject(
             properties,
-            rhf,
             getMockMatcher(matchers),
         );
 
@@ -292,7 +287,6 @@ describe('getZodValidationObject', () => {
 
         const schema = getZodValidationObject(
             properties,
-            rhf,
             getMockMatcher(matchers),
         );
 
@@ -348,7 +342,6 @@ describe('getZodValidationObject', () => {
 
         const schema = getZodValidationObject(
             properties,
-            rhf,
             getMockMatcher(matchers),
         );
 
@@ -371,11 +364,7 @@ describe('getZodValidationObject', () => {
         const properties: Properties = {
             test: pydanticFormField,
         };
-        const zodObject = getZodValidationObject(
-            properties,
-            rhf,
-            getMockMatcher(),
-        );
+        const zodObject = getZodValidationObject(properties, getMockMatcher());
         const expectedZodObject = z.object({ test: z.any() });
 
         expect(z.toJSONSchema(zodObject)).toEqual(
@@ -402,7 +391,7 @@ describe('getZodValidationObject', () => {
             string: pydanticFormStringField,
             integer: pydanticFormIntegerField,
         };
-        const zodObject = getZodValidationObject(properties, rhf, mockMatcher);
+        const zodObject = getZodValidationObject(properties, mockMatcher);
         const expectedZodObject = z.object({
             string: z.string(),
             integer: z.number().int(),
@@ -419,7 +408,7 @@ describe('getZodValidationObject', () => {
         const properties: Properties = {
             person: personObjectField,
         };
-        const zodObject = getZodValidationObject(properties, rhf, mockMatcher);
+        const zodObject = getZodValidationObject(properties, mockMatcher);
         const expectedZodObject = z.object({
             person: z.object({
                 name: z.string(),
@@ -499,7 +488,7 @@ describe('getZodValidationObject', () => {
             person: personObjectField,
         };
 
-        const zodObject = getZodValidationObject(properties, rhf, mockMatcher);
+        const zodObject = getZodValidationObject(properties, mockMatcher);
         const expectedZodObject = z.object({
             person: z.object({
                 name: z.string(),
@@ -537,7 +526,7 @@ describe('getZodValidationObject', () => {
             persons: personsArrayField,
         };
         const mockMatcher = getMockMatcher(basicMatchers);
-        const zodObject = getZodValidationObject(properties, rhf, mockMatcher);
+        const zodObject = getZodValidationObject(properties, mockMatcher);
 
         const expectedZodObject = z.object({
             persons: z.array(z.string()),
@@ -579,7 +568,7 @@ describe('getZodValidationObject', () => {
             persons: personsArrayField,
         };
         const mockMatcher = getMockMatcher(basicMatchers);
-        const zodObject = getZodValidationObject(properties, rhf, mockMatcher);
+        const zodObject = getZodValidationObject(properties, mockMatcher);
 
         const expectedZodObject = z.object({
             persons: z.array(
@@ -624,7 +613,7 @@ describe('getZodValidationObject', () => {
             persons: personsArrayArrayArrayField,
         };
         const mockMatcher = getMockMatcher(basicMatchers);
-        const zodObject = getZodValidationObject(properties, rhf, mockMatcher);
+        const zodObject = getZodValidationObject(properties, mockMatcher);
 
         const expectedZodObject = z.object({
             personsArrayArrayArrayField: z.array(z.array(z.array(z.string()))),
@@ -663,7 +652,7 @@ describe('getZodValidationObject', () => {
             person: personObjectField,
         };
         const mockMatcher = getMockMatcher(basicMatchers);
-        const zodObject = getZodValidationObject(properties, rhf, mockMatcher);
+        const zodObject = getZodValidationObject(properties, mockMatcher);
 
         const expectedZodObject = z.object({
             name: z.string(),
@@ -713,7 +702,7 @@ describe('getZodValidationObject', () => {
             person: personsArrayField,
         };
         const mockMatcher = getMockMatcher(basicMatchers);
-        const zodObject = getZodValidationObject(properties, rhf, mockMatcher);
+        const zodObject = getZodValidationObject(properties, mockMatcher);
 
         const expectedZodObject = z.object({
             name: z.string(),

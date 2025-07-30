@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Dispatch, FormEventHandler, SetStateAction } from 'react';
+import type { FormEventHandler } from 'react';
 import type {
     ControllerRenderProps,
     FieldValues,
@@ -53,7 +53,6 @@ export interface PydanticFormContextProps {
     isFullFilled: boolean;
     rhf: ReturnType<typeof useForm>;
     errorDetails?: PydanticFormValidationErrorDetails;
-    resetErrorDetails: () => void;
     pydanticFormSchema?: PydanticFormSchema;
     title?: string | boolean;
     sendLabel?: string;
@@ -61,20 +60,14 @@ export interface PydanticFormContextProps {
     onCancel?: () => void;
     cancelButton?: React.ReactNode;
     resetButtonAlternative?: React.ReactNode;
-    disableSaveProgress?: boolean;
     submitForm: FormEventHandler<HTMLFormElement>;
     resetForm: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     successNotice?: React.ReactNode;
     loadingComponent?: React.ReactNode;
     allowUntouchedSubmit?: boolean;
     skipSuccessNotice?: boolean;
-    footerCtaPrimaryVariant?: string;
-    setSaveToLeavePageInCurrentState: Dispatch<SetStateAction<boolean>>;
-    hasCardWrapper?: boolean;
     config?: PydanticFormsContextConfig;
     formKey: string;
-    formIdKey?: string;
-    clearForm: () => void;
     hasNext: boolean;
     formInputData: object[];
     initialData: FieldValues;
@@ -244,7 +237,6 @@ export interface PydanticFormInputFieldProps {
 }
 export type PydanticFormZodValidationFn = (
     field: PydanticFormField,
-    rhf?: ReturnType<typeof useForm>,
 ) => z.ZodTypeAny;
 
 export type RowRenderComponent = React.JSXElementConstructor<{
