@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.7.0
+
+### Minor Changes
+
+-   7bcb18e: Removes some unused functionality. Introduces shouldRegister=true to react-hook-form creation.
+
 ## 0.6.11
 
 ### Patch Changes
