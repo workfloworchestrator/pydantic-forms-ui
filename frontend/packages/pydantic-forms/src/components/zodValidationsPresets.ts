@@ -18,27 +18,16 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
 
         let validationRule = z.string().trim();
         if (minLength) {
-            validationRule = validationRule?.min(
-                minLength,
-                minLength === 1
-                    ? 'Moet ingevuld zijn'
-                    : `Dit veld heeft een minimum lengte van ${minLength} karakters`,
-            );
+            validationRule = validationRule?.min(minLength);
         }
 
         if (maxLength) {
-            validationRule = validationRule?.max(
-                maxLength,
-                `Dit veld heeft een maximum lengte van ${maxLength} karakters`,
-            );
+            validationRule = validationRule?.max(maxLength);
         }
 
         if (pattern) {
             try {
-                validationRule = validationRule?.regex(
-                    new RegExp(pattern),
-                    `De invoer is niet volgens het juiste formaat: ${pattern}`,
-                );
+                validationRule = validationRule?.regex(new RegExp(pattern));
             } catch (error) {
                 console.error(
                     'Could not parse validation rule regex',
