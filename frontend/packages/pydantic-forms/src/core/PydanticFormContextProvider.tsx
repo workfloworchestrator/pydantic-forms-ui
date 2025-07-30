@@ -210,13 +210,9 @@ function PydanticFormContextProvider({
 
     const resetFormData = useCallback(
         (inputData: object = {}) => {
-            if (!pydanticFormSchema) {
-                return;
-            }
-
             rhf.reset(inputData);
         },
-        [pydanticFormSchema, rhf],
+        [rhf],
     );
 
     rhfRef.current = rhf;
@@ -283,15 +279,6 @@ function PydanticFormContextProvider({
 
         // when we receive a new form from JSON, we fully reset the form
         if (apiResponse?.form && rawSchema !== apiResponse.form) {
-            resetFormData();
-            setRawSchema(apiResponse.form);
-            if (apiResponse.meta) {
-                setHasNext(!!apiResponse.meta.hasNext);
-            }
-            setErrorDetails(undefined);
-        }
-
-        if (apiResponse?.form) {
             resetFormData();
             setRawSchema(apiResponse.form);
             if (apiResponse.meta) {
