@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.6.10
+
+### Patch Changes
+
+-   5207ff1: Calls reset without argument instead of empty object
+
 ## 0.6.9
 
 ### Patch Changes
