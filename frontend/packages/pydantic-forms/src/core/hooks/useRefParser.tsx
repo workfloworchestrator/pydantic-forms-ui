@@ -19,13 +19,18 @@ export function useRefParser(
     return useSWR<PydanticFormSchemaParsed | undefined>(
         [id, rawJsonSchema],
         async ([, source]) => {
-            if (!source) {
-                return undefined;
+            try {
+                if (!source) {
+                    return undefined;
+                }
+                const parsedSchema = (await $RefParser.dereference(source, {
+                    mutateInputSchema: false,
+                })) as unknown as PydanticFormSchemaParsed;
+                return parsedSchema;
+            } catch (error) {
+                console.error(error);
+                throw new Error('Could not parse JSON references');
             }
-            const parsedSchema = (await $RefParser.dereference(source, {
-                mutateInputSchema: false,
-            })) as unknown as PydanticFormSchemaParsed;
-            return parsedSchema;
         },
         {
             fallback: {},
