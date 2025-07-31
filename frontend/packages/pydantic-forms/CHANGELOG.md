@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.7.1
+
+### Patch Changes
+
+-   e70319b: Fix restoring values after an error
+
 ## 0.7.0
 
 ### Minor Changes
