@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.7.2
+
+### Patch Changes
+
+-   d544fbe: Fixes restoring and submitting forms
+
 ## 0.7.1
 
 ### Patch Changes
