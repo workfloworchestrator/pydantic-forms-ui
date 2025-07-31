@@ -5,7 +5,7 @@
  *
  * Here we define the outline of the form
  */
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { useTranslations } from 'next-intl';
 
@@ -26,22 +26,9 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         isSending,
         skipSuccessNotice,
         loadingComponent,
-        rhf,
-        errorDetails,
-        formInputData,
     } = contextProps;
 
     const { formRenderer, footerRenderer, headerRenderer } = config || {};
-
-    useEffect(() => {
-        if (errorDetails) {
-            // If we have an array restore the values
-            const lastValues = [...formInputData].pop();
-            rhf.reset({
-                ...lastValues,
-            });
-        }
-    }, [errorDetails, formInputData]);
 
     const pydanticFormComponents: PydanticFormComponents =
         getPydanticFormComponents(
