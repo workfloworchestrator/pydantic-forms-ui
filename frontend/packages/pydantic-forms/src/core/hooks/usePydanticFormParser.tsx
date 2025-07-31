@@ -147,10 +147,8 @@ export const parseProperties = (
 };
 
 export const usePydanticFormParser = (
-    rawJsonSchema: PydanticFormSchemaRawJson | undefined,
+    rawJsonSchema: PydanticFormSchemaRawJson,
     formLabels?: Record<string, string>,
-    fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
-    formStructureMutator?: PydanticFormsContextConfig['formStructureMutator'],
 ): {
     pydanticFormSchema: PydanticFormSchema | undefined;
     isLoading: boolean;
@@ -175,14 +173,11 @@ export const usePydanticFormParser = (
                 parsedSchema.properties || {},
                 parsedSchema.required || [],
                 formLabels,
-                fieldDetailProvider,
             ),
         };
 
-        return formStructureMutator
-            ? formStructureMutator(pydanticFormSchema)
-            : pydanticFormSchema;
-    }, [formStructureMutator, parsedSchema, formLabels, fieldDetailProvider]);
+        return pydanticFormSchema;
+    }, [parsedSchema, formLabels]);
 
     return {
         pydanticFormSchema,

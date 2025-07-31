@@ -62,8 +62,6 @@ function PydanticFormContextProvider({
         labelProvider,
         customDataProvider,
         customDataProviderCacheKey,
-        formStructureMutator,
-        fieldDetailProvider,
         resetButtonAlternative,
         allowUntouchedSubmit,
         skipSuccessNotice,
@@ -72,11 +70,6 @@ function PydanticFormContextProvider({
         cancelButton,
     } = config;
 
-    const awaitReset = async (payLoad: FieldValues = {}) => {
-        rhf.reset(payLoad);
-        await new Promise((resolve) => setTimeout(resolve, 0)); // wait one tick
-    };
-
     const [formInputHistory, setFormInputHistory] = useState(
         new Map<string, object>(),
     );
@@ -84,15 +77,15 @@ function PydanticFormContextProvider({
 
     const formRef = useRef<string>(formKey);
 
-    const updateHistory = async (
-        formInput: object,
-        previousSteps: object[],
-    ) => {
-        const hashOfPreviousSteps = await getHashForArray(previousSteps);
-        setFormInputHistory((prevState) =>
-            prevState.set(hashOfPreviousSteps, formInput),
-        );
-    };
+    const updateHistory = useCallback(
+        async (formInput: object, previousSteps: object[]) => {
+            const hashOfPreviousSteps = await getHashForArray(previousSteps);
+            setFormInputHistory((prevState) =>
+                prevState.set(hashOfPreviousSteps, formInput),
+            );
+        },
+        [],
+    );
 
     const goToPreviousStep = (formInput: object) => {
         setFormInputData((prevState) => {
@@ -122,17 +115,21 @@ function PydanticFormContextProvider({
         error,
     } = useApiProvider(formKey, formInputData, apiProvider, metaData);
 
-    const emptyRawSchema: PydanticFormSchemaRawJson = {
-        type: PydanticFormFieldType.OBJECT,
-        properties: {},
-    };
+    const emptyRawSchema: PydanticFormSchemaRawJson = useMemo(
+        () => ({
+            type: PydanticFormFieldType.OBJECT,
+            properties: {},
+        }),
+        [],
+    );
+
     const [rawSchema, setRawSchema] =
         useState<PydanticFormSchemaRawJson>(emptyRawSchema);
     const [hasNext, setHasNext] = useState<boolean>(false);
 
     // extract the JSON schema to a more usable custom schema
     const { pydanticFormSchema, isLoading: isParsingSchema } =
-        usePydanticFormParser(rawSchema, formKey, formLabels?.labels);
+        usePydanticFormParser(rawSchema, formLabels?.labels);
 
     // build validation rules based on custom schema
     const zodSchema = useGetZodValidator(
@@ -163,6 +160,14 @@ function PydanticFormContextProvider({
         defaultValues: initialData,
         values: initialData,
     });
+
+    const awaitReset = useCallback(
+        async (payLoad: FieldValues = {}) => {
+            rhf.reset(payLoad);
+            await new Promise((resolve) => setTimeout(resolve, 0)); // wait one tick
+        },
+        [rhf],
+    );
 
     const addFormInputData = useCallback(
         (formInput: object, replaceInsteadOfAdd = false) => {
@@ -208,7 +213,7 @@ function PydanticFormContextProvider({
             awaitReset();
             rhf.trigger();
         },
-        [rhf],
+        [awaitReset, rhf],
     );
 
     const resetErrorDetails = useCallback(() => {
@@ -226,7 +231,7 @@ function PydanticFormContextProvider({
         setIsFullFilled(false);
         setRawSchema(emptyRawSchema);
         setHasNext(false);
-    }, []);
+    }, [emptyRawSchema]);
 
     const PydanticFormContextState = {
         // to prevent an issue where the sending state hangs
@@ -299,7 +304,6 @@ function PydanticFormContextProvider({
     // When a formKey changes we reset the form input data
     useEffect(() => {
         if (formKey !== formRef.current) {
-            console.log('formchange', formKey, formRef.current);
             // When the formKey changes we need to reset the form input data
             setFormInputData([]);
             setFormInputHistory(new Map<string, object>());
@@ -327,7 +331,45 @@ function PydanticFormContextProvider({
 
         setFormInputHistory(new Map<string, object>());
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [apiResponse, isFullFilled]);
+    }, [apiResponse, isFullFilled]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
+
+    // this handles errors throws by the useApiProvider call
+    // for instance unexpected 500 errors
+    useEffect(() => {
+        if (!error) {
+            return;
+        }
+
+        setErrorDetails({
+            detail: 'Something unexpected went wrong',
+            source: [],
+            mapped: {},
+        });
+    }, [error]);
+
+    useEffect(() => {
+        const getLocale = () => {
+            switch (locale) {
+                case Locale.enGB:
+                    return z.locales.en();
+                case Locale.nlNL:
+                    return z.locales.nl();
+                default:
+                    return z.locales.en();
+            }
+        };
+
+        z.config(getLocale());
+    }, [locale]);
+
+    useEffect(() => {
+        getHashForArray(formInputData).then((hash) => {
+            const currentStepFromHistory = formInputHistory.get(hash);
+            if (currentStepFromHistory) {
+                awaitReset(currentStepFromHistory);
+            }
+        });
+    }, [awaitReset, formInputData, formInputHistory, rhf]);
 
     return (
         <PydanticFormContext.Provider value={PydanticFormContextState}>

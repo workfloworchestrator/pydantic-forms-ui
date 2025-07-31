@@ -104,7 +104,7 @@ export const getZodValidationObject = (
 
         validationObject[id] = zodRule ?? z.any();
     });
-    return z.object(validationObject);
+    return validationObject ? z.object(validationObject) : z.any();
 };
 
 export const useGetZodValidator = (
