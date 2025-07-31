@@ -1,6 +1,6 @@
 {
     "name": "pydantic-forms",
-    "version": "0.7.1",
+    "version": "0.7.2",
     "description": "Library that turns JSONSchema into frontend forms",
     "author": {
         "name": "Workflow Orchestrator Programme",
