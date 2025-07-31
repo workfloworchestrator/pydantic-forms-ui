@@ -295,6 +295,40 @@ function PydanticFormContextProvider({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiResponse]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
     // a useeffect for filling data whenever formdefinition or labels update
+
+    // When a formKey changes we reset the form input data
+    useEffect(() => {
+        if (formKey !== formRef.current) {
+            console.log('formchange', formKey, formRef.current);
+            // When the formKey changes we need to reset the form input data
+            setFormInputData([]);
+            setFormInputHistory(new Map<string, object>());
+            awaitReset();
+            formRef.current = formKey;
+        }
+    }, [awaitReset, formKey]);
+
+    // handle successfull submits
+    useEffect(() => {
+        if (!isFullFilled) {
+            return;
+        }
+
+        if (onSuccess) {
+            const values = rhf.getValues();
+            if (skipSuccessNotice) {
+                onSuccess(values, apiResponse || {});
+            } else {
+                setTimeout(() => {
+                    onSuccess?.(values, apiResponse || {});
+                }, 1500); // Delay to allow notice to show first
+            }
+        }
+
+        setFormInputHistory(new Map<string, object>());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [apiResponse, isFullFilled]);
+
     return (
         <PydanticFormContext.Provider value={PydanticFormContextState}>
             {children(PydanticFormContextState)}
