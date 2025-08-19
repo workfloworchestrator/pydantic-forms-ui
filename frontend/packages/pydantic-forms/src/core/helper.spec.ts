@@ -715,7 +715,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
     });
 
     it('Returns empty object if arrayItem and array both have no default values', () => {
-        // When an array fields has no default value the default value should be taken from the arrayItem
+        // When an array field has no default value the default value and the arrayItem doesn't either we assume an empty array
         const properties: Properties = {
             test: getMockPydanticFormField({
                 id: 'test',
@@ -726,7 +726,9 @@ describe('getFormValuesFromFieldOrLabels', () => {
                 }),
             }),
         };
-        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({});
+        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({
+            test: [],
+        });
     });
 
     it('Returns empty object if object field and properties both have no default values', () => {

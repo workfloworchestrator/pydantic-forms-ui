@@ -385,10 +385,14 @@ export const getFormValuesFromFieldOrLabels = (
                         labelData,
                         componentMatcherExtender,
                     );
+
                     if (objectHasProperties(arrayItemDefault)) {
                         fieldValues[pydanticFormField.id] = [
                             arrayItemDefault[arrayItem.id],
                         ];
+                    } else {
+                        // TODO: Can we assume an empty array here?
+                        fieldValues[pydanticFormField.id] = [];
                     }
                 }
             } else if (hasDefaultValue(defaultFieldValue)) {
