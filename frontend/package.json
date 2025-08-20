@@ -14,7 +14,7 @@
         "postinstall": "turbo run build --filter=./packages/*"
     },
     "devDependencies": {
-        "@changesets/cli": "^2.27.1",
+        "@changesets/cli": "^2.29.6",
         "@types/lodash": "^4.17.16",
         "turbo": "^2.3.3"
     },
