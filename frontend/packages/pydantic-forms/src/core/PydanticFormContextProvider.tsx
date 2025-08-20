@@ -154,7 +154,7 @@ function PydanticFormContextProvider({
     ]);
 
     // initialize the react-hook-form
-    const rhf = useForm({
+    const reactHookForm = useForm({
         resolver: zodResolver(zodSchema),
         mode: 'all',
         defaultValues: initialData,
@@ -163,10 +163,10 @@ function PydanticFormContextProvider({
 
     const awaitReset = useCallback(
         async (payLoad: FieldValues = {}) => {
-            rhf.reset(payLoad);
+            reactHookForm.reset(payLoad);
             await new Promise((resolve) => setTimeout(resolve, 0)); // wait one tick
         },
-        [rhf],
+        [reactHookForm],
     );
 
     const addFormInputData = useCallback(
@@ -185,35 +185,44 @@ function PydanticFormContextProvider({
 
     const submitFormFn = useCallback(() => {
         setIsSending(true);
-        const rhfValues = _.cloneDeep(rhf.getValues());
+        const reactHookFormValues = _.cloneDeep(reactHookForm.getValues());
         awaitReset();
-        // Note. If we don't use cloneDeep here we are adding a reference to the rhfValues
+        // Note. If we don't use cloneDeep here we are adding a reference to the reactHookFormValues
         // that changes on every change in the form and triggering effects before we want to.
-        addFormInputData(rhfValues, !!errorDetails);
+        addFormInputData(reactHookFormValues, !!errorDetails);
         window.scrollTo(0, 0);
-    }, [rhf, errorDetails, addFormInputData, awaitReset, setIsSending]);
+    }, [
+        reactHookForm,
+        errorDetails,
+        addFormInputData,
+        awaitReset,
+        setIsSending,
+    ]);
 
     const onClientSideError = useCallback(
         (data?: FieldValues) => {
             // TODO implement save with errors toggle
             if (data) {
-                rhf.clearErrors();
+                reactHookForm.clearErrors();
                 submitFormFn();
             }
         },
-        [rhf, submitFormFn],
+        [reactHookForm, submitFormFn],
     );
 
-    const submitForm = rhf.handleSubmit(submitFormFn, onClientSideError);
+    const submitForm = reactHookForm.handleSubmit(
+        submitFormFn,
+        onClientSideError,
+    );
 
     const resetForm = useCallback(
         (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             e.preventDefault();
             setErrorDetails(undefined);
             awaitReset();
-            rhf.trigger();
+            reactHookForm.trigger();
         },
-        [awaitReset, rhf],
+        [awaitReset, reactHookForm],
     );
 
     const resetErrorDetails = useCallback(() => {
@@ -238,10 +247,10 @@ function PydanticFormContextProvider({
         // we check both the SWR hook state as our manual state
         isSending: isSending && isLoadingSchema,
         isLoading,
-        rhf,
+        reactHookForm,
         pydanticFormSchema,
         loadingComponent,
-        onPrevious: () => goToPreviousStep(rhf?.getValues()),
+        onPrevious: () => goToPreviousStep(reactHookForm?.getValues()),
         onCancel,
         title,
         sendLabel,
@@ -319,7 +328,7 @@ function PydanticFormContextProvider({
         }
 
         if (onSuccess) {
-            const values = rhf.getValues();
+            const values = reactHookForm.getValues();
             if (skipSuccessNotice) {
                 onSuccess(values, apiResponse || {});
             } else {
@@ -369,7 +378,7 @@ function PydanticFormContextProvider({
                 awaitReset(currentStepFromHistory);
             }
         });
-    }, [awaitReset, formInputData, formInputHistory, rhf]);
+    }, [awaitReset, formInputData, formInputHistory, reactHookForm]);
 
     return (
         <PydanticFormContext.Provider value={PydanticFormContextState}>

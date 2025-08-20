@@ -20,9 +20,9 @@ interface FieldWrapProps {
 }
 
 export const FieldWrap = ({ pydanticFormField, children }: FieldWrapProps) => {
-    const { errorDetails, rhf, config } = usePydanticFormContext();
+    const { errorDetails, reactHookForm, config } = usePydanticFormContext();
     const RowRenderer = config?.rowRenderer ? config.rowRenderer : FormRow;
-    const fieldState = rhf.getFieldState(pydanticFormField.id);
+    const fieldState = reactHookForm.getFieldState(pydanticFormField.id);
     const errorMsg =
         errorDetails?.mapped?.[pydanticFormField.id]?.msg ??
         fieldState.error?.message;

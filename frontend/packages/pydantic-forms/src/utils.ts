@@ -121,7 +121,7 @@ export function getFormFieldValue(
 }
 
 /**
- * Returns the full field id from the sibling level. Used to pass into rhfs watch function.
+ * Returns the full field id from the sibling level. Used to pass into reactHookForms watch function.
  * This is relevant if the field is part of an array or object where there might be more
  *
  */

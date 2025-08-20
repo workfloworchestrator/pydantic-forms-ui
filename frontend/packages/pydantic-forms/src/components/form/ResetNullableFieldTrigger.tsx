@@ -6,14 +6,17 @@ import { PydanticFormField } from '@/types';
 import { preventDefault } from '@/utils';
 
 const ResetNullableFieldTrigger = ({ field }: { field: PydanticFormField }) => {
-    const { rhf } = usePydanticFormContext();
+    const { reactHookForm } = usePydanticFormContext();
 
     const setNullValue = useCallback(() => {
-        rhf.setValue(field.id, null);
-        rhf.trigger(field.id);
-    }, [rhf, field]);
+        reactHookForm.setValue(field.id, null);
+        reactHookForm.trigger(field.id);
+    }, [reactHookForm, field]);
 
-    if (!isNullableField(field) || rhf.getValues()?.[field.id] === null) {
+    if (
+        !isNullableField(field) ||
+        reactHookForm.getValues()?.[field.id] === null
+    ) {
         return null;
     }
 
