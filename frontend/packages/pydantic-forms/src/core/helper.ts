@@ -385,10 +385,16 @@ export const getFormValuesFromFieldOrLabels = (
                         labelData,
                         componentMatcherExtender,
                     );
+
                     if (objectHasProperties(arrayItemDefault)) {
                         fieldValues[pydanticFormField.id] = [
                             arrayItemDefault[arrayItem.id],
                         ];
+                    } else if (pydanticFormField.required) {
+                        // This is somewhat of a special case.
+                        // It deals with the situation where an array is marked required but has no default value.
+                        // Not setting the value here would require a user to select and then unselect an item if they want to send an empty array
+                        fieldValues[pydanticFormField.id] = [];
                     }
                 }
             } else if (hasDefaultValue(defaultFieldValue)) {

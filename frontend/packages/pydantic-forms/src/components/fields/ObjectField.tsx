@@ -3,6 +3,7 @@ import React from 'react';
 import { usePydanticFormContext } from '@/core';
 import { getPydanticFormComponents } from '@/core/helper';
 import { PydanticFormElementProps } from '@/types';
+import { disableField } from '@/utils';
 
 import { RenderFields } from '../render';
 
@@ -10,10 +11,21 @@ export const ObjectField = ({
     pydanticFormField,
 }: PydanticFormElementProps) => {
     const { config } = usePydanticFormContext();
+    const disabled = pydanticFormField.attributes?.disabled || false;
     const components = getPydanticFormComponents(
         pydanticFormField.properties || {},
         config?.componentMatcherExtender,
     );
+
+    // We have decided - for now - on the convention that all descendants of disabled fields will be disabled as well
+    // so we will not displaying any interactive elements inside a disabled element
+    if (disabled) {
+        components.forEach((component) => {
+            component.pydanticFormField = disableField(
+                component.pydanticFormField,
+            );
+        });
+    }
 
     return (
         <div

@@ -3,6 +3,7 @@ import type { FieldValues } from 'react-hook-form';
 import { getMockPydanticFormField } from './core/helper.spec';
 import { PydanticFormFieldType } from './types';
 import {
+    disableField,
     getFormFieldIdWithPath,
     getFormFieldValue,
     insertItemAtIndex,
@@ -372,5 +373,15 @@ describe('itemizeArrayItem', () => {
             };
             expect(itemizedSubItem).toEqual(expectedSubItem);
         }
+    });
+});
+
+describe('disableField', () => {
+    it('Disables the field by setting the disabled attribute to true', () => {
+        const field = getMockPydanticFormField({
+            attributes: { disabled: false },
+        });
+        const disabledField = disableField(field);
+        expect(disabledField.attributes?.disabled).toBe(true);
     });
 });
