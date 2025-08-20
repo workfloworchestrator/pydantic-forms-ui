@@ -43,6 +43,18 @@ export const itemizeArrayItem = (
     };
 };
 
+export const disableField = (
+    pydanticFormField: PydanticFormField,
+): PydanticFormField => {
+    return {
+        ...pydanticFormField,
+        attributes: {
+            ...pydanticFormField.attributes,
+            disabled: true,
+        },
+    };
+};
+
 /**
  * Determines how many parts to slice from the PydanticFormField's id.
  * If the last segment is a number we conclude it's an array item and  it returns 2 (to slice off the index and the field name).
