@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.7.3
+
+### Patch Changes
+
+-   f71cd2d: Adds default value for required array fields. Disables descendants of disabled fields
+
 ## 0.7.2
 
 ### Patch Changes
