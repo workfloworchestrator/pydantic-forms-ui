@@ -373,6 +373,7 @@ function PydanticFormContextProvider({
         }
 
         setFormInputHistory(new Map<string, object>());
+        fieldDataStorageRef.current = new Map();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiResponse, isFullFilled]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
 
