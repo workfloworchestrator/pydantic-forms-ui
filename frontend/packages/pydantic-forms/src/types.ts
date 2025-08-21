@@ -47,6 +47,12 @@ export type PydanticFormControlledElementProps = Omit<
 export type PydanticFormControlledElement =
     React.JSXElementConstructor<PydanticFormControlledElementProps>;
 
+export type PydanticFormFieldDataStorage = {
+    set: (fieldId: string, key: string | number, value: unknown) => void;
+    has: (fieldId: string, key: string | number) => boolean;
+    get: (fieldId: string, key: string) => unknown;
+};
+
 export interface PydanticFormContextProps {
     isLoading: boolean;
     isSending: boolean;
@@ -71,6 +77,7 @@ export interface PydanticFormContextProps {
     hasNext: boolean;
     formInputData: object[];
     initialData: FieldValues;
+    pydanticFormFieldDataStorage: PydanticFormFieldDataStorage;
 }
 
 export enum PydanticFormState {

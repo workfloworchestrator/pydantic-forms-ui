@@ -34,6 +34,7 @@ import {
 import {
     Locale,
     PydanticFormContextProps,
+    PydanticFormFieldDataStorage,
     PydanticFormFieldType,
     PydanticFormInitialContextProps,
     PydanticFormSchemaRawJson,
@@ -242,6 +243,38 @@ function PydanticFormContextProvider({
         setHasNext(false);
     }, [emptyRawSchema]);
 
+    const fieldDataStorageRef = useRef<Map<string, Map<string, unknown>>>(
+        new Map(),
+    );
+
+    /*
+        A field might load a list of options from a remote source, load some more and do some logic based on the selection 
+        and only store the final selected id in the form submission data. This method allows to store these intermediate 
+        values to be able to restore the field state when navigating back to it or when errors occur.
+    */
+    const pydanticFormFieldDataStorage: PydanticFormFieldDataStorage = {
+        has: (fieldId: string, key: string | number) => {
+            if (
+                fieldDataStorageRef.current &&
+                fieldDataStorageRef.current.has(fieldId)
+            ) {
+                const fieldStorage = fieldDataStorageRef.current.get(fieldId);
+                return fieldStorage?.has(key.toString()) ?? false;
+            }
+            return false;
+        },
+        get: (fieldId: string, key: string | number) => {
+            const fieldData = fieldDataStorageRef?.current?.get(fieldId);
+            return fieldData?.get(key.toString());
+        },
+        set: (fieldId: string, key: string | number, value: unknown) => {
+            fieldDataStorageRef.current.set(
+                fieldId,
+                new Map([[key.toString(), value]]),
+            );
+        },
+    };
+
     const PydanticFormContextState = {
         // to prevent an issue where the sending state hangs
         // we check both the SWR hook state as our manual state
@@ -272,6 +305,7 @@ function PydanticFormContextProvider({
         formInputData,
         hasNext,
         initialData,
+        pydanticFormFieldDataStorage,
     };
 
     // a useeffect for whenever the error response updates
