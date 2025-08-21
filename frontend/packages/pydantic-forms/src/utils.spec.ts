@@ -8,6 +8,7 @@ import {
     getFormFieldValue,
     insertItemAtIndex,
     itemizeArrayItem,
+    toOptionalObjectProperty,
 } from './utils';
 
 describe('insertItemAtIndex', () => {
@@ -196,7 +197,7 @@ describe('getFormFieldValue', () => {
     });
 });
 
-describe.only('getFormFieldIdWithPath', () => {
+describe('getFormFieldIdWithPath', () => {
     it('returns fieldname when no path is supplied', () => {
         expect(getFormFieldIdWithPath('', 'name')).toBe('name');
     });
@@ -383,5 +384,34 @@ describe('disableField', () => {
         });
         const disabledField = disableField(field);
         expect(disabledField.attributes?.disabled).toBe(true);
+    });
+});
+
+describe('toOptionalObjectProperty', () => {
+    const flatSchema = { const: 'CONST_VAL' };
+
+    function withSpread(addConstValue: boolean) {
+        return {
+            ...(addConstValue && { const: flatSchema.const }),
+        };
+    }
+
+    function withHelper(addConstValue: boolean) {
+        return {
+            ...toOptionalObjectProperty(
+                { const: flatSchema.const },
+                addConstValue,
+            ),
+        };
+    }
+
+    it('adds const when addConstValue = true', () => {
+        expect(withSpread(true)).toEqual(withHelper(true));
+        expect(withSpread(true)).toHaveProperty('const', 'CONST_VAL');
+    });
+
+    it('omits const when addConstValue = false', () => {
+        expect(withSpread(false)).toEqual(withHelper(false));
+        expect(withSpread(false)).not.toHaveProperty('const');
     });
 });
