@@ -162,11 +162,25 @@ function PydanticFormContextProvider({
     });
 
     const awaitReset = useCallback(
-        async (payLoad: FieldValues = {}) => {
-            reactHookForm.reset(payLoad);
-            await new Promise((resolve) => setTimeout(resolve, 0)); // wait one tick
+        async (payLoad?: FieldValues) => {
+            getHashForArray(formInputData).then(async (hash) => {
+                let resetPayload = {};
+
+                if (payLoad) {
+                    resetPayload = { ...payLoad };
+                } else {
+                    const currentStepFromHistory = formInputHistory.get(hash);
+
+                    if (currentStepFromHistory) {
+                        resetPayload = { ...currentStepFromHistory };
+                    }
+                }
+                reactHookForm.reset(resetPayload);
+                await new Promise((resolve) => setTimeout(resolve, 0)); // wait one tick
+            });
         },
-        [reactHookForm],
+
+        [formInputData, formInputHistory, reactHookForm],
     );
 
     const addFormInputData = useCallback(
@@ -242,6 +256,42 @@ function PydanticFormContextProvider({
         setHasNext(false);
     }, [emptyRawSchema]);
 
+    const fieldDataStorageRef = useRef<Map<string, Map<string, unknown>>>(
+        new Map(),
+    );
+
+    const fieldDataStorage = useMemo(
+        () => ({
+            has: (fieldId: string, key: string | number) => {
+                if (
+                    fieldDataStorageRef.current &&
+                    fieldDataStorageRef.current.has(fieldId)
+                ) {
+                    const fieldStorage =
+                        fieldDataStorageRef.current.get(fieldId);
+                    return fieldStorage?.has(key.toString()) ?? false;
+                }
+                return false;
+            },
+            get: (fieldId: string, key: string | number) => {
+                const fieldData = fieldDataStorageRef?.current?.get(fieldId);
+                return fieldData?.get(key.toString());
+            },
+            set: (fieldId: string, key: string | number, value: unknown) => {
+                fieldDataStorageRef.current.set(
+                    fieldId,
+                    new Map([[key.toString(), value]]),
+                );
+            },
+            delete: (fieldId: string) => {
+                if (fieldDataStorageRef.current?.has(fieldId)) {
+                    fieldDataStorageRef.current.delete(fieldId);
+                }
+            },
+        }),
+        [],
+    );
+
     const PydanticFormContextState = {
         // to prevent an issue where the sending state hangs
         // we check both the SWR hook state as our manual state
@@ -272,6 +322,7 @@ function PydanticFormContextProvider({
         formInputData,
         hasNext,
         initialData,
+        fieldDataStorage,
     };
 
     // a useeffect for whenever the error response updates
@@ -316,7 +367,7 @@ function PydanticFormContextProvider({
             // When the formKey changes we need to reset the form input data
             setFormInputData([]);
             setFormInputHistory(new Map<string, object>());
-            awaitReset();
+            awaitReset({});
             formRef.current = formKey;
         }
     }, [awaitReset, formKey]);
@@ -370,15 +421,6 @@ function PydanticFormContextProvider({
 
         z.config(getLocale());
     }, [locale]);
-
-    useEffect(() => {
-        getHashForArray(formInputData).then((hash) => {
-            const currentStepFromHistory = formInputHistory.get(hash);
-            if (currentStepFromHistory) {
-                awaitReset(currentStepFromHistory);
-            }
-        });
-    }, [awaitReset, formInputData, formInputHistory, reactHookForm]);
 
     return (
         <PydanticFormContext.Provider value={PydanticFormContextState}>
