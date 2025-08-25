@@ -1,5 +1,12 @@
 # pydantic-forms
 
+## 0.7.4
+
+### Patch Changes
+
+-   7fec930: Refactors rhf const to reactHookForm for better readability
+-   b87af55: Adds fieldData storage
+
 ## 0.7.3
 
 ### Patch Changes
