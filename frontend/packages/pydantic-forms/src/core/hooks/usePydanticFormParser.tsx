@@ -24,6 +24,7 @@ import type {
     PydanticFormsContextConfig,
 } from '@/types';
 import { PydanticFormFieldFormat, PydanticFormFieldType } from '@/types';
+import { toOptionalObjectProperty } from '@/utils';
 
 import { useRefParser } from './useRefParser';
 
@@ -109,7 +110,7 @@ const getPydanticFormField = (
         required,
         validations,
         columns: 6, // TODO: Is this still relevant? https://github.com/workfloworchestrator/orchestrator-ui-library/issues/1891
-        ...(addConstValue && { const: flatSchema.const }),
+        ...toOptionalObjectProperty({ const: flatSchema.const }, addConstValue),
         properties,
         ...fieldDetailProvider?.[propertyId],
     };

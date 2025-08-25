@@ -142,3 +142,8 @@ export function getFormFieldIdWithPath(
 
     return '';
 }
+
+export const toOptionalObjectProperty = <T extends object>(
+    entries: T,
+    condition: boolean,
+): T | object => (condition ? entries : {});
