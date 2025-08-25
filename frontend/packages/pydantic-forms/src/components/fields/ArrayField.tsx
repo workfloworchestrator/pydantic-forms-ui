@@ -9,10 +9,10 @@ import { disableField, itemizeArrayItem } from '@/utils';
 import { RenderFields } from '../render';
 
 export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
-    const { rhf, config } = usePydanticFormContext();
+    const { reactHookForm, config } = usePydanticFormContext();
 
     const disabled = pydanticFormField.attributes?.disabled || false;
-    const { control } = rhf;
+    const { control } = reactHookForm;
     const { id: arrayName, arrayItem } = pydanticFormField;
     const { fields, append, remove } = useFieldArray({
         control,

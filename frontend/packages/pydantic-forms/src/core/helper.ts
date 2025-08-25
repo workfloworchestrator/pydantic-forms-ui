@@ -449,13 +449,13 @@ export const getFieldAttributes = function (
  * This function can be used as the onValueChange handler in a react hook form form element component.
  * When used, it will trigger the related validations whenever the field changes
  *
- * @param rhf
+ * @param reactHookForm
  * @param field
  * @returns
  */
-export const rhfTriggerValidationsOnChange =
+export const ReactHookFormTriggerValidationsOnChange =
     (
-        rhf: ReturnType<typeof useForm>,
+        reactHookForm: ReturnType<typeof useForm>,
         field: ControllerRenderProps<FieldValues, string>,
     ) =>
     (value: string) => {
@@ -464,7 +464,7 @@ export const rhfTriggerValidationsOnChange =
         // it seems we need this because the 2nd error would get stale..
         // https://github.com/react-hook-form/react-hook-form/issues/8170
         // https://github.com/react-hook-form/react-hook-form/issues/10832
-        rhf.trigger(field.name);
+        reactHookForm.trigger(field.name);
     };
 
 export const getMatcher = (

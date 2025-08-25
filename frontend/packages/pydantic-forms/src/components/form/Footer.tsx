@@ -12,7 +12,7 @@ import { usePydanticFormContext } from '@/core';
 const Footer = () => {
     const {
         resetForm,
-        rhf,
+        reactHookForm,
         onCancel,
         onPrevious,
         cancelButton,
@@ -66,16 +66,7 @@ const Footer = () => {
     };
 
     const SubmitButton = () => (
-        <button
-            type="submit"
-            style={{ padding: '12px' }}
-            disabled={
-                !rhf.formState.isValid ||
-                (!allowUntouchedSubmit &&
-                    !rhf.formState.isDirty &&
-                    !rhf.formState.isSubmitting)
-            }
-        >
+        <button type="submit" style={{ padding: '12px' }}>
             {submitButtonLabel}
         </button>
     );
@@ -83,9 +74,9 @@ const Footer = () => {
     return (
         <div style={{ height: '200px', marginTop: '24px' }}>
             <div style={{ display: 'flex', gap: '16px' }}>
-                {rhf.formState.isValid &&
+                {reactHookForm.formState.isValid &&
                     !allowUntouchedSubmit &&
-                    !rhf.formState.isDirty && (
+                    !reactHookForm.formState.isDirty && (
                         <div>Het formulier is nog niet aangepast</div>
                     )}
                 {formInputData && formInputData.length > 0 && (
@@ -106,9 +97,10 @@ const Footer = () => {
                     fontSize: '24px',
                 }}
             >
-                {!rhf.formState.isValid && rhf.formState.isDirty && (
-                    <div>{t('notFilledYet')}</div>
-                )}
+                {!reactHookForm.formState.isValid &&
+                    reactHookForm.formState.isDirty && (
+                        <div>{t('notFilledYet')}</div>
+                    )}
             </div>
         </div>
     );

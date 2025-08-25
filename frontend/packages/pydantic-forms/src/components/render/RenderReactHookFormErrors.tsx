@@ -9,18 +9,18 @@ import { usePydanticFormContext } from '@/core';
 import { getFieldLabelById } from '@/core/helper';
 
 export default function RenderReactHookFormErrors() {
-    const { rhf, pydanticFormSchema } = usePydanticFormContext();
+    const { reactHookForm, pydanticFormSchema } = usePydanticFormContext();
     const [showDetails, setShowDetails] = useState(false);
 
     const toggleDetails = useCallback(() => {
         setShowDetails((state) => !state);
     }, []);
 
-    if (rhf.formState.isValid) {
+    if (reactHookForm.formState.isValid) {
         return <></>;
     }
 
-    const numErrors = Object.keys(rhf.formState.errors).length;
+    const numErrors = Object.keys(reactHookForm.formState.errors).length;
     const multiMistakes = numErrors > 1;
 
     return (
@@ -29,7 +29,7 @@ export default function RenderReactHookFormErrors() {
         //  variant={HelpContainerVariant.ERROR}
         //  title="Het formulier bevat tenminste één niet correct ingevulde rubriek, waardoor het niet opgeslagen kan worden."
         >
-            {!!Object.keys(rhf.formState.errors).length && (
+            {!!Object.keys(reactHookForm.formState.errors).length && (
                 <>
                     <div className="d-flex align-items-center">
                         Er {multiMistakes ? 'zijn' : 'is'} {numErrors} rubriek
@@ -44,10 +44,12 @@ export default function RenderReactHookFormErrors() {
                     </div>
                     {showDetails && (
                         <ul className="error-list mb-2">
-                            {Object.keys(rhf.formState.errors).map(
+                            {Object.keys(reactHookForm.formState.errors).map(
                                 (fieldKey) => {
                                     const fieldError =
-                                        rhf.formState?.errors[fieldKey];
+                                        reactHookForm.formState?.errors[
+                                            fieldKey
+                                        ];
 
                                     const fieldName = getFieldLabelById(
                                         fieldKey,

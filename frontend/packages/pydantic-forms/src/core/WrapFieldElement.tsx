@@ -14,24 +14,24 @@ export const WrapFieldElement = ({
     pydanticFormField: PydanticFormField;
     extraTriggerFields?: string[];
 }) => {
-    const { rhf } = usePydanticFormContext();
+    const { reactHookForm } = usePydanticFormContext();
     return (
         <Controller
             name={pydanticFormField.id}
-            control={rhf.control}
+            control={reactHookForm.control}
             render={({ field }) => {
                 const { onChange, onBlur, value, name } = field;
                 const onChangeHandle = (val: string) => {
                     onChange(val);
 
                     extraTriggerFields?.forEach((extraField) => {
-                        rhf.trigger(extraField);
+                        reactHookForm.trigger(extraField);
                     });
 
                     // it seems we need this because the 2nd error would get stale..
                     // https://github.com/react-hook-form/react-hook-form/issues/8170
                     // https://github.com/react-hook-form/react-hook-form/issues/10832
-                    rhf.trigger(field.name);
+                    reactHookForm.trigger(field.name);
                 };
 
                 return (

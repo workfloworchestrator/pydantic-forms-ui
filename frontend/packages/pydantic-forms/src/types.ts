@@ -51,7 +51,7 @@ export interface PydanticFormContextProps {
     isLoading: boolean;
     isSending: boolean;
     isFullFilled: boolean;
-    rhf: ReturnType<typeof useForm>;
+    reactHookForm: ReturnType<typeof useForm>;
     errorDetails?: PydanticFormValidationErrorDetails;
     pydanticFormSchema?: PydanticFormSchema;
     title?: string | boolean;
@@ -349,7 +349,7 @@ export interface PydanticFormFieldDetailProvider {
 
 export type onPydanticFormFieldChangeHandlerFn = (
     field: onPydanticFormFieldChangeHandlerFnFieldProp,
-    rhf: ReturnType<typeof useForm>,
+    reactHookForm: ReturnType<typeof useForm>,
 ) => void;
 
 export type onPydanticFormFieldChangeHandlerFnFieldProp = {
