@@ -51,6 +51,7 @@ export type PydanticFormFieldDataStorage = {
     set: (fieldId: string, key: string | number, value: unknown) => void;
     has: (fieldId: string, key: string | number) => boolean;
     get: (fieldId: string, key: string) => unknown;
+    delete: (fieldId: string) => void;
 };
 
 export interface PydanticFormContextProps {
@@ -77,7 +78,7 @@ export interface PydanticFormContextProps {
     hasNext: boolean;
     formInputData: object[];
     initialData: FieldValues;
-    pydanticFormFieldDataStorage: PydanticFormFieldDataStorage;
+    fieldDataStorage: PydanticFormFieldDataStorage;
 }
 
 export enum PydanticFormState {

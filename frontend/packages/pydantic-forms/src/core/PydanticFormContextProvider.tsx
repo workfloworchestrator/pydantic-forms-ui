@@ -34,7 +34,6 @@ import {
 import {
     Locale,
     PydanticFormContextProps,
-    PydanticFormFieldDataStorage,
     PydanticFormFieldType,
     PydanticFormInitialContextProps,
     PydanticFormSchemaRawJson,
@@ -163,11 +162,25 @@ function PydanticFormContextProvider({
     });
 
     const awaitReset = useCallback(
-        async (payLoad: FieldValues = {}) => {
-            reactHookForm.reset(payLoad);
-            await new Promise((resolve) => setTimeout(resolve, 0)); // wait one tick
+        async (payLoad?: FieldValues) => {
+            getHashForArray(formInputData).then(async (hash) => {
+                let resetPayload = {};
+
+                if (payLoad) {
+                    resetPayload = { ...payLoad };
+                } else {
+                    const currentStepFromHistory = formInputHistory.get(hash);
+
+                    if (currentStepFromHistory) {
+                        resetPayload = { ...currentStepFromHistory };
+                    }
+                }
+                reactHookForm.reset(resetPayload);
+                await new Promise((resolve) => setTimeout(resolve, 0)); // wait one tick
+            });
         },
-        [reactHookForm],
+
+        [formInputData, formInputHistory, reactHookForm],
     );
 
     const addFormInputData = useCallback(
@@ -247,33 +260,37 @@ function PydanticFormContextProvider({
         new Map(),
     );
 
-    /*
-        A field might load a list of options from a remote source, load some more and do some logic based on the selection 
-        and only store the final selected id in the form submission data. This method allows to store these intermediate 
-        values to be able to restore the field state when navigating back to it or when errors occur.
-    */
-    const pydanticFormFieldDataStorage: PydanticFormFieldDataStorage = {
-        has: (fieldId: string, key: string | number) => {
-            if (
-                fieldDataStorageRef.current &&
-                fieldDataStorageRef.current.has(fieldId)
-            ) {
-                const fieldStorage = fieldDataStorageRef.current.get(fieldId);
-                return fieldStorage?.has(key.toString()) ?? false;
-            }
-            return false;
-        },
-        get: (fieldId: string, key: string | number) => {
-            const fieldData = fieldDataStorageRef?.current?.get(fieldId);
-            return fieldData?.get(key.toString());
-        },
-        set: (fieldId: string, key: string | number, value: unknown) => {
-            fieldDataStorageRef.current.set(
-                fieldId,
-                new Map([[key.toString(), value]]),
-            );
-        },
-    };
+    const fieldDataStorage = useMemo(
+        () => ({
+            has: (fieldId: string, key: string | number) => {
+                if (
+                    fieldDataStorageRef.current &&
+                    fieldDataStorageRef.current.has(fieldId)
+                ) {
+                    const fieldStorage =
+                        fieldDataStorageRef.current.get(fieldId);
+                    return fieldStorage?.has(key.toString()) ?? false;
+                }
+                return false;
+            },
+            get: (fieldId: string, key: string | number) => {
+                const fieldData = fieldDataStorageRef?.current?.get(fieldId);
+                return fieldData?.get(key.toString());
+            },
+            set: (fieldId: string, key: string | number, value: unknown) => {
+                fieldDataStorageRef.current.set(
+                    fieldId,
+                    new Map([[key.toString(), value]]),
+                );
+            },
+            delete: (fieldId: string) => {
+                if (fieldDataStorageRef.current?.has(fieldId)) {
+                    fieldDataStorageRef.current.delete(fieldId);
+                }
+            },
+        }),
+        [],
+    );
 
     const PydanticFormContextState = {
         // to prevent an issue where the sending state hangs
@@ -305,7 +322,7 @@ function PydanticFormContextProvider({
         formInputData,
         hasNext,
         initialData,
-        pydanticFormFieldDataStorage,
+        fieldDataStorage,
     };
 
     // a useeffect for whenever the error response updates
@@ -350,7 +367,7 @@ function PydanticFormContextProvider({
             // When the formKey changes we need to reset the form input data
             setFormInputData([]);
             setFormInputHistory(new Map<string, object>());
-            awaitReset();
+            awaitReset({});
             formRef.current = formKey;
         }
     }, [awaitReset, formKey]);
@@ -373,7 +390,6 @@ function PydanticFormContextProvider({
         }
 
         setFormInputHistory(new Map<string, object>());
-        fieldDataStorageRef.current = new Map();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiResponse, isFullFilled]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
 
@@ -405,15 +421,6 @@ function PydanticFormContextProvider({
 
         z.config(getLocale());
     }, [locale]);
-
-    useEffect(() => {
-        getHashForArray(formInputData).then((hash) => {
-            const currentStepFromHistory = formInputHistory.get(hash);
-            if (currentStepFromHistory) {
-                awaitReset(currentStepFromHistory);
-            }
-        });
-    }, [awaitReset, formInputData, formInputHistory, reactHookForm]);
 
     return (
         <PydanticFormContext.Provider value={PydanticFormContextState}>
