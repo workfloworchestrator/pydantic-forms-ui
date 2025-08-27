@@ -35,39 +35,39 @@ import {
     Locale,
     PydanticFormContextProps,
     PydanticFormFieldType,
-    PydanticFormInitialContextProps,
     PydanticFormSchemaRawJson,
     PydanticFormValidationErrorDetails,
+    PydanticFormsContextConfig,
 } from '@/types';
 import { getHashForArray } from '@/utils';
 
 export const PydanticFormContext =
     createContext<PydanticFormContextProps | null>(null);
 
+export interface PydanticFormContextProviderProps {
+    children: (props: PydanticFormContextProps) => React.ReactNode;
+    config: PydanticFormsContextConfig;
+    formKey: string;
+    onCancel?: () => void;
+    onSuccess?: (fieldValues: FieldValues, response: object) => void;
+    title?: string;
+}
+
 function PydanticFormContextProvider({
-    formKey,
-    formIdKey,
-    metaData,
-    title,
-    sendLabel,
-    loadingComponent,
-    successNotice,
-    onSuccess,
-    onCancel,
     children,
     config,
-}: PydanticFormInitialContextProps) {
+    formKey,
+    onCancel,
+    onSuccess,
+    title,
+}: PydanticFormContextProviderProps) {
     const {
         apiProvider,
-        labelProvider,
+        componentMatcherExtender,
         customDataProvider,
         customDataProviderCacheKey,
-        resetButtonAlternative,
-        allowUntouchedSubmit,
-        skipSuccessNotice,
-        componentMatcherExtender,
+        labelProvider,
         locale,
-        cancelButton,
     } = config;
 
     const [formInputHistory, setFormInputHistory] = useState(
@@ -96,24 +96,27 @@ function PydanticFormContextProvider({
 
     const [errorDetails, setErrorDetails] =
         useState<PydanticFormValidationErrorDetails>();
+
     const [isFullFilled, setIsFullFilled] = useState(false);
     const [isSending, setIsSending] = useState(false);
 
     // fetch the labels of the form, can also contain default values
     const { data: formLabels, isLoading: isLoadingFormLabels } =
-        useLabelProvider(labelProvider, formKey, formIdKey);
+        useLabelProvider(labelProvider, formKey);
 
+    // fetch custom data
     const { data: customData, isLoading: isLoadingCustomData } =
         useCustomDataProvider(
             customDataProviderCacheKey ?? 100,
             customDataProvider,
         );
 
+    // fetch API response with form definition
     const {
         data: apiResponse,
         isLoading: isLoadingSchema,
         error,
-    } = useApiProvider(formKey, formInputData, apiProvider, metaData);
+    } = useApiProvider(formKey, formInputData, apiProvider);
 
     const emptyRawSchema: PydanticFormSchemaRawJson = useMemo(
         () => ({
@@ -295,39 +298,29 @@ function PydanticFormContextProvider({
     const PydanticFormContextState = {
         // to prevent an issue where the sending state hangs
         // we check both the SWR hook state as our manual state
-        isSending: isSending && isLoadingSchema,
-        isLoading,
-        reactHookForm,
-        pydanticFormSchema,
-        loadingComponent,
-        onPrevious: () => goToPreviousStep(reactHookForm?.getValues()),
-        onCancel,
-        title,
-        sendLabel,
-        isFullFilled,
+        clearForm,
+        config,
         customDataProvider,
         errorDetails,
-        resetErrorDetails,
-        successNotice,
-        submitForm,
-        resetForm,
-        cancelButton,
-        skipSuccessNotice,
-        allowUntouchedSubmit,
-        resetButtonAlternative,
-        config,
-        formKey,
-        formIdKey,
-        clearForm,
+        fieldDataStorage,
         formInputData,
+        formKey,
         hasNext,
         initialData,
-        fieldDataStorage,
+        isFullFilled,
+        isLoading,
+        isSending: isSending && isLoadingSchema,
+        onCancel,
+        onPrevious: () => goToPreviousStep(reactHookForm?.getValues()),
+        pydanticFormSchema,
+        reactHookForm,
+        resetErrorDetails,
+        resetForm,
+        submitForm,
+        title,
     };
 
-    // a useeffect for whenever the error response updates
-    // sometimes we need to update the form,
-    // some we need to update the errors
+    // useEffect to handle API responses
     useEffect(() => {
         if (!apiResponse) {
             return;
@@ -359,12 +352,10 @@ function PydanticFormContextProvider({
         setIsSending(false);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiResponse]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
-    // a useeffect for filling data whenever formdefinition or labels update
 
-    // When a formKey changes we reset the form input data
+    // Useeffect to the form input data if the formKey changes
     useEffect(() => {
         if (formKey !== formRef.current) {
-            // When the formKey changes we need to reset the form input data
             setFormInputData([]);
             setFormInputHistory(new Map<string, object>());
             awaitReset({});
@@ -372,7 +363,7 @@ function PydanticFormContextProvider({
         }
     }, [awaitReset, formKey]);
 
-    // handle successfull submits
+    // UseEffect to handle successfull submits
     useEffect(() => {
         if (!isFullFilled) {
             return;
@@ -380,20 +371,14 @@ function PydanticFormContextProvider({
 
         if (onSuccess) {
             const values = reactHookForm.getValues();
-            if (skipSuccessNotice) {
-                onSuccess(values, apiResponse || {});
-            } else {
-                setTimeout(() => {
-                    onSuccess?.(values, apiResponse || {});
-                }, 1500); // Delay to allow notice to show first
-            }
+            onSuccess(values, apiResponse || {});
         }
 
         setFormInputHistory(new Map<string, object>());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiResponse, isFullFilled]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
 
-    // this handles errors throws by the useApiProvider call
+    // UseEffect to handles errors throws by the useApiProvider call
     // for instance unexpected 500 errors
     useEffect(() => {
         if (!error) {
@@ -407,6 +392,7 @@ function PydanticFormContextProvider({
         });
     }, [error]);
 
+    // UseEffect to handle locale change
     useEffect(() => {
         const getLocale = () => {
             switch (locale) {

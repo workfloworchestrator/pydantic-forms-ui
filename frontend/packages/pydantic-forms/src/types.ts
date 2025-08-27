@@ -15,20 +15,24 @@ export type PydanticFormMetaData = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type PydanticFormFieldValue = any;
 
-export interface PydanticFormInitialContextProps {
-    formKey: string;
-    formIdKey?: string;
-    title?: string | boolean;
-    sendLabel?: string;
-    metaData?: PydanticFormMetaData;
-    successNotice?: React.ReactNode;
-    onSuccess?: (fieldValues: FieldValues, response: object) => void;
-    onCancel?: () => void;
-    onChange?: (fieldValues: FieldValues) => void;
-    children: (props: PydanticFormContextProps) => React.ReactNode;
-    loadingComponent?: React.ReactNode;
-    hasCardWrapper?: boolean;
+export interface PydanticFormContextProps {
     config: PydanticFormsContextConfig;
+    errorDetails?: PydanticFormValidationErrorDetails;
+    fieldDataStorage: PydanticFormFieldDataStorage;
+    formInputData: object[];
+    formKey: string;
+    hasNext: boolean;
+    initialData: FieldValues;
+    isFullFilled: boolean;
+    isLoading: boolean;
+    isSending: boolean;
+    onCancel?: () => void;
+    onPrevious?: () => void;
+    pydanticFormSchema?: PydanticFormSchema;
+    reactHookForm: ReturnType<typeof useForm>;
+    resetForm: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+    submitForm: FormEventHandler<HTMLFormElement>;
+    title?: string | boolean;
 }
 
 export type PydanticFormElementProps = {
@@ -54,33 +58,6 @@ export type PydanticFormFieldDataStorage = {
     delete: (fieldId: string) => void;
 };
 
-export interface PydanticFormContextProps {
-    isLoading: boolean;
-    isSending: boolean;
-    isFullFilled: boolean;
-    reactHookForm: ReturnType<typeof useForm>;
-    errorDetails?: PydanticFormValidationErrorDetails;
-    pydanticFormSchema?: PydanticFormSchema;
-    title?: string | boolean;
-    sendLabel?: string;
-    onPrevious?: () => void;
-    onCancel?: () => void;
-    cancelButton?: React.ReactNode;
-    resetButtonAlternative?: React.ReactNode;
-    submitForm: FormEventHandler<HTMLFormElement>;
-    resetForm: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-    successNotice?: React.ReactNode;
-    loadingComponent?: React.ReactNode;
-    allowUntouchedSubmit?: boolean;
-    skipSuccessNotice?: boolean;
-    config?: PydanticFormsContextConfig;
-    formKey: string;
-    hasNext: boolean;
-    formInputData: object[];
-    initialData: FieldValues;
-    fieldDataStorage: PydanticFormFieldDataStorage;
-}
-
 export enum PydanticFormState {
     NEW = 'new',
     IN_PROGRESS = 'in-progress',
@@ -96,7 +73,6 @@ export interface PydanticFormField {
     options: PydanticFormFieldOption[];
     disabledOptions?: string[];
     default?: PydanticFormFieldValue;
-    columns: number;
     required: boolean;
     const?: PydanticFormFieldValue | null;
     schema: PydanticFormPropertySchemaParsed;
@@ -275,34 +251,12 @@ export interface PydanticFormsContextConfig {
     customDataProvider?: PydanticFormCustomDataProvider;
     customDataProviderCacheKey?: number;
 
-    // whenever a fieldvalue changes, do something
-    onFieldChangeHandler?: onPydanticFormFieldChangeHandlerFn;
-
-    // whether to skip the short 'successfull send notice'
-    skipSuccessNotice?: boolean;
-
-    // wheter we allow submitting the form without any changes
-    allowUntouchedSubmit?: boolean;
-
-    cancelButton?: React.ReactNode;
-
-    resetButtonAlternative?: React.ReactNode;
-
     componentMatcherExtender?: ComponentMatcherExtender;
 
     formRenderer?: FormRenderComponent;
     footerRenderer?: React.JSXElementConstructor<object>;
     headerRenderer?: React.JSXElementConstructor<object>;
     rowRenderer?: RowRenderComponent;
-
-    // Extend field definitions
-    fieldDetailProvider?: PydanticFormFieldDetailProvider;
-
-    // have an option to change the layout columns of fields
-    layoutColumnProvider?: PydanticFormLayoutColumnProvider;
-
-    // have an option to change the layout columns of fields
-    formStructureMutator?: PydanticFormStructureMutator;
 
     // translations
     customTranslations?: TranslationsJSON;

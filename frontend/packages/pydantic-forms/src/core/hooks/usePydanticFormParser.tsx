@@ -21,7 +21,6 @@ import type {
     PydanticFormPropertySchemaParsed,
     PydanticFormSchema,
     PydanticFormSchemaRawJson,
-    PydanticFormsContextConfig,
 } from '@/types';
 import { PydanticFormFieldFormat, PydanticFormFieldType } from '@/types';
 import { toOptionalObjectProperty } from '@/utils';
@@ -43,7 +42,6 @@ const getPydanticFormField = (
     propertyId: string,
     requiredFields: string[],
     formLabels?: Record<string, string>,
-    fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
     isArrayItem: boolean = false, // Arrayitems should not have titles or descriptions. Their properties will have them instead
 ) => {
     const flatSchema = flattenSchemaCombinators(propertySchema);
@@ -61,7 +59,6 @@ const getPydanticFormField = (
         flatSchema.properties || {},
         flatSchema.required || [],
         formLabels,
-        fieldDetailProvider,
     );
     const title = !isArrayItem
         ? translateLabel(propertyName, flatSchema.title, formLabels) ||
@@ -85,7 +82,6 @@ const getPydanticFormField = (
               propertyId,
               requiredFields,
               formLabels,
-              fieldDetailProvider,
               true,
           )
         : undefined;
@@ -109,10 +105,8 @@ const getPydanticFormField = (
         schema: propertySchema,
         required,
         validations,
-        columns: 6, // TODO: Is this still relevant? https://github.com/workfloworchestrator/orchestrator-ui-library/issues/1891
         ...toOptionalObjectProperty({ const: flatSchema.const }, addConstValue),
         properties,
-        ...fieldDetailProvider?.[propertyId],
     };
     return pydanticFormField;
 };
@@ -121,7 +115,6 @@ export const parseProperties = (
     properties: ParsedProperties,
     requiredFields: string[] = [],
     formLabels?: Record<string, string>,
-    fieldDetailProvider?: PydanticFormsContextConfig['fieldDetailProvider'],
 ): Properties => {
     if (!properties) return {};
 
@@ -134,7 +127,6 @@ export const parseProperties = (
                 propertyId,
                 requiredFields,
                 formLabels,
-                fieldDetailProvider,
                 false, // We are not dealing with array items here
             );
 

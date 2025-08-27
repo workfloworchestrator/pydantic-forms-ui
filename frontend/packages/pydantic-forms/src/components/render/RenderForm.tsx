@@ -22,10 +22,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         config,
         isLoading,
         isFullFilled,
-        successNotice,
         isSending,
-        skipSuccessNotice,
-        loadingComponent,
     } = contextProps;
 
     const { formRenderer, footerRenderer, headerRenderer } = config || {};
@@ -38,7 +35,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
 
     const t = useTranslations('renderForm');
 
-    const LoadingComponent = loadingComponent ?? <div>{t('loading')}</div>;
+    const LoadingComponent = <div>{t('loading')}</div>;
 
     if (isLoading && !isSending) {
         return LoadingComponent;
@@ -49,11 +46,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
     }
 
     if (isFullFilled) {
-        if (skipSuccessNotice) {
-            return <></>;
-        }
-
-        return <div>{successNotice ?? t('successfullySent')}</div>;
+        return <div>{t('successfullySent')}</div>;
     }
 
     const FormRenderer = formRenderer ?? Form;
