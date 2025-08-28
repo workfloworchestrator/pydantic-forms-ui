@@ -35,7 +35,9 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
 
     const t = useTranslations('renderForm');
 
-    const LoadingComponent = <div>{t('loading')}</div>;
+    const LoadingComponent = config.loadingComponent ?? (
+        <div>{t('loading')}</div>
+    );
 
     if (isLoading && !isSending) {
         return LoadingComponent;

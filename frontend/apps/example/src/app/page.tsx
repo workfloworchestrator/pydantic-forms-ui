@@ -104,6 +104,7 @@ export default function Home() {
                     componentMatcherExtender: componentMatcher,
                     customTranslations: customTranslations,
                     locale: locale,
+                    loadingComponent: <div>Custom loading component</div>,
                 }}
             />
         </div>
