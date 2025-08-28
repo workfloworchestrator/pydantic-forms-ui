@@ -164,9 +164,13 @@ function PydanticFormContextProvider({
         values: initialData,
     });
 
+    /*
+        This method resets the form and makes sure it waits for the reset to complete
+        before proceeding. If it finds data in form history, it uses that data to reset the form.
+    */
     const awaitReset = useCallback(
         async (payLoad?: FieldValues) => {
-            getHashForArray(formInputData).then(async (hash) => {
+            await getHashForArray(formInputData).then((hash) => {
                 let resetPayload = {};
 
                 if (payLoad) {
@@ -179,7 +183,6 @@ function PydanticFormContextProvider({
                     }
                 }
                 reactHookForm.reset(resetPayload);
-                await new Promise((resolve) => setTimeout(resolve, 0)); // wait one tick
             });
         },
 
