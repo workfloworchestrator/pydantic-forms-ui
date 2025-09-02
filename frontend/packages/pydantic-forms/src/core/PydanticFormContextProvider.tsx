@@ -74,7 +74,6 @@ function PydanticFormContextProvider({
         new Map<string, object>(),
     );
     const [formInputData, setFormInputData] = useState<object[]>([]);
-
     const formRef = useRef<string>(formKey);
 
     const updateHistory = useCallback(
@@ -166,58 +165,46 @@ function PydanticFormContextProvider({
 
     /*
         This method resets the form and makes sure it waits for the reset to complete
-        before proceeding. If it finds data in form history, it uses that data to reset the form.
+        before proceeding. If it finds data in formHistory based on the hash of the previo
+        us steps, it uses that data to prefill the form.
     */
-    const awaitReset = useCallback(
-        async (payLoad?: FieldValues) => {
-            await getHashForArray(formInputData).then((hash) => {
+    const awaitReset = useCallback(async (payLoad?: FieldValues) => {
+        await getHashForArray(formInputData)
+            .then((hash) => {
                 let resetPayload = {};
 
                 if (payLoad) {
                     resetPayload = { ...payLoad };
-                } else {
-                    const currentStepFromHistory = formInputHistory.get(hash);
-
-                    if (currentStepFromHistory) {
-                        resetPayload = { ...currentStepFromHistory };
-                    }
                 }
+
                 reactHookForm.reset(resetPayload);
+            })
+            .catch(() => {
+                console.error('Failed to hash form input data');
             });
-        },
+    }, []);
 
-        [formInputData, formInputHistory, reactHookForm],
-    );
-
-    const addFormInputData = useCallback(
-        (formInput: object, replaceInsteadOfAdd = false) => {
-            setFormInputData((currentInputs) => {
-                const data = replaceInsteadOfAdd
-                    ? currentInputs.slice(0, -1)
-                    : currentInputs;
-                updateHistory(formInput, data);
-                return [...data, { ...formInput }];
-            });
-            awaitReset();
-        },
-        [awaitReset, setFormInputData, updateHistory],
-    );
+    const addFormInputData = useCallback(() => {
+        setFormInputData((currentInputs) => {
+            // Note. If we don't use cloneDeep here we are adding a reference to the reactHookFormValues
+            // that changes on every change in the form and triggering effects before we want to.
+            const reactHookFormValues = _.cloneDeep(reactHookForm.getValues());
+            updateHistory(reactHookFormValues, currentInputs);
+            return [...currentInputs, { ...reactHookFormValues }];
+        });
+        // setInErrorState(false);
+        // We call reset right after using the values to make sure
+        // values in reactHookForm are cleared. This avoids some
+        // race condition errors where reacfHookForm data was still set where we did not
+        /// expect it to be.
+        awaitReset();
+    }, []);
 
     const submitFormFn = useCallback(() => {
         setIsSending(true);
-        const reactHookFormValues = _.cloneDeep(reactHookForm.getValues());
-        awaitReset();
-        // Note. If we don't use cloneDeep here we are adding a reference to the reactHookFormValues
-        // that changes on every change in the form and triggering effects before we want to.
-        addFormInputData(reactHookFormValues, !!errorDetails);
+        addFormInputData();
         window.scrollTo(0, 0);
-    }, [
-        reactHookForm,
-        errorDetails,
-        addFormInputData,
-        awaitReset,
-        setIsSending,
-    ]);
+    }, []);
 
     const onClientSideError = useCallback(
         (data?: FieldValues) => {
@@ -245,22 +232,11 @@ function PydanticFormContextProvider({
         [awaitReset, reactHookForm],
     );
 
-    const resetErrorDetails = useCallback(() => {
-        setErrorDetails(undefined);
-    }, []);
-
     const isLoading =
         isLoadingFormLabels ||
         isLoadingSchema ||
         isParsingSchema ||
         (customDataProvider ? isLoadingCustomData : false);
-
-    const clearForm = useCallback(() => {
-        setFormInputData([]);
-        setIsFullFilled(false);
-        setRawSchema(emptyRawSchema);
-        setHasNext(false);
-    }, [emptyRawSchema]);
 
     const fieldDataStorageRef = useRef<Map<string, Map<string, unknown>>>(
         new Map(),
@@ -299,9 +275,6 @@ function PydanticFormContextProvider({
     );
 
     const PydanticFormContextState = {
-        // to prevent an issue where the sending state hangs
-        // we check both the SWR hook state as our manual state
-        clearForm,
         config,
         customDataProvider,
         errorDetails,
@@ -317,7 +290,6 @@ function PydanticFormContextProvider({
         onPrevious: () => goToPreviousStep(reactHookForm?.getValues()),
         pydanticFormSchema,
         reactHookForm,
-        resetErrorDetails,
         resetForm,
         submitForm,
         title,
@@ -332,12 +304,16 @@ function PydanticFormContextProvider({
         if (apiResponse?.validation_errors) {
             // Restore the data we got the error with
             const errorPayload = [...formInputData].pop();
+            setFormInputData((currentData) => {
+                const newData = [...currentData];
+                newData.pop();
+                return newData;
+            });
             awaitReset(errorPayload);
             setErrorDetails(getErrorDetailsFromResponse(apiResponse));
             return;
         }
 
-        awaitReset();
         if (apiResponse?.success) {
             setIsFullFilled(true);
             return;
@@ -345,10 +321,12 @@ function PydanticFormContextProvider({
 
         // when we receive a new form from JSON, we fully reset the form
         if (apiResponse?.form && rawSchema !== apiResponse.form) {
+            awaitReset();
             setRawSchema(apiResponse.form);
             if (apiResponse.meta) {
                 setHasNext(!!apiResponse.meta.hasNext);
             }
+
             setErrorDetails(undefined);
         }
 
@@ -361,10 +339,9 @@ function PydanticFormContextProvider({
         if (formKey !== formRef.current) {
             setFormInputData([]);
             setFormInputHistory(new Map<string, object>());
-            awaitReset({});
             formRef.current = formKey;
         }
-    }, [awaitReset, formKey]);
+    }, [formKey]);
 
     // UseEffect to handle successfull submits
     useEffect(() => {
@@ -379,7 +356,7 @@ function PydanticFormContextProvider({
 
         setFormInputHistory(new Map<string, object>());
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [apiResponse, isFullFilled]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
+    }, [isFullFilled]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
 
     // UseEffect to handles errors throws by the useApiProvider call
     // for instance unexpected 500 errors
