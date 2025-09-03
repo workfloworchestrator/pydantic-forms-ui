@@ -33,7 +33,7 @@ const translateLabel = (
     label?: string,
     formLabels?: Record<string, string>,
 ): string | undefined => {
-    const isString = typeof formLabels?.[propertyId] === 'string'
+    const isString = typeof formLabels?.[propertyId] === 'string';
     return formLabels && formLabels[propertyId] && isString
         ? formLabels[propertyId].toString()
         : label;
