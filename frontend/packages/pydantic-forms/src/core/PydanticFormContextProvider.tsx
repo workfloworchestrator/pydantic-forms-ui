@@ -199,6 +199,7 @@ function PydanticFormContextProvider({
 
     const submitFormFn = useCallback(() => {
         setIsSending(true);
+        setErrorDetails(undefined);
         addFormInputData();
         window.scrollTo(0, 0);
     }, []);
@@ -343,7 +344,6 @@ function PydanticFormContextProvider({
 
         if (apiResponse?.form && rawSchema !== apiResponse.form) {
             setRawSchema(apiResponse.form);
-            setErrorDetails(undefined);
             if (apiResponse.meta) {
                 setHasNext(!!apiResponse.meta.hasNext);
             }
