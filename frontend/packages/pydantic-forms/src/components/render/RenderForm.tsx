@@ -48,7 +48,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
     }
 
     if (isFullFilled) {
-        return <div>{t('successfullySent')}</div>;
+        return <></>;
     }
 
     const FormRenderer = formRenderer ?? Form;
