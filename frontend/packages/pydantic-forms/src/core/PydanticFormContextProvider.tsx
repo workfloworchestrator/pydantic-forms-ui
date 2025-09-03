@@ -74,25 +74,19 @@ function PydanticFormContextProvider({
         new Map<string, object>(),
     );
     const [formInputData, setFormInputData] = useState<object[]>([]);
-
     const formRef = useRef<string>(formKey);
 
     const updateHistory = useCallback(
-        async (formInput: object, previousSteps: object[]) => {
-            const hashOfPreviousSteps = await getHashForArray(previousSteps);
-            setFormInputHistory((prevState) =>
-                prevState.set(hashOfPreviousSteps, formInput),
+        async (previousStepsData: object[], formInputData: object) => {
+            const hashOfPreviousSteps = await getHashForArray(
+                previousStepsData,
+            );
+            setFormInputHistory((currentState) =>
+                currentState.set(hashOfPreviousSteps, formInputData),
             );
         },
         [],
     );
-
-    const goToPreviousStep = (formInput: object) => {
-        setFormInputData((prevState) => {
-            updateHistory(formInput, prevState);
-            return prevState.slice(0, -1);
-        });
-    };
 
     const [errorDetails, setErrorDetails] =
         useState<PydanticFormValidationErrorDetails>();
@@ -166,58 +160,49 @@ function PydanticFormContextProvider({
 
     /*
         This method resets the form and makes sure it waits for the reset to complete
-        before proceeding. If it finds data in form history, it uses that data to reset the form.
+        before proceeding. If it finds data in formHistory based on the hash of the previo
+        us steps, it uses that data to prefill the form.
     */
     const awaitReset = useCallback(
-        async (payLoad?: FieldValues) => {
-            await getHashForArray(formInputData).then((hash) => {
-                let resetPayload = {};
+        async (payLoad: FieldValues = {}) => {
+            try {
+                reactHookForm.reset(payLoad);
 
-                if (payLoad) {
-                    resetPayload = { ...payLoad };
-                } else {
-                    const currentStepFromHistory = formInputHistory.get(hash);
-
-                    if (currentStepFromHistory) {
-                        resetPayload = { ...currentStepFromHistory };
-                    }
-                }
-                reactHookForm.reset(resetPayload);
-            });
+                // This is a workaround to we wait for the reset to complete
+                // https://gemini.google.com/app/26d8662d603d6322?hl=nl
+                return new Promise<void>((resolve) => {
+                    setTimeout(() => {
+                        resolve();
+                    }, 0);
+                });
+            } catch (error) {
+                console.error('Failed to reactHookFOrm', error);
+            }
         },
-
-        [formInputData, formInputHistory, reactHookForm],
+        [reactHookForm],
     );
 
-    const addFormInputData = useCallback(
-        (formInput: object, replaceInsteadOfAdd = false) => {
-            setFormInputData((currentInputs) => {
-                const data = replaceInsteadOfAdd
-                    ? currentInputs.slice(0, -1)
-                    : currentInputs;
-                updateHistory(formInput, data);
-                return [...data, { ...formInput }];
-            });
+    const addFormInputData = useCallback(() => {
+        setFormInputData((currentFormInputData) => {
+            // Note. If we don't use cloneDeep here we are adding a reference to the reactHookFormValues
+            // that changes on every change in the form and triggering effects before we want to.
+            const reactHookFormValues = _.cloneDeep(reactHookForm.getValues());
+            updateHistory(currentFormInputData, reactHookFormValues);
+            // We call reset right after using the values to make sure
+            // values in reactHookForm are cleared. This avoids some
+            // race condition errors where reactHookForm data was still set where
+            // we did not expect it to be.
             awaitReset();
-        },
-        [awaitReset, setFormInputData, updateHistory],
-    );
+            return [...currentFormInputData, { ...reactHookFormValues }];
+        });
+    }, []);
 
     const submitFormFn = useCallback(() => {
         setIsSending(true);
-        const reactHookFormValues = _.cloneDeep(reactHookForm.getValues());
-        awaitReset();
-        // Note. If we don't use cloneDeep here we are adding a reference to the reactHookFormValues
-        // that changes on every change in the form and triggering effects before we want to.
-        addFormInputData(reactHookFormValues, !!errorDetails);
+        setErrorDetails(undefined);
+        addFormInputData();
         window.scrollTo(0, 0);
-    }, [
-        reactHookForm,
-        errorDetails,
-        addFormInputData,
-        awaitReset,
-        setIsSending,
-    ]);
+    }, []);
 
     const onClientSideError = useCallback(
         (data?: FieldValues) => {
@@ -229,6 +214,16 @@ function PydanticFormContextProvider({
         },
         [reactHookForm, submitFormFn],
     );
+
+    const goToPreviousStep = () => {
+        setFormInputData((currentFormInputData) => {
+            // Stores any data that is entered but not submitted yet to be
+            // able to restore later
+            const reactHookFormValues = _.cloneDeep(reactHookForm.getValues());
+            updateHistory(currentFormInputData, reactHookFormValues);
+            return currentFormInputData.slice(0, -1);
+        });
+    };
 
     const submitForm = reactHookForm.handleSubmit(
         submitFormFn,
@@ -245,22 +240,11 @@ function PydanticFormContextProvider({
         [awaitReset, reactHookForm],
     );
 
-    const resetErrorDetails = useCallback(() => {
-        setErrorDetails(undefined);
-    }, []);
-
     const isLoading =
         isLoadingFormLabels ||
         isLoadingSchema ||
         isParsingSchema ||
         (customDataProvider ? isLoadingCustomData : false);
-
-    const clearForm = useCallback(() => {
-        setFormInputData([]);
-        setIsFullFilled(false);
-        setRawSchema(emptyRawSchema);
-        setHasNext(false);
-    }, [emptyRawSchema]);
 
     const fieldDataStorageRef = useRef<Map<string, Map<string, unknown>>>(
         new Map(),
@@ -299,9 +283,6 @@ function PydanticFormContextProvider({
     );
 
     const PydanticFormContextState = {
-        // to prevent an issue where the sending state hangs
-        // we check both the SWR hook state as our manual state
-        clearForm,
         config,
         customDataProvider,
         errorDetails,
@@ -314,10 +295,9 @@ function PydanticFormContextProvider({
         isLoading,
         isSending: isSending && isLoadingSchema,
         onCancel,
-        onPrevious: () => goToPreviousStep(reactHookForm?.getValues()),
+        onPrevious: () => goToPreviousStep(),
         pydanticFormSchema,
         reactHookForm,
-        resetErrorDetails,
         resetForm,
         submitForm,
         title,
@@ -325,63 +305,80 @@ function PydanticFormContextProvider({
 
     // useEffect to handle API responses
     useEffect(() => {
+        const restoreHistory = async () => {
+            await getHashForArray(formInputData)
+                .then((hash) => {
+                    if (formInputHistory.has(hash)) {
+                        awaitReset(formInputHistory.get(hash) as FieldValues);
+                    } else {
+                        awaitReset();
+                    }
+                })
+                .catch(() => {
+                    console.error('Failed to hash form input data');
+                });
+        };
+
         if (!apiResponse) {
             return;
         }
-        // when we receive errors, we append to the scheme
+
         if (apiResponse?.validation_errors) {
-            // Restore the data we got the error with
-            const errorPayload = [...formInputData].pop();
-            awaitReset(errorPayload);
+            // Restore the data we got the error with and remove it from
+            // formInputData so we can add it again
+            setFormInputData((currentData) => {
+                const nextData = [...currentData];
+                const errorPayload = nextData.pop();
+                awaitReset(errorPayload);
+                return nextData;
+            });
+
             setErrorDetails(getErrorDetailsFromResponse(apiResponse));
             return;
         }
 
-        awaitReset();
         if (apiResponse?.success) {
             setIsFullFilled(true);
             return;
         }
 
-        // when we receive a new form from JSON, we fully reset the form
         if (apiResponse?.form && rawSchema !== apiResponse.form) {
             setRawSchema(apiResponse.form);
             if (apiResponse.meta) {
                 setHasNext(!!apiResponse.meta.hasNext);
             }
-            setErrorDetails(undefined);
+            restoreHistory();
         }
 
         setIsSending(false);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiResponse]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
 
-    // Useeffect to the form input data if the formKey changes
+    // useEffect to the form input data if the formKey changes
     useEffect(() => {
         if (formKey !== formRef.current) {
             setFormInputData([]);
             setFormInputHistory(new Map<string, object>());
-            awaitReset({});
             formRef.current = formKey;
         }
-    }, [awaitReset, formKey]);
+    }, [formKey]);
 
-    // UseEffect to handle successfull submits
+    // useEffect to handle successfull submits
     useEffect(() => {
         if (!isFullFilled) {
             return;
         }
 
         if (onSuccess) {
-            const values = reactHookForm.getValues();
-            onSuccess(values, apiResponse || {});
+            const reactHookFormValues = _.cloneDeep(reactHookForm.getValues());
+            onSuccess(reactHookFormValues, apiResponse || {});
         }
 
         setFormInputHistory(new Map<string, object>());
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [apiResponse, isFullFilled]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
+    }, [isFullFilled]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
 
-    // UseEffect to handles errors throws by the useApiProvider call
+    // useEffect to handles errors throws by the useApiProvider call
     // for instance unexpected 500 errors
     useEffect(() => {
         if (!error) {
@@ -395,7 +392,7 @@ function PydanticFormContextProvider({
         });
     }, [error]);
 
-    // UseEffect to handle locale change
+    // useEffect to handle locale change
     useEffect(() => {
         const getLocale = () => {
             switch (locale) {
