@@ -29,7 +29,6 @@ export const getMockPydanticFormField = (
         properties: {},
         required: false,
         options: [],
-        columns: 6,
         schema: {
             type: PydanticFormFieldType.STRING,
             format: PydanticFormFieldFormat.DEFAULT,

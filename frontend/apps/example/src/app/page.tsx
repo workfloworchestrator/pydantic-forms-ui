@@ -21,12 +21,14 @@ export default function Home() {
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
         requestBody,
     }) => {
-        const fetchResult = await fetch('http://localhost:8000/form', {
+        const url = 'http://localhost:8000/form';
+
+        const fetchResult = await fetch(url, {
             method: 'POST',
+            body: JSON.stringify(requestBody),
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(requestBody),
         });
         const jsonResult = await fetchResult.json();
         return jsonResult;
@@ -87,20 +89,22 @@ export default function Home() {
             <h1 style={{ marginBottom: '20px' }}>Pydantic Form </h1>
 
             <PydanticForm
-                id="theForm"
+                formKey="theForm"
                 title="Example form"
-                successNotice="Custom success notice"
                 onCancel={() => {
                     alert('Form cancelled');
                 }}
+                onSuccess={() => {
+                    alert('Form submitted successfully');
+                }}
                 config={{
-                    allowUntouchedSubmit: true,
                     apiProvider: pydanticFormApiProvider,
                     labelProvider: pydanticLabelProvider,
                     customDataProvider: pydanticCustomDataProvider,
                     componentMatcherExtender: componentMatcher,
                     customTranslations: customTranslations,
                     locale: locale,
+                    loadingComponent: <div>Custom loading component</div>,
                 }}
             />
         </div>
