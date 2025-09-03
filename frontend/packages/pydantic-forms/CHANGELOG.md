@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.8.0
+
+### Minor Changes
+
+-   e44cf7b: Cleans up unused code.
+
 ## 0.7.4
 
 ### Patch Changes
