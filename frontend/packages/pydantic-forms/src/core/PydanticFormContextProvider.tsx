@@ -359,6 +359,7 @@ function PydanticFormContextProvider({
         if (formKey !== formRef.current) {
             setFormInputData([]);
             setFormInputHistory(new Map<string, object>());
+            setErrorDetails(undefined);
             formRef.current = formKey;
         }
     }, [formKey]);
