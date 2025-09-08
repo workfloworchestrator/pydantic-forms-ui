@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.8.1
+
+### Patch Changes
+
+-   1bfc84a: Resets errorDetails when switching forms
+
 ## 0.8.0
 
 ### Minor Changes
