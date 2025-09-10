@@ -5,7 +5,7 @@
  */
 import React from 'react';
 
-import RenderFormErrors from '@/components/render/RenderFormErrors';
+import { RenderValidationErrors } from '@/components/render/RenderValidationErrors';
 import { usePydanticFormContext } from '@/core';
 
 const Header = () => {
@@ -17,7 +17,7 @@ const Header = () => {
                 {title ?? pydanticFormSchema?.title}
             </h2>
 
-            <RenderFormErrors />
+            <RenderValidationErrors />
         </>
     );
 };

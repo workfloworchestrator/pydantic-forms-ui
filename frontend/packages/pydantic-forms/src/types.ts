@@ -17,7 +17,7 @@ export type PydanticFormFieldValue = any;
 
 export interface PydanticFormContextProps {
     config: PydanticFormsContextConfig;
-    errorDetails?: PydanticFormValidationErrorDetails;
+    validationErrorDetails?: PydanticFormValidationErrorDetails;
     fieldDataStorage: PydanticFormFieldDataStorage;
     formInputData: object[];
     formKey: string;

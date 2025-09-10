@@ -8,14 +8,15 @@ import React from 'react';
 import { usePydanticFormContext } from '@/core';
 import { getFieldLabelById } from '@/core/helper';
 
-export default function RenderFormErrors() {
-    const { errorDetails, pydanticFormSchema } = usePydanticFormContext();
+export function RenderValidationErrors() {
+    const { validationErrorDetails, pydanticFormSchema } =
+        usePydanticFormContext();
 
-    if (!errorDetails) {
+    if (!validationErrorDetails) {
         return <></>;
     }
 
-    const errors = errorDetails.source;
+    const errors = validationErrorDetails.source;
     const rootError = errors
         .filter((err) => err.loc.includes('__root__'))
         .shift();

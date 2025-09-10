@@ -21,8 +21,8 @@ import { z } from 'zod/v4';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import {
-    getErrorDetailsFromResponse,
     getFormValuesFromFieldOrLabels,
+    getValidationErrorDetailsFromResponse,
 } from '@/core/helper';
 import {
     useApiProvider,
@@ -88,7 +88,7 @@ function PydanticFormContextProvider({
         [],
     );
 
-    const [errorDetails, setErrorDetails] =
+    const [validationErrorDetails, setValidationErrorDetails] =
         useState<PydanticFormValidationErrorDetails>();
 
     const [isFullFilled, setIsFullFilled] = useState(false);
@@ -199,7 +199,7 @@ function PydanticFormContextProvider({
 
     const submitFormFn = useCallback(() => {
         setIsSending(true);
-        setErrorDetails(undefined);
+        setValidationErrorDetails(undefined);
         addFormInputData();
         window.scrollTo(0, 0);
     }, []);
@@ -233,7 +233,7 @@ function PydanticFormContextProvider({
     const resetForm = useCallback(
         (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             e.preventDefault();
-            setErrorDetails(undefined);
+            setValidationErrorDetails(undefined);
             awaitReset();
             reactHookForm.trigger();
         },
@@ -285,7 +285,7 @@ function PydanticFormContextProvider({
     const PydanticFormContextState = {
         config,
         customDataProvider,
-        errorDetails,
+        validationErrorDetails,
         fieldDataStorage,
         formInputData,
         formKey,
@@ -333,7 +333,9 @@ function PydanticFormContextProvider({
                 return nextData;
             });
 
-            setErrorDetails(getErrorDetailsFromResponse(apiResponse));
+            setValidationErrorDetails(
+                getValidationErrorDetailsFromResponse(apiResponse),
+            );
             return;
         }
 
@@ -359,7 +361,7 @@ function PydanticFormContextProvider({
         if (formKey !== formRef.current) {
             setFormInputData([]);
             setFormInputHistory(new Map<string, object>());
-            setErrorDetails(undefined);
+            setValidationErrorDetails(undefined);
             formRef.current = formKey;
         }
     }, [formKey]);
@@ -386,7 +388,7 @@ function PydanticFormContextProvider({
             return;
         }
 
-        setErrorDetails({
+        setValidationErrorDetails({
             detail: 'Something unexpected went wrong',
             source: [],
             mapped: {},

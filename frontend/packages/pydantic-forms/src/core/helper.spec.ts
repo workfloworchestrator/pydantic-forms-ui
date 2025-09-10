@@ -1,8 +1,8 @@
 import {
     enumToOption,
     flattenSchemaCombinators,
-    getErrorDetailsFromResponse,
     getFormValuesFromFieldOrLabels,
+    getValidationErrorDetailsFromResponse,
     isNullable,
     optionsToOption,
 } from '@/core/helper';
@@ -73,7 +73,8 @@ describe('getErrorDetailsFromResponse', () => {
             ],
         };
 
-        const result = getErrorDetailsFromResponse(mockApiErrorResponse);
+        const result =
+            getValidationErrorDetailsFromResponse(mockApiErrorResponse);
 
         expect(result).toEqual({
             detail: 'Validation failed',
@@ -101,7 +102,7 @@ describe('getErrorDetailsFromResponse', () => {
             validation_errors: [],
         };
 
-        const result = getErrorDetailsFromResponse(mockApiErrorResp);
+        const result = getValidationErrorDetailsFromResponse(mockApiErrorResp);
 
         expect(result.detail).toBe('');
         expect(result.source).toEqual([]);

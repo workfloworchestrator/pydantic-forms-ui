@@ -32,9 +32,9 @@ import {
  * @param apiErrorResp The JSON Schema from the backend
  * @returns A object better usable for displaying errors
  */
-export const getErrorDetailsFromResponse = function (
+export const getValidationErrorDetailsFromResponse = (
     apiErrorResp: PydanticFormApiResponse,
-) {
+) => {
     return {
         detail: apiErrorResp.detail ?? '',
         source: apiErrorResp.validation_errors,
