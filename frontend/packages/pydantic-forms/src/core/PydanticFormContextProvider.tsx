@@ -33,6 +33,7 @@ import {
 } from '@/core/hooks';
 import {
     Locale,
+    PydanticFormApiResponseType,
     PydanticFormContextProps,
     PydanticFormFieldType,
     PydanticFormSchemaRawJson,
@@ -105,11 +106,11 @@ function PydanticFormContextProvider({
             customDataProvider,
         );
 
-    // fetch API response with form definition
+    // fetch API response with form definition, validation errors or success
     const {
         data: apiResponse,
         isLoading: isLoadingSchema,
-        error,
+        error: apiError,
     } = useApiProvider(formKey, formInputData, apiProvider);
 
     const emptyRawSchema: PydanticFormSchemaRawJson = useMemo(
@@ -301,6 +302,7 @@ function PydanticFormContextProvider({
         resetForm,
         submitForm,
         title,
+        apiError,
     };
 
     // useEffect to handle API responses
@@ -323,7 +325,9 @@ function PydanticFormContextProvider({
             return;
         }
 
-        if (apiResponse?.validation_errors) {
+        if (
+            apiResponse.type === PydanticFormApiResponseType.VALIDATION_ERRORS
+        ) {
             // Restore the data we got the error with and remove it from
             // formInputData so we can add it again
             setFormInputData((currentData) => {
@@ -339,12 +343,15 @@ function PydanticFormContextProvider({
             return;
         }
 
-        if (apiResponse?.success) {
+        if (apiResponse.type === PydanticFormApiResponseType.SUCCESS) {
             setIsFullFilled(true);
             return;
         }
 
-        if (apiResponse?.form && rawSchema !== apiResponse.form) {
+        if (
+            apiResponse.type === PydanticFormApiResponseType.FORM_DEFINITION &&
+            rawSchema !== apiResponse.form
+        ) {
             setRawSchema(apiResponse.form);
             if (apiResponse.meta) {
                 setHasNext(!!apiResponse.meta.hasNext);
@@ -380,20 +387,6 @@ function PydanticFormContextProvider({
         setFormInputHistory(new Map<string, object>());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFullFilled]); // Avoid completing the dependencies array here to avoid unwanted resetFormData calls
-
-    // useEffect to handles errors throws by the useApiProvider call
-    // for instance unexpected 500 errors
-    useEffect(() => {
-        if (!error) {
-            return;
-        }
-
-        setValidationErrorDetails({
-            detail: 'Something unexpected went wrong',
-            source: [],
-            mapped: {},
-        });
-    }, [error]);
 
     // useEffect to handle locale change
     useEffect(() => {

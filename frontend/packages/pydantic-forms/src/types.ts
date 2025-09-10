@@ -33,6 +33,7 @@ export interface PydanticFormContextProps {
     resetForm: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     submitForm: FormEventHandler<HTMLFormElement>;
     title?: string | boolean;
+    apiError?: unknown;
 }
 
 export type PydanticFormElementProps = {
@@ -327,16 +328,37 @@ export interface PydanticFormLabelProviderResponse {
     data: Record<string, string>;
 }
 
-export interface PydanticFormApiResponse {
-    detail?: string;
-    status: number;
-    form: PydanticFormSchemaRawJson;
-    success?: boolean;
-    validation_errors: PydanticFormApiValidationError[];
-    meta?: {
-        hasNext?: boolean;
-    };
+export enum PydanticFormApiResponseType {
+    SUCCESS = 'SUCCESS',
+    VALIDATION_ERRORS = 'VALIDATION_ERRORS',
+    FORM_DEFINITION = 'FORM_DEFINITION',
 }
+
+export type PydanticFormDefinitionResponse = {
+    type: PydanticFormApiResponseType.FORM_DEFINITION;
+    form: PydanticFormSchemaRawJson;
+    meta?: FormHasNext;
+};
+
+export type FormHasNext = {
+    hasNext?: boolean;
+};
+
+export type PydanticFormValidationResponse = {
+    type: PydanticFormApiResponseType.VALIDATION_ERRORS;
+    validation_errors: PydanticFormApiValidationError[];
+    detail?: string;
+};
+
+export type PydanticFormSuccessResponse = {
+    type: PydanticFormApiResponseType.SUCCESS;
+    response: Record<string, unknown>;
+};
+
+export type PydanticFormApiResponse =
+    | PydanticFormDefinitionResponse
+    | PydanticFormValidationResponse
+    | PydanticFormSuccessResponse;
 
 export interface PydanticFormBaseSchema {
     title?: string;

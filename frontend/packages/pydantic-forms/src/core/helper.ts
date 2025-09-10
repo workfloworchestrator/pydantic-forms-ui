@@ -14,7 +14,6 @@ import {
     ElementMatch,
     Properties,
     PydanticComponentMatcher,
-    PydanticFormApiResponse,
     PydanticFormComponents,
     PydanticFormField,
     PydanticFormFieldAttributes,
@@ -23,6 +22,7 @@ import {
     PydanticFormFieldValidations,
     PydanticFormPropertySchemaParsed,
     PydanticFormSchema,
+    PydanticFormValidationResponse,
     PydanticFormsContextConfig,
 } from '@/types';
 
@@ -33,12 +33,12 @@ import {
  * @returns A object better usable for displaying errors
  */
 export const getValidationErrorDetailsFromResponse = (
-    apiErrorResp: PydanticFormApiResponse,
+    formValidationResponse: PydanticFormValidationResponse,
 ) => {
     return {
-        detail: apiErrorResp.detail ?? '',
-        source: apiErrorResp.validation_errors,
-        mapped: apiErrorResp.validation_errors.reduce((old, cur) => {
+        detail: formValidationResponse.detail ?? '',
+        source: formValidationResponse.validation_errors,
+        mapped: formValidationResponse.validation_errors.reduce((old, cur) => {
             return {
                 ...old,
                 [cur.loc[0]]: {

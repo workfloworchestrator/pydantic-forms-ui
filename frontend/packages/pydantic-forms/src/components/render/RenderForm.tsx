@@ -23,6 +23,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         isLoading,
         isFullFilled,
         isSending,
+        apiError,
     } = contextProps;
 
     const { formRenderer, footerRenderer, headerRenderer } = config || {};
@@ -38,6 +39,12 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
     const LoadingComponent = config.loadingComponent ?? (
         <div>{t('loading')}</div>
     );
+
+    const ErrorComponent = <div>{t('error')}</div>;
+
+    if (apiError) {
+        return ErrorComponent;
+    }
 
     if (isLoading && !isSending) {
         return LoadingComponent;
