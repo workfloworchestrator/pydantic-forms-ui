@@ -198,7 +198,7 @@ function PydanticFormContextProvider({
         });
     }, []);
 
-    const submitFormFn = useCallback(() => {
+    const onSubmit = useCallback(() => {
         setIsSending(true);
         setValidationErrorDetails(undefined);
         addFormInputData();
@@ -210,10 +210,10 @@ function PydanticFormContextProvider({
             // TODO implement save with errors toggle
             if (data) {
                 reactHookForm.clearErrors();
-                submitFormFn();
+                onSubmit();
             }
         },
-        [reactHookForm, submitFormFn],
+        [reactHookForm, onSubmit],
     );
 
     const goToPreviousStep = () => {
@@ -226,8 +226,8 @@ function PydanticFormContextProvider({
         });
     };
 
-    const submitForm = reactHookForm.handleSubmit(
-        submitFormFn,
+    const handleSubmit = reactHookForm.handleSubmit(
+        onSubmit,
         onClientSideError,
     );
 
@@ -300,7 +300,7 @@ function PydanticFormContextProvider({
         pydanticFormSchema,
         reactHookForm,
         resetForm,
-        submitForm,
+        handleSubmit,
         title,
         apiError,
     };

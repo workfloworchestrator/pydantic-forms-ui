@@ -31,7 +31,7 @@ export interface PydanticFormContextProps {
     pydanticFormSchema?: PydanticFormSchema;
     reactHookForm: ReturnType<typeof useForm>;
     resetForm: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-    submitForm: FormEventHandler<HTMLFormElement>;
+    handleSubmit: FormEventHandler<HTMLFormElement>;
     title?: string | boolean;
     apiError?: unknown;
 }

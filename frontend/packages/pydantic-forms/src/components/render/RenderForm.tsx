@@ -17,7 +17,7 @@ import { PydanticFormComponents, PydanticFormContextProps } from '@/types';
 
 const RenderForm = (contextProps: PydanticFormContextProps) => {
     const {
-        submitForm,
+        handleSubmit,
         pydanticFormSchema,
         config,
         isLoading,
@@ -63,7 +63,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
     const HeaderRenderer = headerRenderer ?? Header;
 
     return (
-        <form action={''} onSubmit={submitForm}>
+        <form action={''} onSubmit={handleSubmit}>
             <HeaderRenderer />
             <FormRenderer pydanticFormComponents={pydanticFormComponents} />
             <FooterRenderer />
