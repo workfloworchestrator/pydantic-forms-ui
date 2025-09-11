@@ -40,7 +40,7 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
         <div>{t('loading')}</div>
     );
 
-    const ErrorComponent = <div>{t('error')}</div>;
+    const ErrorComponent = config.loadingComponent ?? <div>{t('error')}</div>;
 
     if (apiError) {
         return ErrorComponent;

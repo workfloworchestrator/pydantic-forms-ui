@@ -263,6 +263,7 @@ export interface PydanticFormsContextConfig {
     customTranslations?: TranslationsJSON;
 
     loadingComponent?: React.ReactNode;
+    errorComponent?: React.ReactNode;
 
     // locale
     locale?: Locale;
