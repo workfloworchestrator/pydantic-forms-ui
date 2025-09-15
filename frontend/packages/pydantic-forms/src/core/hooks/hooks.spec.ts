@@ -16,7 +16,7 @@ import {
 } from '@/types';
 
 import { getMockPydanticFormField } from '../helper.spec';
-import { getZodValidationObject } from './useGetZodValidator';
+import { getZodValidationObject } from './useGetZodSchema';
 import { parseProperties } from './usePydanticFormParser';
 
 jest.mock('react-hook-form');

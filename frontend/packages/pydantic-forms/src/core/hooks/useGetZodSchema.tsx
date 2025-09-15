@@ -107,7 +107,7 @@ export const getZodValidationObject = (
     return validationObject ? z.object(validationObject) : z.any();
 };
 
-export const useGetZodValidator = (
+export const useGetZodSchema = (
     pydanticFormSchema?: PydanticFormSchema,
     componentMatcherExtender?: PydanticFormConfig['componentMatcherExtender'],
 ): ZodObject | ZodAny => {

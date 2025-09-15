@@ -7,8 +7,11 @@
  */
 import React from 'react';
 import type { FieldValues } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 
 import { useTranslations } from 'next-intl';
+
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import Footer from '@/components/form/Footer';
 import { Form } from '@/components/form/Form';
@@ -20,6 +23,8 @@ import type {
     PydanticFormSchema,
     PydanticFormValidationErrorDetails,
 } from '@/types';
+
+import { useGetZodSchema } from './hooks';
 
 export interface ReactHookFormProps {
     handleSubmit: (e?: React.BaseSyntheticEvent) => void;
@@ -43,15 +48,9 @@ export const ReactHookForm = ({
     isFullFilled,
     isSending,
     apiError,
+    initialValues,
     hasNext,
 }: ReactHookFormProps) => {
-    const { formRenderer, footerRenderer, headerRenderer } = config || {};
-    const pydanticFormComponents: PydanticFormComponents =
-        getPydanticFormComponents(
-            pydanticFormSchema?.properties || {},
-            config?.componentMatcherExtender,
-        );
-
     const t = useTranslations('renderForm');
 
     const LoadingComponent = config.loadingComponent ?? (
@@ -59,6 +58,18 @@ export const ReactHookForm = ({
     );
 
     const ErrorComponent = config.loadingComponent ?? <div>{t('error')}</div>;
+
+    const zodSchema = useGetZodSchema(
+        pydanticFormSchema,
+        config.componentMatcherExtender,
+    );
+
+    // initialize the react-hook-form
+    const reactHookForm = useForm({
+        resolver: zodResolver(zodSchema),
+        mode: 'all',
+        values: initialValues,
+    });
 
     if (apiError) {
         return ErrorComponent;
@@ -76,18 +87,27 @@ export const ReactHookForm = ({
         return <></>;
     }
 
+    const { formRenderer, footerRenderer, headerRenderer } = config || {};
+    const pydanticFormComponents: PydanticFormComponents =
+        getPydanticFormComponents(
+            pydanticFormSchema?.properties || {},
+            config?.componentMatcherExtender,
+        );
+
     const FormRenderer = formRenderer ?? Form;
     const FooterRenderer = footerRenderer ?? Footer;
     const HeaderRenderer = headerRenderer ?? Header;
 
     return (
-        <form action={''} onSubmit={handleSubmit}>
-            <HeaderRenderer
-                title="TEST TITLE 123"
-                pydanticFormSchema={pydanticFormSchema}
-            />
-            <FormRenderer pydanticFormComponents={pydanticFormComponents} />
-            <FooterRenderer />
-        </form>
+        <FormProvider {...reactHookForm}>
+            <form action={''} onSubmit={handleSubmit}>
+                <HeaderRenderer
+                    title="TEST TITLE 123"
+                    pydanticFormSchema={pydanticFormSchema}
+                />
+                <FormRenderer pydanticFormComponents={pydanticFormComponents} />
+                <FooterRenderer />
+            </form>
+        </FormProvider>
     );
 };

@@ -22,7 +22,7 @@ export interface UsePydanticFormReturn {
     isFullFilled: boolean;
     isSending: boolean;
     isLoading: boolean;
-    pydanticFormSchema: PydanticFormSchema;
+    pydanticFormSchema?: PydanticFormSchema;
     initialValues: FieldValues;
 }
 
@@ -127,11 +127,7 @@ export function usePydanticForm(
         isFullFilled,
         isSending,
         isLoading,
-        pydanticFormSchema: {
-            title: 'Form',
-            type: PydanticFormFieldType.OBJECT,
-            properties: {},
-        },
+        pydanticFormSchema,
         initialValues,
     };
 }
