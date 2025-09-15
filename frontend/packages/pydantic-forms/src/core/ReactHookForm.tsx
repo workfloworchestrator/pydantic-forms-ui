@@ -6,6 +6,7 @@
  * Here we define the outline of the form
  */
 import React from 'react';
+import type { FieldValues } from 'react-hook-form';
 
 import { useTranslations } from 'next-intl';
 
@@ -17,19 +18,24 @@ import type {
     PydanticFormComponents,
     PydanticFormConfig,
     PydanticFormSchema,
+    PydanticFormValidationErrorDetails,
 } from '@/types';
 
 export interface ReactHookFormProps {
-    handleSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
+    handleSubmit: (e?: React.BaseSyntheticEvent) => void;
+    handleCancel: (e?: React.BaseSyntheticEvent) => void;
     pydanticFormSchema: PydanticFormSchema;
     config: PydanticFormConfig;
     isLoading: boolean;
     isFullFilled: boolean;
     isSending: boolean;
     apiError?: string;
+    hasNext: boolean;
+    validationErrorsDetails: PydanticFormValidationErrorDetails | undefined;
+    initialValues: FieldValues;
 }
 
-const ReactHookForm = ({
+export const ReactHookForm = ({
     handleSubmit,
     pydanticFormSchema,
     config,
@@ -37,9 +43,10 @@ const ReactHookForm = ({
     isFullFilled,
     isSending,
     apiError,
+    hasNext,
 }: ReactHookFormProps) => {
     const { formRenderer, footerRenderer, headerRenderer } = config || {};
-
+    console.log('ReactHookForm render', pydanticFormSchema);
     const pydanticFormComponents: PydanticFormComponents =
         getPydanticFormComponents(
             pydanticFormSchema?.properties || {},
@@ -85,5 +92,3 @@ const ReactHookForm = ({
         </form>
     );
 };
-
-export default ReactHookForm;

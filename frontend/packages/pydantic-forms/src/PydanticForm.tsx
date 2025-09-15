@@ -20,7 +20,7 @@ export const PydanticForm = ({
     onSuccess,
     title,
 }: PydanticFormHandlerProps) => {
-    console.log(config, formKey, onCancel, onSuccess, title);
+    console.log('PydanticForm render');
     return (
         <TranslationsProvider
             customTranslations={config.customTranslations}
