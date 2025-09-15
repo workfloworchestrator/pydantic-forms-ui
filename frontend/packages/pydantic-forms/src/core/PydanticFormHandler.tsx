@@ -55,6 +55,7 @@ export const PydanticFormHandler = ({
             handleSubmit={() => {
                 console.log('handleSubmit');
             }}
+            hasPrevious={formSteps.current.length > 1}
             handleCancel={() => {
                 console.log('handleCancel');
             }}
