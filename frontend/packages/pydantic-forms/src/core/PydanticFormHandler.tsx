@@ -58,6 +58,7 @@ export const PydanticFormHandler = ({
             handleCancel={() => {
                 console.log('handleCancel');
             }}
+            title={title}
         />
     );
 };

@@ -9,7 +9,7 @@ import { RenderValidationErrors } from '@/components/render/RenderValidationErro
 import type { PydanticFormSchema } from '@/types';
 
 export interface PydanticFormHeaderProps {
-    title: string;
+    title?: string;
     pydanticFormSchema?: PydanticFormSchema;
 }
 

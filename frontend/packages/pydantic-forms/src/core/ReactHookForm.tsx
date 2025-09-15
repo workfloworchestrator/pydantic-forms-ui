@@ -37,6 +37,7 @@ export interface ReactHookFormProps {
     hasNext: boolean;
     validationErrorsDetails: PydanticFormValidationErrorDetails | undefined;
     initialValues: FieldValues;
+    title?: string;
 }
 
 export const ReactHookForm = ({
@@ -47,6 +48,7 @@ export const ReactHookForm = ({
     isSending,
     apiError,
     initialValues,
+    title,
     hasNext,
 }: ReactHookFormProps) => {
     const config = useGetConfig();
@@ -101,7 +103,7 @@ export const ReactHookForm = ({
         <FormProvider {...reactHookForm}>
             <form action={''} onSubmit={handleSubmit}>
                 <HeaderRenderer
-                    title="TEST TITLE 123"
+                    title={title}
                     pydanticFormSchema={pydanticFormSchema}
                 />
                 <FormRenderer pydanticFormComponents={pydanticFormComponents} />
