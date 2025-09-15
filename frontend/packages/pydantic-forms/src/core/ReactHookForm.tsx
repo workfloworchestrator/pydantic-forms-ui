@@ -29,7 +29,7 @@ import { useGetZodSchema } from './hooks';
 export interface ReactHookFormProps {
     handleSubmit: (e?: React.BaseSyntheticEvent) => void;
     handleCancel: (e?: React.BaseSyntheticEvent) => void;
-    pydanticFormSchema: PydanticFormSchema;
+    pydanticFormSchema?: PydanticFormSchema;
     config: PydanticFormConfig;
     isLoading: boolean;
     isFullFilled: boolean;

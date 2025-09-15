@@ -18,23 +18,22 @@ export const WrapFieldElement = ({
         <Controller
             name={pydanticFormField.id}
             control={control}
-            render={({ field }) => {
+            render={({ field, fieldState }) => {
                 const { onChange, onBlur, value, name } = field;
-                const onChangeHandle = (val: string) => {
-                    onChange(val);
+                const onChangeHandle = (value: unknown) => {
+                    onChange(value);
 
                     extraTriggerFields?.forEach((extraField) => {
                         trigger(extraField);
                     });
-
-                    // it seems we need this because the 2nd error would get stale..
-                    // https://github.com/react-hook-form/react-hook-form/issues/8170
-                    // https://github.com/react-hook-form/react-hook-form/issues/10832
-                    trigger(field.name);
                 };
 
                 return (
-                    <FieldWrap pydanticFormField={pydanticFormField}>
+                    <FieldWrap
+                        pydanticFormField={pydanticFormField}
+                        isInvalid={fieldState.invalid}
+                        frontendValidationMessage={fieldState.error?.message}
+                    >
                         <PydanticFormControlledElement
                             onChange={onChangeHandle}
                             onBlur={onBlur}

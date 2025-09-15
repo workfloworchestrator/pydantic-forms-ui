@@ -8,7 +8,6 @@
  *
  */
 import React from 'react';
-import { useFormContext } from 'react-hook-form';
 
 import { PydanticFormField } from '@/types';
 
@@ -16,15 +15,19 @@ import { FormRow } from './FormRow';
 
 interface FieldWrapProps {
     pydanticFormField: PydanticFormField;
+    isInvalid: boolean;
     children: React.ReactNode;
+    frontendValidationMessage?: string;
 }
 
-export const FieldWrap = ({ pydanticFormField, children }: FieldWrapProps) => {
-    const { getFieldState } = useFormContext();
+export const FieldWrap = ({
+    pydanticFormField,
+    isInvalid,
+    frontendValidationMessage,
+    children,
+}: FieldWrapProps) => {
     const RowRenderer = FormRow;
-    const fieldState = getFieldState(pydanticFormField.id);
-    const errorMsg = fieldState.error?.message;
-    const isInvalid = errorMsg ?? fieldState.invalid;
+    console.log('FieldWrap render', pydanticFormField.id);
 
     return (
         <RowRenderer
@@ -32,7 +35,7 @@ export const FieldWrap = ({ pydanticFormField, children }: FieldWrapProps) => {
             description={pydanticFormField.description}
             required={pydanticFormField.required}
             isInvalid={!!isInvalid}
-            error={errorMsg as string}
+            error={frontendValidationMessage}
             data-testid={pydanticFormField.id}
         >
             <div>{children}</div>
