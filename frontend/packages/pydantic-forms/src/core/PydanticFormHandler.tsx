@@ -1,13 +1,10 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
-import type { PydanticFormConfig } from '@/types';
-
 import { ReactHookForm } from './ReactHookForm';
-import { usePydanticForm } from './hooks';
+import { useGetConfig, usePydanticForm } from './hooks';
 
 export interface PydanticFormHandlerProps {
-    config: PydanticFormConfig;
     formKey: string;
     onCancel?: () => void;
     onSuccess?: (fieldValues: FieldValues, response: object) => void;
@@ -15,12 +12,12 @@ export interface PydanticFormHandlerProps {
 }
 
 export const PydanticFormHandler = ({
-    config,
     formKey,
     onCancel,
     onSuccess,
     title,
 }: PydanticFormHandlerProps) => {
+    const config = useGetConfig();
     const formSteps = useRef<FieldValues[]>([]);
     const [formStep, setStep] = useState<FieldValues>();
 
@@ -48,7 +45,6 @@ export const PydanticFormHandler = ({
     return (
         <ReactHookForm
             pydanticFormSchema={pydanticFormSchema}
-            config={config}
             isLoading={isLoading}
             isFullFilled={isFullFilled}
             isSending={isSending}

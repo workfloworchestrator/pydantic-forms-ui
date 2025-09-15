@@ -19,18 +19,17 @@ import Header from '@/components/form/Header';
 import { getPydanticFormComponents } from '@/core/helper';
 import type {
     PydanticFormComponents,
-    PydanticFormConfig,
     PydanticFormSchema,
     PydanticFormValidationErrorDetails,
 } from '@/types';
 
+import { useGetConfig } from './hooks';
 import { useGetZodSchema } from './hooks';
 
 export interface ReactHookFormProps {
     handleSubmit: (e?: React.BaseSyntheticEvent) => void;
     handleCancel: (e?: React.BaseSyntheticEvent) => void;
     pydanticFormSchema?: PydanticFormSchema;
-    config: PydanticFormConfig;
     isLoading: boolean;
     isFullFilled: boolean;
     isSending: boolean;
@@ -43,7 +42,6 @@ export interface ReactHookFormProps {
 export const ReactHookForm = ({
     handleSubmit,
     pydanticFormSchema,
-    config,
     isLoading,
     isFullFilled,
     isSending,
@@ -51,6 +49,7 @@ export const ReactHookForm = ({
     initialValues,
     hasNext,
 }: ReactHookFormProps) => {
+    const config = useGetConfig();
     const t = useTranslations('renderForm');
 
     const LoadingComponent = config.loadingComponent ?? (

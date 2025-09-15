@@ -9,6 +9,7 @@
  */
 import React from 'react';
 
+import { useGetConfig } from '@/core';
 import { PydanticFormField } from '@/types';
 
 import { FormRow } from './FormRow';
@@ -26,8 +27,8 @@ export const FieldWrap = ({
     frontendValidationMessage,
     children,
 }: FieldWrapProps) => {
-    const RowRenderer = FormRow;
-    console.log('FieldWrap render', pydanticFormField.id);
+    const config = useGetConfig();
+    const RowRenderer = config.rowRenderer ?? FormRow;
 
     return (
         <RowRenderer
