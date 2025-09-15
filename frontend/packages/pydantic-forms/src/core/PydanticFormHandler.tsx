@@ -22,7 +22,7 @@ export const PydanticFormHandler = ({
     title,
 }: PydanticFormHandlerProps) => {
     const formSteps = useRef<FieldValues[]>([]);
-    const [formStep, setStep] = useState<FieldValues>({});
+    const [formStep, setStep] = useState<FieldValues>();
 
     const updateFormStepsRef = (steps: FieldValues[]) => {
         formSteps.current = steps;
@@ -38,13 +38,13 @@ export const PydanticFormHandler = ({
         pydanticFormSchema,
         initialValues,
     } = usePydanticForm(
-        formStep,
         formSteps.current,
         formKey,
+        config,
         updateFormStepsRef,
+        formStep,
     );
 
-    console.log('PydanticFormHandler render');
     return (
         <ReactHookForm
             pydanticFormSchema={pydanticFormSchema}

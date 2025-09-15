@@ -46,7 +46,6 @@ export const ReactHookForm = ({
     hasNext,
 }: ReactHookFormProps) => {
     const { formRenderer, footerRenderer, headerRenderer } = config || {};
-    console.log('ReactHookForm render', pydanticFormSchema);
     const pydanticFormComponents: PydanticFormComponents =
         getPydanticFormComponents(
             pydanticFormSchema?.properties || {},

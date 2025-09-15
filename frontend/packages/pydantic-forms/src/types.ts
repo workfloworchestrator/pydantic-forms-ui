@@ -314,14 +314,14 @@ export enum PydanticFormApiResponseType {
     FORM_DEFINITION = 'FORM_DEFINITION',
 }
 
+export type FormHasNext = {
+    hasNext?: boolean;
+};
+
 export type PydanticFormDefinitionResponse = {
     type: PydanticFormApiResponseType.FORM_DEFINITION;
     form: PydanticFormSchemaRawJson;
     meta?: FormHasNext;
-};
-
-export type FormHasNext = {
-    hasNext?: boolean;
 };
 
 export type PydanticFormValidationResponse = {

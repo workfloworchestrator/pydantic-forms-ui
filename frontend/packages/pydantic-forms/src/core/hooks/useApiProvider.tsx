@@ -12,18 +12,19 @@
  *
  * Disabled revalidate / refresh system of SWR, this would cause submissions
  */
+import type { FieldValues } from 'react-hook-form';
+
 import useSWR from 'swr';
 
 import {
     PydanticFormApiProvider,
     PydanticFormApiResponse,
     PydanticFormApiResponseType,
-    PydanticFormMetaData,
 } from '@/types';
 
 export function useApiProvider(
     formKey: string,
-    formInputData: PydanticFormMetaData, // TODO: This doesn't seem right
+    formInputData: FieldValues[], // TODO: This doesn't seem right
     apiProvider: PydanticFormApiProvider,
 ) {
     return useSWR<PydanticFormApiResponse>(
