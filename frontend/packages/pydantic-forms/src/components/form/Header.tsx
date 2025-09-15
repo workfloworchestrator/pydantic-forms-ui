@@ -6,11 +6,14 @@
 import React from 'react';
 
 import { RenderValidationErrors } from '@/components/render/RenderValidationErrors';
-import { usePydanticFormContext } from '@/core';
+import type { PydanticFormSchema } from '@/types';
 
-const Header = () => {
-    const { pydanticFormSchema, title } = usePydanticFormContext();
+export interface PydanticFormHeaderProps {
+    title: string;
+    pydanticFormSchema?: PydanticFormSchema;
+}
 
+const Header = ({ title, pydanticFormSchema }: PydanticFormHeaderProps) => {
     return (
         <>
             <h2 style={{ margin: '1rem 0' }}>

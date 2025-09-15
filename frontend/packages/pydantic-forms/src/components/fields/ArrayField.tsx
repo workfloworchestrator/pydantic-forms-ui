@@ -1,7 +1,6 @@
 import React from 'react';
-import { useFieldArray } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 
-import { usePydanticFormContext } from '@/core';
 import { fieldToComponentMatcher } from '@/core/helper';
 import { PydanticFormElementProps } from '@/types';
 import { disableField, itemizeArrayItem } from '@/utils';
@@ -9,10 +8,11 @@ import { disableField, itemizeArrayItem } from '@/utils';
 import { RenderFields } from '../render';
 
 export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
-    const { reactHookForm, config } = usePydanticFormContext();
+    /*
+    const { control } = useFormContext();
 
     const disabled = pydanticFormField.attributes?.disabled || false;
-    const { control } = reactHookForm;
+
     const { id: arrayName, arrayItem } = pydanticFormField;
     const { fields, append, remove } = useFieldArray({
         control,
@@ -23,10 +23,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
 
     if (!arrayItem) return '';
 
-    const component = fieldToComponentMatcher(
-        arrayItem,
-        config?.componentMatcherExtender,
-    );
+    const component = fieldToComponentMatcher(arrayItem, {});
 
     const renderField = (field: Record<'id', string>, index: number) => {
         const itemizedField = itemizeArrayItem(index, arrayItem, arrayName);
@@ -105,4 +102,6 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                 )}
         </div>
     );
+    */
+    return <div>ArrayField - TODO</div>;
 };

@@ -8,8 +8,8 @@
  *
  */
 import React from 'react';
+import { useFormContext } from 'react-hook-form';
 
-import { usePydanticFormContext } from '@/core';
 import { PydanticFormField } from '@/types';
 
 import { FormRow } from './FormRow';
@@ -20,13 +20,10 @@ interface FieldWrapProps {
 }
 
 export const FieldWrap = ({ pydanticFormField, children }: FieldWrapProps) => {
-    const { validationErrorDetails, reactHookForm, config } =
-        usePydanticFormContext();
-    const RowRenderer = config?.rowRenderer ? config.rowRenderer : FormRow;
-    const fieldState = reactHookForm.getFieldState(pydanticFormField.id);
-    const errorMsg =
-        validationErrorDetails?.mapped?.[pydanticFormField.id]?.msg ??
-        fieldState.error?.message;
+    const { getFieldState } = useFormContext();
+    const RowRenderer = FormRow;
+    const fieldState = getFieldState(pydanticFormField.id);
+    const errorMsg = fieldState.error?.message;
     const isInvalid = errorMsg ?? fieldState.invalid;
 
     return (

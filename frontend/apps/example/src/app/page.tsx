@@ -110,7 +110,7 @@ export default function Home() {
         },
     };
     const locale = Locale.enGB;
-
+    console.log('page');
     return (
         <div className={styles.page}>
             <h1 style={{ marginBottom: '20px' }}>Pydantic Form </h1>

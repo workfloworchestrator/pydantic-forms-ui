@@ -8,10 +8,10 @@
  */
 import React from 'react';
 
-import RenderForm from '@/components/render/RenderForm';
-import PydanticFormContextProvider from '@/core/PydanticFormContextProvider';
-import type { PydanticFormContextProviderProps } from '@/core/PydanticFormContextProvider';
 import { TranslationsProvider } from '@/messages/translationsProvider';
+
+import { PydanticFormHandler } from './core';
+import type { PydanticFormHandlerProps } from './core/PydanticFormHandler';
 
 export const PydanticForm = ({
     config,
@@ -19,21 +19,22 @@ export const PydanticForm = ({
     onCancel,
     onSuccess,
     title,
-}: Omit<PydanticFormContextProviderProps, 'children'>) => (
-    <TranslationsProvider
-        customTranslations={config.customTranslations}
-        locale={config.locale}
-    >
-        <PydanticFormContextProvider
-            config={config}
-            onCancel={onCancel}
-            onSuccess={onSuccess}
-            title={title}
-            formKey={formKey}
+}: PydanticFormHandlerProps) => {
+    console.log(config, formKey, onCancel, onSuccess, title);
+    return (
+        <TranslationsProvider
+            customTranslations={config.customTranslations}
+            locale={config.locale}
         >
-            {RenderForm}
-        </PydanticFormContextProvider>
-    </TranslationsProvider>
-);
+            <PydanticFormHandler
+                config={config}
+                onCancel={onCancel}
+                onSuccess={onSuccess}
+                title={title}
+                formKey={formKey}
+            />
+        </TranslationsProvider>
+    );
+};
 
 export default PydanticForm;

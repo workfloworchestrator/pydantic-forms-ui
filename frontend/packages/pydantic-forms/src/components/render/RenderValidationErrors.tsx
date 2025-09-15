@@ -5,17 +5,15 @@
  */
 import React from 'react';
 
-import { usePydanticFormContext } from '@/core';
-import { getFieldLabelById } from '@/core/helper';
+// import { getFieldLabelById } from '@/core/helper';
 
 export function RenderValidationErrors() {
-    const { validationErrorDetails, pydanticFormSchema } =
-        usePydanticFormContext();
+    const validationErrorDetails = undefined;
 
     if (!validationErrorDetails) {
         return <></>;
     }
-
+    /*
     const errors = validationErrorDetails.source;
     const rootError = errors
         .filter((err) => err.loc.includes('__root__'))
@@ -45,4 +43,6 @@ export function RenderValidationErrors() {
             )}
         </div>
     );
+*/
+    return <div>TOODO: RenderValidationErrors</div>;
 }

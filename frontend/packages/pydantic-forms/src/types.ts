@@ -15,27 +15,6 @@ export type PydanticFormMetaData = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type PydanticFormFieldValue = any;
 
-export interface PydanticFormContextProps {
-    config: PydanticFormsContextConfig;
-    validationErrorDetails?: PydanticFormValidationErrorDetails;
-    fieldDataStorage: PydanticFormFieldDataStorage;
-    formInputData: object[];
-    formKey: string;
-    hasNext: boolean;
-    initialData: FieldValues;
-    isFullFilled: boolean;
-    isLoading: boolean;
-    isSending: boolean;
-    onCancel?: () => void;
-    onPrevious?: () => void;
-    pydanticFormSchema?: PydanticFormSchema;
-    reactHookForm: ReturnType<typeof useForm>;
-    resetForm: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-    handleSubmit: FormEventHandler<HTMLFormElement>;
-    title?: string | boolean;
-    apiError?: unknown;
-}
-
 export type PydanticFormElementProps = {
     pydanticFormField: PydanticFormField;
 };
@@ -241,7 +220,7 @@ export type ComponentMatcherExtender = (
     currentMatchers: PydanticComponentMatcher[],
 ) => PydanticComponentMatcher[];
 
-export interface PydanticFormsContextConfig {
+export interface PydanticFormConfig {
     // use a custom method for providing the form definition
     apiProvider: PydanticFormApiProvider;
 

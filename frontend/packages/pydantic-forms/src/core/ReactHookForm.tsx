@@ -13,19 +13,31 @@ import Footer from '@/components/form/Footer';
 import { Form } from '@/components/form/Form';
 import Header from '@/components/form/Header';
 import { getPydanticFormComponents } from '@/core/helper';
-import { PydanticFormComponents, PydanticFormContextProps } from '@/types';
+import type {
+    PydanticFormComponents,
+    PydanticFormConfig,
+    PydanticFormSchema,
+} from '@/types';
 
-const RenderForm = (contextProps: PydanticFormContextProps) => {
-    const {
-        handleSubmit,
-        pydanticFormSchema,
-        config,
-        isLoading,
-        isFullFilled,
-        isSending,
-        apiError,
-    } = contextProps;
+export interface ReactHookFormProps {
+    handleSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
+    pydanticFormSchema: PydanticFormSchema;
+    config: PydanticFormConfig;
+    isLoading: boolean;
+    isFullFilled: boolean;
+    isSending: boolean;
+    apiError?: string;
+}
 
+const ReactHookForm = ({
+    handleSubmit,
+    pydanticFormSchema,
+    config,
+    isLoading,
+    isFullFilled,
+    isSending,
+    apiError,
+}: ReactHookFormProps) => {
     const { formRenderer, footerRenderer, headerRenderer } = config || {};
 
     const pydanticFormComponents: PydanticFormComponents =
@@ -64,11 +76,14 @@ const RenderForm = (contextProps: PydanticFormContextProps) => {
 
     return (
         <form action={''} onSubmit={handleSubmit}>
-            <HeaderRenderer />
+            <HeaderRenderer
+                title="TEST TITLE 123"
+                pydanticFormSchema={pydanticFormSchema}
+            />
             <FormRenderer pydanticFormComponents={pydanticFormComponents} />
             <FooterRenderer />
         </form>
     );
 };
 
-export default RenderForm;
+export default ReactHookForm;
