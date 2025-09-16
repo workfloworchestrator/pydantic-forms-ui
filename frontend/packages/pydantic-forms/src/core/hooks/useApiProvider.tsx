@@ -56,8 +56,7 @@ export function useApiProvider(
                     if (request.status && request.status === 200) {
                         return {
                             type: PydanticFormApiResponseType.SUCCESS,
-                            response: request,
-                            success: true,
+                            data: request.data,
                         } as PydanticFormApiResponse;
                     }
                     throw new Error('Unknown API Response' + request);

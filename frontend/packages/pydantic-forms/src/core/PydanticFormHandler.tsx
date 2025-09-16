@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
 import { PydanticFormValidationErrorContext } from '@/PydanticForm';
+import { PydanticFormSuccessResponse } from '@/types';
 
 import { ReactHookForm } from './ReactHookForm';
 import { useGetConfig, usePydanticForm } from './hooks';
@@ -9,7 +10,10 @@ import { useGetConfig, usePydanticForm } from './hooks';
 export interface PydanticFormHandlerProps {
     formKey: string;
     onCancel?: () => void;
-    onSuccess?: (fieldValues: FieldValues, response: object) => void;
+    onSuccess?: (
+        fieldValues: FieldValues[],
+        response: PydanticFormSuccessResponse,
+    ) => void;
     title?: string;
 }
 
@@ -30,7 +34,7 @@ export const PydanticFormHandler = ({
         isLoading,
         pydanticFormSchema,
         initialValues,
-    } = usePydanticForm(formKey, config, formStepsRef, formStep);
+    } = usePydanticForm(formKey, config, formStepsRef, onSuccess, formStep);
 
     const handleStepSubmit = useCallback((fieldValues: FieldValues) => {
         setStep(fieldValues);

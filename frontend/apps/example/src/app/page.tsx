@@ -1,5 +1,7 @@
 'use client';
 
+import type { FieldValues } from 'react-hook-form';
+
 import {
     Locale,
     PydanticForm,
@@ -9,8 +11,10 @@ import {
 import type {
     PydanticComponentMatcher,
     PydanticFormApiProvider,
+    PydanticFormApiResponse,
     PydanticFormCustomDataProvider,
     PydanticFormLabelProvider,
+    PydanticFormSuccessResponse,
 } from 'pydantic-forms';
 
 import { TextArea } from '@/fields';
@@ -38,7 +42,7 @@ export default function Home() {
                     fetchResult.status === 200
                 ) {
                     const data = await fetchResult.json();
-
+                    console.log(fetchResult.status, data); // eslint-disable-line no-console
                     return new Promise<Record<string, unknown>>((resolve) => {
                         if (fetchResult.status === 510) {
                             resolve({ ...data, status: 510 });
@@ -47,7 +51,7 @@ export default function Home() {
                             resolve({ ...data, status: 400 });
                         }
                         if (fetchResult.status === 200) {
-                            resolve({ ...data, status: 200 });
+                            resolve({ status: 200, data });
                         }
                     });
                 }
@@ -110,7 +114,16 @@ export default function Home() {
         },
     };
     const locale = Locale.enGB;
-    console.log('page');
+
+    const onSuccess = (
+        fieldValues: FieldValues[],
+        apiResponse: PydanticFormSuccessResponse,
+    ) => {
+        console.log('values', fieldValues);
+        const response = apiResponse;
+        console.log('response', response);
+    };
+
     return (
         <div className={styles.page}>
             <h1 style={{ marginBottom: '20px' }}>Pydantic Form </h1>
@@ -121,9 +134,7 @@ export default function Home() {
                 onCancel={() => {
                     alert('Form cancelled');
                 }}
-                onSuccess={() => {
-                    alert('Form submitted successfully');
-                }}
+                onSuccess={onSuccess}
                 config={{
                     apiProvider: pydanticFormApiProvider,
                     labelProvider: pydanticLabelProvider,

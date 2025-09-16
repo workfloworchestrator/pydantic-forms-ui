@@ -332,7 +332,7 @@ export type PydanticFormValidationResponse = {
 
 export type PydanticFormSuccessResponse = {
     type: PydanticFormApiResponseType.SUCCESS;
-    response: Record<string, unknown>;
+    data: string | object;
 };
 
 export type PydanticFormApiResponse =

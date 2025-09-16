@@ -9,6 +9,7 @@ import type {
     PydanticFormConfig,
     PydanticFormSchema,
     PydanticFormSchemaRawJson,
+    PydanticFormSuccessResponse,
     PydanticFormValidationErrorDetails,
 } from '@/types';
 import { PydanticFormApiResponseType, PydanticFormFieldType } from '@/types';
@@ -30,6 +31,10 @@ export function usePydanticForm(
     formKey: string,
     config: PydanticFormConfig,
     formStepsRef: React.MutableRefObject<FieldValues[]>,
+    onSuccess?: (
+        fieldValues: FieldValues[],
+        response: PydanticFormSuccessResponse,
+    ) => void,
     formStep?: FieldValues,
 ): UsePydanticFormReturn {
     const emptyRawSchema: PydanticFormSchemaRawJson = useMemo(
@@ -100,14 +105,19 @@ export function usePydanticForm(
             );
             return;
         } else if (apiResponse.type === PydanticFormApiResponseType.SUCCESS) {
+            if (onSuccess) {
+                onSuccess(formInputData, apiResponse);
+            }
+            setValidationErrorsDetails(null);
             setIsFullFilled(true);
-            formStepsRef.current = [];
+            formStepsRef.current.length = 0;
             return;
         }
 
         if (formStep) {
             formStepsRef.current.push(formStep);
         }
+
         if (
             apiResponse.type === PydanticFormApiResponseType.FORM_DEFINITION &&
             rawSchema !== apiResponse.form
