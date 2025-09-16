@@ -20,7 +20,7 @@ const Header = ({ title, pydanticFormSchema }: PydanticFormHeaderProps) => {
                 {title ?? pydanticFormSchema?.title}
             </h2>
 
-            <RenderValidationErrors />
+            <RenderValidationErrors pydanticFormSchema={pydanticFormSchema} />
         </>
     );
 };

@@ -11,7 +11,6 @@ import {
 import type {
     PydanticComponentMatcher,
     PydanticFormApiProvider,
-    PydanticFormApiResponse,
     PydanticFormCustomDataProvider,
     PydanticFormLabelProvider,
     PydanticFormSuccessResponse,
@@ -42,7 +41,6 @@ export default function Home() {
                     fetchResult.status === 200
                 ) {
                     const data = await fetchResult.json();
-                    console.log(fetchResult.status, data); // eslint-disable-line no-console
                     return new Promise<Record<string, unknown>>((resolve) => {
                         if (fetchResult.status === 510) {
                             resolve({ ...data, status: 510 });
@@ -116,12 +114,12 @@ export default function Home() {
     const locale = Locale.enGB;
 
     const onSuccess = (
-        fieldValues: FieldValues[],
+        _: FieldValues[],
         apiResponse: PydanticFormSuccessResponse,
     ) => {
-        console.log('values', fieldValues);
-        const response = apiResponse;
-        console.log('response', response);
+        alert(
+            `Form submitted successfully: ${JSON.stringify(apiResponse.data)}`,
+        );
     };
 
     return (

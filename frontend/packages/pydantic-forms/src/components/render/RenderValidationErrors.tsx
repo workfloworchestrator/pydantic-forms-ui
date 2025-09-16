@@ -5,15 +5,23 @@
  */
 import React from 'react';
 
-// import { getFieldLabelById } from '@/core/helper';
+import { useGetValidationErrors } from '@/core';
+import { getFieldLabelById } from '@/core/helper';
+import type { PydanticFormSchema } from '@/types';
 
-export function RenderValidationErrors() {
-    const validationErrorDetails = undefined;
+export interface RenderValidationErrorsProps {
+    pydanticFormSchema?: PydanticFormSchema;
+}
+
+export function RenderValidationErrors({
+    pydanticFormSchema,
+}: RenderValidationErrorsProps) {
+    const validationErrorDetails = useGetValidationErrors();
 
     if (!validationErrorDetails) {
         return <></>;
     }
-    /*
+
     const errors = validationErrorDetails.source;
     const rootError = errors
         .filter((err) => err.loc.includes('__root__'))
@@ -43,6 +51,4 @@ export function RenderValidationErrors() {
             )}
         </div>
     );
-*/
-    return <div>TOODO: RenderValidationErrors</div>;
 }
