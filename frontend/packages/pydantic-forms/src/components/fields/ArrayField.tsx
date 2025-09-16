@@ -1,7 +1,7 @@
 import React from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useFieldArray } from 'react-hook-form';
 
-import { useGetConfig } from '@/core';
+import { useGetConfig, useGetForm } from '@/core';
 import { fieldToComponentMatcher } from '@/core/helper';
 import { PydanticFormElementProps } from '@/types';
 import { disableField, itemizeArrayItem } from '@/utils';
@@ -9,7 +9,7 @@ import { disableField, itemizeArrayItem } from '@/utils';
 import { RenderFields } from '../render';
 
 export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
-    const { control } = useFormContext();
+    const { control } = useGetForm();
     const { componentMatcherExtender } = useGetConfig();
     const disabled = pydanticFormField.attributes?.disabled || false;
 
