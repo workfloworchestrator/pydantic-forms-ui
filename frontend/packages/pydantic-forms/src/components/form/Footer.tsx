@@ -10,7 +10,6 @@ import { useTranslations } from 'next-intl';
 interface PydanticFormFooterProps {
     hasNext: boolean;
     hasPrevious: boolean;
-
     onCancel?: (e?: React.BaseSyntheticEvent) => void;
     onPrevious?: () => void;
 }

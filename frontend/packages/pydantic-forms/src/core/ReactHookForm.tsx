@@ -27,8 +27,8 @@ import { useGetConfig } from './hooks';
 import { useGetZodSchema } from './hooks';
 
 export interface ReactHookFormProps {
-    handleSubmit: (e?: React.BaseSyntheticEvent) => void;
-    handleCancel: (e?: React.BaseSyntheticEvent) => void;
+    handleSubmit: (fieldValues: FieldValues) => void;
+    handleCancel: () => void;
     pydanticFormSchema?: PydanticFormSchema;
     isLoading: boolean;
     isFullFilled: boolean;
@@ -102,9 +102,13 @@ export const ReactHookForm = ({
     const FooterRenderer = footerRenderer ?? Footer;
     const HeaderRenderer = headerRenderer ?? Header;
 
+    const onSubmit = (data: FieldValues) => {
+        handleSubmit(data);
+    };
+
     return (
         <FormProvider {...reactHookForm}>
-            <form action={''} onSubmit={handleSubmit}>
+            <form onSubmit={reactHookForm.handleSubmit(onSubmit)}>
                 <HeaderRenderer
                     title={title}
                     pydanticFormSchema={pydanticFormSchema}

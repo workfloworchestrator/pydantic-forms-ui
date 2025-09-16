@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
 import { ReactHookForm } from './ReactHookForm';
@@ -18,47 +18,41 @@ export const PydanticFormHandler = ({
     title,
 }: PydanticFormHandlerProps) => {
     const config = useGetConfig();
-    const formSteps = useRef<FieldValues[]>([]);
     const [formStep, setStep] = useState<FieldValues>();
-
-    const updateFormStepsRef = (steps: FieldValues[]) => {
-        formSteps.current = steps;
-    };
-
+    const formStepsRef = useRef<FieldValues[]>([]);
     const {
         validationErrorsDetails,
         apiError,
         hasNext,
         isFullFilled,
-        isSending,
         isLoading,
         pydanticFormSchema,
         initialValues,
-    } = usePydanticForm(
-        formSteps.current,
-        formKey,
-        config,
-        updateFormStepsRef,
-        formStep,
-    );
+    } = usePydanticForm(formKey, config, formStepsRef, formStep);
 
+    const handleStepSubmit = useCallback((fieldValues: FieldValues) => {
+        setStep(fieldValues);
+    }, []);
+
+    const handleCancel = useCallback(() => {
+        console.log('handleCancel');
+        if (onCancel) {
+            onCancel();
+        }
+    }, [onCancel]);
     return (
         <ReactHookForm
             pydanticFormSchema={pydanticFormSchema}
             isLoading={isLoading}
             isFullFilled={isFullFilled}
-            isSending={isSending}
+            isSending={false}
             hasNext={hasNext}
             apiError={apiError}
             validationErrorsDetails={validationErrorsDetails}
             initialValues={initialValues}
-            handleSubmit={() => {
-                console.log('handleSubmit');
-            }}
-            hasPrevious={formSteps.current.length > 1}
-            handleCancel={() => {
-                console.log('handleCancel');
-            }}
+            handleSubmit={handleStepSubmit}
+            hasPrevious={false}
+            handleCancel={handleCancel}
             title={title}
         />
     );

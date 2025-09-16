@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
 import {
@@ -20,17 +20,16 @@ export interface UsePydanticFormReturn {
     apiError: string | undefined;
     hasNext: boolean;
     isFullFilled: boolean;
-    isSending: boolean;
     isLoading: boolean;
+    isSending: boolean;
     pydanticFormSchema?: PydanticFormSchema;
     initialValues: FieldValues;
 }
 
 export function usePydanticForm(
-    formSteps: FieldValues[],
     formKey: string,
     config: PydanticFormConfig,
-    updateFormStepsRef: (steps: FieldValues[]) => void,
+    formStepsRef: React.MutableRefObject<FieldValues[]>,
     formStep?: FieldValues,
 ): UsePydanticFormReturn {
     const emptyRawSchema: PydanticFormSchemaRawJson = useMemo(
@@ -53,9 +52,12 @@ export function usePydanticForm(
     // fetch the labels of the form, can also contain default values
     const { data: formLabels, isLoading: isLoadingFormLabels } =
         useLabelProvider(labelProvider, formKey);
-    useLabelProvider(labelProvider, formKey);
 
-    const formInputData = formStep ? [...formSteps, formStep] : [];
+    const formSteps = formStepsRef.current;
+
+    const formInputData = useMemo(() => {
+        return formStep ? [...formSteps, formStep] : [];
+    }, [formStep, formSteps]);
 
     // fetch API response with form definition
     const {
@@ -97,25 +99,25 @@ export function usePydanticForm(
                 getValidationErrorDetailsFromResponse(apiResponse),
             );
             return;
-        }
-
-        // TODO: Update formSteps
-
-        if (apiResponse.type === PydanticFormApiResponseType.SUCCESS) {
+        } else if (apiResponse.type === PydanticFormApiResponseType.SUCCESS) {
             setIsFullFilled(true);
+            formStepsRef.current = [];
             return;
         }
 
+        if (formStep) {
+            formStepsRef.current.push(formStep);
+        }
         if (
             apiResponse.type === PydanticFormApiResponseType.FORM_DEFINITION &&
             rawSchema !== apiResponse.form
         ) {
             setRawSchema(apiResponse.form);
+
             if (apiResponse.meta) {
                 setHasNext(!!apiResponse.meta.hasNext);
             }
         }
-
         setIsSending(false);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiResponse]);
@@ -125,9 +127,9 @@ export function usePydanticForm(
         apiError,
         hasNext,
         isFullFilled,
-        isSending,
         isLoading,
         pydanticFormSchema,
         initialValues,
+        isSending,
     };
 }
