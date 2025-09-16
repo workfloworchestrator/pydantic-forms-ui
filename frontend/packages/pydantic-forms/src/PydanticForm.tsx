@@ -9,13 +9,19 @@
 import React, { createContext } from 'react';
 
 import { TranslationsProvider } from '@/messages/translationsProvider';
-import { PydanticFormConfig } from '@/types';
+import {
+    PydanticFormConfig,
+    PydanticFormValidationErrorDetails,
+} from '@/types';
 
 import { PydanticFormHandler } from './core';
 import type { PydanticFormHandlerProps } from './core/PydanticFormHandler';
 
 export const PydanticFormConfigContext =
     createContext<PydanticFormConfig | null>(null);
+
+export const PydanticFormValidationErrorContext =
+    createContext<PydanticFormValidationErrorDetails | null>(null);
 
 type PydanticFormProps = PydanticFormHandlerProps & {
     config: PydanticFormConfig;

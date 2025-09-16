@@ -1,6 +1,8 @@
 import React, { useCallback, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
+import { PydanticFormValidationErrorContext } from '@/PydanticForm';
+
 import { ReactHookForm } from './ReactHookForm';
 import { useGetConfig, usePydanticForm } from './hooks';
 
@@ -35,26 +37,28 @@ export const PydanticFormHandler = ({
     }, []);
 
     const handleCancel = useCallback(() => {
-        console.log('handleCancel');
         if (onCancel) {
             onCancel();
         }
     }, [onCancel]);
     return (
-        <ReactHookForm
-            pydanticFormSchema={pydanticFormSchema}
-            isLoading={isLoading}
-            isFullFilled={isFullFilled}
-            isSending={false}
-            hasNext={hasNext}
-            apiError={apiError}
-            validationErrorsDetails={validationErrorsDetails}
-            initialValues={initialValues}
-            handleSubmit={handleStepSubmit}
-            hasPrevious={false}
-            handleCancel={handleCancel}
-            title={title}
-        />
+        <PydanticFormValidationErrorContext.Provider
+            value={validationErrorsDetails}
+        >
+            <ReactHookForm
+                pydanticFormSchema={pydanticFormSchema}
+                isLoading={isLoading}
+                isFullFilled={isFullFilled}
+                isSending={false}
+                hasNext={hasNext}
+                apiError={apiError}
+                initialValues={initialValues}
+                handleSubmit={handleStepSubmit}
+                hasPrevious={false}
+                handleCancel={handleCancel}
+                title={title}
+            />
+        </PydanticFormValidationErrorContext.Provider>
     );
 };
 

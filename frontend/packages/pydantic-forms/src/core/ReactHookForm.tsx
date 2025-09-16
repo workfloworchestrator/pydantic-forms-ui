@@ -17,11 +17,7 @@ import Footer from '@/components/form/Footer';
 import { Form } from '@/components/form/Form';
 import Header from '@/components/form/Header';
 import { getPydanticFormComponents } from '@/core/helper';
-import type {
-    PydanticFormComponents,
-    PydanticFormSchema,
-    PydanticFormValidationErrorDetails,
-} from '@/types';
+import type { PydanticFormComponents, PydanticFormSchema } from '@/types';
 
 import { useGetConfig } from './hooks';
 import { useGetZodSchema } from './hooks';
@@ -36,7 +32,6 @@ export interface ReactHookFormProps {
     apiError?: string;
     hasNext: boolean;
     hasPrevious: boolean;
-    validationErrorsDetails: PydanticFormValidationErrorDetails | undefined;
     initialValues: FieldValues;
     title?: string;
 }

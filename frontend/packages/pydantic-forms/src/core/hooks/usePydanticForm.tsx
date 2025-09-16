@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
 import {
@@ -16,7 +16,7 @@ import { PydanticFormApiResponseType, PydanticFormFieldType } from '@/types';
 import { useApiProvider, useLabelProvider, usePydanticFormParser } from './';
 
 export interface UsePydanticFormReturn {
-    validationErrorsDetails: PydanticFormValidationErrorDetails | undefined;
+    validationErrorsDetails: PydanticFormValidationErrorDetails | null;
     apiError: string | undefined;
     hasNext: boolean;
     isFullFilled: boolean;
@@ -45,7 +45,7 @@ export function usePydanticForm(
         useState<PydanticFormSchemaRawJson>(emptyRawSchema);
     const [hasNext, setHasNext] = useState<boolean>(false);
     const [validationErrorsDetails, setValidationErrorsDetails] =
-        useState<PydanticFormValidationErrorDetails>();
+        useState<PydanticFormValidationErrorDetails | null>(null);
 
     const { labelProvider, apiProvider, componentMatcherExtender } = config;
 
