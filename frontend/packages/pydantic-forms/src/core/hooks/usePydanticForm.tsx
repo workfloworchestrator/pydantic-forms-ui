@@ -24,7 +24,7 @@ export interface UsePydanticFormReturn {
     isLoading: boolean;
     isSending: boolean;
     pydanticFormSchema?: PydanticFormSchema;
-    initialValues: FieldValues;
+    defaultValues: FieldValues;
 }
 
 export function usePydanticForm(
@@ -75,7 +75,7 @@ export function usePydanticForm(
     const { pydanticFormSchema, isLoading: isParsingSchema } =
         usePydanticFormParser(rawSchema, formLabels?.labels);
 
-    const initialValues = useMemo(() => {
+    const defaultValues = useMemo(() => {
         return getFormValuesFromFieldOrLabels(
             pydanticFormSchema?.properties,
             {
@@ -139,7 +139,7 @@ export function usePydanticForm(
         isFullFilled,
         isLoading,
         pydanticFormSchema,
-        initialValues,
+        defaultValues,
         isSending,
     };
 }

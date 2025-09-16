@@ -2,10 +2,11 @@ import React, { useCallback, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
 import { PydanticFormValidationErrorContext } from '@/PydanticForm';
+import { useGetConfig, usePydanticForm } from '@/core/hooks';
 import { PydanticFormSuccessResponse } from '@/types';
+import { getHashForArray } from '@/utils';
 
 import { ReactHookForm } from './ReactHookForm';
-import { useGetConfig, usePydanticForm } from './hooks';
 
 export interface PydanticFormHandlerProps {
     formKey: string;
@@ -26,6 +27,16 @@ export const PydanticFormHandler = ({
     const config = useGetConfig();
     const [formStep, setStep] = useState<FieldValues>();
     const formStepsRef = useRef<FieldValues[]>([]);
+    const [initialValues, setInitialValues] = useState<FieldValues>();
+    const formInputHistoryRef = useRef<Map<string, FieldValues>>(
+        new Map<string, object>(),
+    );
+
+    const storeHistory = useCallback(async (stepData: FieldValues) => {
+        const hashOfPreviousSteps = await getHashForArray(formStepsRef.current);
+        formInputHistoryRef.current.set(hashOfPreviousSteps, stepData);
+    }, []);
+
     const {
         validationErrorsDetails,
         apiError,
@@ -33,11 +44,27 @@ export const PydanticFormHandler = ({
         isFullFilled,
         isLoading,
         pydanticFormSchema,
-        initialValues,
+        defaultValues,
     } = usePydanticForm(formKey, config, formStepsRef, onSuccess, formStep);
 
-    const handleStepSubmit = useCallback((fieldValues: FieldValues) => {
-        setStep(fieldValues);
+    const handleStepSubmit = useCallback(
+        async (fieldValues: FieldValues) => {
+            await storeHistory(fieldValues);
+            setStep(fieldValues);
+        },
+        [storeHistory],
+    );
+
+    const onPrevious = useCallback(async () => {
+        const previousSteps = formStepsRef.current.slice(0, -1);
+        const hashOfPreviousSteps = await getHashForArray(previousSteps);
+        if (formInputHistoryRef.current.has(hashOfPreviousSteps)) {
+            setInitialValues(
+                formInputHistoryRef.current.get(hashOfPreviousSteps) || {},
+            );
+        }
+        formStepsRef.current = previousSteps;
+        setStep(undefined);
     }, []);
 
     const handleCancel = useCallback(() => {
@@ -50,16 +77,17 @@ export const PydanticFormHandler = ({
             value={validationErrorsDetails}
         >
             <ReactHookForm
-                pydanticFormSchema={pydanticFormSchema}
-                isLoading={isLoading}
-                isFullFilled={isFullFilled}
-                isSending={false}
-                hasNext={hasNext}
                 apiError={apiError}
-                initialValues={initialValues}
-                handleSubmit={handleStepSubmit}
-                hasPrevious={false}
+                defaultValues={defaultValues}
                 handleCancel={handleCancel}
+                handleSubmit={handleStepSubmit}
+                hasNext={hasNext}
+                hasPrevious={formStepsRef.current.length > 0}
+                initialValues={initialValues}
+                isFullFilled={isFullFilled}
+                isLoading={isLoading}
+                onPrevious={onPrevious}
+                pydanticFormSchema={pydanticFormSchema}
                 title={title}
             />
         </PydanticFormValidationErrorContext.Provider>

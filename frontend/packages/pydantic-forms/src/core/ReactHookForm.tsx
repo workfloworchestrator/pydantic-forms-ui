@@ -24,20 +24,22 @@ import { useGetZodSchema } from './hooks';
 
 export interface ReactHookFormProps {
     apiError?: string;
+    defaultValues: FieldValues;
     handleCancel: () => void;
     handleSubmit: (fieldValues: FieldValues) => void;
     hasNext: boolean;
     hasPrevious: boolean;
-    initialValues: FieldValues;
+    initialValues?: FieldValues;
     isFullFilled: boolean;
     isLoading: boolean;
-    isSending: boolean;
+    onPrevious: () => void;
     pydanticFormSchema?: PydanticFormSchema;
     title?: string;
 }
 
 export const ReactHookForm = ({
     apiError,
+    defaultValues,
     handleCancel,
     handleSubmit,
     hasNext,
@@ -45,7 +47,7 @@ export const ReactHookForm = ({
     initialValues,
     isFullFilled,
     isLoading,
-    isSending,
+    onPrevious,
     pydanticFormSchema,
     title,
 }: ReactHookFormProps) => {
@@ -66,7 +68,8 @@ export const ReactHookForm = ({
     const reactHookForm = useForm({
         resolver: zodResolver(zodSchema),
         mode: 'all',
-        values: initialValues,
+        defaultValues,
+        values: initialValues || defaultValues,
     });
 
     if (apiError) {
@@ -74,11 +77,7 @@ export const ReactHookForm = ({
         return ErrorComponent;
     }
 
-    if (isLoading && !isSending) {
-        return LoadingComponent;
-    }
-
-    if (!pydanticFormSchema || isSending) {
+    if (isLoading || !pydanticFormSchema) {
         return LoadingComponent;
     }
 
@@ -113,6 +112,7 @@ export const ReactHookForm = ({
                     onCancel={handleCancel}
                     hasNext={hasNext}
                     hasPrevious={hasPrevious}
+                    onPrevious={onPrevious}
                 />
             </form>
         </FormProvider>
