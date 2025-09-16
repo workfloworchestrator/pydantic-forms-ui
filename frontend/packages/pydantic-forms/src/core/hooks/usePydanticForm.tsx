@@ -121,7 +121,6 @@ export function usePydanticForm(
             setRawSchema(apiResponse.form);
 
             if (formStep) {
-                console.log('ADDING STEP', formStep);
                 formStepsRef.current.push(formStep);
             }
             if (apiResponse.meta) {

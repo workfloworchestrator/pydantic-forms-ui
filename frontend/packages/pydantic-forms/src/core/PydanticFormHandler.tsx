@@ -1,8 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
-import { rest } from 'lodash';
-
 import { PydanticFormValidationErrorContext } from '@/PydanticForm';
 import { useGetConfig, usePydanticForm } from '@/core/hooks';
 import { PydanticFormSuccessResponse } from '@/types';

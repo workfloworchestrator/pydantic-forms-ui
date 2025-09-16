@@ -1,10 +1,5 @@
 import React from 'react';
-import type { FormEventHandler } from 'react';
-import type {
-    ControllerRenderProps,
-    FieldValues,
-    useForm,
-} from 'react-hook-form';
+import type { ControllerRenderProps, useForm } from 'react-hook-form';
 
 import { z } from 'zod/v4';
 
