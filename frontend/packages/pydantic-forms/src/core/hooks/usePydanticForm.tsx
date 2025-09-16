@@ -61,7 +61,7 @@ export function usePydanticForm(
     const formSteps = formStepsRef.current;
 
     const formInputData = useMemo(() => {
-        return formStep ? [...formSteps, formStep] : [];
+        return formStep ? [...formSteps, formStep] : [...formSteps];
     }, [formStep, formSteps]);
 
     // fetch API response with form definition
@@ -110,12 +110,8 @@ export function usePydanticForm(
             }
             setValidationErrorsDetails(null);
             setIsFullFilled(true);
-            formStepsRef.current.length = 0;
+            //formStepsRef.current.length = 0;
             return;
-        }
-
-        if (formStep) {
-            formStepsRef.current.push(formStep);
         }
 
         if (
@@ -124,6 +120,10 @@ export function usePydanticForm(
         ) {
             setRawSchema(apiResponse.form);
 
+            if (formStep) {
+                console.log('ADDING STEP', formStep);
+                formStepsRef.current.push(formStep);
+            }
             if (apiResponse.meta) {
                 setHasNext(!!apiResponse.meta.hasNext);
             }

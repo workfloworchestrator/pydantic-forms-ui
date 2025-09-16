@@ -33,8 +33,8 @@ export const PydanticFormHandler = ({
     );
 
     const storeHistory = useCallback(async (stepData: FieldValues) => {
-        const hashOfPreviousSteps = await getHashForArray(formStepsRef.current);
-        formInputHistoryRef.current.set(hashOfPreviousSteps, stepData);
+        const hashOfSteps = await getHashForArray(formStepsRef.current);
+        formInputHistoryRef.current.set(hashOfSteps, stepData);
     }, []);
 
     const {
@@ -48,8 +48,8 @@ export const PydanticFormHandler = ({
     } = usePydanticForm(formKey, config, formStepsRef, onSuccess, formStep);
 
     const handleStepSubmit = useCallback(
-        async (fieldValues: FieldValues) => {
-            await storeHistory(fieldValues);
+        (fieldValues: FieldValues) => {
+            storeHistory(fieldValues);
             setStep(fieldValues);
         },
         [storeHistory],
@@ -57,13 +57,15 @@ export const PydanticFormHandler = ({
 
     const onPrevious = useCallback(async () => {
         const previousSteps = formStepsRef.current.slice(0, -1);
+        formStepsRef.current = previousSteps;
         const hashOfPreviousSteps = await getHashForArray(previousSteps);
         if (formInputHistoryRef.current.has(hashOfPreviousSteps)) {
             setInitialValues(
-                formInputHistoryRef.current.get(hashOfPreviousSteps) || {},
+                formInputHistoryRef.current.get(hashOfPreviousSteps),
             );
+        } else {
+            setInitialValues(undefined);
         }
-        formStepsRef.current = previousSteps;
         setStep(undefined);
     }, []);
 
@@ -72,6 +74,7 @@ export const PydanticFormHandler = ({
             onCancel();
         }
     }, [onCancel]);
+
     return (
         <PydanticFormValidationErrorContext.Provider
             value={validationErrorsDetails}

@@ -9,6 +9,7 @@ import React from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import _ from 'lodash';
 import { useTranslations } from 'next-intl';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -97,7 +98,7 @@ export const ReactHookForm = ({
     const HeaderRenderer = headerRenderer ?? Header;
 
     const onSubmit = (data: FieldValues) => {
-        handleSubmit(data);
+        handleSubmit(_.cloneDeep(data));
     };
 
     return (
