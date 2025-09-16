@@ -1,6 +1,7 @@
 import React from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
+import { useGetConfig } from '@/core';
 import { fieldToComponentMatcher } from '@/core/helper';
 import { PydanticFormElementProps } from '@/types';
 import { disableField, itemizeArrayItem } from '@/utils';
@@ -8,9 +9,8 @@ import { disableField, itemizeArrayItem } from '@/utils';
 import { RenderFields } from '../render';
 
 export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
-    /*
     const { control } = useFormContext();
-
+    const { componentMatcherExtender } = useGetConfig();
     const disabled = pydanticFormField.attributes?.disabled || false;
 
     const { id: arrayName, arrayItem } = pydanticFormField;
@@ -23,7 +23,10 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
 
     if (!arrayItem) return '';
 
-    const component = fieldToComponentMatcher(arrayItem, {});
+    const component = fieldToComponentMatcher(
+        arrayItem,
+        componentMatcherExtender,
+    );
 
     const renderField = (field: Record<'id', string>, index: number) => {
         const itemizedField = itemizeArrayItem(index, arrayItem, arrayName);
@@ -102,6 +105,4 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
                 )}
         </div>
     );
-    */
-    return <div>ArrayField - TODO</div>;
 };
