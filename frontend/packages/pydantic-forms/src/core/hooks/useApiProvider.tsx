@@ -59,7 +59,7 @@ export function useApiProvider(
                             data: request.data,
                         } as PydanticFormApiResponse;
                     }
-                    throw new Error('Unknown API Response' + request);
+                    throw new Error('Unknown API Response code');
                 })
                 .catch((error) => {
                     console.error('Error in useSWR api', error);

@@ -23,31 +23,31 @@ import { useGetConfig } from './hooks';
 import { useGetZodSchema } from './hooks';
 
 export interface ReactHookFormProps {
-    handleSubmit: (fieldValues: FieldValues) => void;
-    handleCancel: () => void;
-    pydanticFormSchema?: PydanticFormSchema;
-    isLoading: boolean;
-    isFullFilled: boolean;
-    isSending: boolean;
     apiError?: string;
+    handleCancel: () => void;
+    handleSubmit: (fieldValues: FieldValues) => void;
     hasNext: boolean;
     hasPrevious: boolean;
     initialValues: FieldValues;
+    isFullFilled: boolean;
+    isLoading: boolean;
+    isSending: boolean;
+    pydanticFormSchema?: PydanticFormSchema;
     title?: string;
 }
 
 export const ReactHookForm = ({
-    handleSubmit,
-    handleCancel,
-    pydanticFormSchema,
-    isLoading,
-    isFullFilled,
-    isSending,
     apiError,
-    initialValues,
-    title,
+    handleCancel,
+    handleSubmit,
     hasNext,
     hasPrevious,
+    initialValues,
+    isFullFilled,
+    isLoading,
+    isSending,
+    pydanticFormSchema,
+    title,
 }: ReactHookFormProps) => {
     const config = useGetConfig();
     const t = useTranslations('renderForm');
@@ -56,14 +56,13 @@ export const ReactHookForm = ({
         <div>{t('loading')}</div>
     );
 
-    const ErrorComponent = config.loadingComponent ?? <div>{t('error')}</div>;
+    const ErrorComponent = config.errorComponent ?? <div>{t('error')}</div>;
 
     const zodSchema = useGetZodSchema(
         pydanticFormSchema,
         config.componentMatcherExtender,
     );
 
-    // initialize the react-hook-form
     const reactHookForm = useForm({
         resolver: zodResolver(zodSchema),
         mode: 'all',
@@ -71,6 +70,7 @@ export const ReactHookForm = ({
     });
 
     if (apiError) {
+        console.error('API Error:', apiError);
         return ErrorComponent;
     }
 
