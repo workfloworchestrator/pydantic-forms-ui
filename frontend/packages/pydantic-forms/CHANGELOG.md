@@ -1,5 +1,15 @@
 # pydantic-forms
 
+## 0.9.0
+
+### Minor Changes
+
+-   34bfe49: Refactors component and contextprovider setup
+
+### Patch Changes
+
+-   7a107cf: Improves handling 500 api errors
+
 ## 0.8.1
 
 ### Patch Changes
