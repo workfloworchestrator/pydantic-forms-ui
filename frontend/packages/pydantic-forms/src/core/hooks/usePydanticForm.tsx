@@ -110,7 +110,6 @@ export function usePydanticForm(
             }
             setValidationErrorsDetails(null);
             setIsFullFilled(true);
-            //formStepsRef.current.length = 0;
             return;
         }
 
