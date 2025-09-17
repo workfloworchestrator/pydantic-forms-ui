@@ -5,19 +5,17 @@
  */
 import React from 'react';
 
-import RenderFormErrors from '@/components/render/RenderFormErrors';
-import { usePydanticFormContext } from '@/core';
+import { RenderValidationErrors } from '@/components/render/RenderValidationErrors';
+import { PydanticFormHeaderProps } from '@/types';
 
-const Header = () => {
-    const { pydanticFormSchema, title } = usePydanticFormContext();
-
+const Header = ({ title, pydanticFormSchema }: PydanticFormHeaderProps) => {
     return (
         <>
             <h2 style={{ margin: '1rem 0' }}>
                 {title ?? pydanticFormSchema?.title}
             </h2>
 
-            <RenderFormErrors />
+            <RenderValidationErrors pydanticFormSchema={pydanticFormSchema} />
         </>
     );
 };

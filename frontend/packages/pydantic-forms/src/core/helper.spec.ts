@@ -1,18 +1,19 @@
 import {
     enumToOption,
     flattenSchemaCombinators,
-    getErrorDetailsFromResponse,
     getFormValuesFromFieldOrLabels,
+    getValidationErrorDetailsFromResponse,
     isNullable,
     optionsToOption,
 } from '@/core/helper';
 import {
     Properties,
-    PydanticFormApiResponse,
+    PydanticFormApiResponseType,
     PydanticFormField,
     PydanticFormFieldFormat,
     PydanticFormFieldType,
     PydanticFormPropertySchemaParsed,
+    PydanticFormValidationResponse,
 } from '@/types';
 
 export const getMockPydanticFormField = (
@@ -48,13 +49,9 @@ const getMockFormPropertySchemaParsed = (
 
 describe('getErrorDetailsFromResponse', () => {
     it('should correctly format the error details from API response', () => {
-        const mockApiErrorResponse: PydanticFormApiResponse = {
+        const mockApiErrorResponse: PydanticFormValidationResponse = {
+            type: PydanticFormApiResponseType.VALIDATION_ERRORS,
             detail: 'Validation failed',
-            status: 422,
-            form: {
-                type: PydanticFormFieldType.OBJECT,
-                properties: {},
-            },
             validation_errors: [
                 {
                     loc: ['email'],
@@ -73,7 +70,8 @@ describe('getErrorDetailsFromResponse', () => {
             ],
         };
 
-        const result = getErrorDetailsFromResponse(mockApiErrorResponse);
+        const result =
+            getValidationErrorDetailsFromResponse(mockApiErrorResponse);
 
         expect(result).toEqual({
             detail: 'Validation failed',
@@ -92,16 +90,12 @@ describe('getErrorDetailsFromResponse', () => {
     });
 
     it('should handle missing detail with fallback to empty string', () => {
-        const mockApiErrorResp: PydanticFormApiResponse = {
-            status: 400,
-            form: {
-                type: PydanticFormFieldType.OBJECT,
-                properties: {},
-            },
+        const mockApiErrorResp: PydanticFormValidationResponse = {
+            type: PydanticFormApiResponseType.VALIDATION_ERRORS,
             validation_errors: [],
         };
 
-        const result = getErrorDetailsFromResponse(mockApiErrorResp);
+        const result = getValidationErrorDetailsFromResponse(mockApiErrorResp);
 
         expect(result.detail).toBe('');
         expect(result.source).toEqual([]);

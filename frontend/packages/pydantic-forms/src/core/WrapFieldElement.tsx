@@ -1,8 +1,7 @@
 import React from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import { FieldWrap } from '@/components/fields';
-import { usePydanticFormContext } from '@/core/hooks';
 import type { PydanticFormControlledElement, PydanticFormField } from '@/types';
 
 export const WrapFieldElement = ({
@@ -14,28 +13,27 @@ export const WrapFieldElement = ({
     pydanticFormField: PydanticFormField;
     extraTriggerFields?: string[];
 }) => {
-    const { reactHookForm } = usePydanticFormContext();
+    const { control, trigger } = useFormContext();
     return (
         <Controller
             name={pydanticFormField.id}
-            control={reactHookForm.control}
-            render={({ field }) => {
+            control={control}
+            render={({ field, fieldState }) => {
                 const { onChange, onBlur, value, name } = field;
-                const onChangeHandle = (val: string) => {
-                    onChange(val);
+                const onChangeHandle = (value: unknown) => {
+                    onChange(value);
 
                     extraTriggerFields?.forEach((extraField) => {
-                        reactHookForm.trigger(extraField);
+                        trigger(extraField);
                     });
-
-                    // it seems we need this because the 2nd error would get stale..
-                    // https://github.com/react-hook-form/react-hook-form/issues/8170
-                    // https://github.com/react-hook-form/react-hook-form/issues/10832
-                    reactHookForm.trigger(field.name);
                 };
 
                 return (
-                    <FieldWrap pydanticFormField={pydanticFormField}>
+                    <FieldWrap
+                        pydanticFormField={pydanticFormField}
+                        isInvalid={fieldState.invalid}
+                        frontendValidationMessage={fieldState.error?.message}
+                    >
                         <PydanticFormControlledElement
                             onChange={onChangeHandle}
                             onBlur={onBlur}

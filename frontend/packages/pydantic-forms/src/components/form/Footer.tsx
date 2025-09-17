@@ -7,12 +7,14 @@ import React from 'react';
 
 import { useTranslations } from 'next-intl';
 
-import { usePydanticFormContext } from '@/core';
+import { PydanticFormFooterProps } from '@/types';
 
-const Footer = () => {
-    const { resetForm, onCancel, onPrevious, hasNext, formInputData } =
-        usePydanticFormContext();
-
+const Footer = ({
+    onCancel,
+    onPrevious,
+    hasNext,
+    hasPrevious,
+}: PydanticFormFooterProps) => {
     const t = useTranslations('footer');
     const submitButtonLabel = hasNext ? t('send') : t('submit');
     const PreviousButton = () => (
@@ -24,20 +26,6 @@ const Footer = () => {
             {t('previous')}
         </button>
     );
-
-    const ResetButton = () => {
-        return (
-            <button
-                type="button"
-                onClick={(e) => {
-                    resetForm(e);
-                }}
-                style={{ padding: '12px' }}
-            >
-                {t('reset')}
-            </button>
-        );
-    };
 
     const CancelButton = () => {
         return (
@@ -60,11 +48,7 @@ const Footer = () => {
     return (
         <div style={{ height: '200px', marginTop: '24px' }}>
             <div style={{ display: 'flex', gap: '16px' }}>
-                {formInputData && formInputData.length > 0 && (
-                    <PreviousButton />
-                )}
-
-                <ResetButton />
+                {hasPrevious && <PreviousButton />}
 
                 {!!onCancel && <CancelButton />}
 

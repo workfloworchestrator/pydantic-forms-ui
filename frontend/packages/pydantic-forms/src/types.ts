@@ -1,10 +1,6 @@
 import React from 'react';
-import type { FormEventHandler } from 'react';
-import type {
-    ControllerRenderProps,
-    FieldValues,
-    useForm,
-} from 'react-hook-form';
+import type { ControllerRenderProps, useForm } from 'react-hook-form';
+import type { FieldValues } from 'react-hook-form';
 
 import { z } from 'zod/v4';
 
@@ -14,26 +10,6 @@ export type PydanticFormMetaData = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type PydanticFormFieldValue = any;
-
-export interface PydanticFormContextProps {
-    config: PydanticFormsContextConfig;
-    errorDetails?: PydanticFormValidationErrorDetails;
-    fieldDataStorage: PydanticFormFieldDataStorage;
-    formInputData: object[];
-    formKey: string;
-    hasNext: boolean;
-    initialData: FieldValues;
-    isFullFilled: boolean;
-    isLoading: boolean;
-    isSending: boolean;
-    onCancel?: () => void;
-    onPrevious?: () => void;
-    pydanticFormSchema?: PydanticFormSchema;
-    reactHookForm: ReturnType<typeof useForm>;
-    resetForm: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-    submitForm: FormEventHandler<HTMLFormElement>;
-    title?: string | boolean;
-}
 
 export type PydanticFormElementProps = {
     pydanticFormField: PydanticFormField;
@@ -240,7 +216,7 @@ export type ComponentMatcherExtender = (
     currentMatchers: PydanticComponentMatcher[],
 ) => PydanticComponentMatcher[];
 
-export interface PydanticFormsContextConfig {
+export interface PydanticFormConfig {
     // use a custom method for providing the form definition
     apiProvider: PydanticFormApiProvider;
 
@@ -254,14 +230,15 @@ export interface PydanticFormsContextConfig {
     componentMatcherExtender?: ComponentMatcherExtender;
 
     formRenderer?: FormRenderComponent;
-    footerRenderer?: React.JSXElementConstructor<object>;
-    headerRenderer?: React.JSXElementConstructor<object>;
+    footerRenderer?: React.JSXElementConstructor<PydanticFormFooterProps>;
+    headerRenderer?: React.JSXElementConstructor<PydanticFormHeaderProps>;
     rowRenderer?: RowRenderComponent;
 
     // translations
     customTranslations?: TranslationsJSON;
 
     loadingComponent?: React.ReactNode;
+    errorComponent?: React.ReactNode;
 
     // locale
     locale?: Locale;
@@ -327,16 +304,37 @@ export interface PydanticFormLabelProviderResponse {
     data: Record<string, string>;
 }
 
-export interface PydanticFormApiResponse {
-    detail?: string;
-    status: number;
-    form: PydanticFormSchemaRawJson;
-    success?: boolean;
-    validation_errors: PydanticFormApiValidationError[];
-    meta?: {
-        hasNext?: boolean;
-    };
+export enum PydanticFormApiResponseType {
+    SUCCESS = 'SUCCESS',
+    VALIDATION_ERRORS = 'VALIDATION_ERRORS',
+    FORM_DEFINITION = 'FORM_DEFINITION',
 }
+
+export type FormHasNext = {
+    hasNext?: boolean;
+};
+
+export type PydanticFormDefinitionResponse = {
+    type: PydanticFormApiResponseType.FORM_DEFINITION;
+    form: PydanticFormSchemaRawJson;
+    meta?: FormHasNext;
+};
+
+export type PydanticFormValidationResponse = {
+    type: PydanticFormApiResponseType.VALIDATION_ERRORS;
+    validation_errors: PydanticFormApiValidationError[];
+    detail?: string;
+};
+
+export type PydanticFormSuccessResponse = {
+    type: PydanticFormApiResponseType.SUCCESS;
+    data: string | object;
+};
+
+export type PydanticFormApiResponse =
+    | PydanticFormDefinitionResponse
+    | PydanticFormValidationResponse
+    | PydanticFormSuccessResponse;
 
 export interface PydanticFormBaseSchema {
     title?: string;
@@ -449,3 +447,29 @@ export enum Locale {
     enGB = 'en-GB',
     nlNL = 'nl-NL',
 }
+
+export interface PydanticFormFooterProps {
+    hasNext: boolean;
+    hasPrevious: boolean;
+    onCancel?: (e?: React.BaseSyntheticEvent) => void;
+    onPrevious?: () => void;
+}
+
+export interface PydanticFormHeaderProps {
+    title?: string;
+    pydanticFormSchema?: PydanticFormSchema;
+}
+
+export interface PydanticFormHandlerProps {
+    formKey: string;
+    onCancel?: () => void;
+    onSuccess?: (
+        fieldValues: FieldValues[],
+        response: PydanticFormSuccessResponse,
+    ) => void;
+    title?: string;
+}
+
+export type PydanticFormProps = PydanticFormHandlerProps & {
+    config: PydanticFormConfig;
+};

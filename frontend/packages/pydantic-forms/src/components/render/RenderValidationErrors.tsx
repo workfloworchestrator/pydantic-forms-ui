@@ -5,17 +5,24 @@
  */
 import React from 'react';
 
-import { usePydanticFormContext } from '@/core';
+import { useGetValidationErrors } from '@/core';
 import { getFieldLabelById } from '@/core/helper';
+import type { PydanticFormSchema } from '@/types';
 
-export default function RenderFormErrors() {
-    const { errorDetails, pydanticFormSchema } = usePydanticFormContext();
+export interface RenderValidationErrorsProps {
+    pydanticFormSchema?: PydanticFormSchema;
+}
 
-    if (!errorDetails) {
+export function RenderValidationErrors({
+    pydanticFormSchema,
+}: RenderValidationErrorsProps) {
+    const validationErrorDetails = useGetValidationErrors();
+
+    if (!validationErrorDetails) {
         return <></>;
     }
 
-    const errors = errorDetails.source;
+    const errors = validationErrorDetails.source;
     const rootError = errors
         .filter((err) => err.loc.includes('__root__'))
         .shift();

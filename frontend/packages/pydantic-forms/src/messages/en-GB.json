@@ -11,6 +11,7 @@
     },
     "renderForm": {
         "loading": "Form is loading...",
+        "error": "An unexpected error occurred",
         "successfullySent": "Your submission has been successfully received"
     }
 }

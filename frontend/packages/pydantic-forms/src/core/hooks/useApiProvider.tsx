@@ -12,75 +12,71 @@
  *
  * Disabled revalidate / refresh system of SWR, this would cause submissions
  */
-import useSWR, { SWRConfiguration } from 'swr';
+import type { FieldValues } from 'react-hook-form';
 
-import type {
+import useSWR from 'swr';
+
+import {
     PydanticFormApiProvider,
     PydanticFormApiResponse,
-    PydanticFormMetaData,
+    PydanticFormApiResponseType,
 } from '@/types';
-
-const ignoreApiErrors = async (req: Promise<unknown>): Promise<unknown> => {
-    try {
-        return await req;
-    } catch (error) {
-        throw error;
-    }
-};
 
 export function useApiProvider(
     formKey: string,
-    formInputData: PydanticFormMetaData, // TODO: This doesn't seem right
+    formInputData: FieldValues[], // TODO: This doesn't seem right
     apiProvider: PydanticFormApiProvider,
-    metaData?: PydanticFormMetaData,
-    cacheKey?: number,
-    swrConfig?: SWRConfiguration,
 ) {
     return useSWR<PydanticFormApiResponse>(
-        // cache key
-        [formKey, formInputData, metaData, swrConfig, cacheKey],
-
-        // return val
-        async ([formKey, formInputData]) => {
-            // TODO: Readd sending metadata along with request
+        [formKey, formInputData],
+        ([formKey, formInputData]) => {
             const requestBody = formInputData;
 
-            const apiProviderRequest = apiProvider({
+            return apiProvider({
                 formKey,
                 requestBody,
-            });
-            const req = (await ignoreApiErrors(
-                apiProviderRequest,
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            )) as any;
-
-            if (
-                Object.keys(req).length === 0 ||
-                (!req.validation_errors && !req.form)
-            ) {
-                return {
-                    response: req,
-                    success: true,
-                };
-            }
-
-            return req;
+            })
+                .then((request) => {
+                    if (!request) {
+                        throw new Error('No API Response');
+                    }
+                    if (request.form) {
+                        return {
+                            type: PydanticFormApiResponseType.FORM_DEFINITION,
+                            form: request.form,
+                            meta: request.meta,
+                        } as PydanticFormApiResponse;
+                    }
+                    if (request.validation_errors) {
+                        return {
+                            type: PydanticFormApiResponseType.VALIDATION_ERRORS,
+                            validation_errors: request.validation_errors,
+                        } as PydanticFormApiResponse;
+                    }
+                    if (
+                        request.status &&
+                        (request.status === 200 || request.status === 201)
+                    ) {
+                        return {
+                            type: PydanticFormApiResponseType.SUCCESS,
+                            data: request.data,
+                        } as PydanticFormApiResponse;
+                    }
+                    throw new Error('Unknown API Response code');
+                })
+                .catch((error) => {
+                    console.error('Error in useSWR api', error);
+                    throw new Error(error);
+                });
         },
-
         // swr config
         {
             fallback: {},
-
-            // We revalidate to make sure the form updates when we use it a second time
             revalidateIfStale: true,
             revalidateOnReconnect: false,
             revalidateOnFocus: false,
-            // We want to make sure the correct data is showing so we don't want to prefill with stale data
-            // we dont use the previous data because of that
             keepPreviousData: false,
             shouldRetryOnError: false,
-
-            ...swrConfig,
         },
     );
 }

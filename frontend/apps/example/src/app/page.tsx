@@ -1,5 +1,7 @@
 'use client';
 
+import type { FieldValues } from 'react-hook-form';
+
 import {
     Locale,
     PydanticForm,
@@ -11,6 +13,7 @@ import type {
     PydanticFormApiProvider,
     PydanticFormCustomDataProvider,
     PydanticFormLabelProvider,
+    PydanticFormSuccessResponse,
 } from 'pydantic-forms';
 
 import { TextArea } from '@/fields';
@@ -23,15 +26,49 @@ export default function Home() {
     }) => {
         const url = 'http://localhost:8000/form';
 
-        const fetchResult = await fetch(url, {
+        return fetch(url, {
             method: 'POST',
             body: JSON.stringify(requestBody),
             headers: {
                 'Content-Type': 'application/json',
             },
-        });
-        const jsonResult = await fetchResult.json();
-        return jsonResult;
+        })
+            .then(async (fetchResult) => {
+                // Note: https://chatgpt.com/share/68c16538-5544-800c-9684-1e641168dbff
+                if (
+                    fetchResult.status === 400 ||
+                    fetchResult.status === 510 ||
+                    fetchResult.status === 200 ||
+                    fetchResult.status === 201
+                ) {
+                    const data = await fetchResult.json();
+
+                    return new Promise<Record<string, unknown>>(
+                        (resolve, reject) => {
+                            if (
+                                fetchResult.status === 510 ||
+                                fetchResult.status === 400
+                            ) {
+                                resolve({
+                                    ...data,
+                                    status: fetchResult.status,
+                                });
+                            }
+                            if (fetchResult.status === 200) {
+                                resolve({ status: 200, data });
+                            }
+                            reject('No valid status in response');
+                        },
+                    );
+                }
+                throw new Error(
+                    `Status not 400, 510 or 200: ${fetchResult.statusText}`,
+                );
+            }) //
+            .catch((error) => {
+                // Note: https://chatgpt.com/share/68c16538-5544-800c-9684-1e641168dbff
+                throw new Error(`Fetch error: ${error}`);
+            });
     };
 
     const pydanticLabelProvider: PydanticFormLabelProvider = async () => {
@@ -84,6 +121,15 @@ export default function Home() {
     };
     const locale = Locale.enGB;
 
+    const onSuccess = (
+        _: FieldValues[],
+        apiResponse: PydanticFormSuccessResponse,
+    ) => {
+        alert(
+            `Form submitted successfully: ${JSON.stringify(apiResponse.data)}`,
+        );
+    };
+
     return (
         <div className={styles.page}>
             <h1 style={{ marginBottom: '20px' }}>Pydantic Form </h1>
@@ -94,9 +140,7 @@ export default function Home() {
                 onCancel={() => {
                     alert('Form cancelled');
                 }}
-                onSuccess={() => {
-                    alert('Form submitted successfully');
-                }}
+                onSuccess={onSuccess}
                 config={{
                     apiProvider: pydanticFormApiProvider,
                     labelProvider: pydanticLabelProvider,

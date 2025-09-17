@@ -6,12 +6,23 @@
  * This is the component that will be included when we want to use a form.
  * It initializes the context and calls the mainForm
  */
-import React from 'react';
+import React, { createContext } from 'react';
 
-import RenderForm from '@/components/render/RenderForm';
-import PydanticFormContextProvider from '@/core/PydanticFormContextProvider';
-import type { PydanticFormContextProviderProps } from '@/core/PydanticFormContextProvider';
 import { TranslationsProvider } from '@/messages/translationsProvider';
+import {
+    PydanticFormConfig,
+    PydanticFormProps,
+    PydanticFormValidationErrorDetails,
+} from '@/types';
+
+import { PydanticFormHandler } from './core';
+import { PydanticFormFieldDataStorageProvider } from './core/PydanticFieldDataStorageProvider';
+
+export const PydanticFormConfigContext =
+    createContext<PydanticFormConfig | null>(null);
+
+export const PydanticFormValidationErrorContext =
+    createContext<PydanticFormValidationErrorDetails | null>(null);
 
 export const PydanticForm = ({
     config,
@@ -19,21 +30,24 @@ export const PydanticForm = ({
     onCancel,
     onSuccess,
     title,
-}: Omit<PydanticFormContextProviderProps, 'children'>) => (
-    <TranslationsProvider
-        customTranslations={config.customTranslations}
-        locale={config.locale}
-    >
-        <PydanticFormContextProvider
-            config={config}
-            onCancel={onCancel}
-            onSuccess={onSuccess}
-            title={title}
-            formKey={formKey}
+}: PydanticFormProps) => {
+    return (
+        <TranslationsProvider
+            customTranslations={config.customTranslations}
+            locale={config.locale}
         >
-            {RenderForm}
-        </PydanticFormContextProvider>
-    </TranslationsProvider>
-);
+            <PydanticFormConfigContext.Provider value={config}>
+                <PydanticFormFieldDataStorageProvider>
+                    <PydanticFormHandler
+                        onCancel={onCancel}
+                        onSuccess={onSuccess}
+                        title={title}
+                        formKey={formKey}
+                    />
+                </PydanticFormFieldDataStorageProvider>
+            </PydanticFormConfigContext.Provider>
+        </TranslationsProvider>
+    );
+};
 
 export default PydanticForm;

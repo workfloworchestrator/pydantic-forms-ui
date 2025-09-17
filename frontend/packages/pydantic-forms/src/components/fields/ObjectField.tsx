@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { usePydanticFormContext } from '@/core';
+import { useGetConfig } from '@/core';
 import { getPydanticFormComponents } from '@/core/helper';
 import { PydanticFormElementProps } from '@/types';
 import { disableField } from '@/utils';
@@ -10,11 +10,11 @@ import { RenderFields } from '../render';
 export const ObjectField = ({
     pydanticFormField,
 }: PydanticFormElementProps) => {
-    const { config } = usePydanticFormContext();
+    const { componentMatcherExtender } = useGetConfig();
     const disabled = pydanticFormField.attributes?.disabled || false;
     const components = getPydanticFormComponents(
         pydanticFormField.properties || {},
-        config?.componentMatcherExtender,
+        componentMatcherExtender,
     );
 
     // We have decided - for now - on the convention that all descendants of disabled fields will be disabled as well

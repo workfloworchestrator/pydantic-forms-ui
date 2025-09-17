@@ -9,32 +9,41 @@
  */
 import React from 'react';
 
-import { usePydanticFormContext } from '@/core';
+import { useGetConfig } from '@/core';
+import { useGetValidationErrors } from '@/core';
 import { PydanticFormField } from '@/types';
 
 import { FormRow } from './FormRow';
 
 interface FieldWrapProps {
     pydanticFormField: PydanticFormField;
+    isInvalid: boolean;
     children: React.ReactNode;
+    frontendValidationMessage?: string;
 }
 
-export const FieldWrap = ({ pydanticFormField, children }: FieldWrapProps) => {
-    const { errorDetails, reactHookForm, config } = usePydanticFormContext();
-    const RowRenderer = config?.rowRenderer ? config.rowRenderer : FormRow;
-    const fieldState = reactHookForm.getFieldState(pydanticFormField.id);
+export const FieldWrap = ({
+    pydanticFormField,
+    isInvalid,
+    frontendValidationMessage,
+    children,
+}: FieldWrapProps) => {
+    const config = useGetConfig();
+    const validationErrors = useGetValidationErrors();
+    const RowRenderer = config.rowRenderer ?? FormRow;
+
     const errorMsg =
-        errorDetails?.mapped?.[pydanticFormField.id]?.msg ??
-        fieldState.error?.message;
-    const isInvalid = errorMsg ?? fieldState.invalid;
+        validationErrors?.mapped?.[pydanticFormField.id]?.msg ??
+        frontendValidationMessage;
+    const isInvalidField = errorMsg ?? isInvalid;
 
     return (
         <RowRenderer
             title={pydanticFormField.title}
             description={pydanticFormField.description}
             required={pydanticFormField.required}
-            isInvalid={!!isInvalid}
-            error={errorMsg as string}
+            isInvalid={!!isInvalidField}
+            error={errorMsg}
             data-testid={pydanticFormField.id}
         >
             <div>{children}</div>
