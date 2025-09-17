@@ -42,14 +42,24 @@ export default function Home() {
                     fetchResult.status === 201
                 ) {
                     const data = await fetchResult.json();
-                    return new Promise<Record<string, unknown>>((resolve) => {
-                        if (fetchResult.status === 510 || fetchResult.status === 400) {
-                            resolve({ ...data, status: fetchResult.status });
-                        }
-                        if (fetchResult.status === 200) {
-                            resolve({ status: 200, data });
-                        }
-                    });
+
+                    return new Promise<Record<string, unknown>>(
+                        (resolve, reject) => {
+                            if (
+                                fetchResult.status === 510 ||
+                                fetchResult.status === 400
+                            ) {
+                                resolve({
+                                    ...data,
+                                    status: fetchResult.status,
+                                });
+                            }
+                            if (fetchResult.status === 200) {
+                                resolve({ status: 200, data });
+                            }
+                            reject('No valid status in response');
+                        },
+                    );
                 }
                 throw new Error(
                     `Status not 400, 510 or 200: ${fetchResult.statusText}`,
