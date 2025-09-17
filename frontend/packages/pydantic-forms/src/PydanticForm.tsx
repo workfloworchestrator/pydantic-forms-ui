@@ -16,6 +16,7 @@ import {
 } from '@/types';
 
 import { PydanticFormHandler } from './core';
+import { PydanticFormFieldDataStoragProvider } from './core/PydanticFieldDataStorageProvider';
 
 export const PydanticFormConfigContext =
     createContext<PydanticFormConfig | null>(null);
@@ -36,12 +37,14 @@ export const PydanticForm = ({
             locale={config.locale}
         >
             <PydanticFormConfigContext.Provider value={config}>
-                <PydanticFormHandler
-                    onCancel={onCancel}
-                    onSuccess={onSuccess}
-                    title={title}
-                    formKey={formKey}
-                />
+                <PydanticFormFieldDataStoragProvider>
+                    <PydanticFormHandler
+                        onCancel={onCancel}
+                        onSuccess={onSuccess}
+                        title={title}
+                        formKey={formKey}
+                    />
+                </PydanticFormFieldDataStoragProvider>
             </PydanticFormConfigContext.Provider>
         </TranslationsProvider>
     );
