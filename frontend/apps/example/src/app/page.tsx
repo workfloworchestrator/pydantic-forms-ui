@@ -38,7 +38,8 @@ export default function Home() {
                 if (
                     fetchResult.status === 400 ||
                     fetchResult.status === 510 ||
-                    fetchResult.status === 200
+                    fetchResult.status === 200 ||
+                    fetchResult.status === 201
                 ) {
                     const data = await fetchResult.json();
                     return new Promise<Record<string, unknown>>((resolve) => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import type { ControllerRenderProps, useForm } from 'react-hook-form';
+import type { FieldValues } from 'react-hook-form';
 
 import { z } from 'zod/v4';
 
@@ -229,8 +230,8 @@ export interface PydanticFormConfig {
     componentMatcherExtender?: ComponentMatcherExtender;
 
     formRenderer?: FormRenderComponent;
-    footerRenderer?: React.JSXElementConstructor<object>;
-    headerRenderer?: React.JSXElementConstructor<object>;
+    footerRenderer?: React.JSXElementConstructor<PydanticFormFooterProps>;
+    headerRenderer?: React.JSXElementConstructor<PydanticFormHeaderProps>;
     rowRenderer?: RowRenderComponent;
 
     // translations
@@ -446,3 +447,29 @@ export enum Locale {
     enGB = 'en-GB',
     nlNL = 'nl-NL',
 }
+
+export interface PydanticFormFooterProps {
+    hasNext: boolean;
+    hasPrevious: boolean;
+    onCancel?: (e?: React.BaseSyntheticEvent) => void;
+    onPrevious?: () => void;
+}
+
+export interface PydanticFormHeaderProps {
+    title?: string;
+    pydanticFormSchema?: PydanticFormSchema;
+}
+
+export interface PydanticFormHandlerProps {
+    formKey: string;
+    onCancel?: () => void;
+    onSuccess?: (
+        fieldValues: FieldValues[],
+        response: PydanticFormSuccessResponse,
+    ) => void;
+    title?: string;
+}
+
+export type PydanticFormProps = PydanticFormHandlerProps & {
+    config: PydanticFormConfig;
+};

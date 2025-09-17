@@ -7,12 +7,7 @@ import React from 'react';
 
 import { useTranslations } from 'next-intl';
 
-interface PydanticFormFooterProps {
-    hasNext: boolean;
-    hasPrevious: boolean;
-    onCancel?: (e?: React.BaseSyntheticEvent) => void;
-    onPrevious?: () => void;
-}
+import { PydanticFormFooterProps } from '@/types';
 
 const Footer = ({
     onCancel,

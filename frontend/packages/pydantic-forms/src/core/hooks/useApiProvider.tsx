@@ -53,7 +53,10 @@ export function useApiProvider(
                             validation_errors: request.validation_errors,
                         } as PydanticFormApiResponse;
                     }
-                    if (request.status && request.status === 200) {
+                    if (
+                        request.status &&
+                        (request.status === 200 || request.status === 201)
+                    ) {
                         return {
                             type: PydanticFormApiResponseType.SUCCESS,
                             data: request.data,

@@ -3,20 +3,10 @@ import type { FieldValues } from 'react-hook-form';
 
 import { PydanticFormValidationErrorContext } from '@/PydanticForm';
 import { useGetConfig, usePydanticForm } from '@/core/hooks';
-import { PydanticFormSuccessResponse } from '@/types';
+import { PydanticFormHandlerProps } from '@/types';
 import { getHashForArray } from '@/utils';
 
 import { ReactHookForm } from './ReactHookForm';
-
-export interface PydanticFormHandlerProps {
-    formKey: string;
-    onCancel?: () => void;
-    onSuccess?: (
-        fieldValues: FieldValues[],
-        response: PydanticFormSuccessResponse,
-    ) => void;
-    title?: string;
-}
 
 export const PydanticFormHandler = ({
     formKey,

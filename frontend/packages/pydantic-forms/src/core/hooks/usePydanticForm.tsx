@@ -119,7 +119,7 @@ export function usePydanticForm(
             rawSchema !== apiResponse.form
         ) {
             setRawSchema(apiResponse.form);
-
+            setValidationErrorsDetails(null);
             if (formStep) {
                 formStepsRef.current.push(formStep);
             }
