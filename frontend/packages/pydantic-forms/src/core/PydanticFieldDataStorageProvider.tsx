@@ -9,7 +9,7 @@ interface PydanticFormFieldDataStorageContextProviderProps {
     children: React.ReactNode;
 }
 
-export const PydanticFormFieldDataStoragProvider = ({
+export const PydanticFormFieldDataStorageProvider = ({
     children,
 }: PydanticFormFieldDataStorageContextProviderProps) => {
     const fieldDataStorageRef = useRef<Map<string, Map<string, unknown>>>(
