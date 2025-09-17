@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
 import { PydanticFormValidationErrorContext } from '@/PydanticForm';
@@ -18,9 +18,20 @@ export const PydanticFormHandler = ({
     const [formStep, setStep] = useState<FieldValues>();
     const formStepsRef = useRef<FieldValues[]>([]);
     const [initialValues, setInitialValues] = useState<FieldValues>();
+    const [currentFormKey, setCurrentFormKey] = useState<string>(formKey);
     const formInputHistoryRef = useRef<Map<string, FieldValues>>(
         new Map<string, object>(),
     );
+
+    useEffect(() => {
+        if (formKey && formKey !== currentFormKey) {
+            formStepsRef.current = [];
+            formInputHistoryRef.current = new Map<string, object>();
+            setCurrentFormKey(formKey);
+            setStep(undefined);
+            setInitialValues(undefined);
+        }
+    }, [formKey, currentFormKey]);
 
     const storeHistory = useCallback(async (stepData: FieldValues) => {
         const hashOfSteps = await getHashForArray(formStepsRef.current);
