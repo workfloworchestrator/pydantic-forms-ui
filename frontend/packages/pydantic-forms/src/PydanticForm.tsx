@@ -8,8 +8,11 @@
  */
 import React, { createContext } from 'react';
 
+import { z } from 'zod/v4';
+
 import { TranslationsProvider } from '@/messages/translationsProvider';
 import {
+    Locale,
     PydanticFormConfig,
     PydanticFormProps,
     PydanticFormValidationErrorDetails,
@@ -31,6 +34,19 @@ export const PydanticForm = ({
     onSuccess,
     title,
 }: PydanticFormProps) => {
+    const getLocale = () => {
+        switch (config.locale) {
+            case Locale.enGB:
+                return z.locales.en();
+            case Locale.nlNL:
+                return z.locales.nl();
+            default:
+                return z.locales.en();
+        }
+    };
+
+    z.config(getLocale());
+
     return (
         <TranslationsProvider
             customTranslations={config.customTranslations}
