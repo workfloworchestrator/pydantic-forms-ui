@@ -85,7 +85,7 @@ export const PydanticFormHandler = ({
         >
             <ReactHookForm
                 apiError={apiError}
-                defaultValues={defaultValues}
+                defaultValues={{ ...defaultValues, list: [] }}
                 handleCancel={handleCancel}
                 handleSubmit={handleStepSubmit}
                 hasNext={hasNext}

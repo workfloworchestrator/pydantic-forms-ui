@@ -46,7 +46,7 @@ export interface PydanticFormField {
     description?: string;
     type: PydanticFormFieldType;
     format: PydanticFormFieldFormat;
-    options: PydanticFormFieldOption[];
+    options?: PydanticFormFieldOption[];
     disabledOptions?: string[];
     default?: PydanticFormFieldValue;
     required: boolean;

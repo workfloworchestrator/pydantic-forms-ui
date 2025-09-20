@@ -101,8 +101,8 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             // We are looking for a single value from a set list of options. With less than 4 options, use radio buttons.
             return (
                 field.type === PydanticFormFieldType.STRING &&
-                field.options?.length > 0 &&
-                field.options?.length <= 3
+                (field.options?.length ?? 0) > 0 &&
+                (field.options?.length ?? 0) <= 3
             );
         },
     },
@@ -116,7 +116,7 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             // We are looking for a single value from a set list of options. With more than 3 options, use a dropdown.
             return (
                 field.type === PydanticFormFieldType.STRING &&
-                field.options?.length >= 4
+                (field.options?.length ?? 0) >= 4
             );
         },
     },
@@ -139,8 +139,8 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         matcher(field) {
             return (
                 field.type === PydanticFormFieldType.ARRAY &&
-                field.options?.length > 0 &&
-                field.options?.length <= 5
+                (field.options?.length ?? 0) > 0 &&
+                (field.options?.length ?? 0) <= 5
             );
         },
         validator: zodValidationPresets.multiSelect,
@@ -153,7 +153,7 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         },
         matcher(field) {
             return (
-                field.options?.length > 0 &&
+                (field.options?.length ?? 0) > 0 &&
                 field.type === PydanticFormFieldType.ARRAY
             );
         },

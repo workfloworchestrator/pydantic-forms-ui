@@ -100,7 +100,10 @@ const getPydanticFormField = (
         arrayItem,
         format: flatSchema.format || PydanticFormFieldFormat.DEFAULT,
         type: flatSchema.type || PydanticFormFieldType.STRING,
-        options: options,
+        ...toOptionalObjectProperty(
+            { options },
+            flatSchema.type !== PydanticFormFieldType.ARRAY,
+        ),
         default: flatSchema.default,
         attributes: attributes,
         schema: propertySchema,

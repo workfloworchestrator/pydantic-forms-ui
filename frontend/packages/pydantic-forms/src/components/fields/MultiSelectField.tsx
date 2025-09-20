@@ -38,7 +38,7 @@ export const MultiSelectField = ({
                 }}
                 multiple
             >
-                {pydanticFormField.options.map(
+                {pydanticFormField.options?.map(
                     (option: PydanticFormFieldOption) => (
                         <option key={option.value} value={option.value}>
                             {option.label}
