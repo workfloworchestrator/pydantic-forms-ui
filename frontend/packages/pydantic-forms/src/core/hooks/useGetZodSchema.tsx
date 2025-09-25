@@ -82,8 +82,9 @@ export const getZodValidationObject = (
         properties,
         componentMatcherExtender,
     );
+
     if (!pydanticFormComponents || pydanticFormComponents.length === 0)
-        return z.any();
+        return z.object();
 
     const validationObject: { [k: string]: z.ZodTypeAny } = {};
     pydanticFormComponents.forEach((component) => {
@@ -104,7 +105,7 @@ export const getZodValidationObject = (
 
         validationObject[id] = zodRule ?? z.any();
     });
-    return validationObject ? z.object(validationObject) : z.any();
+    return validationObject ? z.object(validationObject) : z.object();
 };
 
 export const useGetZodSchema = (
@@ -113,8 +114,9 @@ export const useGetZodSchema = (
 ): ZodObject | ZodAny => {
     return useMemo(() => {
         if (!pydanticFormSchema) {
-            return z.any();
+            return z.object();
         }
+
         // Get all fields ids including the nested ones to generate the correct validation schema
         const validationObject = getZodValidationObject(
             pydanticFormSchema.properties,
