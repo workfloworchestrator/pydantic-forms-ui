@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.9.1
+
+### Patch Changes
+
+-   90721b8: Sets locale for zod validation messages
+
 ## 0.9.0
 
 ### Minor Changes
