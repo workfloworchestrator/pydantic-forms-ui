@@ -184,9 +184,9 @@ describe('getZodValidationObject', () => {
         },
     });
 
-    it('Returns undefined when no properties are passed', () => {
+    it('Returns empty ZodObject when no properties are passed', () => {
         const zodObject = getZodValidationObject({}, getMockMatcher());
-        const expectedZodObject = z.any();
+        const expectedZodObject = z.object();
         expect(z.toJSONSchema(zodObject)).toEqual(
             z.toJSONSchema(expectedZodObject),
         );
