@@ -3,6 +3,8 @@
  *
  * We will search for the first field that returns a positive match
  */
+import _ from 'lodash';
+
 import {
     ArrayField,
     CheckboxField,
@@ -101,6 +103,7 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             // We are looking for a single value from a set list of options. With less than 4 options, use radio buttons.
             return (
                 field.type === PydanticFormFieldType.STRING &&
+                _.isArray(field.options) &&
                 field.options?.length > 0 &&
                 field.options?.length <= 3
             );
@@ -116,6 +119,7 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             // We are looking for a single value from a set list of options. With more than 3 options, use a dropdown.
             return (
                 field.type === PydanticFormFieldType.STRING &&
+                _.isArray(field.options) &&
                 field.options?.length >= 4
             );
         },
@@ -139,6 +143,7 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         matcher(field) {
             return (
                 field.type === PydanticFormFieldType.ARRAY &&
+                _.isArray(field.options) &&
                 field.options?.length > 0 &&
                 field.options?.length <= 5
             );
@@ -153,6 +158,7 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         },
         matcher(field) {
             return (
+                _.isArray(field.options) &&
                 field.options?.length > 0 &&
                 field.type === PydanticFormFieldType.ARRAY
             );
