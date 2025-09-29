@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.9.2
+
+### Patch Changes
+
+-   46330d4: Fixes resetting formdata with forms that have no properties
+
 ## 0.9.1
 
 ### Patch Changes
