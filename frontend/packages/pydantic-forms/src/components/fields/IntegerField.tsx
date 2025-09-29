@@ -1,6 +1,9 @@
 import React from 'react';
 
+import _ from 'lodash';
+
 import type { PydanticFormControlledElementProps } from '@/types';
+import { getFormFieldIdWithPath } from '@/utils';
 
 export const IntegerField = ({
     value,
@@ -9,6 +12,14 @@ export const IntegerField = ({
     disabled,
     pydanticFormField,
 }: PydanticFormControlledElementProps) => {
+    // If the field is part of an array the value is passed in as an object with the field name as key
+    // this is imposed by react-hook-form. We try to detect this and extract the actual value
+    const fieldName = getFormFieldIdWithPath(pydanticFormField.id);
+    const fieldValue =
+        _.isObject(value) && _.has(value, fieldName)
+            ? _.get(value, fieldName)
+            : value;
+
     return (
         <input
             data-testid={pydanticFormField.id}
@@ -18,7 +29,7 @@ export const IntegerField = ({
                 onChange(value);
             }}
             disabled={disabled}
-            value={value}
+            value={fieldValue}
             type="number"
             style={{
                 padding: '8px',

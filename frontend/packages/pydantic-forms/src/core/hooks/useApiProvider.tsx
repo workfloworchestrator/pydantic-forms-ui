@@ -55,7 +55,8 @@ export function useApiProvider(
                     }
                     if (
                         request.status &&
-                        (request.status === 200 || request.status === 201)
+                        request.status >= 200 &&
+                        request.status < 300
                     ) {
                         return {
                             type: PydanticFormApiResponseType.SUCCESS,

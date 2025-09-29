@@ -127,7 +127,7 @@ export function getFormFieldValue(
  */
 export function getFormFieldIdWithPath(
     pydanticFormFieldId: PydanticFormField['id'],
-    fieldName: string,
+    fieldName?: string,
 ): string {
     const pathToParent = pydanticFormFieldId.split('.');
     pathToParent.pop();

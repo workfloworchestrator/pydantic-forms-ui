@@ -74,9 +74,6 @@ const getPydanticFormField = (
           )
         : '';
 
-    const addConstValue =
-        typeof flatSchema.const === 'undefined' ? false : true;
-
     const arrayItem = flatSchema.items
         ? getPydanticFormField(
               flatSchema.items,
@@ -86,6 +83,14 @@ const getPydanticFormField = (
               true,
           )
         : undefined;
+
+    const addConstValue =
+        typeof flatSchema.const === 'undefined' ? false : true;
+
+    // Don't add options to array items if they have an arrayItem where they live
+    const addOptions = !(
+        flatSchema.type === PydanticFormFieldType.ARRAY && arrayItem
+    );
 
     //TODO: I think object properties should never be required only their properties are or aren't. Should we fix this in the backend?
     const required =
@@ -100,7 +105,7 @@ const getPydanticFormField = (
         arrayItem,
         format: flatSchema.format || PydanticFormFieldFormat.DEFAULT,
         type: flatSchema.type || PydanticFormFieldType.STRING,
-        options: options,
+        ...toOptionalObjectProperty({ options }, addOptions),
         default: flatSchema.default,
         attributes: attributes,
         schema: propertySchema,

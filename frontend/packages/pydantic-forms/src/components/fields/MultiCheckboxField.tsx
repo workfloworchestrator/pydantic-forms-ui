@@ -28,7 +28,7 @@ export const MultiCheckboxField = ({
 
     return (
         <div>
-            {options.map((option: PydanticFormFieldOption) => {
+            {options?.map((option: PydanticFormFieldOption) => {
                 // Extract the unique ID for this option
                 const optionId = `${id}-${option.value}`;
 
