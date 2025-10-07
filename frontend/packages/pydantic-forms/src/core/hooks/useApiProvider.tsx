@@ -60,7 +60,7 @@ export function useApiProvider(
                     ) {
                         return {
                             type: PydanticFormApiResponseType.SUCCESS,
-                            data: request.data,
+                            data: request.data ?? request,
                         } as PydanticFormApiResponse;
                     }
                     throw new Error('Unknown API Response code');
