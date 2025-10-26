@@ -37,7 +37,7 @@ export const WrapFieldElement = ({
                         <PydanticFormControlledElement
                             onChange={onChangeHandle}
                             onBlur={onBlur}
-                            value={value || ''}
+                            value={value === undefined ? '' : value}
                             disabled={!!pydanticFormField.attributes.disabled}
                             name={name}
                             pydanticFormField={pydanticFormField}
