@@ -4,6 +4,14 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { FieldWrap } from '@/components/fields';
 import type { PydanticFormControlledElement, PydanticFormField } from '@/types';
 
+const allowZeroForInputNumber = (value) => {
+    if (value === 0) {
+        return value;
+    } else {
+        return value || '';
+    }
+};
+
 export const WrapFieldElement = ({
     PydanticFormControlledElement,
     pydanticFormField,
@@ -37,7 +45,7 @@ export const WrapFieldElement = ({
                         <PydanticFormControlledElement
                             onChange={onChangeHandle}
                             onBlur={onBlur}
-                            value={value === undefined ? '' : value}
+                            value={allowZeroForInputNumber(value)}
                             disabled={!!pydanticFormField.attributes.disabled}
                             name={name}
                             pydanticFormField={pydanticFormField}
