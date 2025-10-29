@@ -26,9 +26,10 @@ export function useApiProvider(
     formKey: string,
     formInputData: FieldValues[], // TODO: This doesn't seem right
     apiProvider: PydanticFormApiProvider,
+    cacheKey: string,
 ) {
     return useSWR<PydanticFormApiResponse>(
-        [formKey, formInputData],
+        [formKey, formInputData, cacheKey],
         ([formKey, formInputData]) => {
             const requestBody = formInputData;
 
@@ -70,7 +71,6 @@ export function useApiProvider(
                     throw new Error(error);
                 });
         },
-        // swr config
         {
             fallback: {},
             revalidateIfStale: true,
