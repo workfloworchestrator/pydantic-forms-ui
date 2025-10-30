@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.9.3
+
+### Patch Changes
+
+-   6997d21: Fixes form caching bug
+
 ## 0.9.2
 
 ### Patch Changes
