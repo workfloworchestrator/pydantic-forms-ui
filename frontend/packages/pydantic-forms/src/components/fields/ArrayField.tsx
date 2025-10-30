@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useFieldArray } from 'react-hook-form';
 
 import { useGetConfig, useGetForm } from '@/core';
@@ -20,6 +20,19 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
     });
     const { minItems = 1, maxItems = undefined } =
         pydanticFormField?.validations;
+
+    const appendDefault = useCallback(() => {
+        append({
+            [arrayName]: arrayItem?.default ?? undefined,
+        });
+    }, [append, arrayItem?.default, arrayName]);
+
+    useEffect(() => {
+        if (arrayName && arrayItem && minItems && fields) {
+            const missingCount = Math.max(0, minItems - fields.length);
+            Array.from({ length: missingCount }).forEach(() => appendDefault());
+        }
+    }, [minItems, append, remove, arrayItem, arrayName, fields, appendDefault]);
 
     if (!arrayItem) return '';
 
@@ -85,11 +98,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
             {(!maxItems || (maxItems && fields.length < maxItems)) &&
                 !disabled && (
                     <div
-                        onClick={() => {
-                            append({
-                                [arrayName]: arrayItem.default,
-                            });
-                        }}
+                        onClick={appendDefault}
                         style={{
                             cursor: 'pointer',
                             fontSize: '32px',
