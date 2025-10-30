@@ -12,7 +12,7 @@
  *
  * Disabled revalidate / refresh system of SWR, this would cause submissions
  */
-import useSWR, { SWRConfiguration } from 'swr';
+import useSWR from 'swr';
 
 import {
     PydanticFormLabelProvider,
@@ -22,36 +22,28 @@ import {
 export function useLabelProvider(
     labelProvider?: PydanticFormLabelProvider,
     formKey?: string,
-    id?: string | null,
-    cacheKey?: number,
-    swrConfig?: SWRConfiguration,
+    cacheKey?: string,
 ) {
     return useSWR<PydanticFormLabelProviderResponse | undefined>(
         // cache key
-        [labelProvider, formKey, id, swrConfig, cacheKey],
+        [labelProvider, formKey, cacheKey],
 
         // return val
         async () => {
             if (labelProvider) {
                 return labelProvider({
                     formKey: formKey || '',
-                    id,
+                    id: cacheKey,
                 });
             }
         },
-
-        // swr config
         {
             fallback: {},
-
-            // we dont want to refresh the form structure automatically
             revalidateIfStale: false,
             revalidateOnReconnect: false,
             revalidateOnFocus: false,
             keepPreviousData: true,
             shouldRetryOnError: false,
-
-            ...swrConfig,
         },
     );
 }

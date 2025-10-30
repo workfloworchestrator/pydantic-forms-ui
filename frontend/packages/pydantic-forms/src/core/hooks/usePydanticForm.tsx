@@ -31,7 +31,8 @@ export function usePydanticForm(
     formKey: string,
     config: PydanticFormConfig,
     formStepsRef: React.MutableRefObject<FieldValues[]>,
-    onSuccess?: (
+    cacheKey: string,
+    handleSuccess?: (
         fieldValues: FieldValues[],
         response: PydanticFormSuccessResponse,
     ) => void,
@@ -56,7 +57,7 @@ export function usePydanticForm(
 
     // fetch the labels of the form, can also contain default values
     const { data: formLabels, isLoading: isLoadingFormLabels } =
-        useLabelProvider(labelProvider, formKey);
+        useLabelProvider(labelProvider, formKey, cacheKey);
 
     const formSteps = formStepsRef.current;
 
@@ -69,7 +70,7 @@ export function usePydanticForm(
         data: apiResponse,
         isLoading: isLoadingSchema,
         error: apiError,
-    } = useApiProvider(formKey, formInputData, apiProvider);
+    } = useApiProvider(formKey, formInputData, apiProvider, cacheKey);
 
     // extract the JSON schema to a more usable custom schema
     const { pydanticFormSchema, isLoading: isParsingSchema } =
@@ -105,8 +106,8 @@ export function usePydanticForm(
             );
             return;
         } else if (apiResponse.type === PydanticFormApiResponseType.SUCCESS) {
-            if (onSuccess) {
-                onSuccess(formInputData, apiResponse);
+            if (handleSuccess) {
+                handleSuccess(formInputData, apiResponse);
             }
             setValidationErrorsDetails(null);
             setIsFullFilled(true);

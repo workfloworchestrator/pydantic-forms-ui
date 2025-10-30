@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
+import _ from 'lodash';
+
 import { PydanticFormValidationErrorContext } from '@/PydanticForm';
 import { useGetConfig, usePydanticForm } from '@/core/hooks';
-import { PydanticFormHandlerProps } from '@/types';
+import { PydanticFormHandlerProps, PydanticFormSuccessResponse } from '@/types';
 import { getHashForArray } from '@/utils';
 
 import { ReactHookForm } from './ReactHookForm';
@@ -19,6 +21,7 @@ export const PydanticFormHandler = ({
     const formStepsRef = useRef<FieldValues[]>([]);
     const [initialValues, setInitialValues] = useState<FieldValues>();
     const [currentFormKey, setCurrentFormKey] = useState<string>(formKey);
+    const [cacheKey, setCacheKey] = useState<string>(_.uniqueId(formKey));
     const formInputHistoryRef = useRef<Map<string, FieldValues>>(
         new Map<string, object>(),
     );
@@ -47,6 +50,16 @@ export const PydanticFormHandler = ({
         }
     }, []);
 
+    const handleSuccess = (
+        fieldValues: FieldValues[],
+        response: PydanticFormSuccessResponse,
+    ) => {
+        if (onSuccess) {
+            onSuccess(fieldValues, response);
+        }
+        setCacheKey(_.uniqueId(currentFormKey));
+    };
+
     const {
         validationErrorsDetails,
         apiError,
@@ -55,7 +68,14 @@ export const PydanticFormHandler = ({
         isLoading,
         pydanticFormSchema,
         defaultValues,
-    } = usePydanticForm(formKey, config, formStepsRef, onSuccess, formStep);
+    } = usePydanticForm(
+        formKey,
+        config,
+        formStepsRef,
+        cacheKey,
+        handleSuccess,
+        formStep,
+    );
 
     const handleStepSubmit = useCallback(
         (fieldValues: FieldValues) => {
@@ -74,10 +94,11 @@ export const PydanticFormHandler = ({
     }, [restoreHistory]);
 
     const handleCancel = useCallback(() => {
+        setCacheKey(_.uniqueId(currentFormKey));
         if (onCancel) {
             onCancel();
         }
-    }, [onCancel]);
+    }, [currentFormKey, onCancel]);
 
     return (
         <PydanticFormValidationErrorContext.Provider
