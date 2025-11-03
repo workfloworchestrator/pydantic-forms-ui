@@ -25,7 +25,6 @@ export default function Home() {
         requestBody,
     }) => {
         const url = 'http://localhost:8000/form';
-
         return fetch(url, {
             method: 'POST',
             body: JSON.stringify(requestBody),
@@ -136,6 +135,7 @@ export default function Home() {
 
             <PydanticForm
                 formKey="theForm"
+                formId="example123"
                 title="Example form"
                 onCancel={() => {
                     alert('Form cancelled');

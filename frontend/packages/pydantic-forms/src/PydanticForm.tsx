@@ -30,6 +30,7 @@ export const PydanticFormValidationErrorContext =
 export const PydanticForm = ({
     config,
     formKey,
+    formId,
     onCancel,
     onSuccess,
     title,
@@ -59,6 +60,7 @@ export const PydanticForm = ({
                         onSuccess={onSuccess}
                         title={title}
                         formKey={formKey}
+                        formId={formId}
                     />
                 </PydanticFormFieldDataStorageProvider>
             </PydanticFormConfigContext.Provider>

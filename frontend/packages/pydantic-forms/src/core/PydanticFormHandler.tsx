@@ -1,40 +1,44 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
-import _ from 'lodash';
-
 import { PydanticFormValidationErrorContext } from '@/PydanticForm';
 import { useGetConfig, usePydanticForm } from '@/core/hooks';
-import { PydanticFormHandlerProps, PydanticFormSuccessResponse } from '@/types';
+import { PydanticFormHandlerProps } from '@/types';
 import { getHashForArray } from '@/utils';
 
 import { ReactHookForm } from './ReactHookForm';
 
 export const PydanticFormHandler = ({
     formKey,
+    formId,
     onCancel,
     onSuccess,
     title,
 }: PydanticFormHandlerProps) => {
     const config = useGetConfig();
+    const getComposedFormKey = useCallback(() => {
+        return `${formKey}${formId}`;
+    }, [formKey, formId]);
+
     const [formStep, setStep] = useState<FieldValues>();
     const formStepsRef = useRef<FieldValues[]>([]);
     const [initialValues, setInitialValues] = useState<FieldValues>();
-    const [currentFormKey, setCurrentFormKey] = useState<string>(formKey);
-    const [cacheKey, setCacheKey] = useState<string>(_.uniqueId(formKey));
+    const [currentFormId, setCurrentFormId] = useState<string>(
+        getComposedFormKey(),
+    );
     const formInputHistoryRef = useRef<Map<string, FieldValues>>(
         new Map<string, object>(),
     );
 
     useEffect(() => {
-        if (formKey && formKey !== currentFormKey) {
+        if (formKey && getComposedFormKey() !== currentFormId) {
             formStepsRef.current = [];
             formInputHistoryRef.current = new Map<string, object>();
-            setCurrentFormKey(formKey);
+            setCurrentFormId(getComposedFormKey);
             setStep(undefined);
             setInitialValues(undefined);
         }
-    }, [formKey, currentFormKey]);
+    }, [formKey, formId, currentFormId, getComposedFormKey]);
 
     const storeHistory = useCallback(async (stepData: FieldValues) => {
         const hashOfSteps = await getHashForArray(formStepsRef.current);
@@ -50,16 +54,6 @@ export const PydanticFormHandler = ({
         }
     }, []);
 
-    const handleSuccess = (
-        fieldValues: FieldValues[],
-        response: PydanticFormSuccessResponse,
-    ) => {
-        if (onSuccess) {
-            onSuccess(fieldValues, response);
-        }
-        setCacheKey(_.uniqueId(currentFormKey));
-    };
-
     const {
         validationErrorsDetails,
         apiError,
@@ -70,10 +64,10 @@ export const PydanticFormHandler = ({
         defaultValues,
     } = usePydanticForm(
         formKey,
+        formId,
         config,
         formStepsRef,
-        cacheKey,
-        handleSuccess,
+        onSuccess,
         formStep,
     );
 
@@ -94,11 +88,10 @@ export const PydanticFormHandler = ({
     }, [restoreHistory]);
 
     const handleCancel = useCallback(() => {
-        setCacheKey(_.uniqueId(currentFormKey));
         if (onCancel) {
             onCancel();
         }
-    }, [currentFormKey, onCancel]);
+    }, [onCancel]);
 
     return (
         <PydanticFormValidationErrorContext.Provider

@@ -462,6 +462,7 @@ export interface PydanticFormHeaderProps {
 
 export interface PydanticFormHandlerProps {
     formKey: string;
+    formId: string;
     onCancel?: () => void;
     onSuccess?: (
         fieldValues: FieldValues[],
