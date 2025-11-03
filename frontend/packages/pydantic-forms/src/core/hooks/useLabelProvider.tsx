@@ -22,18 +22,18 @@ import {
 export function useLabelProvider(
     labelProvider?: PydanticFormLabelProvider,
     formKey?: string,
-    cacheKey?: string,
+    formId?: string,
 ) {
     return useSWR<PydanticFormLabelProviderResponse | undefined>(
         // cache key
-        [labelProvider, formKey, cacheKey],
+        [labelProvider, formKey, formId],
 
         // return val
         async () => {
             if (labelProvider) {
                 return labelProvider({
                     formKey: formKey || '',
-                    id: cacheKey,
+                    id: formId || '',
                 });
             }
         },

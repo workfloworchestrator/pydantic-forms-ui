@@ -24,12 +24,12 @@ import {
 
 export function useApiProvider(
     formKey: string,
-    formInputData: FieldValues[], // TODO: This doesn't seem right
+    formId: string,
+    formInputData: FieldValues[],
     apiProvider: PydanticFormApiProvider,
-    cacheKey: string,
 ) {
     return useSWR<PydanticFormApiResponse>(
-        [formKey, formInputData, cacheKey],
+        [formKey, formInputData, formId],
         ([formKey, formInputData]) => {
             const requestBody = formInputData;
 
