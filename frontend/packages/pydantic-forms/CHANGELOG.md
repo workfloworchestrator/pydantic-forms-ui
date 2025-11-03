@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.9.4
+
+### Patch Changes
+
+-   faf543b: Fixes triggering onSuccess twice
+
 ## 0.9.3
 
 ### Patch Changes
