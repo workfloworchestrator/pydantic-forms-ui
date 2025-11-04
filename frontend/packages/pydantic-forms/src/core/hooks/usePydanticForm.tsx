@@ -25,6 +25,32 @@ export interface UsePydanticFormReturn {
     isSending: boolean;
     pydanticFormSchema?: PydanticFormSchema;
     defaultValues: FieldValues;
+    handleRemoveValidationError: (location: string[]) => void;
+}
+
+const removeValidationErrorByLoc = (
+    validationErrors: PydanticFormValidationErrorDetails | null,
+    locToRemove: (string | number)[]
+): PydanticFormValidationErrorDetails | null => {
+
+    if (!validationErrors) return null;
+
+    const newSource = validationErrors.source.filter(
+        (err) => JSON.stringify(err.loc) !== JSON.stringify(locToRemove)
+    );
+
+    const topKey = locToRemove[0]?.toString();
+    const newMapped = { ...validationErrors.mapped };
+
+    if (topKey && newMapped[topKey]) {
+        delete newMapped[topKey];
+    }
+
+    return {
+        ...validationErrors,
+        source: newSource,
+        mapped: newMapped,
+    };
 }
 
 export function usePydanticForm(
@@ -37,6 +63,7 @@ export function usePydanticForm(
         response: PydanticFormSuccessResponse,
     ) => void,
     formStep?: FieldValues,
+
 ): UsePydanticFormReturn {
     const emptyRawSchema: PydanticFormSchemaRawJson = useMemo(
         () => ({
@@ -131,6 +158,12 @@ export function usePydanticForm(
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiResponse]);
 
+    const handleRemoveValidationError = (location: string[]) => {
+        setValidationErrorsDetails((prev) =>
+            removeValidationErrorByLoc(prev, location)
+        );
+    }
+
     return {
         validationErrorsDetails,
         apiError,
@@ -140,5 +173,6 @@ export function usePydanticForm(
         pydanticFormSchema,
         defaultValues,
         isSending,
+        handleRemoveValidationError
     };
 }
