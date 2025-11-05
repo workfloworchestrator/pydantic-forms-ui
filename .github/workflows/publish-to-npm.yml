@@ -7,44 +7,26 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+permissions:
+    id-token: write # Required for OIDC
+    contents: read
+
 jobs:
     publish:
         runs-on: ubuntu-latest
-        permissions:
-            id-token: write
-            contents: write
         steps:
-            - name: Create GitHub app token
-              uses: actions/create-github-app-token@v1
-              id: app-token
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
               with:
-                  app-id: ${{ vars.RW_REPOSITORY_CONTENT_APP_ID }}
-                  private-key: ${{ secrets.RW_REPOSITORY_CONTENT_PRIVATE_KEY }}
-                  owner: ${{ github.repository_owner }}
-                  repositories: "pydantic-forms-ui"
-            - uses: actions/checkout@v3
-            - name: Setting up Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: npm
-                  cache-dependency-path: frontend
-            - name: Create .npmrc file with the NPM token
-              run: |
-                  cd frontend
-                  cat << EOF > "$HOME/.npmrc"
-                    //registry.npmjs.org/:_authToken=$NPM_TOKEN
-                  EOF
-              env:
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  node-version: "22"
+                  registry-url: "https://registry.npmjs.org"
+
             - name: Installing dependencies
               run: cd frontend && npm ci && pwd
             - name: Create Release Pull Request or Publish
               id: changesets
-              uses: changesets/action@e0538e686673de0265c8a3e2904b8c76beaa43fd
+              uses: changesets/action@v1
               with:
                   publish: npm run packages:publish
                   cwd: /home/runner/work/pydantic-forms-ui/pydantic-forms-ui/frontend
-              env:
-                  GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
