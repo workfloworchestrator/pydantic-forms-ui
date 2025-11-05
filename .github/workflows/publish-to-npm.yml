@@ -31,5 +31,5 @@ jobs:
                   publish: npm run packages:publish
                   cwd: /home/runner/work/pydantic-forms-ui/pydantic-forms-ui/frontend
               env:
-                  GITHUB_TOKEN: ${{ secrets.CI_TOKEN_GITHUB }}
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   NPM_TOKEN: ""
