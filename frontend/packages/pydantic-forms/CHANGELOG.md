@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.9.5
+
+### Patch Changes
+
+-   2ae2610: Publish to npm using trusted publisher
+
 ## 0.9.4
 
 ### Patch Changes
