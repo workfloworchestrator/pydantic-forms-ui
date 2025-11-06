@@ -1,5 +1,12 @@
 # pydantic-forms
 
+## 0.9.8
+
+### Patch Changes
+
+-   5049979: Adds README stub
+-   5049979: Fixes README typos
+
 ## 0.9.7
 
 ### Patch Changes
