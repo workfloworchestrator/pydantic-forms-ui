@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+-   fd5b1d6: Trigger a deployment as a trusted publisher
+
+## 0.9.5
+
+### Patch Changes
+
 -   b6090cf: Trigger a deployment as a trusted publisher
 
 ## 0.9.5
