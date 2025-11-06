@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.9.7
+
+### Patch Changes
+
+-   da6bd7d: Trigger a deployment as a trusted publisher
+
 ## 0.9.6
 
 ### Patch Changes
