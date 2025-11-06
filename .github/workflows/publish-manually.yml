@@ -21,10 +21,14 @@ jobs:
                   node-version: "22"
                   registry-url: "https://registry.npmjs.org"
 
+            - name: Display npm version
+              run: npm --version
             - name: Installing dependencies
               run: cd frontend && npm ci && pwd
             - name: Update npm
               run: npm install -g npm@latest
+            - name: Display npm version
+              run: npm --version
             - run: cd frontend && npm run build
             - run: cd frontend && npm test
             - run: cd frontend && npm publish
