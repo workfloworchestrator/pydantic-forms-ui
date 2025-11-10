@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.10.0
+
+### Minor Changes
+
+-   26fdf66: Fix validation error not resetting when form field has change
+
 ## 0.9.8
 
 ### Patch Changes
