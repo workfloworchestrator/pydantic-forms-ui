@@ -62,6 +62,7 @@ export const PydanticFormHandler = ({
         isLoading,
         pydanticFormSchema,
         defaultValues,
+        handleRemoveValidationError,
     } = usePydanticForm(
         formKey,
         formId,
@@ -110,6 +111,7 @@ export const PydanticFormHandler = ({
                 onPrevious={onPrevious}
                 pydanticFormSchema={pydanticFormSchema}
                 title={title}
+                handleRemoveValidationError={handleRemoveValidationError}
             />
         </PydanticFormValidationErrorContext.Provider>
     );

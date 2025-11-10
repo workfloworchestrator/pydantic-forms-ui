@@ -25,7 +25,33 @@ export interface UsePydanticFormReturn {
     isSending: boolean;
     pydanticFormSchema?: PydanticFormSchema;
     defaultValues: FieldValues;
+    handleRemoveValidationError: (location: string) => void;
 }
+
+const removeValidationErrorByLoc = (
+    validationErrors: PydanticFormValidationErrorDetails | null,
+    locToRemove: string,
+): PydanticFormValidationErrorDetails | null => {
+    if (!validationErrors) return null;
+
+    const newSource = validationErrors.source.filter((err) => {
+        const locPath = err.loc.join('.'); // e.g. "contact_persons.0.email"
+        return locPath !== locToRemove;
+    });
+
+    const [topKey] = locToRemove.split('.'); // e.g. "contact_persons"
+    const newMapped = { ...validationErrors.mapped };
+
+    if (topKey && newMapped[topKey]) {
+        delete newMapped[topKey];
+    }
+
+    return {
+        ...validationErrors,
+        source: newSource,
+        mapped: newMapped,
+    };
+};
 
 export function usePydanticForm(
     formKey: string,
@@ -131,6 +157,13 @@ export function usePydanticForm(
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiResponse]);
 
+    const handleRemoveValidationError = (location: string) => {
+        setValidationErrorsDetails((prev) => {
+            const updatedErrors = removeValidationErrorByLoc(prev, location);
+            return updatedErrors;
+        });
+    };
+
     return {
         validationErrorsDetails,
         apiError,
@@ -140,5 +173,6 @@ export function usePydanticForm(
         pydanticFormSchema,
         defaultValues,
         isSending,
+        handleRemoveValidationError,
     };
 }

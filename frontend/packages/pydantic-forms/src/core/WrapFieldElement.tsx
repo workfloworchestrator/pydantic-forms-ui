@@ -2,7 +2,21 @@ import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { FieldWrap } from '@/components/fields';
-import type { PydanticFormControlledElement, PydanticFormField } from '@/types';
+import { useGetValidationErrors } from '@/core/hooks';
+import {
+    PydanticFormControlledElement,
+    PydanticFormField,
+    PydanticFormValidationErrorDetails,
+} from '@/types';
+
+const getValidationErrorMsg = (
+    errorResponse: PydanticFormValidationErrorDetails | null,
+    path: string,
+): string | undefined => {
+    return errorResponse?.source?.find(
+        (err) => err.loc.map(String).join('.') === path,
+    )?.msg;
+};
 
 export const WrapFieldElement = ({
     PydanticFormControlledElement,
@@ -14,6 +28,8 @@ export const WrapFieldElement = ({
     extraTriggerFields?: string[];
 }) => {
     const { control, trigger } = useFormContext();
+    const validationErrorDetails = useGetValidationErrors();
+
     return (
         <Controller
             name={pydanticFormField.id}
@@ -32,7 +48,12 @@ export const WrapFieldElement = ({
                     <FieldWrap
                         pydanticFormField={pydanticFormField}
                         isInvalid={fieldState.invalid}
-                        frontendValidationMessage={fieldState.error?.message}
+                        frontendValidationMessage={
+                            getValidationErrorMsg(
+                                validationErrorDetails,
+                                pydanticFormField.id,
+                            ) ?? fieldState.error?.message
+                        }
                     >
                         <PydanticFormControlledElement
                             onChange={onChangeHandle}
