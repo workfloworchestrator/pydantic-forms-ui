@@ -11,11 +11,11 @@ import { getHashForArray } from '@/utils';
 import { ReactHookForm } from './ReactHookForm';
 
 export const PydanticFormHandler = ({
-                                        formKey,
-                                        onCancel,
-                                        onSuccess,
-                                        title,
-                                    }: PydanticFormHandlerProps) => {
+    formKey,
+    onCancel,
+    onSuccess,
+    title,
+}: PydanticFormHandlerProps) => {
     const config = useGetConfig();
     const [formStep, setStep] = useState<FieldValues>();
     const formStepsRef = useRef<FieldValues[]>([]);
@@ -68,7 +68,7 @@ export const PydanticFormHandler = ({
         isLoading,
         pydanticFormSchema,
         defaultValues,
-        handleRemoveValidationError
+        handleRemoveValidationError,
     } = usePydanticForm(
         formKey,
         config,

@@ -5,7 +5,7 @@
  *
  * Here we define the outline of the form
  */
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -36,7 +36,7 @@ export interface ReactHookFormProps {
     onPrevious: () => void;
     pydanticFormSchema?: PydanticFormSchema;
     title?: string;
-    handleRemoveValidationError: (location: string[]) => void;
+    handleRemoveValidationError: (location: string) => void;
 }
 
 export const ReactHookForm = ({
@@ -52,7 +52,7 @@ export const ReactHookForm = ({
     onPrevious,
     pydanticFormSchema,
     title,
-    handleRemoveValidationError
+    handleRemoveValidationError,
 }: ReactHookFormProps) => {
     const config = useGetConfig();
     const t = useTranslations('renderForm');
@@ -76,8 +76,8 @@ export const ReactHookForm = ({
     });
 
     useEffect(() => {
-        const reactHookFormWatch = reactHookForm.watch((_, { name }) =>
-            name && handleRemoveValidationError([name])
+        const reactHookFormWatch = reactHookForm.watch(
+            (_, { name }) => name && handleRemoveValidationError(name),
         );
         return reactHookFormWatch.unsubscribe;
     }, [handleRemoveValidationError, reactHookForm]);
