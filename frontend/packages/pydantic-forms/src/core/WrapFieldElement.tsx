@@ -1,6 +1,8 @@
 import React from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 
+import _ from 'lodash';
+
 import { FieldWrap } from '@/components/fields';
 import { useGetValidationErrors } from '@/core/hooks';
 import {
@@ -58,7 +60,7 @@ export const WrapFieldElement = ({
                         <PydanticFormControlledElement
                             onChange={onChangeHandle}
                             onBlur={onBlur}
-                            value={value || ''}
+                            value={!_.isUndefined(value) ? value : ''}
                             disabled={!!pydanticFormField.attributes.disabled}
                             name={name}
                             pydanticFormField={pydanticFormField}
