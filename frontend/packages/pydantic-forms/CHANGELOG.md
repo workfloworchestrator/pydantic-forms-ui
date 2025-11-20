@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.10.1
+
+### Patch Changes
+
+-   9db6b45: Add custom button text and colors
+
 ## 0.10.0
 
 ### Minor Changes
