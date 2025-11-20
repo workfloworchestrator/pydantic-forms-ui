@@ -448,11 +448,22 @@ export enum Locale {
     nlNL = 'nl-NL',
 }
 
+export type PydanticFormButtonProps = {
+    text?: string;
+    color?: string;
+};
+
+export type PydanticFormButtons = {
+    next: PydanticFormButtonProps;
+    previous: PydanticFormButtonProps;
+};
+
 export interface PydanticFormFooterProps {
     hasNext: boolean;
     hasPrevious: boolean;
     onCancel?: (e?: React.BaseSyntheticEvent) => void;
     onPrevious?: () => void;
+    buttons: PydanticFormButtons;
 }
 
 export interface PydanticFormHeaderProps {
