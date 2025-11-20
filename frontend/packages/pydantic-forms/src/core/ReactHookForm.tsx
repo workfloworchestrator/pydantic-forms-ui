@@ -110,6 +110,8 @@ export const ReactHookForm = ({
         handleSubmit(_.cloneDeep(data));
     };
 
+    const buttons = defaultValues?.buttons ?? {};
+
     return (
         <FormProvider {...reactHookForm}>
             <form onSubmit={reactHookForm.handleSubmit(onSubmit)}>
@@ -123,6 +125,7 @@ export const ReactHookForm = ({
                     hasNext={hasNext}
                     hasPrevious={hasPrevious}
                     onPrevious={onPrevious}
+                    buttons={buttons}
                 />
             </form>
         </FormProvider>

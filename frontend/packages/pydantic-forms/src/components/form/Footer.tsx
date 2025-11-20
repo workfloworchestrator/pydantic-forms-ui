@@ -14,16 +14,22 @@ const Footer = ({
     onPrevious,
     hasNext,
     hasPrevious,
+    buttons,
 }: PydanticFormFooterProps) => {
     const t = useTranslations('footer');
     const submitButtonLabel = hasNext ? t('send') : t('submit');
+    const { next, previous } = buttons || {};
+
     const PreviousButton = () => (
         <button
             type="button"
             onClick={() => onPrevious?.()}
-            style={{ padding: '12px' }}
+            style={{
+                padding: '12px',
+                backgroundColor: previous?.color,
+            }}
         >
-            {t('previous')}
+            {previous?.text ?? t('previous')}
         </button>
     );
 
@@ -40,8 +46,11 @@ const Footer = ({
     };
 
     const SubmitButton = () => (
-        <button type="submit" style={{ padding: '12px' }}>
-            {submitButtonLabel}
+        <button
+            type="submit"
+            style={{ padding: '12px', backgroundColor: next?.color }}
+        >
+            {next?.text ?? submitButtonLabel}
         </button>
     );
 
