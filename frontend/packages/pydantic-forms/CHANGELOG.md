@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 0.10.2
+
+### Patch Changes
+
+-   7483c6e: Fixes caching issues when running same form twice
+
 ## 0.10.1
 
 ### Patch Changes
