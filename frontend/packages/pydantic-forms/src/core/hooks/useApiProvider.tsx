@@ -17,12 +17,10 @@ import type { FieldValues } from 'react-hook-form';
 import useSWR from 'swr';
 
 import {
-    FormHasNext,
     PydanticFormApiProvider,
     PydanticFormApiResponse,
     PydanticFormApiResponseType,
     PydanticFormDefinitionResponse,
-    PydanticFormSchemaRawJson,
     PydanticFormSuccessResponse,
     PydanticFormValidationResponse,
 } from '@/types';
@@ -36,7 +34,7 @@ export function useApiProvider(
         React.SetStateAction<PydanticFormApiResponse | undefined>
     >,
 ) {
-    return useSWR<PydanticFormApiResponse>(
+    return useSWR(
         [formKey, formInputData, formId],
         ([formKey, formInputData]) => {
             const requestBody = formInputData;
