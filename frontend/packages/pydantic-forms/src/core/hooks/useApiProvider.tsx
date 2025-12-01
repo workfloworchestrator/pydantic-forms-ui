@@ -17,9 +17,14 @@ import type { FieldValues } from 'react-hook-form';
 import useSWR from 'swr';
 
 import {
+    FormHasNext,
     PydanticFormApiProvider,
     PydanticFormApiResponse,
     PydanticFormApiResponseType,
+    PydanticFormDefinitionResponse,
+    PydanticFormSchemaRawJson,
+    PydanticFormSuccessResponse,
+    PydanticFormValidationResponse,
 } from '@/types';
 
 export function useApiProvider(
@@ -27,6 +32,9 @@ export function useApiProvider(
     formId: string,
     formInputData: FieldValues[],
     apiProvider: PydanticFormApiProvider,
+    setApiResponse: React.Dispatch<
+        React.SetStateAction<PydanticFormApiResponse | undefined>
+    >,
 ) {
     return useSWR<PydanticFormApiResponse>(
         [formKey, formInputData, formId],
@@ -42,27 +50,33 @@ export function useApiProvider(
                         throw new Error('No API Response');
                     }
                     if (request.form) {
-                        return {
+                        const formDefinitionResponse = {
                             type: PydanticFormApiResponseType.FORM_DEFINITION,
                             form: request.form,
                             meta: request.meta,
-                        } as PydanticFormApiResponse;
+                        } as PydanticFormDefinitionResponse;
+                        setApiResponse(formDefinitionResponse);
+                        return;
                     }
                     if (request.validation_errors) {
-                        return {
+                        const formValidationResponse = {
                             type: PydanticFormApiResponseType.VALIDATION_ERRORS,
                             validation_errors: request.validation_errors,
-                        } as PydanticFormApiResponse;
+                        } as PydanticFormValidationResponse;
+                        setApiResponse(formValidationResponse);
+                        return;
                     }
                     if (
                         request.status &&
                         request.status >= 200 &&
                         request.status < 300
                     ) {
-                        return {
+                        const formSuccessResponse = {
                             type: PydanticFormApiResponseType.SUCCESS,
                             data: request.data,
-                        } as PydanticFormApiResponse;
+                        } as PydanticFormSuccessResponse;
+                        setApiResponse(formSuccessResponse);
+                        return;
                     }
                     throw new Error('Unknown API Response code');
                 })

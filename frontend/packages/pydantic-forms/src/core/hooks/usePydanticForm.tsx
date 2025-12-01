@@ -6,6 +6,7 @@ import {
     getValidationErrorDetailsFromResponse,
 } from '@/core/helper';
 import type {
+    PydanticFormApiResponse,
     PydanticFormConfig,
     PydanticFormSchema,
     PydanticFormSchemaRawJson,
@@ -73,6 +74,9 @@ export function usePydanticForm(
     );
     const [isFullFilled, setIsFullFilled] = useState<boolean>(false);
     const [isSending, setIsSending] = useState<boolean>(false);
+    const [apiResponse, setApiResponse] = useState<
+        PydanticFormApiResponse | undefined
+    >(undefined);
     const [rawSchema, setRawSchema] =
         useState<PydanticFormSchemaRawJson>(emptyRawSchema);
     const [hasNext, setHasNext] = useState<boolean>(false);
@@ -92,11 +96,13 @@ export function usePydanticForm(
     }, [formStep, formSteps]);
 
     // fetch API response with form definition
-    const {
-        data: apiResponse,
-        isLoading: isLoadingSchema,
-        error: apiError,
-    } = useApiProvider(formKey, formId, formInputData, apiProvider);
+    const { isLoading: isLoadingSchema, error: apiError } = useApiProvider(
+        formKey,
+        formId,
+        formInputData,
+        apiProvider,
+        setApiResponse,
+    );
 
     // extract the JSON schema to a more usable custom schema
     const { pydanticFormSchema, isLoading: isParsingSchema } =
