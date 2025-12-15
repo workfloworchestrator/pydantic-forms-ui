@@ -1,5 +1,12 @@
 # pydantic-forms
 
+## 1.0.0
+
+### Major Changes
+
+-   95f31b7: - Initial stable release
+    -   Used in production for https://workfloworchestrator.org/
+
 ## 0.10.3
 
 ### Patch Changes
