@@ -38,8 +38,16 @@ export const WrapFieldElement = ({
             control={control}
             render={({ field, fieldState }) => {
                 const { onChange, onBlur, value, name } = field;
-                const onChangeHandle = (value: unknown) => {
-                    onChange(value);
+
+                const onChangeHandle = (inputValue: unknown) => {
+                    if (
+                        pydanticFormField.validations.isNullable &&
+                        inputValue === ''
+                    ) {
+                        onChange(null);
+                    } else {
+                        onChange(inputValue);
+                    }
 
                     extraTriggerFields?.forEach((extraField) => {
                         trigger(extraField);

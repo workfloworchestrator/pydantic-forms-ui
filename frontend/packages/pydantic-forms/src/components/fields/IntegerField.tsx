@@ -18,6 +18,8 @@ export const IntegerField = ({
     const fieldValue =
         _.isObject(value) && _.has(value, fieldName)
             ? _.get(value, fieldName)
+            : value === null
+            ? ''
             : value;
 
     return (
@@ -25,7 +27,10 @@ export const IntegerField = ({
             data-testid={pydanticFormField.id}
             onBlur={onBlur}
             onChange={(t) => {
-                const value = parseInt(t.currentTarget.value);
+                const value = t.currentTarget.value
+                    ? parseInt(t.currentTarget.value)
+                    : '';
+
                 onChange(value);
             }}
             disabled={disabled}
