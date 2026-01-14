@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 1.0.1
+
+### Patch Changes
+
+-   883434b: Allow sending null when field isNullable
+
 ## 1.0.0
 
 ### Major Changes
