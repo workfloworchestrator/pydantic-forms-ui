@@ -186,7 +186,7 @@ async def form(form_data: list[dict] = []):
         class TestForm1(FormPage):
             model_config = ConfigDict(title="Form Title Page 1")
 
-            contact_name2: StringExample
+            contact_name2: Person
             options: ListChoices
 
         form_data_1 = yield TestForm1
@@ -194,7 +194,7 @@ async def form(form_data: list[dict] = []):
         class TestForm2(FormPage):
             model_config = ConfigDict(title="Form Title Page 2")
 
-            contact_name3: StringExample
+            contact_name3: Person2
             age: NumberExample
 
         form_data_2 = yield TestForm2
