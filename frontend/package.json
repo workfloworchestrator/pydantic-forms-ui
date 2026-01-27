@@ -1,14 +1,14 @@
 {
     "private": true,
     "scripts": {
-        "dev": "turbo dev",
-        "test": "turbo test",
+        "dev": "turbo run dev",
+        "test": "turbo run test",
         "tsc": "turbo run tsc",
-        "lint": "turbo lint",
+        "lint": "turbo run lint",
         "prettier": "prettier -c \"{**/*,*}.{ts,tsx,json,js,md}\"",
         "prettier-fix": "prettier --write \"{**/*,*}.{ts,tsx,json,js,md}\"",
-        "build": "turbo build",
-        "clean": "turbo clean && rm -rf node_modules",
+        "build": "turbo run build",
+        "clean": "turbo run clean && rm -rf node_modules",
         "changeset": "changeset",
         "packages:publish": "turbo run build lint test && changeset publish",
         "postinstall": "turbo run build --filter=./packages/*"
