@@ -131,7 +131,7 @@ export default function Home() {
 
     return (
         <div className={styles.page}>
-            <h1 style={{ marginBottom: '20px' }}>Pydantic Form </h1>
+            <h1 style={{ marginBottom: '20px' }}>Pydantic Form</h1>
 
             <PydanticForm
                 formKey="theForm"
