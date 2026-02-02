@@ -165,7 +165,7 @@ async def form(form_data: list[dict] = []):
         class TestForm0(FormPage):
             model_config = ConfigDict(title="Form Title Page 1")
 
-            number: NumberExample = 3
+            number: NumberExample = 18
             # list: TestExampleNumberList
             # list_list: unique_conlist(TestExampleNumberList, min_items=1, max_items=5)
             # list_list_list: unique_conlist(
