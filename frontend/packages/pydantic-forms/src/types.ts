@@ -318,17 +318,20 @@ export type PydanticFormDefinitionResponse = {
     type: PydanticFormApiResponseType.FORM_DEFINITION;
     form: PydanticFormSchemaRawJson;
     meta?: FormHasNext;
+    status: number;
 };
 
 export type PydanticFormValidationResponse = {
     type: PydanticFormApiResponseType.VALIDATION_ERRORS;
     validation_errors: PydanticFormApiValidationError[];
     detail?: string;
+    status: number;
 };
 
 export type PydanticFormSuccessResponse = {
     type: PydanticFormApiResponseType.SUCCESS;
     data: string | object;
+    status: number;
 };
 
 export type PydanticFormApiResponse =
@@ -346,6 +349,7 @@ export interface PydanticFormBaseSchema {
         [definitionId: string]: {
             enum: string[];
             title: string;
+            options: string[];
             type: PydanticFormFieldType;
         };
     };
@@ -389,10 +393,10 @@ export interface PydanticFormPropertySchemaParsed
 }
 
 type UniformProperties = {
-    disabled: boolean;
-    sensitive: boolean;
-    password: boolean;
-    [key: string]: string | boolean | number;
+    disabled?: boolean;
+    sensitive?: boolean;
+    password?: boolean;
+    [key: string]: string | boolean | number | undefined;
 };
 
 export interface PydanticFormPropertySchemaRawJson
@@ -431,7 +435,7 @@ export interface PydanticFormFieldAnyOfDef {
 }
 
 export interface JsonSchemaRef {
-    $ref: string;
+    $ref?: string;
 }
 
 export type TranslationsJSON = {

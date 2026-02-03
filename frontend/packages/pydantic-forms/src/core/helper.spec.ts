@@ -68,6 +68,7 @@ describe('getErrorDetailsFromResponse', () => {
                     url: '',
                 },
             ],
+            status: 400,
         };
 
         const result =
@@ -93,6 +94,7 @@ describe('getErrorDetailsFromResponse', () => {
         const mockApiErrorResp: PydanticFormValidationResponse = {
             type: PydanticFormApiResponseType.VALIDATION_ERRORS,
             validation_errors: [],
+            status: 400,
         };
 
         const result = getValidationErrorDetailsFromResponse(mockApiErrorResp);
