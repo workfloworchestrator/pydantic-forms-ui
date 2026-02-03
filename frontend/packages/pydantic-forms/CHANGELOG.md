@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 1.0.2
+
+### Patch Changes
+
+-   2c95d84: Fixes some typing
+
 ## 1.0.1
 
 ### Patch Changes
