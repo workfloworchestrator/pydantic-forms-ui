@@ -383,7 +383,7 @@ export interface PydanticFormPropertySchemaParsed
         [id: string]: string;
     };
 
-    default?: string | null;
+    default?: string | null | object;
     format?: PydanticFormFieldFormat;
     const?: number | string | boolean | null;
 
@@ -409,7 +409,7 @@ export interface PydanticFormPropertySchemaRawJson
     oneOf?: PydanticFormFieldAnyOfDef[];
     allOf?: PydanticFormFieldAnyOfDef[];
 
-    default?: string | null;
+    default?: string | null | object;
     format: PydanticFormFieldFormat;
 
     uniforms?: UniformProperties;
