@@ -349,7 +349,7 @@ export interface PydanticFormBaseSchema {
         [definitionId: string]: {
             enum: string[];
             title: string;
-            options: string[];
+            options: Record<string, string>;
             type: PydanticFormFieldType;
         };
     };
