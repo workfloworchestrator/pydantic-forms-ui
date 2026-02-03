@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 1.0.3
+
+### Patch Changes
+
+-   9450476: Fixes options typing
+
 ## 1.0.2
 
 ### Patch Changes
