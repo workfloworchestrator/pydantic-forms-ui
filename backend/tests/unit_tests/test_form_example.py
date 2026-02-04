@@ -5,7 +5,6 @@ from main import app
 client = TestClient(app)
 
 
-
 def test_form_empty_data():
     """Test form endpoint with empty form data."""
     response = client.post("/form")
