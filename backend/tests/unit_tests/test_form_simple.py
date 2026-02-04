@@ -1,3 +1,10 @@
+from fastapi.testclient import TestClient
+
+from demo import app
+
+client = TestClient(app)
+
+
 def test_form_simple_complete_happy_path():
     """Test the simple form endpoint with valid scalar field data."""
     form_data = [
