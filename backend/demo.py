@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum
 from typing import Annotated, ClassVar, Iterator
 from annotated_types import (
     SLOTS,
@@ -134,3 +135,52 @@ async def form(form_data: list[dict] = []):
 
     post_form(form_generator, state={}, user_inputs=form_data)
     return "OK!"
+
+class Colors(str, Enum):
+    GRAY = "#9CA3AF"
+    BLUE = "#2563EB"
+    DARK_BLUE = "#1E40AF"
+    GREEN = "#16A34A"
+    LIGHT_GREEN = "#22C55E"
+    EMERALD = "#10B981"
+    DARK_EMERALD = "#059669"
+    AMBER = "#F59E0B"
+    RED = "#EF4444"
+    DARK_RED = "#B91C1C"
+    PINK = "#EC4899"
+    SKY = "#0EA5E9"
+    PURPLE = "#9333EA"
+    VIOLET = "#7C3AED"
+    YELLOW_DARK = "#A16207"
+
+@app.post("/form-full")
+async def form_full(form_data: list[dict] = []):
+    def form_generator(state: State):
+
+        class FullForm(FormPage):
+            model_config = ConfigDict(title="Demo form full step 1")
+            full_name:  str = Field(
+                title="Full name",
+                description="Provide you full name.",
+            )
+            age: int = Field(title="Age", description="Provide you age.")
+            favorite_color: str = Field(title="Favorite color", description="Provide you favorite color.")
+
+            referrer_type: Colors = Field(
+                title="Organiatie type", description="Kies de sector/branche die het beste bij de organisatie past.", default=None
+            )
+
+        name_form_data = yield FullForm
+
+        class AgreeForm(FormPage):
+            model_config = ConfigDict(title="Demo form full step 2")
+            accept_terms: bool = Field(title="Accept terms and conditions", description="Accept terms and conditions.")
+
+        agree_form_data = yield AgreeForm
+
+        post_form(form_generator, state={}, user_inputs=form_data)
+
+        return (
+            name_form_data.model_dump()
+            | agree_form_data.model_dump()
+        )
