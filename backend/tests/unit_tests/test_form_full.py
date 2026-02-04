@@ -93,5 +93,3 @@ def test_form_full_complete_happy_path():
     response = client.post("/form-full", json=form_data)
     assert response.status_code == 200
     assert response.json() == "OK!"
-
-
