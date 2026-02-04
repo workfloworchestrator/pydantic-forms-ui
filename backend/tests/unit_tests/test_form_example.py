@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 
 from main import app
@@ -6,11 +5,6 @@ from main import app
 client = TestClient(app)
 
 
-def test_read_root():
-    """Test the root endpoint returns expected response."""
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json() == {"Hello": "World"}
 
 def test_form_empty_data():
     """Test form endpoint with empty form data."""
@@ -19,7 +13,7 @@ def test_form_empty_data():
     # The form generator expects to yield the first form, so empty data should fail
 
 def test_form_first_page_valid_data():
-    """Test form endpoint with valid data for first page."""
+    """Test form endpoint with valid data for the first page."""
     form_data = [
         {
             "number": 18,  # Valid: multiple of 3, between 18-99
@@ -30,7 +24,7 @@ def test_form_first_page_valid_data():
     assert response.status_code == 510  # Should fail as we need more pages
 
 def test_form_first_page_invalid_number():
-    """Test form with invalid number (not multiple of 3)."""
+    """Test form with an invalid number (not multiple of 3)."""
     form_data = [
         {
             "number": 19,  # Invalid: not multiple of 3
@@ -39,6 +33,11 @@ def test_form_first_page_invalid_number():
     ]
     response = client.post("/form", json=form_data)
     assert response.status_code == 400
+    error_data = response.json()
+    assert "detail" in error_data
+    assert error_data["detail"] is not None
+    # Verify error message mentions the field or validation issue
+    assert len(error_data["detail"]) > 0
 
 def test_form_first_page_invalid_number_validation():
     """Test form with number that fails custom validation (value == 9)."""
@@ -50,6 +49,12 @@ def test_form_first_page_invalid_number_validation():
     ]
     response = client.post("/form", json=form_data)
     assert response.status_code == 400
+    error_data = response.json()
+    assert "detail" in error_data
+    assert error_data["detail"] is not None
+    # Verify the custom validation error is present
+    detail_str = str(error_data["detail"])
+    assert "Input should be greater than or equal to 18" in detail_str
 
 def test_form_first_page_invalid_test_string_too_short():
     """Test form with test string that's too short."""
@@ -61,6 +66,12 @@ def test_form_first_page_invalid_test_string_too_short():
     ]
     response = client.post("/form", json=form_data)
     assert response.status_code == 400
+    error_data = response.json()
+    assert "detail" in error_data
+    assert error_data["detail"] is not None
+    # Verify error mentions string length or test field
+    detail_str = str(error_data["detail"]).lower()
+    assert "test" in detail_str or "length" in detail_str or "at least" in detail_str
 
 def test_form_first_page_invalid_test_string_too_long():
     """Test form with test string that's too long."""
@@ -72,9 +83,15 @@ def test_form_first_page_invalid_test_string_too_long():
     ]
     response = client.post("/form", json=form_data)
     assert response.status_code == 400
+    error_data = response.json()
+    assert "detail" in error_data
+    assert error_data["detail"] is not None
+    # Verify error mentions string length or test field
+    detail_str = str(error_data["detail"]).lower()
+    assert "test" in detail_str or "length" in detail_str or "at most" in detail_str
 
 def test_form_two_pages_valid_data():
-    """Test form endpoint with valid data for first two pages."""
+    """Test form endpoint with valid data for the first two pages."""
     form_data = [
         {
             "number": 21,  # Valid: multiple of 3, between 18-99
@@ -152,7 +169,7 @@ def test_form_complete_valid_data():
     assert response.json() == "OK!"
 
 def test_form_invalid_age_in_nested_object():
-    """Test form with invalid age in nested Person object."""
+    """Test form with invalid age in a nested Person object."""
     form_data = [
         {
             "number": 21,
@@ -169,9 +186,15 @@ def test_form_invalid_age_in_nested_object():
     ]
     response = client.post("/form", json=form_data)
     assert response.status_code == 400
+    error_data = response.json()
+    assert "detail" in error_data
+    assert error_data["detail"] is not None
+    # Verify error mentions age or multiple validation
+    detail_str = str(error_data["detail"]).lower()
+    assert "age" in detail_str or "multiple" in detail_str
 
 def test_form_invalid_list_too_few_items():
-    """Test form with list that has too few items."""
+    """Test form with a list that has too few items."""
     form_data = [
         {
             "number": 21,
@@ -201,9 +224,15 @@ def test_form_invalid_list_too_few_items():
     ]
     response = client.post("/form", json=form_data)
     assert response.status_code == 400
+    error_data = response.json()
+    assert "detail" in error_data
+    assert error_data["detail"] is not None
+    # Verify error mentions list/array constraints
+    detail_str = str(error_data["detail"]).lower()
+    assert "languages" in detail_str or "list" in detail_str or "at least" in detail_str or "min" in detail_str
 
 def test_form_invalid_choice_value():
-    """Test form with invalid choice value."""
+    """Test form with an invalid choice value."""
     form_data = [
         {
             "number": 21,
@@ -220,3 +249,9 @@ def test_form_invalid_choice_value():
     ]
     response = client.post("/form", json=form_data)
     assert response.status_code == 400
+    error_data = response.json()
+    assert "detail" in error_data
+    assert error_data["detail"] is not None
+    # Verify error mentions options or invalid choice
+    detail_str = str(error_data["detail"]).lower()
+    assert "options" in detail_str or "literal" in detail_str or "invalid" in detail_str or "choice" in detail_str

@@ -60,13 +60,41 @@ This is a pnpm workspace monorepo with the following structure:
 
 ### Backend
 
-**Setup**:
+**Python Virtual Environment**:
+
+The backend uses a Python virtual environment located at `backend/venv/` (excluded from git via .gitignore).
+
+**Initial setup**:
 ```bash
 cd backend
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
+
+**Activate the venv** (required before running any backend commands):
+```bash
+cd backend
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+**Verify venv is active**:
+```bash
+which python  # Should show: /Users/.../backend/venv/bin/python
+python --version  # Check Python version
+pip list  # List installed packages
+```
+
+**Deactivate the venv** (when you're done):
+```bash
+deactivate
+```
+
+**IMPORTANT**: Always ensure the venv is activated before:
+- Running the FastAPI development server
+- Installing packages with pip
+- Running tests
+- Using any Python commands related to this project
 
 **Run development server**:
 ```bash
@@ -76,9 +104,19 @@ fastapi dev main.py
 Backend runs at http://127.0.0.1:8000
 API docs available at http://127.0.0.1:8000/docs
 
+**Run tests** (ensure venv is activated):
+```bash
+cd backend
+source venv/bin/activate  # Activate venv first
+pytest  # Run all tests
+pytest tests/unit_tests/test_example_form.py -v  # Run specific test file
+pytest -k "test_form_complete" -v  # Run specific test by name
+```
+
 **Code formatting**:
 ```bash
 # Backend uses black (configured in pre-commit)
+# Ensure venv is activated first
 black backend/
 ```
 
