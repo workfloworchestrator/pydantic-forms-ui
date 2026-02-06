@@ -1,11 +1,12 @@
-import React from 'react'
-import { PydanticFormElementProps } from 'pydantic-forms'
+import React from 'react';
+
+import { PydanticFormElementProps } from 'pydantic-forms';
 
 export const LabelField = ({ pydanticFormField }: PydanticFormElementProps) => {
-    const hasDefault = pydanticFormField?.default !== undefined
+    const hasDefault = pydanticFormField?.default !== undefined;
     const label = hasDefault
         ? pydanticFormField.default
-        : pydanticFormField?.title
+        : pydanticFormField?.title;
 
     return (
         <div data-testid={pydanticFormField.id}>
@@ -21,5 +22,5 @@ export const LabelField = ({ pydanticFormField }: PydanticFormElementProps) => {
                 <label>{label}</label>
             )}
         </div>
-    )
-}
+    );
+};

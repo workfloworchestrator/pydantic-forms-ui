@@ -138,8 +138,7 @@ export interface PydanticFormFieldValidations {
     uniqueItems?: boolean;
 }
 
-export interface PydanticFormFieldAttributes
-    extends PydanticFormFieldValidations {
+export interface PydanticFormFieldAttributes extends PydanticFormFieldValidations {
     disabled?: boolean;
     sensitive?: boolean;
     password?: boolean;
@@ -355,8 +354,10 @@ export interface PydanticFormBaseSchema {
     };
 }
 
-export interface PydanticFormSchema
-    extends Omit<PydanticFormBaseSchema, '$defs'> {
+export interface PydanticFormSchema extends Omit<
+    PydanticFormBaseSchema,
+    '$defs'
+> {
     properties: Properties;
 }
 
@@ -369,8 +370,7 @@ export interface PydanticFormSchemaParsed extends PydanticFormBaseSchema {
 }
 
 export interface PydanticFormPropertySchemaParsed
-    extends Omit<PydanticFormBaseSchema, 'type'>,
-        PydanticFormFieldValidations {
+    extends Omit<PydanticFormBaseSchema, 'type'>, PydanticFormFieldValidations {
     type?: PydanticFormFieldType;
 
     anyOf?: PydanticFormPropertySchemaParsed[];
@@ -400,7 +400,8 @@ type UniformProperties = {
 };
 
 export interface PydanticFormPropertySchemaRawJson
-    extends Omit<PydanticFormBaseSchema, 'type'>,
+    extends
+        Omit<PydanticFormBaseSchema, 'type'>,
         PydanticFormFieldValidations,
         JsonSchemaRef {
     type: PydanticFormFieldType;
