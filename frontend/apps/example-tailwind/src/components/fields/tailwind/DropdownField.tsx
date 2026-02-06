@@ -1,4 +1,4 @@
-import { PydanticFormControlledElementProps } from 'pydantic-forms'
+import { PydanticFormControlledElementProps } from 'pydantic-forms';
 
 export const DropdownField = ({
     value,
@@ -10,7 +10,7 @@ export const DropdownField = ({
             data-testid={pydanticFormField.id}
             value={value}
             onChange={(e) => {
-                onChange(e.target.value)
+                onChange(e.target.value);
             }}
             disabled={!!pydanticFormField.attributes.disabled}
             className="
@@ -30,5 +30,5 @@ export const DropdownField = ({
                 </option>
             ))}
         </select>
-    )
-}
+    );
+};

@@ -9,7 +9,7 @@
             "@/*": ["./src/*"]
         },
         "module": "esnext",
-        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "lib": ["ES2020", "DOM", "DOM.Iterable"]
     },
     "include": ["./src/**/*.ts", "./src/**/*.tsx"],
     "exclude": [

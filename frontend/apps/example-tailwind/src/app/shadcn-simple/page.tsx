@@ -1,28 +1,9 @@
-"use client"
+'use client';
 import { useEffect, useState } from 'react';
+import { FieldValues } from 'react-hook-form';
+
+import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import {
-    Card,
-    CardAction,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarInset,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarProvider,
-    SidebarTrigger,
-} from "@/components/ui/sidebar"
 import {
     Locale,
     PydanticForm,
@@ -37,50 +18,73 @@ import type {
     PydanticFormSuccessResponse,
 } from 'pydantic-forms';
 
-import { FieldValues } from 'react-hook-form';
-import { TextField } from '@/components/fields/shadcn/TextField';
+import { items } from '@/app/items';
+import { DropdownField } from '@/components/fields/shadcn/DropdownField';
 import { IntegerField } from '@/components/fields/shadcn/IntegerField';
 import { TextAreaField } from '@/components/fields/shadcn/TextAreaField';
-import { DropdownField } from '@/components/fields/shadcn/DropdownField';
-
-import { items } from '@/app/items';
-import Link from 'next/link';
+import { TextField } from '@/components/fields/shadcn/TextField';
+import {
+    Card,
+    CardAction,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
+    SidebarInset,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarProvider,
+    SidebarTrigger,
+} from '@/components/ui/sidebar';
 
 // Map form query param to API endpoint
 const FORM_MAP: Record<string, string> = {
-    "standard-form": "/form",
-    "full-form": "/form-full",
-    "simple-form": "/form-simple",
-}
+    'standard-form': '/form',
+    'full-form': '/form-full',
+    'simple-form': '/form-simple',
+};
 
 // Default form
-const DEFAULT_FORM = "standard-form"
+const DEFAULT_FORM = 'standard-form';
 
 export default function Home() {
-    const pathname = usePathname()
-    const router = useRouter()
-    const searchParams = useSearchParams()
+    const pathname = usePathname();
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
     // Get form from URL or use default
-    const formParam = searchParams.get("form") || DEFAULT_FORM
-    const activeFormEndpoint = FORM_MAP[formParam] || FORM_MAP[DEFAULT_FORM]
+    const formParam = searchParams.get('form') || DEFAULT_FORM;
+    const activeFormEndpoint = FORM_MAP[formParam] || FORM_MAP[DEFAULT_FORM];
 
     // Sync URL if invalid form param
     useEffect(() => {
-        if (!searchParams.get("form")) {
-            router.replace(`${pathname}?form=${DEFAULT_FORM}`, { scroll: false })
+        if (!searchParams.get('form')) {
+            router.replace(`${pathname}?form=${DEFAULT_FORM}`, {
+                scroll: false,
+            });
         } else if (!FORM_MAP[formParam]) {
-            router.replace(`${pathname}?form=${DEFAULT_FORM}`, { scroll: false })
+            router.replace(`${pathname}?form=${DEFAULT_FORM}`, {
+                scroll: false,
+            });
         }
-    }, [formParam, pathname, router, searchParams])
+    }, [formParam, pathname, router, searchParams]);
 
     const setActiveForm = (formKey: string) => {
-        router.push(`${pathname}?form=${formKey}`, { scroll: false })
-    }
+        router.push(`${pathname}?form=${formKey}`, { scroll: false });
+    };
 
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
-                                                                        requestBody,
-                                                                    }) => {
+        requestBody,
+    }) => {
         const url = `http://localhost:8000${activeFormEndpoint}`;
         return fetch(url, {
             method: 'POST',
@@ -173,7 +177,7 @@ export default function Home() {
                     isControlledElement: true,
                 },
                 matcher(field) {
-                    return field.type === PydanticFormFieldType.INTEGER
+                    return field.type === PydanticFormFieldType.INTEGER;
                 },
             },
             {
@@ -187,7 +191,7 @@ export default function Home() {
                         // @ts-expect-error shizzle
                         field.options?.length > 0 &&
                         field.type === PydanticFormFieldType.STRING
-                    )
+                    );
                 },
             },
             {
@@ -197,7 +201,7 @@ export default function Home() {
                     isControlledElement: true,
                 },
                 matcher(field) {
-                    return field.type === PydanticFormFieldType.STRING
+                    return field.type === PydanticFormFieldType.STRING;
                 },
             },
             ...currentMatchers,
@@ -221,133 +225,128 @@ export default function Home() {
     };
 
     return (
-          <SidebarProvider>
-              <Sidebar>
-                  <SidebarContent>
-                      <SidebarGroup>
-                          <SidebarGroupLabel>Application</SidebarGroupLabel>
-                          <SidebarGroupContent>
-                              <SidebarMenu>
-                                  {items.map((item) => (
-                                      <SidebarMenuItem key={item.title}>
-                                          <SidebarMenuButton asChild>
-                                              <Link href={item.url} className="flex items-center gap-2">
-                                                  <item.icon className="h-4 w-4" />
-                                                  <span>{item.title}</span>
-                                              </Link>
-                                          </SidebarMenuButton>
-                                      </SidebarMenuItem>
-                                  ))}
-                              </SidebarMenu>
-                          </SidebarGroupContent>
-                      </SidebarGroup>
-                  </SidebarContent>
-              </Sidebar>
-              <SidebarInset>
-                  <header className="flex h-12 items-center justify-between px-4">
-                      <SidebarTrigger />
-                  </header>
-                  <div className="p-6 space-y-4">
-                      {/* Tabs */}
-                      <Card className="w-full">
-                          <CardContent className="pt-6">
-                              <div className="flex gap-2">
-                                  <button
-                                      type="button"
-                                      onClick={() => setActiveForm('standard-form')}
-                                      className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                                          formParam === 'standard-form'
-                                              ? 'bg-primary text-primary-foreground'
-                                              : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                                      }`}
-                                  >
-                                      Standard Form
-                                  </button>
-                                  <button
-                                      type="button"
-                                      onClick={() => setActiveForm('full-form')}
-                                      className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                                          formParam === 'full-form'
-                                              ? 'bg-primary text-primary-foreground'
-                                              : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                                      }`}
-                                  >
-                                      Full Form
-                                  </button>
-                                  <button
-                                      type="button"
-                                      onClick={() => setActiveForm('simple-form')}
-                                      className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                                          formParam === 'simple-form'
-                                              ? 'bg-primary text-primary-foreground'
-                                              : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                                      }`}
-                                  >
-                                      Simple Form
-                                  </button>
-                              </div>
-                          </CardContent>
-                      </Card>
+        <SidebarProvider>
+            <Sidebar>
+                <SidebarContent>
+                    <SidebarGroup>
+                        <SidebarGroupLabel>Application</SidebarGroupLabel>
+                        <SidebarGroupContent>
+                            <SidebarMenu>
+                                {items.map((item) => (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuButton asChild>
+                                            <Link
+                                                href={item.url}
+                                                className="flex items-center gap-2"
+                                            >
+                                                <item.icon className="h-4 w-4" />
+                                                <span>{item.title}</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                ))}
+                            </SidebarMenu>
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                </SidebarContent>
+            </Sidebar>
+            <SidebarInset>
+                <header className="flex h-12 items-center justify-between px-4">
+                    <SidebarTrigger />
+                </header>
+                <div className="p-6 space-y-4">
+                    {/* Tabs */}
+                    <Card className="w-full">
+                        <CardContent className="pt-6">
+                            <div className="flex gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setActiveForm('standard-form')
+                                    }
+                                    className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                                        formParam === 'standard-form'
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                    }`}
+                                >
+                                    Standard Form
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveForm('full-form')}
+                                    className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                                        formParam === 'full-form'
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                    }`}
+                                >
+                                    Full Form
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveForm('simple-form')}
+                                    className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                                        formParam === 'simple-form'
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                    }`}
+                                >
+                                    Simple Form
+                                </button>
+                            </div>
+                        </CardContent>
+                    </Card>
 
-                      {/* Form Card */}
-                      <Card className="w-full">
-                          <CardHeader>
-                              <CardTitle>Example Form</CardTitle>
-                              <CardDescription>
-                                  Simple example form with custom shadcn components
-                              </CardDescription>
-                          </CardHeader>
-                          <CardContent>
-                              <div className="[&>form>h2]:mb-4 [&>form>h2]:text-xl [&>form>h2]:font-semibold    [&_button]:px-4
-    [&_button]:py-2
-    [&_button]:rounded-lg
-    [&_button]:font-medium
-    [&_button]:transition
-
-    [&_button]:bg-zinc-200
-    [&_button]:text-zinc-800
-    [&_button]:hover:bg-zinc-300
-    dark:[&_button]:bg-zinc-700
-    dark:[&_button]:text-zinc-100
-    dark:[&_button]:hover:bg-zinc-600
-
-    [&_button[type=submit]]:bg-blue-600
-    [&_button[type=submit]]:text-white
-    [&_button[type=submit]]:hover:bg-blue-700
-    [&_ul:first-of-type]:bg-red-100 [&_ul:first-of-type]:p-4
-
-
-    ">
-                              <PydanticForm
-                                  key={formParam}
-                                  formKey="theForm"
-                                  formId="example123"
-                                  title="Example form"
-                                  onCancel={() => {
-                                      alert('Form cancelled');
-                                  }}
-                                  onSuccess={onSuccess}
-                                  config={{
-                                      apiProvider: pydanticFormApiProvider,
-                                      labelProvider: pydanticLabelProvider,
-                                      customDataProvider: pydanticCustomDataProvider,
-                                      componentMatcherExtender: componentMatcher,
-                                      customTranslations: customTranslations,
-                                      locale: locale,
-                                      loadingComponent: <div>Custom loading component</div>,
-                                  }}
-                              />
-                              </div>
-                          </CardContent>
-                      </Card>
-                  </div>
-
-              </SidebarInset>
-          </SidebarProvider>
-
-
-
-
-
-  );
+                    {/* Form Card */}
+                    <Card className="w-full">
+                        <CardHeader>
+                            <CardTitle>Example Form</CardTitle>
+                            <CardDescription>
+                                Simple example form with custom shadcn
+                                components
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="
+                                [&>form>h2]:mb-4 [&>form>h2]:text-xl [&>form>h2]:font-semibold
+                                [&_button]:px-4 [&_button]:py-2 [&_button]:rounded-lg [&_button]:font-medium [&_button]:transition
+                                [&_button]:bg-zinc-200 [&_button]:text-zinc-800 [&_button]:hover:bg-zinc-300
+                                dark:[&_button]:bg-zinc-700 dark:[&_button]:text-zinc-100 dark:[&_button]:hover:bg-zinc-600
+                                [&_button[type=submit]]:bg-blue-600 [&_button[type=submit]]:text-white [&_button[type=submit]]:hover:bg-blue-700
+                                [&_ul:first-of-type]:bg-red-100 [&_ul:first-of-type]:p-4
+                                dark:[&_ul:first-of-type]:bg-red-900
+                                dark:[&_ul:first-of-type]:text-red-100
+                                dark:[&_ul:first-of-type_*]:text-inherit
+                            ">
+                                <PydanticForm
+                                    key={formParam}
+                                    formKey="theForm"
+                                    formId="example123"
+                                    title="Example form"
+                                    onCancel={() => {
+                                        alert('Form cancelled');
+                                    }}
+                                    onSuccess={onSuccess}
+                                    config={{
+                                        apiProvider: pydanticFormApiProvider,
+                                        labelProvider: pydanticLabelProvider,
+                                        customDataProvider:
+                                            pydanticCustomDataProvider,
+                                        componentMatcherExtender:
+                                            componentMatcher,
+                                        customTranslations: customTranslations,
+                                        locale: locale,
+                                        loadingComponent: (
+                                            <div>Custom loading component</div>
+                                        ),
+                                    }}
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+            </SidebarInset>
+        </SidebarProvider>
+    );
 }
