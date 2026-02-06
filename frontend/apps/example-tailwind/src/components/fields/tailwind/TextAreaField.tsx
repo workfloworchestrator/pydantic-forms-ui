@@ -1,0 +1,37 @@
+import _ from 'lodash';
+import {
+    PydanticFormControlledElementProps,
+    getFormFieldIdWithPath,
+} from 'pydantic-forms';
+
+export const TextAreaField = ({
+    value,
+    onChange,
+    onBlur,
+    disabled,
+    pydanticFormField,
+}: PydanticFormControlledElementProps) => {
+    // If the field is part of an array the value is passed in as an object with the field name as key
+    // this is imposed by react-hook-form. We try to detect this and extract the actual value
+    const fieldName = getFormFieldIdWithPath(pydanticFormField.id);
+    const fieldValue =
+        _.isObject(value) && _.has(value, fieldName)
+            ? _.get(value, fieldName)
+            : value;
+
+    return (
+        <textarea
+            data-testid={pydanticFormField.id}
+            onBlur={onBlur}
+            onChange={(e) => {
+                onChange(e.currentTarget.value);
+            }}
+            disabled={disabled}
+            value={fieldValue}
+            rows={4}
+            className={
+                'w-full min-h-[100px] rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition resize-y focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/15 disabled:cursor-not-allowed disabled:opacity-50'
+            }
+        />
+    );
+};

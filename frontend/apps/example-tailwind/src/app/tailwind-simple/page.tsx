@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
-import { BookIcon, BookPlusIcon, MoonIcon, SunIcon } from 'lucide-react';
+import _ from 'lodash';
+import { MoonIcon, SunIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
@@ -21,8 +22,14 @@ import type {
 } from 'pydantic-forms';
 
 import { items } from '@/app/items';
+import { CheckboxField } from '@/components/fields/tailwind/CheckboxField';
+import { DateField } from '@/components/fields/tailwind/DateField';
+import { DateTimeField } from '@/components/fields/tailwind/DateTimeField';
 import { DropdownField } from '@/components/fields/tailwind/DropdownField';
 import { IntegerField } from '@/components/fields/tailwind/IntegerField';
+import { MultiCheckboxField } from '@/components/fields/tailwind/MultiCheckboxField';
+import { RadioField } from '@/components/fields/tailwind/RadioField';
+import { TextAreaField } from '@/components/fields/tailwind/TextAreaField';
 import { TextField } from '@/components/fields/tailwind/TextField';
 
 type MenuItem = {
@@ -141,8 +148,37 @@ export default function Page() {
     ): PydanticComponentMatcher[] => {
         return [
             {
+                id: 'date',
+                ElementMatch: {
+                    Element: DateField,
+                    isControlledElement: true,
+                },
+                matcher(field) {
+                    return (
+                        field.type === PydanticFormFieldType.STRING &&
+                        field.format === PydanticFormFieldFormat.DATE
+                    );
+                },
+            },
+            {
+                id: 'datetime',
+                ElementMatch: {
+                    Element: DateTimeField,
+                    isControlledElement: true,
+                },
+                matcher(field) {
+                    return (
+                        field.type === PydanticFormFieldType.STRING &&
+                        field.format === PydanticFormFieldFormat.DATETIME
+                    );
+                },
+            },
+            {
                 id: 'textarea',
-                ElementMatch: { Element: TextField, isControlledElement: true },
+                ElementMatch: {
+                    Element: TextAreaField,
+                    isControlledElement: true,
+                },
                 matcher(field) {
                     return (
                         field.type === PydanticFormFieldType.STRING &&
@@ -161,6 +197,22 @@ export default function Page() {
                 },
             },
             {
+                id: 'radio',
+                ElementMatch: {
+                    Element: RadioField,
+                    isControlledElement: true,
+                },
+                matcher(field) {
+                    // We are looking for a single value from a set list of options. With less than 4 options, use radio buttons.
+                    return (
+                        field.type === PydanticFormFieldType.STRING &&
+                        _.isArray(field.options) &&
+                        field.options?.length > 0 &&
+                        field.options?.length <= 3
+                    );
+                },
+            },
+            {
                 id: 'select',
                 ElementMatch: {
                     Element: DropdownField,
@@ -174,6 +226,32 @@ export default function Page() {
                     );
                 },
             },
+            {
+                id: 'checkbox',
+                ElementMatch: {
+                    Element: CheckboxField,
+                    isControlledElement: true,
+                },
+                matcher(field) {
+                    return field.type === PydanticFormFieldType.BOOLEAN;
+                },
+            },
+            // {
+            //     id: 'multicheckbox',
+            //     ElementMatch: {
+            //         Element: MultiCheckboxField,
+            //         isControlledElement: true,
+            //     },
+            //     matcher(field) {
+            //         return (
+            //             field.type === PydanticFormFieldType.ARRAY &&
+            //             _.isArray(field.options) &&
+            //             field.options?.length > 0 &&
+            //             field.options?.length <= 5
+            //         );
+            //     },
+            //     validator: zodValidationPresets.multiSelect,
+            // },
             {
                 id: 'string',
                 ElementMatch: { Element: TextField, isControlledElement: true },
@@ -335,7 +413,8 @@ export default function Page() {
                             </div>
                         </div>
 
-                        <div className="
+                        <div
+                            className="
                             rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900
                             [&>form>h2]:mb-4 [&>form>h2]:text-xl [&>form>h2]:font-semibold
                             [&_button]:px-4 [&_button]:py-2 [&_button]:rounded-lg [&_button]:font-medium [&_button]:transition
@@ -346,7 +425,8 @@ export default function Page() {
                             dark:[&_ul:first-of-type]:bg-red-900
                             dark:[&_ul:first-of-type]:text-red-100
                             dark:[&_ul:first-of-type_*]:text-inherit
-                        ">
+                        "
+                        >
                             <PydanticForm
                                 key={formParam}
                                 formKey="theForm"
