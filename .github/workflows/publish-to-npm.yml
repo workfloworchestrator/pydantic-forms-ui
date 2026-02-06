@@ -19,20 +19,25 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 9
+
             - uses: actions/setup-node@v4
               with:
                   node-version: "22"
                   registry-url: "https://registry.npmjs.org"
+                  cache: pnpm
+                  cache-dependency-path: frontend/pnpm-lock.yaml
 
-            - name: Update npm
-              run: npm install -g npm@latest && npm --version
             - name: Installing dependencies
-              run: cd frontend && npm ci && pwd
+              run: cd frontend && pnpm install --frozen-lockfile && pwd
             - name: Create Release Pull Request or Publish
               id: changesets
               uses: changesets/action@e0538e686673de0265c8a3e2904b8c76beaa43fd
               with:
-                  publish: npm run packages:publish
+                  publish: pnpm run packages:publish
                   cwd: /home/runner/work/pydantic-forms-ui/pydantic-forms-ui/frontend
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
