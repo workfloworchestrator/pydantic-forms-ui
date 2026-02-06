@@ -1,5 +1,6 @@
 "use client"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
     Card,
     CardAction,
@@ -48,10 +49,37 @@ import { DropdownField } from '@/components/fields/DropdownField';
 import { items } from '@/app/items';
 import Link from 'next/link';
 
+// Map form query param to API endpoint
+const FORM_MAP: Record<string, string> = {
+    "standard-form": "/form",
+    "full-form": "/form-full",
+    "simple-form": "/form-simple",
+}
 
+// Default form
+const DEFAULT_FORM = "standard-form"
 
 export default function Home() {
-    const [activeFormEndpoint, setActiveFormEndpoint] = useState<string>('/form');
+    const pathname = usePathname()
+    const router = useRouter()
+    const searchParams = useSearchParams()
+
+    // Get form from URL or use default
+    const formParam = searchParams.get("form") || DEFAULT_FORM
+    const activeFormEndpoint = FORM_MAP[formParam] || FORM_MAP[DEFAULT_FORM]
+
+    // Sync URL if invalid form param
+    useEffect(() => {
+        if (!searchParams.get("form")) {
+            router.replace(`${pathname}?form=${DEFAULT_FORM}`, { scroll: false })
+        } else if (!FORM_MAP[formParam]) {
+            router.replace(`${pathname}?form=${DEFAULT_FORM}`, { scroll: false })
+        }
+    }, [formParam, pathname, router, searchParams])
+
+    const setActiveForm = (formKey: string) => {
+        router.push(`${pathname}?form=${formKey}`, { scroll: false })
+    }
 
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
                                                                         requestBody,
@@ -229,9 +257,9 @@ export default function Home() {
                               <div className="flex gap-2">
                                   <button
                                       type="button"
-                                      onClick={() => setActiveFormEndpoint('/form')}
+                                      onClick={() => setActiveForm('standard-form')}
                                       className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                                          activeFormEndpoint === '/form'
+                                          formParam === 'standard-form'
                                               ? 'bg-primary text-primary-foreground'
                                               : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                                       }`}
@@ -240,9 +268,9 @@ export default function Home() {
                                   </button>
                                   <button
                                       type="button"
-                                      onClick={() => setActiveFormEndpoint('/form-full')}
+                                      onClick={() => setActiveForm('full-form')}
                                       className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                                          activeFormEndpoint === '/form-full'
+                                          formParam === 'full-form'
                                               ? 'bg-primary text-primary-foreground'
                                               : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                                       }`}
@@ -251,9 +279,9 @@ export default function Home() {
                                   </button>
                                   <button
                                       type="button"
-                                      onClick={() => setActiveFormEndpoint('/form-simple')}
+                                      onClick={() => setActiveForm('simple-form')}
                                       className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                                          activeFormEndpoint === '/form-simple'
+                                          formParam === 'simple-form'
                                               ? 'bg-primary text-primary-foreground'
                                               : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                                       }`}
@@ -274,7 +302,7 @@ export default function Home() {
                           </CardHeader>
                           <CardContent>
                               <PydanticForm
-                                  key={activeFormEndpoint}
+                                  key={formParam}
                                   formKey="theForm"
                                   formId="example123"
                                   title="Example form"

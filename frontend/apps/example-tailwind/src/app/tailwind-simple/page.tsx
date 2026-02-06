@@ -1,8 +1,8 @@
 "use client"
 
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 import {
     Locale,
@@ -32,10 +32,38 @@ type MenuItem = {
     icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
 }
 
+// Map form query param to API endpoint
+const FORM_MAP: Record<string, string> = {
+    "standard-form": "/form",
+    "full-form": "/form-full",
+    "simple-form": "/form-simple",
+}
+
+// Default form
+const DEFAULT_FORM = "standard-form"
+
 export default function Page() {
     const pathname = usePathname()
+    const router = useRouter()
+    const searchParams = useSearchParams()
     const [dark, setDark] = useState(false)
-    const [activeFormEndpoint, setActiveFormEndpoint] = useState<string>("/form-full")
+
+    // Get form from URL or use default
+    const formParam = searchParams.get("form") || DEFAULT_FORM
+    const activeFormEndpoint = FORM_MAP[formParam] || FORM_MAP[DEFAULT_FORM]
+
+    // Sync URL if invalid form param
+    useEffect(() => {
+        if (!searchParams.get("form")) {
+            router.replace(`${pathname}?form=${DEFAULT_FORM}`, { scroll: false })
+        } else if (!FORM_MAP[formParam]) {
+            router.replace(`${pathname}?form=${DEFAULT_FORM}`, { scroll: false })
+        }
+    }, [formParam, pathname, router, searchParams])
+
+    const setActiveForm = (formKey: string) => {
+        router.push(`${pathname}?form=${formKey}`, { scroll: false })
+    }
 
     // ---- Pydantic providers ----
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
@@ -238,10 +266,10 @@ export default function Page() {
                             <div className="flex gap-1">
                                 <button
                                     type="button"
-                                    onClick={() => setActiveFormEndpoint("/form")}
+                                    onClick={() => setActiveForm("standard-form")}
                                     className={[
                                         "flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition",
-                                        activeFormEndpoint === "/form"
+                                        formParam === "standard-form"
                                             ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
                                             : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800",
                                     ].join(" ")}
@@ -250,10 +278,10 @@ export default function Page() {
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => setActiveFormEndpoint("/form-full")}
+                                    onClick={() => setActiveForm("full-form")}
                                     className={[
                                         "flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition",
-                                        activeFormEndpoint === "/form-full"
+                                        formParam === "full-form"
                                             ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
                                             : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800",
                                     ].join(" ")}
@@ -262,10 +290,10 @@ export default function Page() {
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => setActiveFormEndpoint("/form-simple")}
+                                    onClick={() => setActiveForm("simple-form")}
                                     className={[
                                         "flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition",
-                                        activeFormEndpoint === "/form-simple"
+                                        formParam === "simple-form"
                                             ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
                                             : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800",
                                     ].join(" ")}
@@ -277,7 +305,7 @@ export default function Page() {
 
                         <div className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                             <PydanticForm
-                                key={activeFormEndpoint}
+                                key={formParam}
                                 formKey="theForm"
                                 formId="example123"
                                 title="Example form"
