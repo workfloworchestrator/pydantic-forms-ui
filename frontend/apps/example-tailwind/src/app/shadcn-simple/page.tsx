@@ -1,4 +1,5 @@
 "use client"
+import { useState } from 'react';
 import {
     Card,
     CardAction,
@@ -50,10 +51,12 @@ import Link from 'next/link';
 
 
 export default function Home() {
+    const [activeFormEndpoint, setActiveFormEndpoint] = useState<string>('/form');
+
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
                                                                         requestBody,
                                                                     }) => {
-        const url = 'http://localhost:8000/form';
+        const url = `http://localhost:8000${activeFormEndpoint}`;
         return fetch(url, {
             method: 'POST',
             body: JSON.stringify(requestBody),
@@ -219,25 +222,78 @@ export default function Home() {
                   <header className="flex h-12 items-center justify-between px-4">
                       <SidebarTrigger />
                   </header>
-                  <div className="p-6">
-                      <PydanticForm
-                          formKey="theForm"
-                          formId="example123"
-                          title="Example form"
-                          onCancel={() => {
-                              alert('Form cancelled');
-                          }}
-                          onSuccess={onSuccess}
-                          config={{
-                              apiProvider: pydanticFormApiProvider,
-                              labelProvider: pydanticLabelProvider,
-                              customDataProvider: pydanticCustomDataProvider,
-                              componentMatcherExtender: componentMatcher,
-                              customTranslations: customTranslations,
-                              locale: locale,
-                              loadingComponent: <div>Custom loading component</div>,
-                          }}
-                      />
+                  <div className="p-6 space-y-4">
+                      {/* Tabs */}
+                      <Card className="w-full">
+                          <CardContent className="pt-6">
+                              <div className="flex gap-2">
+                                  <button
+                                      type="button"
+                                      onClick={() => setActiveFormEndpoint('/form')}
+                                      className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                                          activeFormEndpoint === '/form'
+                                              ? 'bg-primary text-primary-foreground'
+                                              : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                      }`}
+                                  >
+                                      Standard Form
+                                  </button>
+                                  <button
+                                      type="button"
+                                      onClick={() => setActiveFormEndpoint('/form-full')}
+                                      className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                                          activeFormEndpoint === '/form-full'
+                                              ? 'bg-primary text-primary-foreground'
+                                              : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                      }`}
+                                  >
+                                      Full Form
+                                  </button>
+                                  <button
+                                      type="button"
+                                      onClick={() => setActiveFormEndpoint('/form-simple')}
+                                      className={`flex-1 px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                                          activeFormEndpoint === '/form-simple'
+                                              ? 'bg-primary text-primary-foreground'
+                                              : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                      }`}
+                                  >
+                                      Simple Form
+                                  </button>
+                              </div>
+                          </CardContent>
+                      </Card>
+
+                      {/* Form Card */}
+                      <Card className="w-full">
+                          <CardHeader>
+                              <CardTitle>Example Form</CardTitle>
+                              <CardDescription>
+                                  Simple example form with custom shadcn components
+                              </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                              <PydanticForm
+                                  key={activeFormEndpoint}
+                                  formKey="theForm"
+                                  formId="example123"
+                                  title="Example form"
+                                  onCancel={() => {
+                                      alert('Form cancelled');
+                                  }}
+                                  onSuccess={onSuccess}
+                                  config={{
+                                      apiProvider: pydanticFormApiProvider,
+                                      labelProvider: pydanticLabelProvider,
+                                      customDataProvider: pydanticCustomDataProvider,
+                                      componentMatcherExtender: componentMatcher,
+                                      customTranslations: customTranslations,
+                                      locale: locale,
+                                      loadingComponent: <div>Custom loading component</div>,
+                                  }}
+                              />
+                          </CardContent>
+                      </Card>
                   </div>
 
               </SidebarInset>
