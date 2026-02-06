@@ -35,12 +35,13 @@ type MenuItem = {
 export default function Page() {
     const pathname = usePathname()
     const [dark, setDark] = useState(false)
+    const [activeFormEndpoint, setActiveFormEndpoint] = useState<string>("/form-full")
 
     // ---- Pydantic providers ----
     const pydanticFormApiProvider: PydanticFormApiProvider = async ({
                                                                         requestBody,
                                                                     }) => {
-        const url = "http://localhost:8000/form"
+        const url = `http://localhost:8000${activeFormEndpoint}`
         try {
             const fetchResult = await fetch(url, {
                 method: "POST",
@@ -232,8 +233,51 @@ export default function Page() {
                             </p>
                         </div>
 
+                        {/* Tabs */}
+                        <div className="rounded-2xl border border-zinc-200 bg-white p-2 dark:border-zinc-800 dark:bg-zinc-900">
+                            <div className="flex gap-1">
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveFormEndpoint("/form")}
+                                    className={[
+                                        "flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition",
+                                        activeFormEndpoint === "/form"
+                                            ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                                            : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800",
+                                    ].join(" ")}
+                                >
+                                    Standard Form
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveFormEndpoint("/form-full")}
+                                    className={[
+                                        "flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition",
+                                        activeFormEndpoint === "/form-full"
+                                            ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                                            : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800",
+                                    ].join(" ")}
+                                >
+                                    Full Form
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveFormEndpoint("/form-simple")}
+                                    className={[
+                                        "flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition",
+                                        activeFormEndpoint === "/form-simple"
+                                            ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                                            : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800",
+                                    ].join(" ")}
+                                >
+                                    Simple Form
+                                </button>
+                            </div>
+                        </div>
+
                         <div className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                             <PydanticForm
+                                key={activeFormEndpoint}
                                 formKey="theForm"
                                 formId="example123"
                                 title="Example form"
