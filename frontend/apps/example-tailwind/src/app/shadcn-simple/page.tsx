@@ -36,15 +36,12 @@ import type {
     PydanticFormLabelProvider,
     PydanticFormSuccessResponse,
 } from 'pydantic-forms';
-import {
-    HomeIcon,
-    InboxIcon,
-} from "lucide-react"
+
 import { FieldValues } from 'react-hook-form';
-import { TextField } from '@/components/fields/TextField';
-import { IntegerField } from '@/components/fields/IntegerField';
-import { TextAreaField } from '@/components/fields/TextAreaField';
-import { DropdownField } from '@/components/fields/DropdownField';
+import { TextField } from '@/components/fields/shadcn/TextField';
+import { IntegerField } from '@/components/fields/shadcn/IntegerField';
+import { TextAreaField } from '@/components/fields/shadcn/TextAreaField';
+import { DropdownField } from '@/components/fields/shadcn/DropdownField';
 
 import { items } from '@/app/items';
 import Link from 'next/link';
@@ -301,6 +298,26 @@ export default function Home() {
                               </CardDescription>
                           </CardHeader>
                           <CardContent>
+                              <div className="[&>form>h2]:mb-4 [&>form>h2]:text-xl [&>form>h2]:font-semibold    [&_button]:px-4
+    [&_button]:py-2
+    [&_button]:rounded-lg
+    [&_button]:font-medium
+    [&_button]:transition
+
+    [&_button]:bg-zinc-200
+    [&_button]:text-zinc-800
+    [&_button]:hover:bg-zinc-300
+    dark:[&_button]:bg-zinc-700
+    dark:[&_button]:text-zinc-100
+    dark:[&_button]:hover:bg-zinc-600
+
+    [&_button[type=submit]]:bg-blue-600
+    [&_button[type=submit]]:text-white
+    [&_button[type=submit]]:hover:bg-blue-700
+    [&_ul:first-of-type]:bg-red-100 [&_ul:first-of-type]:p-4
+
+
+    ">
                               <PydanticForm
                                   key={formParam}
                                   formKey="theForm"
@@ -320,6 +337,7 @@ export default function Home() {
                                       loadingComponent: <div>Custom loading component</div>,
                                   }}
                               />
+                              </div>
                           </CardContent>
                       </Card>
                   </div>
