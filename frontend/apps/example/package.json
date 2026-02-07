@@ -15,7 +15,8 @@
         "next": "^15.5.9",
         "pydantic-forms": "*",
         "react": "18.*",
-        "react-dom": "18.*"
+        "react-dom": "18.*",
+        "react-hook-form": "^7.71.1"
     },
     "devDependencies": {
         "@orchestrator-ui/eslint-config-custom": "^1.4.1",

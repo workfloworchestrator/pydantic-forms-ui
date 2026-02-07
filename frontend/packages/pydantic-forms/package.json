@@ -43,6 +43,7 @@
         "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
     },
     "devDependencies": {
+        "@jest/globals": "^29.7.0",
         "@orchestrator-ui/eslint-config-custom": "^1.4.1",
         "@orchestrator-ui/jest-config": "^1.5.1",
         "@orchestrator-ui/tsconfig": "^1.2.1",
