@@ -4,6 +4,9 @@ import type { FieldValues } from 'react-hook-form';
 
 import { z } from 'zod/v4';
 
+// Re-export react-hook-form types so consumers don't need to depend on react-hook-form directly
+export type { FieldValues };
+
 export type PydanticFormMetaData = {
     [key: string | number]: PydanticFormFieldValue;
 };
