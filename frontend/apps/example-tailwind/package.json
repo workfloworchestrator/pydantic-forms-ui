@@ -6,7 +6,10 @@
         "dev": "next dev -H 127.0.0.1 -p 3001",
         "build": "next build",
         "start": "next start",
-        "lint": "eslint"
+        "test": "echo 'No tests for example-tailwind' && exit 0",
+        "tsc": "tsc --noEmit",
+        "lint": "eslint",
+        "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
     },
     "dependencies": {
         "@hookform/resolvers": "^5.2.2",
@@ -33,6 +36,9 @@
         "pydantic-forms": "*"
     },
     "devDependencies": {
+        "@orchestrator-ui/eslint-config-custom": "^1.4.1",
+        "@orchestrator-ui/jest-config": "^1.5.1",
+        "@orchestrator-ui/tsconfig": "^1.2.1",
         "@tailwindcss/postcss": "^4",
         "@types/node": "^20",
         "@types/react": "^19",
