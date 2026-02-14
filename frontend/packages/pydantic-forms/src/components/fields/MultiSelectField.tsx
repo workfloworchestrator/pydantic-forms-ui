@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import {
     PydanticFormControlledElementProps,
     PydanticFormFieldOption,
-} from '@/types';
+} from '../../types';
 
 export const MultiSelectField = ({
     value,

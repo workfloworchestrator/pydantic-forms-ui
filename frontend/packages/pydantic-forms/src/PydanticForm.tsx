@@ -10,16 +10,15 @@ import React, { createContext } from 'react';
 
 import { z } from 'zod/v4';
 
-import { TranslationsProvider } from '@/messages/translationsProvider';
+import { PydanticFormHandler } from './core';
+import { PydanticFormFieldDataStorageProvider } from './core/PydanticFieldDataStorageProvider';
+import { TranslationsProvider } from './messages/translationsProvider';
 import {
     Locale,
     PydanticFormConfig,
     PydanticFormProps,
     PydanticFormValidationErrorDetails,
-} from '@/types';
-
-import { PydanticFormHandler } from './core';
-import { PydanticFormFieldDataStorageProvider } from './core/PydanticFieldDataStorageProvider';
+} from './types';
 
 export const PydanticFormConfigContext =
     createContext<PydanticFormConfig | null>(null);

@@ -7,7 +7,7 @@ import React from 'react';
 
 import { useTranslations } from 'next-intl';
 
-import { PydanticFormFooterProps } from '@/types';
+import { PydanticFormFooterProps } from '../../types';
 
 const Footer = ({
     onCancel,

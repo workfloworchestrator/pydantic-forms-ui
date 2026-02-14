@@ -2,8 +2,8 @@ import React from 'react';
 
 import _ from 'lodash';
 
-import type { PydanticFormControlledElementProps } from '@/types';
-import { getFormFieldIdWithPath } from '@/utils';
+import type { PydanticFormControlledElementProps } from '../../types';
+import { getFormFieldIdWithPath } from '../../utils';
 
 export const IntegerField = ({
     value,

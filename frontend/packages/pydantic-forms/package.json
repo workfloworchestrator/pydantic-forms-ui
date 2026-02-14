@@ -11,9 +11,25 @@
         "type": "git",
         "url": "git+https://github.com/workfloworchestrator/pydantic-forms-ui.git"
     },
+    "exports": {
+        ".": {
+            "types": "./src/index.tsx",
+            "default": "./src/index.tsx"
+        }
+    },
     "publishConfig": {
         "access": "public",
-        "provenance": true
+        "provenance": true,
+        "main": "./dist/index.js",
+        "module": "./dist/index.mjs",
+        "types": "./dist/index.d.ts",
+        "exports": {
+            ".": {
+                "types": "./dist/index.d.ts",
+                "import": "./dist/index.mjs",
+                "require": "./dist/index.js"
+            }
+        }
     },
     "homepage": "https://www.workfloworchestrator.org",
     "bugs": "https://github.com/workfloworchestrator/pydantic-forms-ui/issues",
@@ -68,8 +84,8 @@
         "zod": "^3.25.1"
     },
     "peerDependencies": {
-        "next": "^14.0.0 || ^15.5.9",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1"
+        "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
+        "react": "^18.3.1 || ^19.0.0",
+        "react-dom": "^18.3.1 || ^19.0.0"
     }
 }

@@ -1,11 +1,5 @@
 import { useMemo } from 'react';
 
-import {
-    flattenSchemaCombinators,
-    getFieldAttributes,
-    getFieldOptions,
-    getFieldValidation,
-} from '@/core/helper';
 /**
  * Pydantic Forms
  *
@@ -20,10 +14,15 @@ import type {
     PydanticFormPropertySchemaParsed,
     PydanticFormSchema,
     PydanticFormSchemaRawJson,
-} from '@/types';
-import { PydanticFormFieldFormat, PydanticFormFieldType } from '@/types';
-import { toOptionalObjectProperty } from '@/utils';
-
+} from '../../types';
+import { PydanticFormFieldFormat, PydanticFormFieldType } from '../../types';
+import { toOptionalObjectProperty } from '../../utils';
+import {
+    flattenSchemaCombinators,
+    getFieldAttributes,
+    getFieldOptions,
+    getFieldValidation,
+} from '../helper';
 import { useRefParser } from './useRefParser';
 
 const translateLabel = (

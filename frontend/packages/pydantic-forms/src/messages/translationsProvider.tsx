@@ -4,8 +4,7 @@ import type { ReactNode } from 'react';
 import _ from 'lodash';
 import { IntlErrorCode, NextIntlClientProvider } from 'next-intl';
 
-import { TranslationsJSON } from '@/types';
-
+import { TranslationsJSON } from '../types';
 import enGB from './en-GB.json';
 import nlNL from './nl-NL.json';
 

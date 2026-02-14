@@ -17,7 +17,7 @@ import useSWR from 'swr';
 import {
     PydanticFormLabelProvider,
     PydanticFormLabelProviderResponse,
-} from '@/types';
+} from '../../types';
 
 export function useLabelProvider(
     labelProvider?: PydanticFormLabelProvider,

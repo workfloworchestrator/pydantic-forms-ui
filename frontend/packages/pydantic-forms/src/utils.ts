@@ -1,6 +1,6 @@
 import type { FieldPath, FieldValues } from 'react-hook-form';
 
-import type { PydanticFormField } from '@/types';
+import type { PydanticFormField } from './types';
 
 export const insertItemAtIndex = (
     fields: PydanticFormField[],

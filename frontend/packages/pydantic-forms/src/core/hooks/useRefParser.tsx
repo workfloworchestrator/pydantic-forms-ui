@@ -10,7 +10,10 @@ import useSWR from 'swr';
 
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 
-import { PydanticFormSchemaParsed, PydanticFormSchemaRawJson } from '@/types';
+import {
+    PydanticFormSchemaParsed,
+    PydanticFormSchemaRawJson,
+} from '../../types';
 
 export function useRefParser(
     id: string,

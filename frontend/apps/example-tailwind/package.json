@@ -33,7 +33,7 @@
         "react-dom": "19.2.3",
         "react-hook-form": "^7.71.1",
         "tailwind-merge": "^3.4.0",
-        "pydantic-forms": "*"
+        "pydantic-forms": "workspace:*"
     },
     "devDependencies": {
         "@orchestrator-ui/eslint-config-custom": "^1.4.1",

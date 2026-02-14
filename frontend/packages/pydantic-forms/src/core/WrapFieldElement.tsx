@@ -3,13 +3,13 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import _ from 'lodash';
 
-import { FieldWrap } from '@/components/fields';
-import { useGetValidationErrors } from '@/core/hooks';
+import { FieldWrap } from '../components/fields';
 import {
     PydanticFormControlledElement,
     PydanticFormField,
     PydanticFormValidationErrorDetails,
-} from '@/types';
+} from '../types';
+import { useGetValidationErrors } from './hooks';
 
 const getValidationErrorMsg = (
     errorResponse: PydanticFormValidationErrorDetails | null,

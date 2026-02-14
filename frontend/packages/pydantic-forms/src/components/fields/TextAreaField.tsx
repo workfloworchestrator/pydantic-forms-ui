@@ -1,6 +1,6 @@
 import React from 'react';
 
-import type { PydanticFormControlledElementProps } from '@/types';
+import type { PydanticFormControlledElementProps } from '../../types';
 
 export const TextAreaField = ({
     value,

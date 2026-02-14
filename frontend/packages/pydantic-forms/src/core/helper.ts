@@ -8,8 +8,8 @@ import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 import { z } from 'zod/v4';
 import type { ZodType } from 'zod/v4';
 
-import defaultComponentMatchers from '@/components/defaultComponentMatchers';
-import { TextField } from '@/components/fields';
+import defaultComponentMatchers from '../components/defaultComponentMatchers';
+import { TextField } from '../components/fields';
 import {
     ElementMatch,
     Properties,
@@ -24,7 +24,7 @@ import {
     PydanticFormPropertySchemaParsed,
     PydanticFormSchema,
     PydanticFormValidationResponse,
-} from '@/types';
+} from '../types';
 
 /**
  * Error object formatting

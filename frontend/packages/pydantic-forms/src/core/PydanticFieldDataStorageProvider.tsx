@@ -1,6 +1,6 @@
 import React, { createContext, useMemo, useRef } from 'react';
 
-import { PydanticFormFieldDataStorage } from '@/types';
+import { PydanticFormFieldDataStorage } from '../types';
 
 export const PydanticFormFieldDataStorageContext =
     createContext<PydanticFormFieldDataStorage | null>(null);

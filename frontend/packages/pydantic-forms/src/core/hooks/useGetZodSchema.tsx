@@ -13,16 +13,16 @@ import { z } from 'zod/v4';
 import { ZodAny, ZodArray, ZodObject, ZodType } from 'zod/v4';
 
 import {
-    getClientSideValidationRule,
-    getPydanticFormComponents,
-} from '@/core/helper';
-import {
     Properties,
     PydanticFormConfig,
     PydanticFormField,
     PydanticFormFieldType,
     PydanticFormSchema,
-} from '@/types';
+} from '../../types';
+import {
+    getClientSideValidationRule,
+    getPydanticFormComponents,
+} from '../helper';
 
 export const getZodRule = (
     pydanticFormField: PydanticFormField,

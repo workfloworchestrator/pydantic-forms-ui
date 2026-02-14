@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { useGetForm } from '@/core';
-import { PydanticFormElementProps } from '@/types';
+import { useGetForm } from '../../core';
+import { PydanticFormElementProps } from '../../types';
 
 export const HiddenField = ({
     pydanticFormField,

@@ -9,7 +9,7 @@
  */
 import { z } from 'zod/v4';
 
-import { PydanticFormZodValidationPresets } from '@/types';
+import { PydanticFormZodValidationPresets } from '../types';
 
 // to prevent duplicate code in components that have (almost)the same validation
 export const zodValidationPresets: PydanticFormZodValidationPresets = {
