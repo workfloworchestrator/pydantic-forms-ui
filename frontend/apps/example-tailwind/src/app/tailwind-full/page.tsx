@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
-import { BookIcon, BookPlusIcon, MoonIcon, SunIcon } from 'lucide-react';
+import _ from 'lodash';
+import { MoonIcon, SunIcon } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
     Locale,
     PydanticForm,
@@ -21,8 +22,14 @@ import type {
 } from 'pydantic-forms';
 
 import { items } from '@/app/items';
+import { CheckboxField } from '@/components/fields/tailwind/CheckboxField';
+import { DateField } from '@/components/fields/tailwind/DateField';
+import { DateTimeField } from '@/components/fields/tailwind/DateTimeField';
 import { DropdownField } from '@/components/fields/tailwind/DropdownField';
 import { IntegerField } from '@/components/fields/tailwind/IntegerField';
+import { MultiCheckboxField } from '@/components/fields/tailwind/MultiCheckboxField';
+import { RadioField } from '@/components/fields/tailwind/RadioField';
+import { TextAreaField } from '@/components/fields/tailwind/TextAreaField';
 import { TextField } from '@/components/fields/tailwind/TextField';
 
 type MenuItem = {
@@ -31,10 +38,246 @@ type MenuItem = {
     icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 };
 
+// Map form query param to API endpoint
+const FORM_MAP: Record<string, string> = {
+    'standard-form': '/form',
+    'full-form': '/form-full',
+    'simple-form': '/form-simple',
+};
+
+// Default form
+const DEFAULT_FORM = 'standard-form';
+
 export default function Page() {
     const pathname = usePathname();
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [dark, setDark] = useState(false);
 
+    // Get form from URL or use default
+    const formParam = searchParams.get('form') || DEFAULT_FORM;
+    const activeFormEndpoint = FORM_MAP[formParam] || FORM_MAP[DEFAULT_FORM];
+
+    // Sync URL if invalid form param
+    useEffect(() => {
+        if (!searchParams.get('form')) {
+            router.replace(`${pathname}?form=${DEFAULT_FORM}`, {
+                scroll: false,
+            });
+        } else if (!FORM_MAP[formParam]) {
+            router.replace(`${pathname}?form=${DEFAULT_FORM}`, {
+                scroll: false,
+            });
+        }
+    }, [formParam, pathname, router, searchParams]);
+
+    const setActiveForm = (formKey: string) => {
+        router.push(`${pathname}?form=${formKey}`, { scroll: false });
+    };
+
+    // ---- Pydantic providers ----
+    const pydanticFormApiProvider: PydanticFormApiProvider = async ({
+        requestBody,
+    }) => {
+        const url = `http://localhost:8000${activeFormEndpoint}`;
+        try {
+            const fetchResult = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(requestBody),
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            if (
+                fetchResult.status === 400 ||
+                fetchResult.status === 510 ||
+                fetchResult.status === 200 ||
+                fetchResult.status === 201
+            ) {
+                const data = await fetchResult.json();
+
+                return new Promise<Record<string, unknown>>(
+                    (resolve, reject) => {
+                        if (
+                            fetchResult.status === 510 ||
+                            fetchResult.status === 400
+                        ) {
+                            resolve({ ...data, status: fetchResult.status });
+                            return;
+                        }
+                        if (
+                            fetchResult.status === 200 ||
+                            fetchResult.status === 201
+                        ) {
+                            resolve({ status: fetchResult.status, data });
+                            return;
+                        }
+                        reject('No valid status in response');
+                    },
+                );
+            }
+
+            throw new Error(
+                `Status not 400, 510, 200 or 201: ${fetchResult.statusText}`,
+            );
+        } catch (error) {
+            throw new Error(`Fetch error: ${String(error)}`);
+        }
+    };
+
+    const pydanticLabelProvider: PydanticFormLabelProvider = async () => {
+        return {
+            labels: {
+                name: 'LABEL NAME',
+                name_info: 'DESCRIPTION NAAM',
+            },
+            data: {
+                name: 'LABEL VALUE NAAM',
+            },
+        };
+    };
+
+    const pydanticCustomDataProvider: PydanticFormCustomDataProvider =
+        async () => {
+            return {
+                name: 'CUSTOM VALUE NAAM',
+            };
+        };
+
+    const componentMatcher = (
+        currentMatchers: PydanticComponentMatcher[],
+    ): PydanticComponentMatcher[] => {
+        return [
+            {
+                id: 'date',
+                ElementMatch: {
+                    Element: DateField,
+                    isControlledElement: true,
+                },
+                matcher(field) {
+                    return (
+                        field.type === PydanticFormFieldType.STRING &&
+                        field.format === PydanticFormFieldFormat.DATE
+                    );
+                },
+            },
+            {
+                id: 'datetime',
+                ElementMatch: {
+                    Element: DateTimeField,
+                    isControlledElement: true,
+                },
+                matcher(field) {
+                    return (
+                        field.type === PydanticFormFieldType.STRING &&
+                        field.format === PydanticFormFieldFormat.DATETIME
+                    );
+                },
+            },
+            {
+                id: 'textarea',
+                ElementMatch: {
+                    Element: TextAreaField,
+                    isControlledElement: true,
+                },
+                matcher(field) {
+                    return (
+                        field.type === PydanticFormFieldType.STRING &&
+                        field.format === PydanticFormFieldFormat.LONG
+                    );
+                },
+            },
+            {
+                id: 'integer',
+                ElementMatch: {
+                    Element: IntegerField,
+                    isControlledElement: true,
+                },
+                matcher(field) {
+                    return field.type === PydanticFormFieldType.INTEGER;
+                },
+            },
+            {
+                id: 'radio',
+                ElementMatch: {
+                    Element: RadioField,
+                    isControlledElement: true,
+                },
+                matcher(field) {
+                    // We are looking for a single value from a set list of options. With less than 4 options, use radio buttons.
+                    return (
+                        field.type === PydanticFormFieldType.STRING &&
+                        _.isArray(field.options) &&
+                        field.options?.length > 0 &&
+                        field.options?.length <= 3
+                    );
+                },
+            },
+            {
+                id: 'select',
+                ElementMatch: {
+                    Element: DropdownField,
+                    isControlledElement: true,
+                },
+                matcher(field) {
+                    return (
+                        // @ts-expect-error options can exist depending on backend schema
+                        field.options?.length > 0 &&
+                        field.type === PydanticFormFieldType.STRING
+                    );
+                },
+            },
+            {
+                id: 'checkbox',
+                ElementMatch: {
+                    Element: CheckboxField,
+                    isControlledElement: true,
+                },
+                matcher(field) {
+                    return field.type === PydanticFormFieldType.BOOLEAN;
+                },
+            },
+            // {
+            //     id: 'multicheckbox',
+            //     ElementMatch: {
+            //         Element: MultiCheckboxField,
+            //         isControlledElement: true,
+            //     },
+            //     matcher(field) {
+            //         return (
+            //             field.type === PydanticFormFieldType.ARRAY &&
+            //             _.isArray(field.options) &&
+            //             field.options?.length > 0 &&
+            //             field.options?.length <= 5
+            //         );
+            //     },
+            //     validator: zodValidationPresets.multiSelect,
+            // },
+            {
+                id: 'string',
+                ElementMatch: { Element: TextField, isControlledElement: true },
+                matcher(field) {
+                    return field.type === PydanticFormFieldType.STRING;
+                },
+            },
+            ...currentMatchers,
+        ];
+    };
+
+    const customTranslations = {
+        renderForm: { loading: 'The form is loading. Please wait.' },
+    };
+    const locale = Locale.enGB;
+
+    const onSuccess = (
+        _: FieldValues[],
+        apiResponse: PydanticFormSuccessResponse,
+    ) => {
+        alert(
+            `Form submitted successfully: ${JSON.stringify(apiResponse.data)}`,
+        );
+    };
+
+    // ---- Route -> "page" content mapping ----
     const current = items.find((i) => i.url === pathname) ?? items[0];
 
     return (
@@ -121,38 +364,91 @@ export default function Page() {
                                 Full tailwind form example
                             </h1>
                             <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-                                Full form with custom footer and header or
+                                Full form with custom footer, header and
                                 renderers
                             </p>
                         </div>
 
-                        <div className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-                            <div className="flex flex-col items-center justify-center py-12 text-center">
-                                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-800">
-                                    <svg
-                                        className="h-8 w-8 text-zinc-400 dark:text-zinc-500"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                                        />
-                                    </svg>
-                                </div>
-                                <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-                                    Work in Progress
-                                </h3>
-                                <p className="mt-2 max-w-sm text-sm text-zinc-600 dark:text-zinc-400">
-                                    This full Tailwind form example with custom
-                                    footer, header, and renderers is currently
-                                    under development.
-                                </p>
+                        {/* Tabs */}
+                        <div className="rounded-2xl border border-zinc-200 bg-white p-2 dark:border-zinc-800 dark:bg-zinc-900">
+                            <div className="flex gap-1">
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setActiveForm('standard-form')
+                                    }
+                                    className={[
+                                        'flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition',
+                                        formParam === 'standard-form'
+                                            ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
+                                            : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800',
+                                    ].join(' ')}
+                                >
+                                    Standard Form
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveForm('full-form')}
+                                    className={[
+                                        'flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition',
+                                        formParam === 'full-form'
+                                            ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
+                                            : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800',
+                                    ].join(' ')}
+                                >
+                                    Full Form
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveForm('simple-form')}
+                                    className={[
+                                        'flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition',
+                                        formParam === 'simple-form'
+                                            ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
+                                            : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800',
+                                    ].join(' ')}
+                                >
+                                    Simple Form
+                                </button>
                             </div>
+                        </div>
+
+                        <div
+                            className="
+                            rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900
+                            [&>form>h2]:mb-4 [&>form>h2]:text-xl [&>form>h2]:font-semibold
+                            [&_button]:px-4 [&_button]:py-2 [&_button]:rounded-lg [&_button]:font-medium [&_button]:transition
+                            [&_button]:bg-zinc-200 [&_button]:text-zinc-800 [&_button]:hover:bg-zinc-300
+                            dark:[&_button]:bg-zinc-700 dark:[&_button]:text-zinc-100 dark:[&_button]:hover:bg-zinc-600
+                            [&_button[type=submit]]:bg-blue-600 [&_button[type=submit]]:text-white [&_button[type=submit]]:hover:bg-blue-700
+                            [&_ul:first-of-type]:bg-red-100 [&_ul:first-of-type]:p-4
+                            dark:[&_ul:first-of-type]:bg-red-900
+                            dark:[&_ul:first-of-type]:text-red-100
+                            dark:[&_ul:first-of-type_*]:text-inherit
+                        "
+                        >
+                            <PydanticForm
+                                key={formParam}
+                                formKey="theForm"
+                                formId="example123"
+                                title="Example form"
+                                onCancel={() => alert('Form cancelled')}
+                                onSuccess={onSuccess}
+                                config={{
+                                    apiProvider: pydanticFormApiProvider,
+                                    labelProvider: pydanticLabelProvider,
+                                    customDataProvider:
+                                        pydanticCustomDataProvider,
+                                    componentMatcherExtender: componentMatcher,
+                                    customTranslations,
+                                    locale,
+                                    loadingComponent: (
+                                        <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-sm dark:border-zinc-800 dark:bg-zinc-950">
+                                            Custom loading component
+                                        </div>
+                                    ),
+                                }}
+                            />
                         </div>
                     </main>
                 </div>
