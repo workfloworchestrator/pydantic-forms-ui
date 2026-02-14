@@ -18,9 +18,10 @@ export const FormRow = ({
     required,
 }: FormRowProps) => {
     return (
-        <div>
+        <div className="pf-field-row">
             {title && (
                 <label
+                    className="pf-field-label"
                     style={{
                         margin: '8px 0',
                         display: 'block',
@@ -28,14 +29,30 @@ export const FormRow = ({
                     }}
                 >
                     {title}{' '}
-                    {required && <span style={{ color: 'red' }}>*</span>}
+                    {required && (
+                        <span
+                            className="pf-field-required"
+                            style={{ color: 'red' }}
+                        >
+                            *
+                        </span>
+                    )}
                 </label>
             )}
             {description && (
-                <div style={{ margin: '4px 0' }}>{description}</div>
+                <div
+                    className="pf-field-description"
+                    style={{ margin: '4px 0' }}
+                >
+                    {description}
+                </div>
             )}
             {children}
-            {error}
+            {error && (
+                <div className="pf-field-error" role="alert">
+                    {error}
+                </div>
+            )}
         </div>
     );
 };

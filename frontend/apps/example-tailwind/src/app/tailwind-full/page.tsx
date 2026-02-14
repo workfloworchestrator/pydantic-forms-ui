@@ -22,8 +22,6 @@ import type {
 } from 'pydantic-forms';
 
 import { items } from '@/app/items';
-import FormFooter from '@/components/form/tailwind/FormFooter';
-import FormHeader from '@/components/form/tailwind/FormHeader';
 import { CheckboxField } from '@/components/fields/tailwind/CheckboxField';
 import { DateField } from '@/components/fields/tailwind/DateField';
 import { DateTimeField } from '@/components/fields/tailwind/DateTimeField';
@@ -33,6 +31,8 @@ import { MultiCheckboxField } from '@/components/fields/tailwind/MultiCheckboxFi
 import { RadioField } from '@/components/fields/tailwind/RadioField';
 import { TextAreaField } from '@/components/fields/tailwind/TextAreaField';
 import { TextField } from '@/components/fields/tailwind/TextField';
+import FormFooter from '@/components/form/tailwind/FormFooter';
+import FormHeader from '@/components/form/tailwind/FormHeader';
 
 type MenuItem = {
     title: string;
@@ -415,7 +415,7 @@ export default function Page() {
                             </div>
                         </div>
 
-                        <div className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+                        <div className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900 [&_.pf-field-error]:mt-1 [&_.pf-field-error]:text-sm [&_.pf-field-error]:text-red-600 dark:[&_.pf-field-error]:text-red-400">
                             <PydanticForm
                                 key={formParam}
                                 formKey="theForm"

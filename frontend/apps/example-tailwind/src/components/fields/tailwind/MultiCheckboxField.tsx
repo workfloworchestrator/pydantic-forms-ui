@@ -74,7 +74,9 @@ export const MultiCheckboxField = ({
                         <span
                             className={
                                 'text-sm text-slate-900 dark:text-slate-100 select-none ' +
-                                (disabled ? 'text-slate-500 dark:text-slate-500' : '')
+                                (disabled
+                                    ? 'text-slate-500 dark:text-slate-500'
+                                    : '')
                             }
                         >
                             {option.label || option.value}
