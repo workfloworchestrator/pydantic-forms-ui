@@ -5,8 +5,8 @@
  */
 import React from 'react';
 
-import { RenderValidationErrors } from '@/components/render/RenderValidationErrors';
-import { PydanticFormHeaderProps } from '@/types';
+import { PydanticFormHeaderProps } from '../../types';
+import { RenderValidationErrors } from '../render/RenderValidationErrors';
 
 const Header = ({ title, pydanticFormSchema }: PydanticFormHeaderProps) => {
     return (

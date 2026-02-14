@@ -6,6 +6,11 @@
 import _ from 'lodash';
 
 import {
+    PydanticComponentMatcher,
+    PydanticFormFieldFormat,
+    PydanticFormFieldType,
+} from '../types';
+import {
     ArrayField,
     CheckboxField,
     DividerField,
@@ -19,13 +24,7 @@ import {
     RadioField,
     TextAreaField,
     TextField,
-} from '@/components/fields';
-import {
-    PydanticComponentMatcher,
-    PydanticFormFieldFormat,
-    PydanticFormFieldType,
-} from '@/types';
-
+} from './fields';
 import { zodValidationPresets } from './zodValidationsPresets';
 
 const defaultComponentMatchers: PydanticComponentMatcher[] = [

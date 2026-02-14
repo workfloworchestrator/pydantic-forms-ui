@@ -14,12 +14,11 @@ import { useTranslations } from 'next-intl';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import Footer from '@/components/form/Footer';
-import { Form } from '@/components/form/Form';
-import Header from '@/components/form/Header';
-import { getPydanticFormComponents } from '@/core/helper';
-import type { PydanticFormComponents, PydanticFormSchema } from '@/types';
-
+import Footer from '../components/form/Footer';
+import { Form } from '../components/form/Form';
+import Header from '../components/form/Header';
+import type { PydanticFormComponents, PydanticFormSchema } from '../types';
+import { getPydanticFormComponents } from './helper';
 import { useGetConfig } from './hooks';
 import { useGetZodSchema } from './hooks';
 

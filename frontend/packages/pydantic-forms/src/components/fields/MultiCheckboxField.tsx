@@ -8,7 +8,7 @@ import React from 'react';
 import {
     PydanticFormControlledElementProps,
     PydanticFormFieldOption,
-} from '@/types';
+} from '../../types';
 
 export const MultiCheckboxField = ({
     value,

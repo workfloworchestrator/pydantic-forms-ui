@@ -5,9 +5,9 @@
  */
 import React from 'react';
 
-import { useGetValidationErrors } from '@/core';
-import { getFieldLabelById } from '@/core/helper';
-import type { PydanticFormSchema } from '@/types';
+import { useGetValidationErrors } from '../../core';
+import { getFieldLabelById } from '../../core/helper';
+import type { PydanticFormSchema } from '../../types';
 
 export interface RenderValidationErrorsProps {
     pydanticFormSchema?: PydanticFormSchema;

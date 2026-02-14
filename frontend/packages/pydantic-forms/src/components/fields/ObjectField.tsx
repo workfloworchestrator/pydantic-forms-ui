@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { useGetConfig } from '@/core';
-import { getPydanticFormComponents } from '@/core/helper';
-import { PydanticFormElementProps } from '@/types';
-import { disableField } from '@/utils';
-
+import { useGetConfig } from '../../core';
+import { getPydanticFormComponents } from '../../core/helper';
+import { PydanticFormElementProps } from '../../types';
+import { disableField } from '../../utils';
 import { RenderFields } from '../render';
 
 export const ObjectField = ({

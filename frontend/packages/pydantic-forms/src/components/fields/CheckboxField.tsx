@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { PydanticFormControlledElementProps } from '@/types';
+import { PydanticFormControlledElementProps } from '../../types';
 
 export const CheckboxField = ({
     onChange,

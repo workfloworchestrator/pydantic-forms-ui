@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 
-import { PydanticFormConfigContext } from '@/PydanticForm';
+import { PydanticFormConfigContext } from '../../PydanticForm';
 
 export const useGetConfig = () => {
     const context = useContext(PydanticFormConfigContext);

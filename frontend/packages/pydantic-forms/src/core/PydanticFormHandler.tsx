@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
-import { PydanticFormValidationErrorContext } from '@/PydanticForm';
-import { useGetConfig, usePydanticForm } from '@/core/hooks';
-import { PydanticFormHandlerProps } from '@/types';
-import { getHashForArray } from '@/utils';
-
+import { PydanticFormValidationErrorContext } from '../PydanticForm';
+import { PydanticFormHandlerProps } from '../types';
+import { getHashForArray } from '../utils';
 import { ReactHookForm } from './ReactHookForm';
+import { useGetConfig, usePydanticForm } from './hooks';
 
 export const PydanticFormHandler = ({
     formKey,

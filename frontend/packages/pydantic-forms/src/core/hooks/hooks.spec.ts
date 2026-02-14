@@ -2,19 +2,18 @@ import { z } from 'zod/v4';
 
 import { jest } from '@jest/globals';
 
-import { zodValidationPresets } from '@/components';
+import { zodValidationPresets } from '../../components';
 import type {
     ComponentMatcherExtender,
     ParsedProperties,
     Properties,
     PydanticComponentMatcher,
-} from '@/types';
+} from '../../types';
 import {
     PydanticFormFieldFormat,
     PydanticFormFieldType,
     PydanticFormPropertySchemaParsed,
-} from '@/types';
-
+} from '../../types';
 import { getMockPydanticFormField } from '../helper.spec';
 import { getZodValidationObject } from './useGetZodSchema';
 import { parseProperties } from './usePydanticFormParser';

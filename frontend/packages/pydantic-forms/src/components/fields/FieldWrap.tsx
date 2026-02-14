@@ -9,10 +9,9 @@
  */
 import React from 'react';
 
-import { useGetConfig } from '@/core';
-import { useGetValidationErrors } from '@/core';
-import { PydanticFormField } from '@/types';
-
+import { useGetConfig } from '../../core';
+import { useGetValidationErrors } from '../../core';
+import { PydanticFormField } from '../../types';
 import { FormRow } from './FormRow';
 
 interface FieldWrapProps {

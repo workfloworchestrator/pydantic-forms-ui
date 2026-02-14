@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect } from 'react';
 import { useFieldArray } from 'react-hook-form';
 
-import { useGetConfig, useGetForm } from '@/core';
-import { fieldToComponentMatcher } from '@/core/helper';
-import { PydanticFormElementProps } from '@/types';
-import { disableField, itemizeArrayItem } from '@/utils';
-
+import { useGetConfig, useGetForm } from '../../core';
+import { fieldToComponentMatcher } from '../../core/helper';
+import { PydanticFormElementProps } from '../../types';
+import { disableField, itemizeArrayItem } from '../../utils';
 import { RenderFields } from '../render';
 
 export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {

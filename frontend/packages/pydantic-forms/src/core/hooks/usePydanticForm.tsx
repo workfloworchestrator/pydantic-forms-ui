@@ -1,10 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
-import {
-    getFormValuesFromFieldOrLabels,
-    getValidationErrorDetailsFromResponse,
-} from '@/core/helper';
 import type {
     PydanticFormApiResponse,
     PydanticFormConfig,
@@ -12,9 +8,15 @@ import type {
     PydanticFormSchemaRawJson,
     PydanticFormSuccessResponse,
     PydanticFormValidationErrorDetails,
-} from '@/types';
-import { PydanticFormApiResponseType, PydanticFormFieldType } from '@/types';
-
+} from '../../types';
+import {
+    PydanticFormApiResponseType,
+    PydanticFormFieldType,
+} from '../../types';
+import {
+    getFormValuesFromFieldOrLabels,
+    getValidationErrorDetailsFromResponse,
+} from '../helper';
 import { useApiProvider, useLabelProvider, usePydanticFormParser } from './';
 
 export interface UsePydanticFormReturn {

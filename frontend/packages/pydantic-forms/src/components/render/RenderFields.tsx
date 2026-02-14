@@ -6,8 +6,8 @@
  */
 import React from 'react';
 
-import { WrapFieldElement } from '@/core/WrapFieldElement';
-import { PydanticFormComponents, PydanticFormField } from '@/types';
+import { WrapFieldElement } from '../../core/WrapFieldElement';
+import { PydanticFormComponents, PydanticFormField } from '../../types';
 
 interface RenderFieldsProps {
     pydanticFormComponents: PydanticFormComponents;
@@ -37,7 +37,7 @@ export function RenderFields({
         };
         if (isControlledElement) {
             return (
-                <div css={{ width: '100%' }} key={field.id}>
+                <div style={{ width: '100%' }} key={field.id}>
                     <WrapFieldElement
                         PydanticFormControlledElement={Element}
                         pydanticFormField={field}

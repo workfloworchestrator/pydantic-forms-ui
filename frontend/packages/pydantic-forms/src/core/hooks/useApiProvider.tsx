@@ -23,7 +23,7 @@ import {
     PydanticFormDefinitionResponse,
     PydanticFormSuccessResponse,
     PydanticFormValidationResponse,
-} from '@/types';
+} from '../../types';
 
 export function useApiProvider(
     formKey: string,

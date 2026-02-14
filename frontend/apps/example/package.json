@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "next": "^15.5.9",
-        "pydantic-forms": "*",
+        "pydantic-forms": "workspace:*",
         "react": "18.*",
         "react-dom": "18.*",
         "react-hook-form": "^7.71.1"
