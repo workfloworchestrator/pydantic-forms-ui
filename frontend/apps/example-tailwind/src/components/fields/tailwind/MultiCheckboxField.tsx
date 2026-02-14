@@ -46,6 +46,7 @@ export const MultiCheckboxField = ({
                         className={
                             'flex items-center gap-3 px-3 py-2.5 rounded-lg border border-transparent transition cursor-pointer ' +
                             'hover:bg-slate-50 hover:border-slate-200 ' +
+                            'dark:hover:bg-slate-800 dark:hover:border-slate-700 ' +
                             (disabled
                                 ? 'cursor-not-allowed opacity-50'
                                 : 'cursor-pointer')
@@ -66,13 +67,14 @@ export const MultiCheckboxField = ({
                                 'focus:outline-none focus:ring-4 focus:ring-indigo-500/15 focus:border-indigo-500 ' +
                                 'checked:bg-indigo-600 checked:border-indigo-600 ' +
                                 'hover:border-indigo-400 ' +
-                                'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-slate-300'
+                                'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-slate-300 ' +
+                                'dark:border-slate-600 dark:bg-slate-800 dark:checked:bg-indigo-500 dark:checked:border-indigo-500 dark:hover:border-indigo-400'
                             }
                         />
                         <span
                             className={
-                                'text-sm text-slate-900 select-none ' +
-                                (disabled ? 'text-slate-500' : '')
+                                'text-sm text-slate-900 dark:text-slate-100 select-none ' +
+                                (disabled ? 'text-slate-500 dark:text-slate-500' : '')
                             }
                         >
                             {option.label || option.value}
