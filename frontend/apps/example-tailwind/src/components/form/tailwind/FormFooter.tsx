@@ -1,9 +1,4 @@
-import {
-    ArrowLeftIcon,
-    ArrowRightIcon,
-    SendIcon,
-    XIcon,
-} from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon, SendIcon, XIcon } from 'lucide-react';
 import type { PydanticFormFooterProps } from 'pydantic-forms';
 
 export default function FormFooter({

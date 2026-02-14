@@ -425,6 +425,8 @@ export default function Page() {
                             dark:[&_ul:first-of-type]:bg-red-900
                             dark:[&_ul:first-of-type]:text-red-100
                             dark:[&_ul:first-of-type_*]:text-inherit
+                            [&_.pf-field-error]:mt-1 [&_.pf-field-error]:text-sm [&_.pf-field-error]:text-red-600
+                            dark:[&_.pf-field-error]:text-red-400
                         "
                         >
                             <PydanticForm
