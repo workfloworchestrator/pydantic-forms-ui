@@ -22,6 +22,8 @@ import type {
 } from 'pydantic-forms';
 
 import { items } from '@/app/items';
+import FormFooter from '@/components/form/tailwind/FormFooter';
+import FormHeader from '@/components/form/tailwind/FormHeader';
 import { CheckboxField } from '@/components/fields/tailwind/CheckboxField';
 import { DateField } from '@/components/fields/tailwind/DateField';
 import { DateTimeField } from '@/components/fields/tailwind/DateTimeField';
@@ -413,20 +415,7 @@ export default function Page() {
                             </div>
                         </div>
 
-                        <div
-                            className="
-                            rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900
-                            [&>form>h2]:mb-4 [&>form>h2]:text-xl [&>form>h2]:font-semibold
-                            [&_button]:px-4 [&_button]:py-2 [&_button]:rounded-lg [&_button]:font-medium [&_button]:transition
-                            [&_button]:bg-zinc-200 [&_button]:text-zinc-800 [&_button]:hover:bg-zinc-300
-                            dark:[&_button]:bg-zinc-700 dark:[&_button]:text-zinc-100 dark:[&_button]:hover:bg-zinc-600
-                            [&_button[type=submit]]:bg-blue-600 [&_button[type=submit]]:text-white [&_button[type=submit]]:hover:bg-blue-700
-                            [&_ul:first-of-type]:bg-red-100 [&_ul:first-of-type]:p-4
-                            dark:[&_ul:first-of-type]:bg-red-900
-                            dark:[&_ul:first-of-type]:text-red-100
-                            dark:[&_ul:first-of-type_*]:text-inherit
-                        "
-                        >
+                        <div className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
                             <PydanticForm
                                 key={formParam}
                                 formKey="theForm"
@@ -440,6 +429,8 @@ export default function Page() {
                                     customDataProvider:
                                         pydanticCustomDataProvider,
                                     componentMatcherExtender: componentMatcher,
+                                    headerRenderer: FormHeader,
+                                    footerRenderer: FormFooter,
                                     customTranslations,
                                     locale,
                                     loadingComponent: (

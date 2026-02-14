@@ -37,7 +37,8 @@ export const CheckboxField = ({
                     'focus:outline-none focus:ring-4 focus:ring-indigo-500/15 focus:border-indigo-500 ' +
                     'checked:bg-indigo-600 checked:border-indigo-600 ' +
                     'hover:border-indigo-400 ' +
-                    'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-slate-300'
+                    'disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-slate-300 ' +
+                    'dark:border-slate-600 dark:bg-slate-800 dark:checked:bg-indigo-500 dark:checked:border-indigo-500 dark:hover:border-indigo-400'
                 }
             />
         </div>
