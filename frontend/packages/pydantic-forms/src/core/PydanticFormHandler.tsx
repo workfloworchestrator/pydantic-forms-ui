@@ -22,8 +22,9 @@ export const PydanticFormHandler = ({
     const [formStep, setStep] = useState<FieldValues>();
     const formStepsRef = useRef<FieldValues[]>([]);
     const [initialValues, setInitialValues] = useState<FieldValues>();
-    const [currentFormId, setCurrentFormId] =
-        useState<string>(getComposedFormKey());
+    const [currentFormId, setCurrentFormId] = useState<string>(
+        getComposedFormKey(),
+    );
     const formInputHistoryRef = useRef<Map<string, FieldValues>>(
         new Map<string, object>(),
     );

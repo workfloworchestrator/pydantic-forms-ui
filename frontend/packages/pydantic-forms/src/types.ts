@@ -37,6 +37,10 @@ export type PydanticFormFieldDataStorage = {
     delete: (fieldId: string) => void;
 };
 
+export type PydanticFormZodCustomError = NonNullable<
+    NonNullable<Parameters<typeof z.config>[0]>['customError']
+>;
+
 export enum PydanticFormState {
     NEW = 'new',
     IN_PROGRESS = 'in-progress',
@@ -141,7 +145,8 @@ export interface PydanticFormFieldValidations {
     uniqueItems?: boolean;
 }
 
-export interface PydanticFormFieldAttributes extends PydanticFormFieldValidations {
+export interface PydanticFormFieldAttributes
+    extends PydanticFormFieldValidations {
     disabled?: boolean;
     sensitive?: boolean;
     password?: boolean;
@@ -241,6 +246,9 @@ export interface PydanticFormConfig {
 
     loadingComponent?: React.ReactNode;
     errorComponent?: React.ReactNode;
+
+    // custom zod validation messages
+    zodCustomError?: PydanticFormZodCustomError;
 
     // locale
     locale?: Locale;
@@ -357,10 +365,8 @@ export interface PydanticFormBaseSchema {
     };
 }
 
-export interface PydanticFormSchema extends Omit<
-    PydanticFormBaseSchema,
-    '$defs'
-> {
+export interface PydanticFormSchema
+    extends Omit<PydanticFormBaseSchema, '$defs'> {
     properties: Properties;
 }
 
@@ -373,7 +379,8 @@ export interface PydanticFormSchemaParsed extends PydanticFormBaseSchema {
 }
 
 export interface PydanticFormPropertySchemaParsed
-    extends Omit<PydanticFormBaseSchema, 'type'>, PydanticFormFieldValidations {
+    extends Omit<PydanticFormBaseSchema, 'type'>,
+        PydanticFormFieldValidations {
     type?: PydanticFormFieldType;
 
     anyOf?: PydanticFormPropertySchemaParsed[];
@@ -403,8 +410,7 @@ type UniformProperties = {
 };
 
 export interface PydanticFormPropertySchemaRawJson
-    extends
-        Omit<PydanticFormBaseSchema, 'type'>,
+    extends Omit<PydanticFormBaseSchema, 'type'>,
         PydanticFormFieldValidations,
         JsonSchemaRef {
     type: PydanticFormFieldType;
