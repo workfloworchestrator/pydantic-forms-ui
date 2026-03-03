@@ -12,6 +12,7 @@ import {
     PydanticForm,
     PydanticFormFieldFormat,
     PydanticFormFieldType,
+    zodValidationPresets
 } from 'pydantic-forms';
 import type {
     PydanticComponentMatcher,
@@ -187,7 +188,9 @@ export default function Page() {
                         field.format === PydanticFormFieldFormat.LONG
                     );
                 },
+                validator: zodValidationPresets.string
             },
+
             {
                 id: 'integer',
                 ElementMatch: {
@@ -197,6 +200,7 @@ export default function Page() {
                 matcher(field) {
                     return field.type === PydanticFormFieldType.INTEGER;
                 },
+                validator: zodValidationPresets.integer
             },
             {
                 id: 'radio',
@@ -238,28 +242,13 @@ export default function Page() {
                     return field.type === PydanticFormFieldType.BOOLEAN;
                 },
             },
-            // {
-            //     id: 'multicheckbox',
-            //     ElementMatch: {
-            //         Element: MultiCheckboxField,
-            //         isControlledElement: true,
-            //     },
-            //     matcher(field) {
-            //         return (
-            //             field.type === PydanticFormFieldType.ARRAY &&
-            //             _.isArray(field.options) &&
-            //             field.options?.length > 0 &&
-            //             field.options?.length <= 5
-            //         );
-            //     },
-            //     validator: zodValidationPresets.multiSelect,
-            // },
             {
                 id: 'string',
                 ElementMatch: { Element: TextField, isControlledElement: true },
                 matcher(field) {
                     return field.type === PydanticFormFieldType.STRING;
                 },
+                validator: zodValidationPresets.string
             },
             ...currentMatchers,
         ];

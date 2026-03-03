@@ -10,6 +10,7 @@ import {
     PydanticForm,
     PydanticFormFieldFormat,
     PydanticFormFieldType,
+    zodValidationPresets,
 } from 'pydantic-forms';
 import type {
     PydanticComponentMatcher,
@@ -22,14 +23,11 @@ import type {
 import { items } from '@/app/items';
 import { DropdownField } from '@/components/fields/shadcn/DropdownField';
 import { IntegerField } from '@/components/fields/shadcn/IntegerField';
-import { TextAreaField } from '@/components/fields/shadcn/TextAreaField';
 import { TextField } from '@/components/fields/shadcn/TextField';
 import {
     Card,
-    CardAction,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
@@ -170,6 +168,7 @@ export default function Home() {
                         field.format === PydanticFormFieldFormat.LONG
                     );
                 },
+                validator: zodValidationPresets.string
             },
             {
                 id: 'integer',
@@ -180,23 +179,8 @@ export default function Home() {
                 matcher(field) {
                     return field.type === PydanticFormFieldType.INTEGER;
                 },
+                validator: zodValidationPresets.integer
             },
-            // {
-            //     id: 'radio',
-            //     ElementMatch: {
-            //         Element: RadioField,
-            //         isControlledElement: true,
-            //     },
-            //     matcher(field) {
-            //         // We are looking for a single value from a set list of options. With less than 4 options, use radio buttons.
-            //         return (
-            //             field.type === PydanticFormFieldType.STRING &&
-            //             _.isArray(field.options) &&
-            //             field.options?.length > 0 &&
-            //             field.options?.length <= 3
-            //         );
-            //     },
-            // },
             {
                 id: 'select',
                 ElementMatch: {
@@ -211,32 +195,6 @@ export default function Home() {
                     );
                 },
             },
-            // {
-            //     id: 'checkbox',
-            //     ElementMatch: {
-            //         Element: CheckboxField,
-            //         isControlledElement: true,
-            //     },
-            //     matcher(field) {
-            //         return field.type === PydanticFormFieldType.BOOLEAN;
-            //     },
-            // },
-            // {
-            //     id: 'multicheckbox',
-            //     ElementMatch: {
-            //         Element: MultiCheckboxField,
-            //         isControlledElement: true,
-            //     },
-            //     matcher(field) {
-            //         return (
-            //             field.type === PydanticFormFieldType.ARRAY &&
-            //             _.isArray(field.options) &&
-            //             field.options?.length > 0 &&
-            //             field.options?.length <= 5
-            //         );
-            //     },
-            //     validator: zodValidationPresets.multiSelect,
-            // },
             {
                 id: 'string',
                 ElementMatch: {
@@ -246,6 +204,7 @@ export default function Home() {
                 matcher(field) {
                     return field.type === PydanticFormFieldType.STRING;
                 },
+                validator: zodValidationPresets.string
             },
             ...currentMatchers,
         ];
