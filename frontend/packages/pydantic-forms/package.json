@@ -60,28 +60,28 @@
     },
     "devDependencies": {
         "@jest/globals": "^29.7.0",
-        "@orchestrator-ui/eslint-config-custom": "^1.4.1",
-        "@orchestrator-ui/jest-config": "^1.5.1",
-        "@orchestrator-ui/tsconfig": "^1.2.1",
+        "@orchestrator-ui/eslint-config-custom": "^2.2.0",
+        "@orchestrator-ui/jest-config": "^1.7.0",
+        "@orchestrator-ui/tsconfig": "^1.4.0",
         "@types/jest": "^29.5.14",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
         "eslint": "^10.0.2",
-        "ts-jest": "^29.3.2",
-        "tsup": "^8.0.2",
-        "typescript": "^5.8.3"
+        "ts-jest": "^29.4.6",
+        "tsup": "^8.5.1",
+        "typescript": "^5.9.3"
     },
     "dependencies": {
-        "@apidevtools/json-schema-ref-parser": "^14.0.3",
+        "@apidevtools/json-schema-ref-parser": "^14.2.1",
         "@emotion/react": "^11.14.0",
-        "@hookform/resolvers": "^5.1.1",
-        "dayjs": "^1.11.13",
-        "i18next": "^24.1.2",
-        "lodash": "^4.17.21",
+        "@hookform/resolvers": "^5.2.2",
+        "dayjs": "^1.11.19",
+        "i18next": "^24.2.3",
+        "lodash": "^4.17.23",
         "next-intl": "^3.26.5",
-        "react-hook-form": "^7.54.1",
-        "swr": "^2.3.0",
-        "zod": "^3.25.1"
+        "react-hook-form": "^7.71.2",
+        "swr": "^2.4.1",
+        "zod": "^3.25.76"
     },
     "peerDependencies": {
         "next": "^14.0.0 || ^15.0.0 || ^16.0.0",
