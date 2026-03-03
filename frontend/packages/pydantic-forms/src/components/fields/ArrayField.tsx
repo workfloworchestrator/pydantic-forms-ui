@@ -17,8 +17,10 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
         control,
         name: arrayName,
     });
-    const { minItems, maxItems } =
-        pydanticFormField?.validations || { minItems: 1, maxItems: undefined };
+    const { minItems, maxItems } = pydanticFormField?.validations || {
+        minItems: 1,
+        maxItems: undefined,
+    };
 
     const appendDefault = useCallback(() => {
         append({

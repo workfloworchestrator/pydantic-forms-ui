@@ -168,7 +168,7 @@ export default function Home() {
                         field.format === PydanticFormFieldFormat.LONG
                     );
                 },
-                validator: zodValidationPresets.string
+                validator: zodValidationPresets.string,
             },
             {
                 id: 'integer',
@@ -179,7 +179,7 @@ export default function Home() {
                 matcher(field) {
                     return field.type === PydanticFormFieldType.INTEGER;
                 },
-                validator: zodValidationPresets.integer
+                validator: zodValidationPresets.integer,
             },
             {
                 id: 'select',
@@ -204,7 +204,7 @@ export default function Home() {
                 matcher(field) {
                     return field.type === PydanticFormFieldType.STRING;
                 },
-                validator: zodValidationPresets.string
+                validator: zodValidationPresets.string,
             },
             ...currentMatchers,
         ];

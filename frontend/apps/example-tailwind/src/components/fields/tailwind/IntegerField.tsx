@@ -32,7 +32,11 @@ export const IntegerField = ({
         <input
             data-testid={pydanticFormField.id}
             onBlur={onBlur}
-            onChange={(event) => onChange(event.target.value ? parseInt(event.target.value) : null)}
+            onChange={(event) =>
+                onChange(
+                    event.target.value ? parseInt(event.target.value) : null,
+                )
+            }
             disabled={disabled}
             value={fieldValue}
             type="number"

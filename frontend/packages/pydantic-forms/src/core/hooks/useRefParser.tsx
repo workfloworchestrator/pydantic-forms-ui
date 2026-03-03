@@ -32,7 +32,9 @@ export function useRefParser(
                 return parsedSchema;
             } catch (error) {
                 console.error(error);
-                throw new Error('Could not parse JSON references', {cause: error});
+                throw new Error('Could not parse JSON references', {
+                    cause: error,
+                });
             }
         },
         {
