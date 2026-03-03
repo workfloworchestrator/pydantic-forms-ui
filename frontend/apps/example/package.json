@@ -12,21 +12,21 @@
         "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
     },
     "dependencies": {
-        "next": "^15.5.9",
+        "next": "^15.5.12",
         "pydantic-forms": "workspace:*",
-        "react": "18.*",
-        "react-dom": "18.*",
-        "react-hook-form": "^7.71.1"
+        "react": "~18.3.1",
+        "react-dom": "~18.3.1",
+        "react-hook-form": "^7.71.2"
     },
     "devDependencies": {
-        "@orchestrator-ui/eslint-config-custom": "^1.4.1",
-        "@orchestrator-ui/jest-config": "^1.5.1",
-        "@orchestrator-ui/tsconfig": "^1.2.1",
-        "@types/node": "^20",
-        "@types/react": "^18",
-        "@types/react-dom": "^18",
-        "eslint": "^8",
-        "eslint-config-next": "15.0.3",
-        "typescript": "^5"
+        "@orchestrator-ui/eslint-config-custom": "^2.2.0",
+        "@orchestrator-ui/jest-config": "^1.7.0",
+        "@orchestrator-ui/tsconfig": "^1.4.0",
+        "@types/node": "^25.3.3",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.3",
+        "eslint": "^10.0.2",
+        "eslint-config-next": "16.1.6",
+        "typescript": "^5.9.3"
     }
 }

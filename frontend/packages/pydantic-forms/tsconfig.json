@@ -1,22 +1,33 @@
 {
-    "extends": "@orchestrator-ui/tsconfig/base.json",
     "compilerOptions": {
-        "strictNullChecks": true,
-        "rootDir": "./src",
-        "outDir": "./dist",
-        "baseUrl": ".",
+        "target": "ES2022",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "react-jsx",
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
         "paths": {
             "@/*": ["./src/*"]
-        },
-        "module": "esnext",
-        "lib": ["ES2020", "DOM", "DOM.Iterable"]
+        }
     },
-    "include": ["./src/**/*.ts", "./src/**/*.tsx"],
-    "exclude": [
-        "node_modules",
-        "**/*.stories.ts",
-        "**/*.stories.js",
-        "**/*.stories.jsx",
-        "**/*.stories.tsx"
-    ]
+    "include": [
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        ".next/types/**/*.ts",
+        ".next/dev/types/**/*.ts",
+        "**/*.mts"
+    ],
+    "exclude": ["node_modules"]
 }

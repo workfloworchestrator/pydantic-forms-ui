@@ -62,7 +62,6 @@
         "@jest/globals": "^29.7.0",
         "@orchestrator-ui/eslint-config-custom": "^2.2.0",
         "@orchestrator-ui/jest-config": "^1.7.0",
-        "@orchestrator-ui/tsconfig": "^1.4.0",
         "@types/jest": "^29.5.14",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
