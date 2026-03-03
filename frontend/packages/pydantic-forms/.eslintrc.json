@@ -1,3 +1,0 @@
-{
-    "extends": ["@orchestrator-ui/eslint-config-custom"]
-}
