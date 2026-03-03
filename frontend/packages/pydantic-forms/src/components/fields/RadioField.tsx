@@ -26,7 +26,8 @@ export const RadioField = ({
                         value={option.value}
                         checked={value === option.value}
                         onChange={(e) => onChange(e.target.value)}
-                    />&nbsp;<label htmlFor={option.value}>{option.label}</label>
+                    />
+                    &nbsp;<label htmlFor={option.value}>{option.label}</label>
                 </div>
             ))}
         </div>

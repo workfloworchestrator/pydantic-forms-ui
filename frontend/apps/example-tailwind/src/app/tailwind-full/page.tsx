@@ -12,7 +12,7 @@ import {
     PydanticForm,
     PydanticFormFieldFormat,
     PydanticFormFieldType,
-    zodValidationPresets
+    zodValidationPresets,
 } from 'pydantic-forms';
 import type {
     PydanticComponentMatcher,
@@ -188,7 +188,7 @@ export default function Page() {
                         field.format === PydanticFormFieldFormat.LONG
                     );
                 },
-                validator: zodValidationPresets.string
+                validator: zodValidationPresets.string,
             },
 
             {
@@ -200,7 +200,7 @@ export default function Page() {
                 matcher(field) {
                     return field.type === PydanticFormFieldType.INTEGER;
                 },
-                validator: zodValidationPresets.integer
+                validator: zodValidationPresets.integer,
             },
             {
                 id: 'radio',
@@ -248,7 +248,7 @@ export default function Page() {
                 matcher(field) {
                     return field.type === PydanticFormFieldType.STRING;
                 },
-                validator: zodValidationPresets.string
+                validator: zodValidationPresets.string,
             },
             ...currentMatchers,
         ];
