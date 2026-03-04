@@ -1,6 +1,6 @@
 {
     "name": "example-tailwind",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "private": true,
     "scripts": {
         "dev": "next dev -H 127.0.0.1 -p 3001",
