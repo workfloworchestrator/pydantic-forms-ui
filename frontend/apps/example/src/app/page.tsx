@@ -17,8 +17,7 @@ import type {
     PydanticFormSuccessResponse,
 } from 'pydantic-forms';
 
-import { TextArea } from '@/fields';
-
+import { TextArea } from '../fields';
 import styles from './page.module.css';
 
 export default function Home() {

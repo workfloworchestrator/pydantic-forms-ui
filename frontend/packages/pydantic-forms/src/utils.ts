@@ -1,6 +1,8 @@
 import type { FieldPath, FieldValues } from 'react-hook-form';
 
-import type { PydanticFormField } from './types';
+import { z } from 'zod/v4';
+
+import { Locale, PydanticFormField, PydanticFormZodCustomError } from './types';
 
 export const insertItemAtIndex = (
     fields: PydanticFormField[],
@@ -147,3 +149,38 @@ export const toOptionalObjectProperty = <T extends object>(
     entries: T,
     condition: boolean,
 ): T | object => (condition ? entries : {});
+
+export const getZodLocale = (locale?: Locale) => {
+    switch (locale) {
+        case Locale.enGB:
+            return z.locales.en();
+        case Locale.nlNL:
+            return z.locales.nl();
+        default:
+            return z.locales.en();
+    }
+};
+
+export const getNumberValidationMessage = (locale?: Locale) => {
+    switch (locale) {
+        case Locale.nlNL:
+            return 'Vul een geldig getal in.';
+        case Locale.enGB:
+        default:
+            return 'Please enter a valid number.';
+    }
+};
+
+export const getZodCustomErrorMessages = (
+    locale?: Locale,
+): PydanticFormZodCustomError => {
+    return (issue) => {
+        if (
+            issue.code === 'invalid_type' &&
+            issue.expected === 'number' &&
+            issue.input === null
+        ) {
+            return getNumberValidationMessage(locale);
+        }
+    };
+};

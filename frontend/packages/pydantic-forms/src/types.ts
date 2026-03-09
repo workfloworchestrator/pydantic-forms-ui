@@ -37,6 +37,10 @@ export type PydanticFormFieldDataStorage = {
     delete: (fieldId: string) => void;
 };
 
+export type PydanticFormZodCustomError = NonNullable<
+    NonNullable<Parameters<typeof z.config>[0]>['customError']
+>;
+
 export enum PydanticFormState {
     NEW = 'new',
     IN_PROGRESS = 'in-progress',
@@ -241,6 +245,9 @@ export interface PydanticFormConfig {
 
     loadingComponent?: React.ReactNode;
     errorComponent?: React.ReactNode;
+
+    // custom zod validation messages
+    zodCustomError?: PydanticFormZodCustomError;
 
     // locale
     locale?: Locale;

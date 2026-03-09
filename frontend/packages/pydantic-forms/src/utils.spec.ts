@@ -1,11 +1,18 @@
 import type { FieldValues } from 'react-hook-form';
 
 import { getMockPydanticFormField } from './core/helper.spec';
-import { PydanticFormFieldType } from './types';
+import {
+    Locale,
+    PydanticFormFieldType,
+    PydanticFormZodCustomError,
+} from './types';
 import {
     disableField,
     getFormFieldIdWithPath,
     getFormFieldValue,
+    getNumberValidationMessage,
+    getZodCustomErrorMessages,
+    getZodLocale,
     insertItemAtIndex,
     itemizeArrayItem,
     toOptionalObjectProperty,
@@ -413,5 +420,43 @@ describe('toOptionalObjectProperty', () => {
     it('omits const when addConstValue = false', () => {
         expect(withSpread(false)).toEqual(withHelper(false));
         expect(withSpread(false)).not.toHaveProperty('const');
+    });
+});
+
+describe('zod error helpers', () => {
+    it('returns English zod locale by default', () => {
+        const locale = getZodLocale();
+        expect(typeof locale.localeError).toBe('function');
+    });
+
+    it('returns localized number validation message', () => {
+        expect(getNumberValidationMessage(Locale.enGB)).toBe(
+            'Please enter a valid number.',
+        );
+        expect(getNumberValidationMessage(Locale.nlNL)).toBe(
+            'Vul een geldig getal in.',
+        );
+    });
+
+    it('returns localized message for null-number type errors only', () => {
+        const customError = getZodCustomErrorMessages(
+            Locale.enGB,
+        ) as PydanticFormZodCustomError;
+
+        expect(
+            customError({
+                code: 'invalid_type',
+                expected: 'number',
+                input: null,
+            }),
+        ).toBe('Please enter a valid number.');
+
+        expect(
+            customError({
+                code: 'invalid_type',
+                expected: 'number',
+                input: '',
+            }),
+        ).toBeUndefined();
     });
 });

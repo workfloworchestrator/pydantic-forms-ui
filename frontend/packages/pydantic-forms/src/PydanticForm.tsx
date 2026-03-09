@@ -10,15 +10,15 @@ import React, { createContext } from 'react';
 
 import { z } from 'zod/v4';
 
-import { PydanticFormHandler } from './core';
-import { PydanticFormFieldDataStorageProvider } from './core/PydanticFieldDataStorageProvider';
-import { TranslationsProvider } from './messages/translationsProvider';
+import { TranslationsProvider } from '../src/messages/translationsProvider';
 import {
-    Locale,
     PydanticFormConfig,
     PydanticFormProps,
     PydanticFormValidationErrorDetails,
-} from './types';
+} from '../src/types';
+import { getZodCustomErrorMessages, getZodLocale } from '../src/utils';
+import { PydanticFormHandler } from './core';
+import { PydanticFormFieldDataStorageProvider } from './core/PydanticFieldDataStorageProvider';
 
 export const PydanticFormConfigContext =
     createContext<PydanticFormConfig | null>(null);
@@ -34,18 +34,12 @@ export const PydanticForm = ({
     onSuccess,
     title,
 }: PydanticFormProps) => {
-    const getLocale = () => {
-        switch (config.locale) {
-            case Locale.enGB:
-                return z.locales.en();
-            case Locale.nlNL:
-                return z.locales.nl();
-            default:
-                return z.locales.en();
-        }
-    };
-
-    z.config(getLocale());
+    const zodCustomError = getZodCustomErrorMessages(config.locale);
+    z.config({
+        ...getZodLocale(config.locale),
+        customError: (issue) =>
+            config.zodCustomError?.(issue) ?? zodCustomError(issue),
+    });
 
     return (
         <TranslationsProvider
