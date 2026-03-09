@@ -2,7 +2,7 @@ import type { FieldPath, FieldValues } from 'react-hook-form';
 
 import { z } from 'zod/v4';
 
-import { Locale, PydanticFormField, PydanticFormZodCustomError } from '@/types';
+import { Locale, PydanticFormField, PydanticFormZodCustomError } from './types';
 
 export const insertItemAtIndex = (
     fields: PydanticFormField[],

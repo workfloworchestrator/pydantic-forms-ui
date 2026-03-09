@@ -10,14 +10,13 @@ import React, { createContext } from 'react';
 
 import { z } from 'zod/v4';
 
-import { TranslationsProvider } from '@/messages/translationsProvider';
+import { TranslationsProvider } from '../src/messages/translationsProvider';
 import {
     PydanticFormConfig,
     PydanticFormProps,
     PydanticFormValidationErrorDetails,
-} from '@/types';
-import { getZodCustomErrorMessages, getZodLocale } from '@/utils';
-
+} from '../src/types';
+import { getZodCustomErrorMessages, getZodLocale } from '../src/utils';
 import { PydanticFormHandler } from './core';
 import { PydanticFormFieldDataStorageProvider } from './core/PydanticFieldDataStorageProvider';
 
