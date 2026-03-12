@@ -1,5 +1,12 @@
 # example-tailwind
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [1d6018d]
+    - pydantic-forms@1.0.7
+
 ## 0.2.1
 
 ### Patch Changes
