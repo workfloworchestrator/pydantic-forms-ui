@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 1.0.6
+
+### Patch Changes
+
+- 3a3f992: Improve error message for number field
+
 ## 1.1.0
 
 ### Minor Changes
