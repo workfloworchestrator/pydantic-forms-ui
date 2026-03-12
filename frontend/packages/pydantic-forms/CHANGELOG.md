@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 1.0.7
+
+### Patch Changes
+
+- 1d6018d: Release 1.0.7
+
 ## 1.0.6
 
 ### Patch Changes
