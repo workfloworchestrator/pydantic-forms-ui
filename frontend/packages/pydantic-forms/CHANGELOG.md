@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+- 10f7c75: Switches project to pnpm
+
+## 1.0.5
+
+### Patch Changes
+
 - 92a9013: Switches project to pnpm
 
 ## 1.0.7
