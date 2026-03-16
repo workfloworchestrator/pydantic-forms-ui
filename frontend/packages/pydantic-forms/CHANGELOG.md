@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 1.0.5
+
+### Patch Changes
+
+- 92a9013: Switches project to pnpm
+
 ## 1.0.7
 
 ### Patch Changes
