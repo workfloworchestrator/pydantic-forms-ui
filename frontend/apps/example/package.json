@@ -12,7 +12,7 @@
         "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
     },
     "dependencies": {
-        "next": "^15.5.12",
+        "next": "^16.1.7",
         "pydantic-forms": "workspace:*",
         "react": "~18.3.1",
         "react-dom": "~18.3.1",
