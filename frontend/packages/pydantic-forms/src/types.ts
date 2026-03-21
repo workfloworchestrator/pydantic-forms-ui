@@ -234,7 +234,7 @@ export interface PydanticFormConfig {
     customDataProviderCacheKey?: number;
 
     // overwrite or extend the default useForm configuration of react-hook-form
-    useFormConfig?: Parameters<typeof useForm>;
+    useFormConfig?: Parameters<typeof useForm>[0];
 
     componentMatcherExtender?: ComponentMatcherExtender;
 
