@@ -72,6 +72,7 @@ export const ReactHookForm = ({
         mode: 'all',
         defaultValues,
         values: initialValues || defaultValues,
+        ...config?.useFormConfig,
     });
 
     useEffect(() => {
