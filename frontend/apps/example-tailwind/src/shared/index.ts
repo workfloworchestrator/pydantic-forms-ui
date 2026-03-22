@@ -9,4 +9,4 @@ export { DEFAULT_LOCALE, DEFAULT_TRANSLATIONS } from './constants';
 export { defaultOnSuccess, defaultOnCancel } from './handlers';
 
 // Hooks
-export { useQueryParam } from './hooks/useQueryParam';
+export { useQueryParam } from '@/hooks/useQueryParam';
