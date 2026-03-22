@@ -1,9 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
-
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { PydanticForm } from 'pydantic-forms';
 import type {
     PydanticFormCustomDataProvider,
@@ -38,6 +35,7 @@ import {
     DEFAULT_TRANSLATIONS,
     defaultOnCancel,
     defaultOnSuccess,
+    useQueryParam,
 } from '@/shared';
 
 // Map form query param to API endpoint
@@ -50,30 +48,8 @@ const FORM_MAP: Record<string, string> = {
 const DEFAULT_FORM = 'standard-form';
 
 export default function Home() {
-    const pathname = usePathname();
-    const router = useRouter();
-    const searchParams = useSearchParams();
-
-    // Get form from URL or use default
-    const formParam = searchParams.get('form') || DEFAULT_FORM;
+    const [formParam, setFormParam] = useQueryParam('form', DEFAULT_FORM);
     const activeFormEndpoint = FORM_MAP[formParam] || FORM_MAP[DEFAULT_FORM];
-
-    // Sync URL if invalid form param
-    useEffect(() => {
-        if (!searchParams.get('form')) {
-            router.replace(`${pathname}?form=${DEFAULT_FORM}`, {
-                scroll: false,
-            });
-        } else if (!FORM_MAP[formParam]) {
-            router.replace(`${pathname}?form=${DEFAULT_FORM}`, {
-                scroll: false,
-            });
-        }
-    }, [formParam, pathname, router, searchParams]);
-
-    const setActiveForm = (formKey: string) => {
-        router.push(`${pathname}?form=${formKey}`, { scroll: false });
-    };
 
     const apiProvider = createApiProvider(activeFormEndpoint);
 
@@ -141,7 +117,7 @@ export default function Home() {
                                 <button
                                     type="button"
                                     onClick={() =>
-                                        setActiveForm('standard-form')
+                                        setFormParam('standard-form')
                                     }
                                     className={[
                                         'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition',
@@ -154,7 +130,7 @@ export default function Home() {
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => setActiveForm('full-form')}
+                                    onClick={() => setFormParam('full-form')}
                                     className={[
                                         'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition',
                                         formParam === 'full-form'
@@ -166,7 +142,7 @@ export default function Home() {
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={() => setActiveForm('simple-form')}
+                                    onClick={() => setFormParam('simple-form')}
                                     className={[
                                         'flex-1 rounded-lg px-4 py-2 text-sm font-medium transition',
                                         formParam === 'simple-form'
