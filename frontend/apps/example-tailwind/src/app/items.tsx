@@ -1,4 +1,4 @@
-import { BookIcon, BookPlusIcon } from 'lucide-react';
+import { BookIcon, BookPlusIcon, SettingsIcon } from 'lucide-react';
 
 export const items = [
     {
@@ -10,6 +10,11 @@ export const items = [
         title: 'Full Tailwind Form example',
         url: '/tailwind-full',
         icon: BookPlusIcon,
+    },
+    {
+        title: 'useFormConfig + defaultValues',
+        url: '/default-values-config',
+        icon: SettingsIcon,
     },
     {
         title: 'Simple ShaDCN Form example',
