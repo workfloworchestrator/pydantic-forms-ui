@@ -21,12 +21,7 @@ export const createApiProvider = (
                 headers: { 'Content-Type': 'application/json' },
             });
 
-            if (
-                fetchResult.status === 400 ||
-                fetchResult.status === 510 ||
-                fetchResult.status === 200 ||
-                fetchResult.status === 201
-            ) {
+            if ([400, 510, 200, 201].includes(fetchResult.status)) {
                 const data = await fetchResult.json();
 
                 return new Promise<Record<string, unknown>>(
