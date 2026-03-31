@@ -26,10 +26,7 @@ export const createApiProvider = (
 
                 return new Promise<Record<string, unknown>>(
                     (resolve, reject) => {
-                        if (
-                            fetchResult.status === 510 ||
-                            fetchResult.status === 400
-                        ) {
+                        if ([400, 510].includes(fetchResult.status)) {
                             resolve({ ...data, status: fetchResult.status });
                             return;
                         }
