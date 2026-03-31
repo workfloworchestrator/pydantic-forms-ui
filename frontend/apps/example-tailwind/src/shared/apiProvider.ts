@@ -30,10 +30,7 @@ export const createApiProvider = (
                             resolve({ ...data, status: fetchResult.status });
                             return;
                         }
-                        if (
-                            fetchResult.status === 200 ||
-                            fetchResult.status === 201
-                        ) {
+                        if ([200, 201].includes(fetchResult.status)) {
                             resolve({ status: fetchResult.status, data });
                             return;
                         }
