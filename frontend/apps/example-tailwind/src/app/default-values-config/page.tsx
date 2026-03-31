@@ -14,6 +14,23 @@ import {
     useQueryParam,
 } from '@/shared';
 
+const staticDefaultValues = {
+    full_name: 'John Doe',
+    comments: 'This is a pre-filled comment using static default values',
+    age: 25,
+    birth_date: '1999-01-01',
+    subscribe: false,
+    preference: 'a',
+};
+
+const getToggleButtonStyles = (isActive: boolean) =>
+    [
+        'flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition',
+        isActive
+            ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
+            : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800',
+    ].join(' ');
+
 // Simulate an async API call to fetch default values
 async function fetchDefaultValuesFromAPI(): Promise<Record<string, unknown>> {
     // Simulate network delay - increased to make loading more noticeable
@@ -29,7 +46,7 @@ async function fetchDefaultValuesFromAPI(): Promise<Record<string, unknown>> {
         age: 28,
         birth_date: '1998-03-15',
         subscribe: true,
-        preference: 'b', // Option B
+        preference: 'b',
     };
 }
 
@@ -50,24 +67,14 @@ export default function Page() {
                     <button
                         type="button"
                         onClick={() => setMode('static')}
-                        className={[
-                            'flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition',
-                            mode === 'static'
-                                ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
-                                : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800',
-                        ].join(' ')}
+                        className={getToggleButtonStyles(mode === 'static')}
                     >
                         Static DefaultValues
                     </button>
                     <button
                         type="button"
                         onClick={() => setMode('async')}
-                        className={[
-                            'flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition',
-                            mode === 'async'
-                                ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
-                                : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800',
-                        ].join(' ')}
+                        className={getToggleButtonStyles(mode === 'async')}
                     >
                         Async DefaultValues
                     </button>
@@ -140,7 +147,6 @@ const staticDefaults = {
                 </pre>
             </div>
 
-            {/* Form */}
             <FormContainer>
                 <PydanticForm
                     key={mode}
@@ -157,17 +163,8 @@ const staticDefaults = {
                         useFormConfig: {
                             defaultValues:
                                 mode === 'async'
-                                    ? fetchDefaultValuesFromAPI // Async function
-                                    : {
-                                          // Static object
-                                          full_name: 'John Doe',
-                                          comments:
-                                              'This is a pre-filled comment using static default values',
-                                          age: 25,
-                                          birth_date: '1999-01-01',
-                                          subscribe: false,
-                                          preference: 'a',
-                                      },
+                                    ? fetchDefaultValuesFromAPI
+                                    : staticDefaultValues,
                         },
                     }}
                 />
