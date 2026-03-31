@@ -1,8 +1,18 @@
 import type { PydanticFormApiProvider } from 'pydantic-forms';
 
+enum Status {
+    Ok = 200,
+    Created = 201,
+    ValidationError = 400,
+    FormDefinition = 510,
+}
+
+const ERROR_STATUSES = [Status.ValidationError, Status.FormDefinition];
+const SUCCESS_STATUSES = [Status.Ok, Status.Created];
+const HANDLED_STATUSES = [...ERROR_STATUSES, ...SUCCESS_STATUSES];
+
 /**
  * Creates a Pydantic Form API provider for the given endpoint.
- * Handles standard response statuses (200, 201, 400, 510).
  *
  * @param endpoint - The API endpoint path (e.g., '/form-simple')
  * @param baseUrl - Optional base URL (defaults to localhost:8000)
@@ -21,16 +31,16 @@ export const createApiProvider = (
                 headers: { 'Content-Type': 'application/json' },
             });
 
-            if ([400, 510, 200, 201].includes(fetchResult.status)) {
+            if (HANDLED_STATUSES.includes(fetchResult.status)) {
                 const data = await fetchResult.json();
 
                 return new Promise<Record<string, unknown>>(
                     (resolve, reject) => {
-                        if ([400, 510].includes(fetchResult.status)) {
+                        if (ERROR_STATUSES.includes(fetchResult.status)) {
                             resolve({ ...data, status: fetchResult.status });
                             return;
                         }
-                        if ([200, 201].includes(fetchResult.status)) {
+                        if (SUCCESS_STATUSES.includes(fetchResult.status)) {
                             resolve({ status: fetchResult.status, data });
                             return;
                         }
@@ -39,9 +49,7 @@ export const createApiProvider = (
                 );
             }
 
-            throw new Error(
-                `Status not 400, 510, 200 or 201: ${fetchResult.statusText}`,
-            );
+            throw new Error(`Unexpected status: ${fetchResult.statusText}`);
         } catch (error) {
             throw new Error(`Fetch error: ${String(error)}`);
         }

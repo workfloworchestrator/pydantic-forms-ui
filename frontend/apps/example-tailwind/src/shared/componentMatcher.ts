@@ -6,14 +6,16 @@ import {
 } from 'pydantic-forms';
 import type { PydanticComponentMatcher } from 'pydantic-forms';
 
-import { CheckboxField } from '@/components/fields/tailwind/CheckboxField';
-import { DateField } from '@/components/fields/tailwind/DateField';
-import { DateTimeField } from '@/components/fields/tailwind/DateTimeField';
-import { DropdownField } from '@/components/fields/tailwind/DropdownField';
-import { IntegerField } from '@/components/fields/tailwind/IntegerField';
-import { RadioField } from '@/components/fields/tailwind/RadioField';
-import { TextAreaField } from '@/components/fields/tailwind/TextAreaField';
-import { TextField } from '@/components/fields/tailwind/TextField';
+import {
+    CheckboxField,
+    DateField,
+    DateTimeField,
+    DropdownField,
+    IntegerField,
+    RadioField,
+    TextAreaField,
+    TextField,
+} from '@/components/fields/tailwind';
 
 /**
  * Shared component matcher configuration for all examples.
