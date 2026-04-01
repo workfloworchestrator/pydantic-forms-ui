@@ -10,7 +10,7 @@
         "build": "turbo run build",
         "clean": "turbo run clean && rm -rf node_modules",
         "changeset": "changeset",
-        "packages:publish": "turbo run build lint test && changeset publish",
+        "packages:publish": "pnpm publish -r --access=public",
         "postinstall": "turbo run build --filter=./packages/*"
     },
     "devDependencies": {
