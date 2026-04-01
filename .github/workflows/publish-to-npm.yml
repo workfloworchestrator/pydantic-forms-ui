@@ -29,7 +29,6 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 22
-                  cache: 'pnpm'
 
             - name: Installing dependencies
               run: cd frontend && pnpm install --frozen-lockfile && pwd
