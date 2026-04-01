@@ -14,18 +14,18 @@ export type PydanticFormMetaData = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type PydanticFormFieldValue = any;
 
-export type PydanticFormElementProps = {
-    pydanticFormField: PydanticFormField;
+export type PydanticFormElementProps<
+    TSchema extends object = PydanticFormPropertySchemaParsed,
+> = {
+    pydanticFormField: Omit<PydanticFormField, 'schema'> & { schema: TSchema };
 };
 
 export type PydanticFormElement =
     React.JSXElementConstructor<PydanticFormElementProps>;
 
-export type PydanticFormControlledElementProps = Omit<
-    ControllerRenderProps,
-    'ref'
-> &
-    PydanticFormElementProps;
+export type PydanticFormControlledElementProps<
+    TSchema extends object = PydanticFormPropertySchemaParsed,
+> = Omit<ControllerRenderProps, 'ref'> & PydanticFormElementProps<TSchema>;
 
 export type PydanticFormControlledElement =
     React.JSXElementConstructor<PydanticFormControlledElementProps>;
@@ -124,6 +124,10 @@ export enum PydanticFormFieldFormat {
     MARKDOWN = 'markdown',
     DIVIDER = 'divider',
 }
+
+export type PydanticFormFieldFormatExtended =
+    | PydanticFormFieldFormat
+    | (string & {});
 
 export interface PydanticFormFieldOption {
     value: string;
@@ -397,7 +401,7 @@ export interface PydanticFormPropertySchemaParsed
     };
 
     default?: string | null | object;
-    format?: PydanticFormFieldFormat;
+    format?: PydanticFormFieldFormatExtended;
     const?: number | string | boolean | null;
 
     uniforms?: UniformProperties;
