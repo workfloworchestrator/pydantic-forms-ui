@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+- e14f4f4: Switches project to pnpm. Adds useForm configuration.
+
+## 1.0.5
+
+### Patch Changes
+
 - a7a5b02: Switches project to pnpm. Adds useForm configuration.
 
 ## 1.0.5
