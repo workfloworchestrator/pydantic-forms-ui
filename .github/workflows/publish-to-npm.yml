@@ -20,24 +20,20 @@ jobs:
             - name: Checkout code repo
               uses: actions/checkout@v4
 
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  version: 10.28.2
-
             - name: Setup node
               uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                  node-version: "22"
+                  registry-url: "https://registry.npmjs.org"
 
             - name: Installing dependencies
-              run: cd frontend && pnpm install --frozen-lockfile && pwd
+              run: cd frontend && npm ci && pwd
 
             - name: Create Release Pull Request or Publish
               id: changesets
               uses: changesets/action@e0538e686673de0265c8a3e2904b8c76beaa43fd
               with:
-                  publish: pnpm packages:publish
+                  publish: npm run packages:publish
                   cwd: /home/runner/work/pydantic-forms-ui/pydantic-forms-ui/frontend
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

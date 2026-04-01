@@ -10,7 +10,7 @@
         "build": "turbo run build",
         "clean": "turbo run clean && rm -rf node_modules",
         "changeset": "changeset",
-        "packages:publish": "pnpm publish -r --access=public",
+        "packages:publish": "turbo run build lint test && changeset publish",
         "postinstall": "turbo run build --filter=./packages/*"
     },
     "devDependencies": {
@@ -28,6 +28,10 @@
         "lodash.merge": "^4.6.2",
         "typescript": "^5.9.3"
     },
-    "packageManager": "pnpm@10.28.2",
+    "packageManager": "npm@11.7.0",
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
     "version": "1.0.2"
 }
