@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 1.0.6
+
+### Patch Changes
+
+- 5f3aec3: Revert back to npm
+
 ## 1.0.5
 
 ### Patch Changes
