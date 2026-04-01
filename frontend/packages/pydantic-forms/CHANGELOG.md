@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+- f124aa4: Test changeset
+
+## 1.0.5
+
+### Patch Changes
+
 - 99cb24e: Fix pnpm release
 
 ## 1.0.6
