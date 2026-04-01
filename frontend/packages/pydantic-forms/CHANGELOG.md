@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 1.0.5
+
+### Patch Changes
+
+- 99cb24e: Fix pnpm release
+
 ## 1.0.6
 
 ### Patch Changes
