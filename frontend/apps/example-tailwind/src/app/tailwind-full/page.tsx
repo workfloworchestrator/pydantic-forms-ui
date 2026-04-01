@@ -6,15 +6,15 @@ import type {
     PydanticFormLabelProvider,
 } from 'pydantic-forms';
 
-import { ExampleLayout } from '@/components/layout/ExampleLayout';
-import { FormContainer } from '@/components/layout/FormContainer';
 import FormFooter from '@/components/form/tailwind/FormFooter';
 import FormHeader from '@/components/form/tailwind/FormHeader';
+import { ExampleLayout } from '@/components/layout/ExampleLayout';
+import { FormContainer } from '@/components/layout/FormContainer';
 import {
-    createApiProvider,
-    createComponentMatcher,
     DEFAULT_LOCALE,
     DEFAULT_TRANSLATIONS,
+    createApiProvider,
+    createComponentMatcher,
     defaultOnCancel,
     defaultOnSuccess,
     useQueryParam,
