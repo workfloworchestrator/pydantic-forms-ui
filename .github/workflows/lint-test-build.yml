@@ -5,54 +5,36 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - name: Install pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  version: 10.28.2
             - name: Installing Node
               uses: actions/setup-node@v4
               with:
                   node-version: 22.x
-                  cache: pnpm
-                  cache-dependency-path: frontend/pnpm-lock.yaml
             - name: Installing dependencies
-              run: cd frontend && pnpm install --frozen-lockfile
-            - run: cd frontend && pnpm run tsc
-            - run: cd frontend && pnpm run lint
-            - run: cd frontend && pnpm run prettier
+              run: cd frontend && npm install
+            - run: cd frontend && npm run tsc
+            - run: cd frontend && npm run lint
+            - run: cd frontend && npm run prettier
 
     unit-tests:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - name: Install pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  version: 10.28.2
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
                   node-version: 22.x
-                  cache: pnpm
-                  cache-dependency-path: frontend/pnpm-lock.yaml
             - name: Installing dependencies
-              run: cd frontend && pnpm install --frozen-lockfile
-            - run: cd frontend && pnpm run test
+              run: cd frontend && npm install
+            - run: cd frontend && npm run test
 
     build:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - name: Install pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  version: 10.28.2
             - name: Setup node
               uses: actions/setup-node@v4
               with:
-                  cache: pnpm
-                  cache-dependency-path: frontend/pnpm-lock.yaml
                   node-version: 22.x
             - name: Installing dependencies
-              run: cd frontend && pnpm install --frozen-lockfile
-            - run: cd frontend && pnpm run build
+              run: cd frontend && npm install
+            - run: cd frontend && npm run build

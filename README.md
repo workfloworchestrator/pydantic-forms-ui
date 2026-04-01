@@ -53,12 +53,12 @@ Visit [http://127.0.0.1:8000/docs][4] to view the API documentation.
 
 ### Frontend
 
-This is a pnpm workspace monorepo with multiple example applications:
+This is a npm workspace monorepo with multiple example applications:
 
 ```bash
 cd frontend
-pnpm install
-pnpm dev  # Runs all example apps
+npm install
+npm run dev  # Runs all example apps
 ```
 
 **Example Applications:**
@@ -81,14 +81,9 @@ Pre-commit hooks will run:
 
 ## Publishing to NPM
 
-This repository is also used to publish the `pydantic-forms` package to NPM:
-
-```bash
-cd frontend
-pnpm packages:publish
-```
-
-This runs build, lint, and tests, then uses [changesets](https://github.com/changesets/changesets) to handle versioning and publishing.
+This repository is also used to publish the `pydantic-forms` package to NPM. Publishing is
+handled using the changesets tool that is configured to be used in an Github action called
+publish-to-npm in the .github/workflows directory.
 
 [1]: https://fastapi.tiangolo.com/
 [2]: https://pypi.org/project/pydantic-forms
