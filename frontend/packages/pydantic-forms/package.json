@@ -3,7 +3,7 @@
     "version": "1.0.5",
     "description": "Library that turns JSONSchema into frontend forms",
     "author": {
-        "name": "Workflow Orchestrator Programme",
+        "name": "Workflow Orchestrator Program",
         "email": "workfloworchestrator.board@commonsconservancy.org",
         "url": "https://www.workfloworchestrator.org"
     },
@@ -11,25 +11,9 @@
         "type": "git",
         "url": "git+https://github.com/workfloworchestrator/pydantic-forms-ui.git"
     },
-    "exports": {
-        ".": {
-            "types": "./src/index.tsx",
-            "default": "./src/index.tsx"
-        }
-    },
     "publishConfig": {
         "access": "public",
-        "provenance": true,
-        "main": "./dist/index.js",
-        "module": "./dist/index.mjs",
-        "types": "./dist/index.d.ts",
-        "exports": {
-            ".": {
-                "types": "./dist/index.d.ts",
-                "import": "./dist/index.mjs",
-                "require": "./dist/index.js"
-            }
-        }
+        "provenance": true
     },
     "homepage": "https://www.workfloworchestrator.org",
     "bugs": "https://github.com/workfloworchestrator/pydantic-forms-ui/issues",
