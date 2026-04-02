@@ -17,7 +17,9 @@ export type PydanticFormFieldValue = any;
 export type PydanticFormElementProps<
     TSchema extends object = PydanticFormPropertySchemaParsed,
 > = {
-    pydanticFormField: Omit<PydanticFormField, 'schema'> & { schema: TSchema };
+    pydanticFormField: Omit<PydanticFormField, 'schema'> & {
+        schema: PydanticFormPropertySchemaParsed & TSchema;
+    };
 };
 
 export type PydanticFormElement =
