@@ -4,7 +4,6 @@
     "private": true,
     "scripts": {
         "dev": "next dev -H 127.0.0.1 -p 3001",
-        "build": "echo 'Skipping build for example-tailwind (React 19 compatibility issues)' && exit 0",
         "start": "next start",
         "test": "echo 'No tests for example-tailwind' && exit 0",
         "tsc": "echo 'Skipping tsc for example-tailwind (React 19 type compatibility issues)' && exit 0",
