@@ -3,7 +3,7 @@ from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from enum import Enum
 from pathlib import Path
-from typing import Annotated, ClassVar, Iterator, Literal
+from typing import Annotated, ClassVar, Iterator, Literal, Optional
 from uuid import UUID
 
 from annotated_types import (
@@ -14,7 +14,6 @@ from annotated_types import (
     Le,
     MultipleOf,
     Predicate,
-    doc,
 )
 
 from fastapi import FastAPI
@@ -590,7 +589,7 @@ async def form_simple(form_data: list[dict] = []):
             # can read via pydanticFormField.schema in a custom component matcher.
             # "format" determines which component matches; the rest is your own schema.
             age_notice: Annotated[
-                str,
+                Optional[str],
                 Field(
                     default=None,
                     exclude=True,
@@ -604,7 +603,7 @@ async def form_simple(form_data: list[dict] = []):
 
             # Another custom field with a different variant and context
             data_usage_notice: Annotated[
-                str,
+                Optional[str],
                 Field(
                     default=None,
                     exclude=True,
