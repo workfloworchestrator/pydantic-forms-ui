@@ -11,6 +11,7 @@ import {
     DateField,
     DateTimeField,
     DropdownField,
+    HelpBanner,
     IntegerField,
     RadioField,
     TextAreaField,
@@ -113,6 +114,16 @@ export const createComponentMatcher = (
             },
             matcher(field) {
                 return field.type === PydanticFormFieldType.BOOLEAN;
+            },
+        },
+        {
+            id: 'note',
+            ElementMatch: {
+                Element: HelpBanner,
+                isControlledElement: false,
+            },
+            matcher(field) {
+                return field.schema.format === 'note';
             },
         },
         {
