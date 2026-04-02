@@ -20,7 +20,15 @@ from annotated_types import (
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, HttpUrl, IPvAnyAddress, Json
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    EmailStr,
+    Field,
+    HttpUrl,
+    IPvAnyAddress,
+    Json,
+)
 from pydantic_forms.core import FormPage, post_form
 from pydantic_forms.types import State
 from pydantic_forms.exception_handlers.fastapi import form_error_handler
@@ -248,10 +256,10 @@ class Colors(Choice):
     VIOLET = ("#7C3AED", "Violet")
     YELLOW_DARK = ("#A16207", "Yellow Dark")
 
+
 @app.post("/form-full")
 async def form_full(form_data: list[dict] = []):
     def form_generator(state: State):
-
         # Page 1: Basic string and numeric types
         class FullFormBasicTypes(FormPage):
             model_config = ConfigDict(title="Basic Types - Strings and Numbers")
@@ -311,7 +319,9 @@ async def form_full(form_data: list[dict] = []):
             )
 
             # Literal
-            experience_level: Literal["beginner", "intermediate", "advanced", "expert"] = Field(
+            experience_level: Literal[
+                "beginner", "intermediate", "advanced", "expert"
+            ] = Field(
                 title="Experience level",
                 description="Select your skill level",
                 default="beginner",
@@ -435,7 +445,9 @@ async def form_full(form_data: list[dict] = []):
             model_config = ConfigDict(title="Nested Objects and Complex Types")
 
             class Address(BaseModel):
-                street: str = Field(title="Street", description="Street name and number")
+                street: str = Field(
+                    title="Street", description="Street name and number"
+                )
                 city: str = Field(title="City")
                 postal_code: str = Field(title="Postal code")
                 country: str = Field(title="Country")
@@ -452,9 +464,11 @@ async def form_full(form_data: list[dict] = []):
             )
 
             # List of nested objects
-            education_history: unique_conlist(Education, min_items=1, max_items=5) = Field(
-                title="Education history",
-                description="Your educational background",
+            education_history: unique_conlist(Education, min_items=1, max_items=5) = (
+                Field(
+                    title="Education history",
+                    description="Your educational background",
+                )
             )
 
         nested_data = yield FullFormNested
@@ -464,7 +478,9 @@ async def form_full(form_data: list[dict] = []):
             model_config = ConfigDict(title="Constrained Types with Validation")
 
             # Constrained string
-            username: Annotated[str, Field(min_length=3, max_length=20, pattern=r"^[a-zA-Z0-9_]+$")] = Field(
+            username: Annotated[
+                str, Field(min_length=3, max_length=20, pattern=r"^[a-zA-Z0-9_]+$")
+            ] = Field(
                 title="Username",
                 description="Alphanumeric username (3-20 characters)",
             )
@@ -482,9 +498,11 @@ async def form_full(form_data: list[dict] = []):
             )
 
             # Constrained list
-            priority_list: Annotated[list[int], Field(min_length=3, max_length=5)] = Field(
-                title="Priority list",
-                description="Rank your top 3-5 priorities",
+            priority_list: Annotated[list[int], Field(min_length=3, max_length=5)] = (
+                Field(
+                    title="Priority list",
+                    description="Rank your top 3-5 priorities",
+                )
             )
 
         validation_data = yield FullFormValidation
@@ -525,6 +543,7 @@ async def form_full(form_data: list[dict] = []):
 
 class SimpleChoices(Choice):
     """Simple choice options for demonstration."""
+
     OPTION_A = ("a", "Option A")
     OPTION_B = ("b", "Option B")
     OPTION_C = ("c", "Option C")
@@ -533,8 +552,8 @@ class SimpleChoices(Choice):
 @app.post("/form-simple")
 async def form_simple(form_data: list[dict] = []):
     """Simple form with only scalar field types - no arrays or objects."""
-    def form_generator(state: State):
 
+    def form_generator(state: State):
         class SimpleForm(SubmitFormPage):
             model_config = ConfigDict(title="Simple Form - Scalar Fields Only")
 
@@ -566,6 +585,37 @@ async def form_simple(form_data: list[dict] = []):
                 description="Select your date of birth",
             )
 
+            # Custom schema fields: rendered by the frontend as non-input UI blocks.
+            # json_schema_extra passes arbitrary data to the schema, which the frontend
+            # can read via pydanticFormField.schema in a custom component matcher.
+            # "format" determines which component matches; the rest is your own schema.
+            age_notice: Annotated[
+                str,
+                Field(
+                    default=None,
+                    exclude=True,
+                    json_schema_extra={
+                        "format": "note",
+                        "variant": "warning",
+                        "message": "You must be at least 18 years old to submit this form. Your age will be verified.",
+                    },
+                ),
+            ]
+
+            # Another custom field with a different variant and context
+            data_usage_notice: Annotated[
+                str,
+                Field(
+                    default=None,
+                    exclude=True,
+                    json_schema_extra={
+                        "format": "note",
+                        "variant": "info",
+                        "message": "Your name and date of birth are used solely for account verification and are not shared with third parties.",
+                    },
+                ),
+            ]
+
             # Boolean field
             subscribe: bool = Field(
                 title="Subscribe to Newsletter",
@@ -585,4 +635,3 @@ async def form_simple(form_data: list[dict] = []):
 
     post_form(form_generator, state={}, user_inputs=form_data)
     return "OK!"
-

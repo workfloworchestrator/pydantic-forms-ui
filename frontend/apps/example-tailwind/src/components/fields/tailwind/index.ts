@@ -1,5 +1,6 @@
 export { CheckboxField } from './CheckboxField';
 export { DateField } from './DateField';
+export { HelpBanner } from './HelpBanner';
 export { DateTimeField } from './DateTimeField';
 export { DividerField } from './DividerField';
 export { DropdownField } from './DropdownField';
