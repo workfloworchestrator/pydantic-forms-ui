@@ -548,6 +548,35 @@ class SimpleChoices(Choice):
     OPTION_C = ("c", "Option C")
 
 
+@dataclass(frozen=True, **SLOTS)
+class NoticeField(GroupedMetadata):
+    variant: str  # can also be made into a Enum for specific variants
+    message: str
+
+    def __iter__(self) -> Iterator[BaseMetadata]:
+        yield Field(
+            default=None,
+            exclude=True,
+            json_schema_extra={
+                "format": "note",
+                "variant": self.variant,
+                "message": self.message,
+            },
+        )
+
+
+_age_notice = NoticeField(
+    variant="warning",
+    message="You must be at least 18 years old to submit this form. Your age will be verified.",
+)
+
+
+_data_usage_notice = NoticeField(
+    variant="info",
+    message="Your name and date of birth are used solely for account verification and are not shared with third parties.",
+)
+
+
 @app.post("/form-simple")
 async def form_simple(form_data: list[dict] = []):
     """Simple form with only scalar field types - no arrays or objects."""
@@ -588,31 +617,12 @@ async def form_simple(form_data: list[dict] = []):
             # json_schema_extra passes arbitrary data to the schema, which the frontend
             # can read via pydanticFormField.schema in a custom component matcher.
             # "format" determines which component matches; the rest is your own schema.
-            age_notice: Annotated[
-                Optional[str],
-                Field(
-                    default=None,
-                    exclude=True,
-                    json_schema_extra={
-                        "format": "note",
-                        "variant": "warning",
-                        "message": "You must be at least 18 years old to submit this form. Your age will be verified.",
-                    },
-                ),
-            ]
+            age_notice: Annotated[Optional[str], _age_notice]
 
             # Another custom field with a different variant and context
             data_usage_notice: Annotated[
                 Optional[str],
-                Field(
-                    default=None,
-                    exclude=True,
-                    json_schema_extra={
-                        "format": "note",
-                        "variant": "info",
-                        "message": "Your name and date of birth are used solely for account verification and are not shared with third parties.",
-                    },
-                ),
+                _data_usage_notice,
             ]
 
             # Boolean field
