@@ -463,11 +463,9 @@ async def form_full(form_data: list[dict] = []):
             )
 
             # List of nested objects
-            education_history: unique_conlist(Education, min_items=1, max_items=5) = (
-                Field(
-                    title="Education history",
-                    description="Your educational background",
-                )
+            education_history: unique_conlist(Education, min_items=1, max_items=5) = Field(
+                title="Education history",
+                description="Your educational background",
             )
 
         nested_data = yield FullFormNested
