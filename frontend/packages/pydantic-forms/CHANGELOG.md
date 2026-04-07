@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 1.0.7
+
+### Patch Changes
+
+- da8a226: Restores exports
+
 ## 1.0.6
 
 ### Patch Changes
