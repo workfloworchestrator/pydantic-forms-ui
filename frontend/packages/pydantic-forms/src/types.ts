@@ -22,15 +22,15 @@ export type PydanticFormElementProps<
     };
 };
 
-export type PydanticFormElement =
-    React.JSXElementConstructor<PydanticFormElementProps>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PydanticFormElement = React.JSXElementConstructor<PydanticFormElementProps<any>>;
 
 export type PydanticFormControlledElementProps<
     TSchema extends object = PydanticFormPropertySchemaParsed,
 > = Omit<ControllerRenderProps, 'ref'> & PydanticFormElementProps<TSchema>;
 
-export type PydanticFormControlledElement =
-    React.JSXElementConstructor<PydanticFormControlledElementProps>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PydanticFormControlledElement = React.JSXElementConstructor<PydanticFormControlledElementProps<any>>;
 
 export type PydanticFormFieldDataStorage = {
     set: (fieldId: string, key: string | number, value: unknown) => void;
