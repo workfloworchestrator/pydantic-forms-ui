@@ -497,11 +497,9 @@ async def form_full(form_data: list[dict] = []):
             )
 
             # Constrained list
-            priority_list: Annotated[list[int], Field(min_length=3, max_length=5)] = (
-                Field(
-                    title="Priority list",
-                    description="Rank your top 3-5 priorities",
-                )
+            priority_list: Annotated[list[int], Field(min_length=3, max_length=5)] = Field(
+                title="Priority list",
+                description="Rank your top 3-5 priorities",
             )
 
         validation_data = yield FullFormValidation
