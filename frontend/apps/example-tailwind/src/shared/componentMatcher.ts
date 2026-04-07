@@ -123,7 +123,7 @@ export const createComponentMatcher = (
                 isControlledElement: false,
             },
             matcher(field) {
-                return field.schema.format === 'note';
+                return field.schema.format === 'notice';
             },
         },
         {
