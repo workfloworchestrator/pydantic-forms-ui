@@ -8,6 +8,6 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 Run from inside monorepo folder (`apps/example-tailwind`)
 
-pnpm dlx shadcn@latest init
-pnpm dlx shadcn@latest add button
-pnpm dlx shadcn@latest add form
+npm dlx shadcn@latest init
+npm dlx shadcn@latest add button
+npm dlx shadcn@latest add form
