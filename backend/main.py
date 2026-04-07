@@ -556,7 +556,7 @@ class NoticeField(GroupedMetadata):
     def __iter__(self) -> Iterator[BaseMetadata]:
         yield Field(
             json_schema_extra={
-                "format": "note",
+                "format": "notice",
                 "variant": self.variant,
                 "message": self.message,
             },
