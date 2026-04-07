@@ -12,14 +12,14 @@ This repository demonstrates how to use the pydantic-forms library to automatica
 ## Repository Structure
 
 ### Monorepo Layout
-This is a pnpm workspace monorepo with the following structure:
+This is a npm workspace monorepo with the following structure:
 
 ```
 ├── backend/                      # FastAPI application
 │   ├── main.py                   # Main API with form endpoints
 │   ├── demo.py                   # Additional demo forms
 │   └── tests/                    # Backend tests
-├── frontend/                     # Frontend monorepo (pnpm workspace)
+├── frontend/                     # Frontend monorepo (npm workspace)
 │   ├── packages/
 │   │   └── pydantic-forms/       # NPM package for form generation
 │   │       ├── src/
@@ -125,50 +125,50 @@ black backend/
 **Setup**:
 ```bash
 cd frontend
-pnpm install
+npm install
 ```
 
 **Run all apps in development**:
 ```bash
 cd frontend
-pnpm dev
+npm dev
 ```
 
 **Run specific app**:
 ```bash
 cd frontend/apps/example
-pnpm dev  # Runs on http://127.0.0.1:3000
+npm dev  # Runs on http://127.0.0.1:3000
 ```
 
 ```bash
 cd frontend/apps/example-tailwind
-pnpm dev  # Runs on http://127.0.0.1:3001
+npm dev  # Runs on http://127.0.0.1:3001
 ```
 
 **Build all packages and apps**:
 ```bash
 cd frontend
-pnpm build
+npm build
 ```
 
 **Lint and type check**:
 ```bash
 cd frontend
-pnpm lint      # ESLint
-pnpm tsc       # TypeScript type checking
-pnpm prettier  # Check formatting
+npm lint      # ESLint
+npm tsc       # TypeScript type checking
+npm prettier  # Check formatting
 ```
 
 **Run tests**:
 ```bash
 cd frontend
-pnpm test
+npm test
 ```
 
 **Clean**:
 ```bash
 cd frontend
-pnpm clean  # Removes node_modules and build artifacts
+npm clean  # Removes node_modules and build artifacts
 ```
 
 ### Working with the pydantic-forms Package
@@ -176,16 +176,16 @@ pnpm clean  # Removes node_modules and build artifacts
 **Build the package after changes**:
 ```bash
 cd frontend/packages/pydantic-forms
-pnpm build
+npm build
 ```
 
 **Watch mode during development**:
 ```bash
 cd frontend/packages/pydantic-forms
-pnpm dev
+npm dev
 ```
 
-Note: The monorepo automatically builds packages on `pnpm install` via the `postinstall` hook.
+Note: The monorepo automatically builds packages on `npm install` via the `postinstall` hook.
 
 ## Pre-commit Hooks
 
@@ -207,7 +207,7 @@ The `pydantic-forms` package is published to NPM. To publish:
 
 ```bash
 cd frontend
-pnpm packages:publish
+npm packages:publish
 ```
 
 This runs build, lint, and tests, then uses changesets to handle versioning and publishing.
@@ -215,7 +215,7 @@ This runs build, lint, and tests, then uses changesets to handle versioning and 
 ## Key Technologies
 
 - **Backend**: FastAPI, Pydantic, pydantic-forms (PyPI package)
-- **Frontend Package Manager**: pnpm with workspaces
+- **Frontend Package Manager**: npm with workspaces
 - **Frontend Build Tool**: Turbo (turborepo)
 - **Frontend Framework**: Next.js 14-16, React 18-19
 - **Form Management**: React Hook Form, Zod validation
@@ -227,5 +227,6 @@ This runs build, lint, and tests, then uses changesets to handle versioning and 
 ## Port Configuration
 
 - Backend API: 8000
+- 
 - example app: 3000
 - example-tailwind app: 3001
