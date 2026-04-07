@@ -555,8 +555,6 @@ class NoticeField(GroupedMetadata):
 
     def __iter__(self) -> Iterator[BaseMetadata]:
         yield Field(
-            default=None,
-            exclude=True,
             json_schema_extra={
                 "format": "note",
                 "variant": self.variant,
@@ -617,13 +615,13 @@ async def form_simple(form_data: list[dict] = []):
             # json_schema_extra passes arbitrary data to the schema, which the frontend
             # can read via pydanticFormField.schema in a custom component matcher.
             # "format" determines which component matches; the rest is your own schema.
-            age_notice: Annotated[Optional[str], _age_notice]
+            age_notice: Annotated[Optional[str], _age_notice] = None
 
             # Another custom field with a different variant and context
             data_usage_notice: Annotated[
                 Optional[str],
                 _data_usage_notice,
-            ]
+            ] = None
 
             # Boolean field
             subscribe: bool = Field(
