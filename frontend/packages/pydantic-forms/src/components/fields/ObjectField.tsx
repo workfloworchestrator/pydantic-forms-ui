@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useGetConfig } from '../../core';
-import { getPydanticFormComponents } from '../../core/helper';
+import { getPydanticFormComponents } from '../../core/getPydanticFormComponents';
 import { PydanticFormElementProps } from '../../types';
 import { disableField } from '../../utils';
 import { RenderFields } from '../render';

@@ -24,15 +24,15 @@
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "date-fns": "^4.1.0",
-        "lucide-react": "^0.563.0",
         "lodash": "^4.17.21",
+        "lucide-react": "^0.563.0",
         "next": "16.1.5",
+        "pydantic-forms": "*",
         "react": "19.2.3",
         "react-day-picker": "^9.13.0",
         "react-dom": "19.2.3",
-        "react-hook-form": "^7.71.1",
-        "tailwind-merge": "^3.4.0",
-        "pydantic-forms": "*"
+        "react-hook-form": "^7.72.1",
+        "tailwind-merge": "^3.4.0"
     },
     "devDependencies": {
         "@orchestrator-ui/eslint-config-custom": "^1.4.1",

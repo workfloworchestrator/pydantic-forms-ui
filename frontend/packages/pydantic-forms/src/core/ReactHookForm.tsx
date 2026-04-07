@@ -18,7 +18,7 @@ import Footer from '../components/form/Footer';
 import { Form } from '../components/form/Form';
 import Header from '../components/form/Header';
 import type { PydanticFormComponents, PydanticFormSchema } from '../types';
-import { getPydanticFormComponents } from './helper';
+import { getPydanticFormComponents } from './getPydanticFormComponents';
 import { useGetConfig } from './hooks';
 import { useGetZodSchema } from './hooks';
 

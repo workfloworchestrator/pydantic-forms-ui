@@ -62,7 +62,7 @@
         "i18next": "^24.2.3",
         "lodash": "^4.17.23",
         "next-intl": "^3.26.5",
-        "react-hook-form": "^7.71.2",
+        "react-hook-form": "^7.72.1",
         "swr": "^2.4.1",
         "zod": "^4.3.6"
     },
