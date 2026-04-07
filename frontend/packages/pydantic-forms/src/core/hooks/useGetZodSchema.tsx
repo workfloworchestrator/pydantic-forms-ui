@@ -19,10 +19,8 @@ import {
     PydanticFormFieldType,
     PydanticFormSchema,
 } from '../../types';
-import {
-    getClientSideValidationRule,
-    getPydanticFormComponents,
-} from '../helper';
+import { getClientSideValidationRule } from '../getClientSideValidationRule';
+import { getPydanticFormComponents } from '../getPydanticFormComponents';
 
 export const getZodRule = (
     pydanticFormField: PydanticFormField,

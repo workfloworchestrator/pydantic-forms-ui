@@ -5,16 +5,8 @@
  */
 import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
 
-import { z } from 'zod/v4';
-import type { ZodType } from 'zod/v4';
-
-import defaultComponentMatchers from '../components/defaultComponentMatchers';
-import { TextField } from '../components/fields';
 import {
-    ElementMatch,
     Properties,
-    PydanticComponentMatcher,
-    PydanticFormComponents,
     PydanticFormConfig,
     PydanticFormField,
     PydanticFormFieldAttributes,
@@ -25,6 +17,7 @@ import {
     PydanticFormSchema,
     PydanticFormValidationResponse,
 } from '../types';
+import { getPydanticFormComponents } from './getPydanticFormComponents';
 
 /**
  * Error object formatting
@@ -466,77 +459,3 @@ export const ReactHookFormTriggerValidationsOnChange =
         // https://github.com/react-hook-form/react-hook-form/issues/10832
         reactHookForm.trigger(field.name);
     };
-
-export const getMatcher = (
-    componentMatcherExtender: PydanticFormConfig['componentMatcherExtender'],
-) => {
-    const componentMatchers = componentMatcherExtender
-        ? componentMatcherExtender(defaultComponentMatchers)
-        : defaultComponentMatchers;
-
-    return (field: PydanticFormField): PydanticComponentMatcher | undefined => {
-        return componentMatchers.find(({ matcher }) => {
-            return matcher(field);
-        });
-    };
-};
-
-export const getClientSideValidationRule = (
-    pydanticFormField: PydanticFormField | undefined,
-    componentMatcherExtender?: PydanticFormConfig['componentMatcherExtender'],
-): ZodType => {
-    if (!pydanticFormField) return z.unknown();
-    const matcher = getMatcher(componentMatcherExtender);
-
-    const componentMatch = matcher(pydanticFormField);
-
-    let validationRule =
-        componentMatch?.validator?.(pydanticFormField) ?? z.unknown();
-
-    if (!pydanticFormField.required) {
-        validationRule = validationRule.optional();
-    }
-
-    if (pydanticFormField.validations.isNullable) {
-        validationRule = validationRule.nullable();
-    }
-
-    return validationRule;
-};
-
-const defaultComponent: ElementMatch = {
-    Element: TextField,
-    isControlledElement: true,
-};
-
-export const fieldToComponentMatcher = (
-    pydanticFormField: PydanticFormField,
-    componentMatcherExtender: PydanticFormConfig['componentMatcherExtender'],
-) => {
-    const matcher = getMatcher(componentMatcherExtender);
-    const matchedComponent = matcher(pydanticFormField);
-
-    const ElementMatch: ElementMatch = matchedComponent
-        ? matchedComponent.ElementMatch
-        : defaultComponent; // Defaults to textField when there are no matches
-
-    return {
-        Element: ElementMatch,
-        pydanticFormField: pydanticFormField,
-    };
-};
-export const getPydanticFormComponents = (
-    properties: Properties,
-    componentMatcherExtender: PydanticFormConfig['componentMatcherExtender'],
-): PydanticFormComponents => {
-    const components: PydanticFormComponents = Object.values(properties).map(
-        (pydanticFormField) => {
-            return fieldToComponentMatcher(
-                pydanticFormField,
-                componentMatcherExtender,
-            );
-        },
-    );
-
-    return components;
-};

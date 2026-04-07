@@ -5,11 +5,8 @@
  */
 import _ from 'lodash';
 
-import {
-    PydanticComponentMatcher,
-    PydanticFormFieldFormat,
-    PydanticFormFieldType,
-} from '../types';
+import type { PydanticComponentMatcher } from '../types';
+import { PydanticFormFieldFormat, PydanticFormFieldType } from '../types';
 import {
     ArrayField,
     CheckboxField,
