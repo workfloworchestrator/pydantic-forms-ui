@@ -117,7 +117,7 @@ export const createComponentMatcher = (
             },
         },
         {
-            id: 'note',
+            id: 'notice',
             ElementMatch: {
                 Element: HelpBanner,
                 isControlledElement: false,
