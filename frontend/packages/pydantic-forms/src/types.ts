@@ -2,7 +2,7 @@ import React from 'react';
 import type { ControllerRenderProps, useForm } from 'react-hook-form';
 import type { FieldValues } from 'react-hook-form';
 
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 // Re-export react-hook-form types so consumers don't need to depend on react-hook-form directly
 export type { FieldValues };

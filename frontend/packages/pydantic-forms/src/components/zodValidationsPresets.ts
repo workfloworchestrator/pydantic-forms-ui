@@ -7,7 +7,7 @@
  * With these presets you can use this for both the textfield, as the list text field.
  * Numbers might have a max&min num, etc.
  */
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 import { PydanticFormZodValidationPresets } from '../types';
 

@@ -8,7 +8,7 @@
  */
 import React, { createContext } from 'react';
 
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 import { TranslationsProvider } from '../src/messages/translationsProvider';
 import {

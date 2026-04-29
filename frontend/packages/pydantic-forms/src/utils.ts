@@ -1,6 +1,6 @@
 import type { FieldPath, FieldValues } from 'react-hook-form';
 
-import { z } from 'zod/v4';
+import { z } from 'zod';
 
 import { Locale, PydanticFormField, PydanticFormZodCustomError } from './types';
 
