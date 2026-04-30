@@ -1,14 +1,12 @@
 import { ZodType, z } from 'zod';
 
-import { PydanticFormConfig, PydanticFormField } from '../types';
-import { getMatcher } from './getMatcher';
+import { ComponentMatcher, PydanticFormField } from '../types';
 
 export const getClientSideValidationRule = (
     pydanticFormField: PydanticFormField | undefined,
-    componentMatcherExtender?: PydanticFormConfig['componentMatcherExtender'],
+    matcher: ComponentMatcher,
 ): ZodType => {
     if (!pydanticFormField) return z.unknown();
-    const matcher = getMatcher(componentMatcherExtender);
 
     const componentMatch = matcher(pydanticFormField);
 

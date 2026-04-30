@@ -4,10 +4,11 @@ import { jest } from '@jest/globals';
 
 import { zodValidationPresets } from '../../components';
 import type {
-    ComponentMatcherExtender,
+    ComponentMatcher,
     ParsedProperties,
     Properties,
     PydanticComponentMatcher,
+    PydanticFormField,
 } from '../../types';
 import {
     PydanticFormFieldFormat,
@@ -117,22 +118,26 @@ describe('parseProperties', () => {
 describe('getZodValidationObject', () => {
     const getMockMatcher = (
         dummyMatchers: PydanticComponentMatcher[] | undefined = undefined,
-    ): ComponentMatcherExtender => {
-        return () => {
-            return (
-                (dummyMatchers && dummyMatchers) || [
-                    {
-                        id: 'mockMatcher',
-                        ElementMatch: {
-                            Element: () => {
-                                return 'Mock Element';
-                            },
-                            isControlledElement: true,
+    ): ComponentMatcher => {
+        return (
+            field: PydanticFormField,
+        ): PydanticComponentMatcher | undefined => {
+            const componentMatchers = (dummyMatchers && dummyMatchers) || [
+                {
+                    id: 'mockMatcher',
+                    ElementMatch: {
+                        Element: () => {
+                            return 'Mock Element';
                         },
-                        matcher: () => true,
+                        isControlledElement: true,
                     },
-                ]
-            );
+                    matcher: () => true,
+                },
+            ];
+
+            return componentMatchers.find(({ matcher }) => {
+                return matcher(field);
+            });
         };
     };
 

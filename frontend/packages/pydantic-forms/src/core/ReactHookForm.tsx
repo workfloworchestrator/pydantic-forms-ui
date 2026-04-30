@@ -63,8 +63,8 @@ export const ReactHookForm = ({
     const ErrorComponent = config.errorComponent ?? <div>{t('error')}</div>;
 
     const zodSchema = useGetZodSchema(
+        config.componentMatcher,
         pydanticFormSchema,
-        config.componentMatcherExtender,
     );
 
     const reactHookForm = useForm({
@@ -95,12 +95,14 @@ export const ReactHookForm = ({
         return <></>;
     }
 
-    const { formRenderer, footerRenderer, headerRenderer } = config || {};
-    const pydanticFormComponents: PydanticFormComponents =
-        getPydanticFormComponents(
-            pydanticFormSchema?.properties || {},
-            config?.componentMatcherExtender,
-        );
+    const { formRenderer, footerRenderer, headerRenderer, componentMatcher } =
+        config;
+    const pydanticFormComponents: PydanticFormComponents = componentMatcher
+        ? getPydanticFormComponents(
+              pydanticFormSchema?.properties || {},
+              componentMatcher,
+          )
+        : [];
 
     const FormRenderer = formRenderer ?? Form;
     const FooterRenderer = footerRenderer ?? Footer;

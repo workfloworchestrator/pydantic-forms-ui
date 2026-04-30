@@ -3,11 +3,11 @@
  *
  * Helper functions to be used in PydanticForms
  */
-import { ControllerRenderProps, FieldValues, useForm } from 'react-hook-form';
+import { FieldValues } from 'react-hook-form';
 
 import {
     Properties,
-    PydanticFormConfig,
+    PydanticFormContextConfig,
     PydanticFormField,
     PydanticFormFieldAttributes,
     PydanticFormFieldOption,
@@ -289,9 +289,9 @@ export const isNullableField = (field: PydanticFormField) =>
  * And labelData (this holds the current values from API)
  */
 export const getFormValuesFromFieldOrLabels = (
+    componentMatcher: PydanticFormContextConfig['componentMatcher'],
     properties?: Properties,
     labelData?: Record<string, string>,
-    componentMatcherExtender?: PydanticFormConfig['componentMatcherExtender'],
 ): FieldValues => {
     if (!properties) {
         return {};
@@ -324,7 +324,7 @@ export const getFormValuesFromFieldOrLabels = (
 
     const pydanticFormComponents = getPydanticFormComponents(
         properties,
-        componentMatcherExtender,
+        componentMatcher,
     );
 
     pydanticFormComponents.forEach((component) => {
@@ -352,9 +352,9 @@ export const getFormValuesFromFieldOrLabels = (
                         defaults[key] = defaultFieldValue[key];
                     } else {
                         const nestedDefault = getFormValuesFromFieldOrLabels(
+                            componentMatcher,
                             { [key]: property },
                             labelData,
-                            componentMatcherExtender,
                         );
 
                         if (objectHasProperties(nestedDefault)) {
@@ -374,9 +374,9 @@ export const getFormValuesFromFieldOrLabels = (
                 } else {
                     const arrayItem = pydanticFormField.arrayItem;
                     const arrayItemDefault = getFormValuesFromFieldOrLabels(
+                        componentMatcher,
                         { arrayItem },
                         labelData,
-                        componentMatcherExtender,
                     );
 
                     if (objectHasProperties(arrayItemDefault)) {
@@ -437,25 +437,3 @@ export const getFieldAttributes = function (
 
     return attributes;
 };
-
-/**
- * This function can be used as the onValueChange handler in a react hook form form element component.
- * When used, it will trigger the related validations whenever the field changes
- *
- * @param reactHookForm
- * @param field
- * @returns
- */
-export const ReactHookFormTriggerValidationsOnChange =
-    (
-        reactHookForm: ReturnType<typeof useForm>,
-        field: ControllerRenderProps<FieldValues, string>,
-    ) =>
-    (value: string) => {
-        field.onChange(value);
-
-        // it seems we need this because the 2nd error would get stale..
-        // https://github.com/react-hook-form/react-hook-form/issues/8170
-        // https://github.com/react-hook-form/react-hook-form/issues/10832
-        reactHookForm.trigger(field.name);
-    };

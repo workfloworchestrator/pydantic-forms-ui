@@ -1,10 +1,5 @@
 import { TextField } from '../components/fields';
-import type {
-    ElementMatch,
-    PydanticFormConfig,
-    PydanticFormField,
-} from '../types';
-import { getMatcher } from './getMatcher';
+import { ComponentMatcher, ElementMatch, PydanticFormField } from '../types';
 
 const defaultComponent: ElementMatch = {
     Element: TextField,
@@ -13,9 +8,8 @@ const defaultComponent: ElementMatch = {
 
 export const fieldToComponentMatcher = (
     pydanticFormField: PydanticFormField,
-    componentMatcherExtender: PydanticFormConfig['componentMatcherExtender'],
+    matcher: ComponentMatcher,
 ) => {
-    const matcher = getMatcher(componentMatcherExtender);
     const matchedComponent = matcher(pydanticFormField);
 
     const ElementMatch: ElementMatch = matchedComponent

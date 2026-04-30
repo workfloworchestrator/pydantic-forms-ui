@@ -7,6 +7,7 @@ import {
     PydanticFormPropertySchemaParsed,
     PydanticFormValidationResponse,
 } from '../types';
+import { getMatcher } from './getMatcher';
 import {
     enumToOption,
     flattenSchemaCombinators,
@@ -581,14 +582,18 @@ describe('isNullable', () => {
 });
 
 describe('getFormValuesFromFieldOrLabels', () => {
+    const matcher = getMatcher();
+
     it('returns an empty object if no schema is provided', () => {
-        const result = getFormValuesFromFieldOrLabels(undefined, {});
+        const result = getFormValuesFromFieldOrLabels(matcher, {});
         expect(result).toEqual({});
     });
 
     it('Returns empty object when schema has no properties', () => {
         const properties: Properties = {};
-        expect(getFormValuesFromFieldOrLabels(properties, {})).toEqual({});
+        expect(getFormValuesFromFieldOrLabels(matcher, properties, {})).toEqual(
+            {},
+        );
     });
 
     it('Returns fieldNames with default values', () => {
@@ -602,10 +607,12 @@ describe('getFormValuesFromFieldOrLabels', () => {
                 id: 'test2',
             }),
         };
-        expect(getFormValuesFromFieldOrLabels(properties, {})).toEqual({
-            test: 'default value',
-            test2: 'default value 2',
-        });
+        expect(getFormValuesFromFieldOrLabels(matcher, properties, {})).toEqual(
+            {
+                test: 'default value',
+                test2: 'default value 2',
+            },
+        );
     });
 
     it('Returns label instead of default value if present', () => {
@@ -621,7 +628,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
         };
 
         expect(
-            getFormValuesFromFieldOrLabels(properties, {
+            getFormValuesFromFieldOrLabels(matcher, properties, {
                 test2: 'label for test2',
             }),
         ).toEqual({
@@ -646,7 +653,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
                 },
             }),
         };
-        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({
+        expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({
             test: {
                 nestedField: 'object field default',
             },
@@ -666,7 +673,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
                 }),
             }),
         };
-        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({
+        expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({
             test: [1, 2, 3],
         });
     });
@@ -684,7 +691,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
                 },
             }),
         };
-        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({
+        expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({
             test: {
                 nestedField: 'nested default value',
             },
@@ -704,7 +711,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
                 }),
             }),
         };
-        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({
+        expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({
             test: ['nested default value'],
         });
     });
@@ -722,7 +729,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
                 required: false,
             }),
         };
-        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({});
+        expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({});
     });
     it('Returns empty array if arrayItem and array both have no default values and the array is required', () => {
         // When an array field has no default value the default value and the arrayItem doesn't either we assume an empty array
@@ -737,7 +744,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
                 required: true,
             }),
         };
-        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({
+        expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({
             test: [],
         });
     });
@@ -755,7 +762,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
                 },
             }),
         };
-        expect(getFormValuesFromFieldOrLabels(properties)).toEqual({});
+        expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({});
     });
 
     it('Works with comlicated nested structures', () => {
@@ -845,7 +852,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
             },
         };
 
-        const actual = getFormValuesFromFieldOrLabels(properties);
+        const actual = getFormValuesFromFieldOrLabels(matcher, properties);
 
         expect(actual).toEqual(expectedInitialData);
     });
