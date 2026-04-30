@@ -12,16 +12,17 @@ import { z } from 'zod';
 
 import { TranslationsProvider } from '../src/messages/translationsProvider';
 import {
-    PydanticFormConfig,
+    PydanticFormContextConfig,
     PydanticFormProps,
     PydanticFormValidationErrorDetails,
 } from '../src/types';
 import { getZodCustomErrorMessages, getZodLocale } from '../src/utils';
 import { PydanticFormHandler } from './core';
 import { PydanticFormFieldDataStorageProvider } from './core/PydanticFieldDataStorageProvider';
+import { getMatcher } from './core/getMatcher';
 
 export const PydanticFormConfigContext =
-    createContext<PydanticFormConfig | null>(null);
+    createContext<PydanticFormContextConfig | null>(null);
 
 export const PydanticFormValidationErrorContext =
     createContext<PydanticFormValidationErrorDetails | null>(null);
@@ -34,19 +35,23 @@ export const PydanticForm = ({
     onSuccess,
     title,
 }: PydanticFormProps) => {
-    const zodCustomError = getZodCustomErrorMessages(config.locale);
+    const contextConfig: PydanticFormContextConfig = {
+        ...config,
+        componentMatcher: getMatcher(config.componentMatcherExtender),
+    };
+    const zodCustomError = getZodCustomErrorMessages(contextConfig.locale);
     z.config({
-        ...getZodLocale(config.locale),
+        ...getZodLocale(contextConfig.locale),
         customError: (issue) =>
-            config.zodCustomError?.(issue) ?? zodCustomError(issue),
+            contextConfig.zodCustomError?.(issue) ?? zodCustomError(issue),
     });
 
     return (
         <TranslationsProvider
-            customTranslations={config.customTranslations}
-            locale={config.locale}
+            customTranslations={contextConfig.customTranslations}
+            locale={contextConfig.locale}
         >
-            <PydanticFormConfigContext.Provider value={config}>
+            <PydanticFormConfigContext.Provider value={contextConfig}>
                 <PydanticFormFieldDataStorageProvider>
                     <PydanticFormHandler
                         onCancel={onCancel}

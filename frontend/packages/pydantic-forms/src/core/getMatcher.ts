@@ -6,7 +6,7 @@ import type {
 } from '../types';
 
 export const getMatcher = (
-    componentMatcherExtender: PydanticFormConfig['componentMatcherExtender'],
+    componentMatcherExtender?: PydanticFormConfig['componentMatcherExtender'],
 ) => {
     const componentMatchers = componentMatcherExtender
         ? componentMatcherExtender(defaultComponentMatchers)

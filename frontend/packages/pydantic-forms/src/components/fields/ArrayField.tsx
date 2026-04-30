@@ -9,7 +9,7 @@ import { RenderFields } from '../render';
 
 export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
     const { control } = useGetForm();
-    const { componentMatcherExtender } = useGetConfig();
+    const { componentMatcher } = useGetConfig();
     const disabled = pydanticFormField.attributes?.disabled || false;
 
     const { id: arrayName, arrayItem } = pydanticFormField;
@@ -37,10 +37,7 @@ export const ArrayField = ({ pydanticFormField }: PydanticFormElementProps) => {
 
     if (!arrayItem) return '';
 
-    const component = fieldToComponentMatcher(
-        arrayItem,
-        componentMatcherExtender,
-    );
+    const component = fieldToComponentMatcher(arrayItem, componentMatcher);
 
     const renderField = (field: Record<'id', string>, index: number) => {
         const itemizedField = itemizeArrayItem(index, arrayItem, arrayName);

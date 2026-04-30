@@ -232,6 +232,10 @@ export type ComponentMatcherExtender = (
     currentMatchers: PydanticComponentMatcher[],
 ) => PydanticComponentMatcher[];
 
+export type ComponentMatcher = (
+    field: PydanticFormField,
+) => PydanticComponentMatcher | undefined;
+
 export interface PydanticFormConfig {
     // use a custom method for providing the form definition
     apiProvider: PydanticFormApiProvider;
@@ -265,6 +269,10 @@ export interface PydanticFormConfig {
     // locale
     locale?: Locale;
 }
+
+export type PydanticFormContextConfig = PydanticFormConfig & {
+    componentMatcher: ComponentMatcher;
+};
 
 export type FormRenderComponent = React.JSXElementConstructor<{
     pydanticFormComponents: PydanticFormComponents;

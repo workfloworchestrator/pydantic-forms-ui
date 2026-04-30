@@ -3,7 +3,7 @@ import type { FieldValues } from 'react-hook-form';
 
 import type {
     PydanticFormApiResponse,
-    PydanticFormConfig,
+    PydanticFormContextConfig,
     PydanticFormSchema,
     PydanticFormSchemaRawJson,
     PydanticFormSuccessResponse,
@@ -59,7 +59,7 @@ const removeValidationErrorByLoc = (
 export function usePydanticForm(
     formKey: string,
     formId: string,
-    config: PydanticFormConfig,
+    config: PydanticFormContextConfig,
     formStepsRef: React.MutableRefObject<FieldValues[]>,
     onSuccess?: (
         fieldValues: FieldValues[],
@@ -85,7 +85,7 @@ export function usePydanticForm(
     const [validationErrorsDetails, setValidationErrorsDetails] =
         useState<PydanticFormValidationErrorDetails | null>(null);
 
-    const { labelProvider, apiProvider, componentMatcherExtender } = config;
+    const { labelProvider, apiProvider, componentMatcher } = config;
 
     // fetch the labels of the form, can also contain default values
     const { data: formLabels, isLoading: isLoadingFormLabels } =
@@ -112,17 +112,13 @@ export function usePydanticForm(
 
     const defaultValues = useMemo(() => {
         return getFormValuesFromFieldOrLabels(
+            componentMatcher,
             pydanticFormSchema?.properties,
             {
                 ...formLabels?.data,
             },
-            componentMatcherExtender,
         );
-    }, [
-        componentMatcherExtender,
-        formLabels?.data,
-        pydanticFormSchema?.properties,
-    ]);
+    }, [componentMatcher, formLabels?.data, pydanticFormSchema?.properties]);
 
     const isLoading = isLoadingFormLabels || isLoadingSchema || isParsingSchema;
 
