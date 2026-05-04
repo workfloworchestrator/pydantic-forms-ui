@@ -1,5 +1,12 @@
 # pydantic-forms
 
+## 2.0.0
+
+### Major Changes
+
+- 9ddf5c4: Adds the compiled componentMatcher function to global configuration on app initialization. Custom input components should use that instead of componentMatcherExtender.
+  Hardcodes zod validation messages in zod rules to avoid a situation where they would be lost in certain situations.
+
 ## 1.0.7
 
 ### Patch Changes
