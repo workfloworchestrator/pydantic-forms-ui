@@ -18,7 +18,7 @@ export const IntegerField = ({
         // this is imposed by react-hook-form. We try to detect this and extract the actual value
         if (_.isObject(value) && _.has(value, fieldName)) {
             const valueFromObject = _.get(value, fieldName);
-            return valueFromObject || ''
+            return valueFromObject || '';
         } else if (value === null) {
             // When the value is set to null (-eg the field isNullable and the value is removed)
             // we display '' to avoid letting the field become 'uncontrolled' (eg. getting the console error ".. a component is
