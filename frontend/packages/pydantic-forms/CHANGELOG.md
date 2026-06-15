@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 3.0.0
+
+### Major Changes
+
+- e2e9fa8: Moves dependecies that share state to peerDependencies
+
 ## 2.0.0
 
 ### Major Changes
