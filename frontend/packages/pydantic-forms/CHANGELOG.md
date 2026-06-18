@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 3.0.1
+
+### Patch Changes
+
+- 6a4f973: Memoizes more configuration objects to avoid some issues with persisten validations
+
 ## 3.0.0
 
 ### Major Changes
