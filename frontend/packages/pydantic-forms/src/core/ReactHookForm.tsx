@@ -5,7 +5,7 @@
  *
  * Here we define the outline of the form
  */
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { FormProvider, useForm } from 'react-hook-form';
 
@@ -67,8 +67,10 @@ export const ReactHookForm = ({
         pydanticFormSchema,
     );
 
+    const resolver = useMemo(() => zodResolver(zodSchema), [zodSchema]);
+
     const reactHookForm = useForm({
-        resolver: zodResolver(zodSchema),
+        resolver,
         mode: 'all',
         defaultValues,
         values: initialValues || defaultValues,
