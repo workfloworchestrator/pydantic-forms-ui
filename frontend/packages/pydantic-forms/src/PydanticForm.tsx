@@ -6,7 +6,7 @@
  * This is the component that will be included when we want to use a form.
  * It initializes the context and calls the mainForm
  */
-import React, { createContext } from 'react';
+import React, { createContext, useEffect, useMemo } from 'react';
 
 import { z } from 'zod';
 
@@ -35,16 +35,29 @@ export const PydanticForm = ({
     onSuccess,
     title,
 }: PydanticFormProps) => {
-    const contextConfig: PydanticFormContextConfig = {
-        ...config,
-        componentMatcher: getMatcher(config.componentMatcherExtender),
-    };
-    const zodCustomError = getZodCustomErrorMessages(contextConfig.locale);
-    z.config({
-        ...getZodLocale(contextConfig.locale),
-        customError: (issue) =>
-            contextConfig.zodCustomError?.(issue) ?? zodCustomError(issue),
-    });
+    const componentMatcher = useMemo(
+        () => getMatcher(config.componentMatcherExtender),
+        [config.componentMatcherExtender],
+    );
+
+    const contextConfig: PydanticFormContextConfig = useMemo(
+        () => ({
+            ...config,
+            componentMatcher,
+        }),
+        [config, componentMatcher],
+    );
+
+    const { locale, zodCustomError: configZodCustomError } = contextConfig;
+
+    useEffect(() => {
+        const localeZodCustomError = getZodCustomErrorMessages(locale);
+        z.config({
+            ...getZodLocale(locale),
+            customError: (issue) =>
+                configZodCustomError?.(issue) ?? localeZodCustomError(issue),
+        });
+    }, [locale, configZodCustomError]);
 
     return (
         <TranslationsProvider
