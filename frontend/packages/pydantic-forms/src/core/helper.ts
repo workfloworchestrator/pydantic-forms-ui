@@ -5,7 +5,18 @@
  */
 import { FieldValues } from 'react-hook-form';
 
-import { Properties, PydanticFormContextConfig, PydanticFormField, PydanticFormFieldAttributes, PydanticFormFieldOption, PydanticFormFieldType, PydanticFormFieldValidations, PydanticFormPropertySchemaParsed, PydanticFormSchema, PydanticFormValidationResponse } from '../types';
+import {
+    Properties,
+    PydanticFormContextConfig,
+    PydanticFormField,
+    PydanticFormFieldAttributes,
+    PydanticFormFieldOption,
+    PydanticFormFieldType,
+    PydanticFormFieldValidations,
+    PydanticFormPropertySchemaParsed,
+    PydanticFormSchema,
+    PydanticFormValidationResponse,
+} from '../types';
 import { getPydanticFormComponents } from './getPydanticFormComponents';
 
 /**
@@ -127,10 +138,8 @@ export const getFieldOptions = (
 
     // NOTE: enum is the property described in the JSON Schema specification that stores possible values for a field.
     // .options is a custom property left here for backwards compatibility.
-    const propertyEnums =
-        propertySchemaParsed.enum
-    const propertyOptions =
-        propertySchemaParsed.options
+    const propertyEnums = propertySchemaParsed.enum;
+    const propertyOptions = propertySchemaParsed.options;
 
     if (propertyEnums && !propertyOptions) {
         options.push(...enumToOption(propertyEnums));
@@ -254,9 +263,8 @@ export const getFieldValidation = (
         if (multipleOf) validation.multipleOf = multipleOf;
     }
     if (type === PydanticFormFieldType.ARRAY) {
-        validation.maxItems = maxItems;
-        validation.maxItems = maxItems;
         validation.minItems = minItems;
+        validation.maxItems = maxItems;
         validation.uniqueItems = uniqueItems;
     }
 

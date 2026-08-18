@@ -9,53 +9,7 @@
  */
 import { z } from 'zod';
 
-
-
 import { PydanticFormZodValidationPresets } from '../types';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // to prevent duplicate code in components that have (almost)the same validation
 export const zodValidationPresets: PydanticFormZodValidationPresets = {
@@ -145,7 +99,7 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
     multiSelect: (field) => {
         const { minItems, maxItems } = field?.validations ?? {};
 
-        let validationRule = z.array(z.boolean());
+        let validationRule = z.array(z.string());
 
         if (minItems) {
             validationRule = validationRule.min(minItems);

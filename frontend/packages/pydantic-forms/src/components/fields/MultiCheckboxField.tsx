@@ -18,8 +18,9 @@ export const MultiCheckboxField = ({
     const { arrayItem, id } = pydanticFormField;
     const options = arrayItem?.options;
 
+    const currentValue = (value as string[]) ?? [];
+
     const handleCheckboxChange = (optionId: string, optionValue: string) => {
-        const currentValue = value as string[];
         const newValue = currentValue.includes(optionValue)
             ? currentValue.filter((item) => item !== optionValue)
             : [...currentValue, optionValue];
@@ -41,7 +42,7 @@ export const MultiCheckboxField = ({
                             id={optionId}
                             name={optionId}
                             value={option.value}
-                            checked={(value as string[]).includes(option.value)}
+                            checked={currentValue.includes(option.value)}
                             onChange={() =>
                                 handleCheckboxChange(optionId, option.value)
                             }

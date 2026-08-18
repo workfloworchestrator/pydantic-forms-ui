@@ -30,7 +30,6 @@ export const getMockPydanticFormField = (
         arrayItem: undefined,
         properties: {},
         required: false,
-        options: [],
         schema: {
             type: PydanticFormFieldType.STRING,
             format: PydanticFormFieldFormat.DEFAULT,
