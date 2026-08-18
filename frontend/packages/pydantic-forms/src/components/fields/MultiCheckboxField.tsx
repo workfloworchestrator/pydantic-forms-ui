@@ -15,7 +15,8 @@ export const MultiCheckboxField = ({
     onChange,
     pydanticFormField,
 }: PydanticFormControlledElementProps) => {
-    const { options, id } = pydanticFormField;
+    const { arrayItem, id } = pydanticFormField;
+    const options = arrayItem?.options;
 
     const handleCheckboxChange = (optionId: string, optionValue: string) => {
         const currentValue = value as string[];

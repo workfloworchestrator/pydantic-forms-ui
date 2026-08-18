@@ -5,20 +5,17 @@
  */
 import React, { useState } from 'react';
 
-import {
-    PydanticFormControlledElementProps,
-    PydanticFormFieldOption,
-} from '../../types';
 
+
+import { PydanticFormControlledElementProps, PydanticFormFieldOption } from '../../types';
 export const MultiSelectField = ({
     value,
     onChange,
     onBlur,
     disabled,
     pydanticFormField,
-}: PydanticFormControlledElementProps & {
-    options?: Array<{ value: string; label: string }>;
-}) => {
+}: PydanticFormControlledElementProps) => {
+    const options = pydanticFormField?.arrayItem?.options || [];
     const [multiSelectItems, setMultiSelectItems] = useState(value || []);
 
     return (
@@ -38,13 +35,11 @@ export const MultiSelectField = ({
                 }}
                 multiple
             >
-                {pydanticFormField.options?.map(
-                    (option: PydanticFormFieldOption) => (
-                        <option key={option.value} value={option.value}>
-                            {option.label}
-                        </option>
-                    ),
-                )}
+                {options?.map((option: PydanticFormFieldOption) => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                ))}
             </select>
         </div>
     );

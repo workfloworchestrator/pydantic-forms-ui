@@ -4,24 +4,9 @@
  * We will search for the first field that returns a positive match
  */
 import _ from 'lodash';
-
 import type { PydanticComponentMatcher } from '../types';
 import { PydanticFormFieldFormat, PydanticFormFieldType } from '../types';
-import {
-    ArrayField,
-    CheckboxField,
-    DividerField,
-    DropdownField,
-    HiddenField,
-    IntegerField,
-    LabelField,
-    MultiCheckboxField,
-    MultiSelectField,
-    ObjectField,
-    RadioField,
-    TextAreaField,
-    TextField,
-} from './fields';
+import { ArrayField, CheckboxField, DividerField, DropdownField, HiddenField, IntegerField, LabelField, MultiCheckboxField, MultiSelectField, ObjectField, RadioField, TextAreaField, TextField } from './fields';
 import { zodValidationPresets } from './zodValidationsPresets';
 
 const defaultComponentMatchers: PydanticComponentMatcher[] = [
@@ -137,11 +122,13 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             isControlledElement: true,
         },
         matcher(field) {
+            const fieldOptions = field.arrayItem?.options
+
             return (
                 field.type === PydanticFormFieldType.ARRAY &&
-                _.isArray(field.options) &&
-                field.options?.length > 0 &&
-                field.options?.length <= 5
+                _.isArray(fieldOptions) &&
+                fieldOptions?.length > 0 &&
+                fieldOptions?.length <= 5
             );
         },
         validator: zodValidationPresets.multiSelect,
@@ -153,9 +140,11 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             isControlledElement: true,
         },
         matcher(field) {
+            const fieldOptions = field.arrayItem?.options
+
             return (
-                _.isArray(field.options) &&
-                field.options?.length > 0 &&
+                _.isArray(fieldOptions) &&
+                fieldOptions?.length > 0 &&
                 field.type === PydanticFormFieldType.ARRAY
             );
         },
