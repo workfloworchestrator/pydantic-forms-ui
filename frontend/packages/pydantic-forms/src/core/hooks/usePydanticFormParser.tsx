@@ -84,7 +84,6 @@ const getPydanticFormField = (
     const addConstValue =
         typeof flatSchema.const === 'undefined' ? false : true;
 
-
     //TODO: I think object properties should never be required only their properties are or aren't. Should we fix this in the backend?
     const required =
         flatSchema.type === PydanticFormFieldType.OBJECT
