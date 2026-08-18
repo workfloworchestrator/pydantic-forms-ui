@@ -5,18 +5,7 @@
  */
 import { FieldValues } from 'react-hook-form';
 
-import {
-    Properties,
-    PydanticFormContextConfig,
-    PydanticFormField,
-    PydanticFormFieldAttributes,
-    PydanticFormFieldOption,
-    PydanticFormFieldType,
-    PydanticFormFieldValidations,
-    PydanticFormPropertySchemaParsed,
-    PydanticFormSchema,
-    PydanticFormValidationResponse,
-} from '../types';
+import { Properties, PydanticFormContextConfig, PydanticFormField, PydanticFormFieldAttributes, PydanticFormFieldOption, PydanticFormFieldType, PydanticFormFieldValidations, PydanticFormPropertySchemaParsed, PydanticFormSchema, PydanticFormValidationResponse } from '../types';
 import { getPydanticFormComponents } from './getPydanticFormComponents';
 
 /**
@@ -137,11 +126,11 @@ export const getFieldOptions = (
     const options: PydanticFormFieldOption[] = [];
 
     // NOTE: enum is the property described in the JSON Schema specification that stores possible values for a field.
-    // .options is a custom property that left here for backwards compatibility.
+    // .options is a custom property left here for backwards compatibility.
     const propertyEnums =
-        propertySchemaParsed.enum ?? propertySchemaParsed.items?.enum;
+        propertySchemaParsed.enum
     const propertyOptions =
-        propertySchemaParsed.options ?? propertySchemaParsed.items?.options;
+        propertySchemaParsed.options
 
     if (propertyEnums && !propertyOptions) {
         options.push(...enumToOption(propertyEnums));
@@ -235,6 +224,8 @@ export const getFieldValidation = (
         validation.isNullable = true;
     }
     const {
+        maxItems,
+        minItems,
         maxLength,
         minLength,
         pattern,
@@ -244,8 +235,6 @@ export const getFieldValidation = (
         exclusiveMaximum,
         exclusiveMinimum,
         multipleOf,
-        minItems,
-        maxItems,
         uniqueItems,
     } = schema;
 
@@ -265,8 +254,9 @@ export const getFieldValidation = (
         if (multipleOf) validation.multipleOf = multipleOf;
     }
     if (type === PydanticFormFieldType.ARRAY) {
-        validation.minItems = minItems;
         validation.maxItems = maxItems;
+        validation.maxItems = maxItems;
+        validation.minItems = minItems;
         validation.uniqueItems = uniqueItems;
     }
 
