@@ -7,7 +7,6 @@ from typing import Annotated, ClassVar, Iterator, Literal, Optional
 from uuid import UUID
 
 from annotated_types import (
-    SLOTS,
     BaseMetadata,
     GroupedMetadata,
     Ge,
@@ -77,7 +76,7 @@ def read_root():
     return {"Hello": "World"}
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True)
 class ExtraData(GroupedMetadata):
     props: dict
 
@@ -544,7 +543,7 @@ class SimpleChoices(Choice):
     OPTION_C = ("c", "Option C")
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True)
 class NoticeField(GroupedMetadata):
     variant: str  # can also be made into a Enum for specific variants
     message: str
@@ -622,7 +621,7 @@ async def form_simple(form_data: list[dict] = []):
             # Boolean field
             subscribe: bool = Field(
                 title="Subscribe to Newsletter",
-                description="Check this box to receive our newsletter",
+                description="Check this box to receive` our newsletter",
                 default=False,
             )
 
