@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 3.1.0
+
+### Minor Changes
+
+- f33f92a: Fixes validation and matching for some array type fields
+
 ## 3.0.1
 
 ### Patch Changes
