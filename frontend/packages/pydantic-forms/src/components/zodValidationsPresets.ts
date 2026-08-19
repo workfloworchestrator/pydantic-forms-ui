@@ -96,19 +96,4 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
 
         return validationRule;
     },
-    multiSelect: (field) => {
-        const { minItems, maxItems } = field?.validations ?? {};
-
-        let validationRule = z.array(z.string());
-
-        if (minItems) {
-            validationRule = validationRule.min(minItems);
-        }
-
-        if (maxItems) {
-            validationRule = validationRule.max(maxItems);
-        }
-
-        return validationRule;
-    },
 };

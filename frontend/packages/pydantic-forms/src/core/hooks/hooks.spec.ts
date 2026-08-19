@@ -350,7 +350,8 @@ describe('getZodValidationObject', () => {
         );
 
         const expectedZodObject = z.object({
-            uncontrolled: z.array(z.any()),
+            // The array field is not marked required so the rule is optional
+            uncontrolled: z.array(z.any()).optional(),
         });
 
         expect(z.toJSONSchema(schema)).toEqual(

@@ -39,25 +39,42 @@ export const getZodRule = (
         const arrayItemRule = arrayItem
             ? getZodRule(arrayItem, componentMatcher)
             : z.any();
-        const arrayRule = z
-            .array(arrayItemRule || z.unknown())
-            .superRefine((array, context) => {
-                const { uniqueItems } = pydanticFormField.validations;
 
-                if (uniqueItems) {
-                    const uniqueArray = [...new Set(array)];
+        const { minItems, maxItems, uniqueItems } =
+            pydanticFormField.validations;
 
-                    if (uniqueArray.length !== array.length) {
-                        context.addIssue({
-                            code: z.ZodIssueCode.custom,
-                            message: 'not_unique',
-                            fatal: true,
-                        });
-                        return z.NEVER;
-                    }
-                }
+        let arrayRule = z.array(arrayItemRule || z.unknown());
+
+        if (minItems) {
+            arrayRule = arrayRule.min(minItems, {
+                error: `Too small: expected array to have >= ${minItems} items`,
             });
-        return arrayRule;
+        }
+
+        if (maxItems) {
+            arrayRule = arrayRule.max(maxItems, {
+                error: `Too big: expected array to have <= ${maxItems} items`,
+            });
+        }
+
+        const refinedArrayRule = arrayRule.superRefine((array, context) => {
+            if (uniqueItems) {
+                const uniqueArray = [...new Set(array)];
+
+                if (uniqueArray.length !== array.length) {
+                    context.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: 'not_unique',
+                        fatal: true,
+                    });
+                    return z.NEVER;
+                }
+            }
+        });
+
+        return pydanticFormField.required
+            ? refinedArrayRule
+            : refinedArrayRule.optional();
     }
 
     return getClientSideValidationRule(pydanticFormField, componentMatcher);
