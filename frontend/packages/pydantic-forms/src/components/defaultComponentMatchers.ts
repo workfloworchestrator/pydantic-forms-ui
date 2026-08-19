@@ -146,7 +146,6 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
                 fieldOptions?.length <= 5
             );
         },
-        validator: zodValidationPresets.multiSelect,
     },
     {
         id: 'list',
@@ -163,7 +162,6 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
                 field.type === PydanticFormFieldType.ARRAY
             );
         },
-        validator: zodValidationPresets.multiSelect,
     },
     {
         id: 'object',
