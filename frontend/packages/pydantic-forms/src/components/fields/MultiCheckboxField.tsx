@@ -6,8 +6,7 @@
 import React from 'react';
 
 import {
-    PydanticFormControlledElementProps,
-    PydanticFormFieldOption,
+    PydanticFormControlledElementProps
 } from '../../types';
 
 export const MultiCheckboxField = ({
@@ -30,7 +29,7 @@ export const MultiCheckboxField = ({
 
     return (
         <div>
-            {options?.map((option: PydanticFormFieldOption) => {
+            {options?.map((option) => {
                 // Extract the unique ID for this option
                 const optionId = `${id}-${option.value}`;
 
