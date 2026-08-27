@@ -60,12 +60,8 @@ export const removeValidationErrorByLoc = (
         return locPath !== locToRemove;
     });
 
-    const [topKey] = locToRemove.split('.'); // e.g. "contact_persons"
     const newMapped = { ...validationErrors.mapped };
-
-    if (topKey && newMapped[topKey]) {
-        delete newMapped[topKey];
-    }
+    delete newMapped[locToRemove];
 
     return {
         ...validationErrors,
