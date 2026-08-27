@@ -11,10 +11,12 @@ import { getMatcher } from './getMatcher';
 import {
     enumToOption,
     flattenSchemaCombinators,
+    getFormFieldIdFromLocation,
     getFormValuesFromFieldOrLabels,
     getValidationErrorDetailsFromResponse,
     isNullable,
     optionsToOption,
+    removeValidationErrorByLoc,
 } from './helper';
 
 export const getMockPydanticFormField = (
@@ -45,6 +47,20 @@ const getMockFormPropertySchemaParsed = (
 ): PydanticFormPropertySchemaParsed => ({
     format: PydanticFormFieldFormat.DEFAULT,
     ...overrides,
+});
+
+describe('getValidationErrorPath', () => {
+    it('normalizes numeric array indices', () => {
+        expect(
+            getFormFieldIdFromLocation(['ip_static_service_port', 0, 'vlan']),
+        ).toBe('ip_static_service_port.0.vlan');
+    });
+
+    it('normalizes deeply nested paths', () => {
+        expect(
+            getFormFieldIdFromLocation(['services', 0, 'ports', 1, 'vlan']),
+        ).toBe('services.0.ports.1.vlan');
+    });
 });
 
 describe('getErrorDetailsFromResponse', () => {
@@ -102,6 +118,193 @@ describe('getErrorDetailsFromResponse', () => {
         expect(result.detail).toBe('');
         expect(result.source).toEqual([]);
         expect(result.mapped).toEqual({});
+    });
+
+    it('maps an array item error only to its full path', () => {
+        const mockApiErrorResponse: PydanticFormValidationResponse = {
+            type: PydanticFormApiResponseType.VALIDATION_ERRORS,
+            validation_errors: [
+                {
+                    // The backend sends numbers for array indices
+                    loc: ['ip_static_service_port', 0, 'vlan'],
+                    msg: 'VLAN range must be between 2 and 4094',
+                    input: '1',
+                    type: 'value_error',
+                    url: '',
+                },
+            ],
+            status: 400,
+        };
+
+        const result =
+            getValidationErrorDetailsFromResponse(mockApiErrorResponse);
+
+        expect(result.mapped).toEqual({
+            'ip_static_service_port.0.vlan': {
+                value: '1',
+                msg: 'VLAN range must be between 2 and 4094',
+            },
+        });
+        expect(result.mapped['ip_static_service_port']).toBeUndefined();
+    });
+
+    it('keeps array-level and item-level errors separate', () => {
+        const mockApiErrorResponse: PydanticFormValidationResponse = {
+            type: PydanticFormApiResponseType.VALIDATION_ERRORS,
+            validation_errors: [
+                {
+                    loc: ['ip_static_service_port'],
+                    msg: 'Select at least one service port',
+                    input: '',
+                    type: 'value_error',
+                    url: '',
+                },
+                {
+                    loc: ['ip_static_service_port', 0, 'vlan'],
+                    msg: 'VLAN range must be between 2 and 4094',
+                    input: '1',
+                    type: 'value_error',
+                    url: '',
+                },
+            ],
+            status: 400,
+        };
+
+        const result =
+            getValidationErrorDetailsFromResponse(mockApiErrorResponse);
+
+        expect(result.mapped).toEqual({
+            ip_static_service_port: {
+                value: '',
+                msg: 'Select at least one service port',
+            },
+            'ip_static_service_port.0.vlan': {
+                value: '1',
+                msg: 'VLAN range must be between 2 and 4094',
+            },
+        });
+    });
+
+    it('keeps errors for different array items separate', () => {
+        const mockApiErrorResponse: PydanticFormValidationResponse = {
+            type: PydanticFormApiResponseType.VALIDATION_ERRORS,
+            validation_errors: [
+                {
+                    loc: ['ip_static_service_port', 0, 'vlan'],
+                    msg: 'Invalid VLAN',
+                    input: '1',
+                    type: 'value_error',
+                    url: '',
+                },
+                {
+                    loc: ['ip_static_service_port', 1, 'subscription_id'],
+                    msg: 'Invalid subscription',
+                    input: '',
+                    type: 'uuid_type',
+                    url: '',
+                },
+            ],
+            status: 400,
+        };
+
+        const result =
+            getValidationErrorDetailsFromResponse(mockApiErrorResponse);
+
+        expect(result.mapped).toEqual({
+            'ip_static_service_port.0.vlan': {
+                value: '1',
+                msg: 'Invalid VLAN',
+            },
+            'ip_static_service_port.1.subscription_id': {
+                value: '',
+                msg: 'Invalid subscription',
+            },
+        });
+    });
+});
+
+describe('removeValidationErrorByLoc', () => {
+    const validationResponse: PydanticFormValidationResponse = {
+        type: PydanticFormApiResponseType.VALIDATION_ERRORS,
+        validation_errors: [
+            {
+                loc: ['ip_static_service_port'],
+                msg: 'Select at least one service port',
+                input: '',
+                type: 'value_error',
+                url: '',
+            },
+            {
+                loc: ['ip_static_service_port', 0, 'vlan'],
+                msg: 'Invalid VLAN',
+                input: '1',
+                type: 'value_error',
+                url: '',
+            },
+            {
+                loc: ['ip_static_service_port', 1, 'vlan'],
+                msg: 'Invalid VLAN',
+                input: '4095',
+                type: 'value_error',
+                url: '',
+            },
+        ],
+        status: 400,
+    };
+
+    it('removes only the exact item error', () => {
+        const validationErrors =
+            getValidationErrorDetailsFromResponse(validationResponse);
+
+        const result = removeValidationErrorByLoc(
+            validationErrors,
+            'ip_static_service_port.0.vlan',
+        );
+
+        expect(result?.source).toEqual([
+            validationResponse.validation_errors[0],
+            validationResponse.validation_errors[2],
+        ]);
+        expect(result?.mapped).toEqual({
+            ip_static_service_port: {
+                value: '',
+                msg: 'Select at least one service port',
+            },
+            'ip_static_service_port.1.vlan': {
+                value: '4095',
+                msg: 'Invalid VLAN',
+            },
+        });
+    });
+
+    it('removes the array-level error without removing item errors', () => {
+        const validationErrors =
+            getValidationErrorDetailsFromResponse(validationResponse);
+
+        const result = removeValidationErrorByLoc(
+            validationErrors,
+            'ip_static_service_port',
+        );
+
+        expect(result?.source).toEqual(
+            validationResponse.validation_errors.slice(1),
+        );
+        expect(result?.mapped['ip_static_service_port']).toBeUndefined();
+        expect(result?.mapped['ip_static_service_port.0.vlan']).toBeDefined();
+        expect(result?.mapped['ip_static_service_port.1.vlan']).toBeDefined();
+    });
+
+    it('leaves the errors unchanged when the location does not exist', () => {
+        const validationErrors =
+            getValidationErrorDetailsFromResponse(validationResponse);
+
+        expect(removeValidationErrorByLoc(validationErrors, 'unknown')).toEqual(
+            validationErrors,
+        );
+    });
+
+    it('returns null when there are no validation errors', () => {
+        expect(removeValidationErrorByLoc(null, 'field')).toBeNull();
     });
 });
 

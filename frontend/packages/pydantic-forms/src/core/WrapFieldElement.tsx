@@ -15,9 +15,7 @@ const getValidationErrorMsg = (
     errorResponse: PydanticFormValidationErrorDetails | null,
     path: string,
 ): string | undefined => {
-    return errorResponse?.source?.find(
-        (err) => err.loc.map(String).join('.') === path,
-    )?.msg;
+    return errorResponse?.mapped?.[path]?.msg;
 };
 
 export const WrapFieldElement = ({
@@ -54,15 +52,18 @@ export const WrapFieldElement = ({
                     });
                 };
 
+                const frontendValidationErrorMessage =
+                    fieldState.error?.message; // fallback: client-side RHF error
+
                 return (
                     <FieldWrap
                         pydanticFormField={pydanticFormField}
                         isInvalid={fieldState.invalid}
-                        frontendValidationMessage={
+                        errorMessage={
                             getValidationErrorMsg(
                                 validationErrorDetails,
                                 pydanticFormField.id,
-                            ) ?? fieldState.error?.message
+                            ) ?? frontendValidationErrorMessage
                         }
                     >
                         <PydanticFormControlledElement

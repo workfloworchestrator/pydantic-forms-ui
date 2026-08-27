@@ -7,6 +7,7 @@ import { FieldValues } from 'react-hook-form';
 
 import {
     Properties,
+    PydanticFormApiValidationError,
     PydanticFormContextConfig,
     PydanticFormField,
     PydanticFormFieldAttributes,
@@ -15,9 +16,14 @@ import {
     PydanticFormFieldValidations,
     PydanticFormPropertySchemaParsed,
     PydanticFormSchema,
+    PydanticFormValidationErrorDetails,
     PydanticFormValidationResponse,
 } from '../types';
 import { getPydanticFormComponents } from './getPydanticFormComponents';
+
+export const getFormFieldIdFromLocation = (
+    loc: PydanticFormApiValidationError['loc'],
+) => loc.join('.');
 
 /**
  * Error object formatting
@@ -27,19 +33,44 @@ import { getPydanticFormComponents } from './getPydanticFormComponents';
  */
 export const getValidationErrorDetailsFromResponse = (
     formValidationResponse: PydanticFormValidationResponse,
-) => {
+): PydanticFormValidationErrorDetails => {
     return {
         detail: formValidationResponse.detail ?? '',
         source: formValidationResponse.validation_errors,
         mapped: formValidationResponse.validation_errors.reduce((old, cur) => {
             return {
                 ...old,
-                [cur.loc[0]]: {
+                [getFormFieldIdFromLocation(cur.loc)]: {
                     value: cur.input,
                     msg: cur.msg,
                 },
             };
         }, {}),
+    };
+};
+
+export const removeValidationErrorByLoc = (
+    validationErrors: PydanticFormValidationErrorDetails | null,
+    locToRemove: string,
+): PydanticFormValidationErrorDetails | null => {
+    if (!validationErrors) return null;
+
+    const newSource = validationErrors.source.filter((err) => {
+        const locPath = getFormFieldIdFromLocation(err.loc); // e.g. "contact_persons.0.email"
+        return locPath !== locToRemove;
+    });
+
+    const [topKey] = locToRemove.split('.'); // e.g. "contact_persons"
+    const newMapped = { ...validationErrors.mapped };
+
+    if (topKey && newMapped[topKey]) {
+        delete newMapped[topKey];
+    }
+
+    return {
+        ...validationErrors,
+        source: newSource,
+        mapped: newMapped,
     };
 };
 
@@ -173,14 +204,14 @@ export const optionsToOption = (
         );
 
 export const getFieldLabelById = (
-    fieldId: string,
+    fieldId: string | number,
     formSchema?: PydanticFormSchema,
 ) => {
     const fieldMap = getFlatFieldMap(formSchema?.properties ?? {});
     return fieldMap.has(fieldId) ? fieldMap.get(fieldId)?.title : fieldId;
 };
 
-type FieldMap = Map<string, PydanticFormField>;
+type FieldMap = Map<string | number, PydanticFormField>;
 export const getFlatFieldMap = (
     properties: Properties,
     fieldMap: FieldMap = new Map(),
