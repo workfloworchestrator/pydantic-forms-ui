@@ -385,7 +385,7 @@ export const getFormValuesFromFieldOrLabels = (
                 }
             } else if (hasDefaultValue(defaultFieldValue)) {
                 fieldValues[pydanticFormField.id] = defaultFieldValue;
-            } else if (isNullable(pydanticFormField.schema)) {
+            } else if (isNullableField(pydanticFormField)) {
                 // Fields that have no default value but are nullable we seed with null
                 // to make sure defaultValues includes it so we always submit all properties
                 fieldValues[pydanticFormField.id] = null;
