@@ -309,9 +309,7 @@ export const isNullableField = (field: PydanticFormField) =>
 /**
  * Returns the initial values for the form field based on the
  * default values and const values found in the parsed PydanticFormSchema.
- * Iterates over the properties and arrayItems of the schema.
- *
- * And labelData (this holds the current values from API)
+ * Iterates over the properties and arrayItems of the schema and labelData (this holds the current values from API)
  */
 export const getFormValuesFromFieldOrLabels = (
     componentMatcher: PydanticFormContextConfig['componentMatcher'],
@@ -337,10 +335,7 @@ export const getFormValuesFromFieldOrLabels = (
     };
 
     const hasDefaultValue = (defaultFieldValue: unknown): boolean => {
-        return (
-            typeof defaultFieldValue !== 'undefined' &&
-            defaultFieldValue !== null
-        );
+        return typeof defaultFieldValue !== 'undefined';
     };
 
     const fieldValues: FieldValues = {};
@@ -417,6 +412,10 @@ export const getFormValuesFromFieldOrLabels = (
                 }
             } else if (hasDefaultValue(defaultFieldValue)) {
                 fieldValues[pydanticFormField.id] = defaultFieldValue;
+            } else if (isNullable(pydanticFormField.schema)) {
+                // Fields that have no default value but are nullable we seed with null
+                // to make sure defaultValues includes it so we always submit all properties
+                fieldValues[pydanticFormField.id] = null;
             }
         }
     });
