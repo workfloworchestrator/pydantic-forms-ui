@@ -9,6 +9,7 @@ import type { PydanticComponentMatcher } from '../types';
 import { PydanticFormFieldFormat, PydanticFormFieldType } from '../types';
 import {
     ArrayField,
+    BooleanField,
     CheckboxField,
     DividerField,
     DropdownField,
@@ -121,9 +122,9 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
         },
     },
     {
-        id: 'checkbox',
+        id: 'boolean',
         ElementMatch: {
-            Element: CheckboxField,
+            Element: BooleanField,
             isControlledElement: true,
         },
         matcher(field) {

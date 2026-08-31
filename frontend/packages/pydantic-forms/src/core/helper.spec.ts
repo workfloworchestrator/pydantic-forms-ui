@@ -730,6 +730,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
         };
         expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({});
     });
+
     it('Returns empty array if arrayItem and array both have no default values and the array is required', () => {
         // When an array field has no default value the default value and the arrayItem doesn't either we assume an empty array
         const properties: Properties = {
@@ -747,6 +748,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
             test: [],
         });
     });
+
     it('Returns empty object if object field and properties both have no default values', () => {
         // When an array fields has no default value the default value should be taken from the arrayItem
         const properties: Properties = {
@@ -764,7 +766,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
         expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({});
     });
 
-    it('Works with comlicated nested structures', () => {
+    it('Works with complicated nested structures', () => {
         const properties: Properties = {
             test: getMockPydanticFormField({
                 id: 'test',
@@ -773,7 +775,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
                     name: 'Floris',
                     age: 21,
                     languages: [18, 21, 24],
-                    education: null,
+                    education: undefined,
                 },
                 properties: {
                     name: getMockPydanticFormField({
