@@ -10,7 +10,6 @@ export const BooleanField = ({
     pydanticFormField,
 }: PydanticFormControlledElementProps) => {
     const id = pydanticFormField.id;
-    console.log(value, pydanticFormField);
     const isNullable = pydanticFormField.validations.isNullable;
 
     return (
@@ -20,10 +19,10 @@ export const BooleanField = ({
                 type="radio"
                 id={'true'}
                 name={id}
-                value={'true'}
+                value={true}
                 checked={value === true}
-                onChange={(e) => {
-                    onChange(e.target.value);
+                onChange={() => {
+                    onChange(target);
                 }}
             />
             <input
@@ -31,10 +30,10 @@ export const BooleanField = ({
                 type="radio"
                 id={'false'}
                 name={id}
-                value={'false'}
+                value={false}
                 checked={value === false}
-                onChange={(e) => {
-                    onChange(e.target.value);
+                onChange={() => {
+                    onChange(false);
                 }}
             />
             {isNullable && (
