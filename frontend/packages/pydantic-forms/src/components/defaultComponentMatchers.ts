@@ -10,7 +10,6 @@ import { PydanticFormFieldFormat, PydanticFormFieldType } from '../types';
 import {
     ArrayField,
     BooleanField,
-    CheckboxField,
     DividerField,
     DropdownField,
     HiddenField,
