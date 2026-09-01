@@ -4,9 +4,7 @@ import { PydanticFormControlledElementProps } from '../../types';
 
 export const BooleanField = ({
     onChange,
-    // onBlur,
     value,
-    // name,
     pydanticFormField,
 }: PydanticFormControlledElementProps) => {
     const id = pydanticFormField.id;
