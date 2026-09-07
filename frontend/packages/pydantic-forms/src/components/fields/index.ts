@@ -13,3 +13,4 @@ export * from './MultiCheckboxField';
 export * from './MultiSelectField';
 export * from './ObjectField';
 export * from './ArrayField';
+export * from './BooleanField';

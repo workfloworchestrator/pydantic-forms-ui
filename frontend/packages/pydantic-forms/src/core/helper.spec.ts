@@ -637,7 +637,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
     });
 
     it('Returns default values in object fields', () => {
-        // When an object fields has a default value that value should be used an the default value from the properties ignored
+        // When an object fields has a default value that value should be used and the default value from the properties ignored
         const properties: Properties = {
             test: getMockPydanticFormField({
                 default: {
@@ -716,7 +716,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
     });
 
     it('Returns empty object if arrayItem and array both have no default values and the array is not required', () => {
-        // When an array field has no default value the default value and the arrayItem doesn't either we assume an empty array
+        // When both array and arrayItem have no default value and the array is not required its ignored when calling getFormValuesFromFieldOrLabels
         const properties: Properties = {
             test: getMockPydanticFormField({
                 id: 'test',
@@ -730,6 +730,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
         };
         expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({});
     });
+
     it('Returns empty array if arrayItem and array both have no default values and the array is required', () => {
         // When an array field has no default value the default value and the arrayItem doesn't either we assume an empty array
         const properties: Properties = {
@@ -747,8 +748,8 @@ describe('getFormValuesFromFieldOrLabels', () => {
             test: [],
         });
     });
+
     it('Returns empty object if object field and properties both have no default values', () => {
-        // When an array fields has no default value the default value should be taken from the arrayItem
         const properties: Properties = {
             test: getMockPydanticFormField({
                 id: 'test',
@@ -764,7 +765,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
         expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({});
     });
 
-    it('Works with comlicated nested structures', () => {
+    it('Works with complicated nested structures', () => {
         const properties: Properties = {
             test: getMockPydanticFormField({
                 id: 'test',
@@ -773,7 +774,7 @@ describe('getFormValuesFromFieldOrLabels', () => {
                     name: 'Floris',
                     age: 21,
                     languages: [18, 21, 24],
-                    education: null,
+                    education: undefined,
                 },
                 properties: {
                     name: getMockPydanticFormField({
@@ -854,5 +855,92 @@ describe('getFormValuesFromFieldOrLabels', () => {
         const actual = getFormValuesFromFieldOrLabels(matcher, properties);
 
         expect(actual).toEqual(expectedInitialData);
+    });
+
+    it('Returns falsy default values like false and 0 if they are defined like that', () => {
+        const properties: Properties = {
+            bool: getMockPydanticFormField({
+                id: 'bool',
+                type: PydanticFormFieldType.BOOLEAN,
+                format: PydanticFormFieldFormat.DEFAULT,
+                default: false,
+            }),
+            count: getMockPydanticFormField({
+                id: 'count',
+                type: PydanticFormFieldType.INTEGER,
+                format: PydanticFormFieldFormat.DEFAULT,
+                default: 0,
+            }),
+        };
+        expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({
+            bool: false,
+            count: 0,
+        });
+    });
+
+    it('Returns null as default value if the field is Nullable and default is null', () => {
+        // A backend field like `test: str | None = None` declares `default: null` in the
+        // schema. That default should be seeded so the property key is present in the
+        // submitted payload as an explicit null instead of being dropped.
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                id: 'test',
+                default: null,
+                validations: { isNullable: true },
+            }),
+        };
+        expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({
+            test: null,
+        });
+    });
+
+    it('Returns null for a nullable field without a default value', () => {
+        // A required-but-nullable field like `test: Optional[bool]` has no default.
+        // Null is a valid value for it, so it is seeded to keep the key in the payload.
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                id: 'test',
+                validations: { isNullable: true },
+            }),
+        };
+        expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({
+            test: null,
+        });
+    });
+
+    it('Falls back to nested property defaults when an object field has a null default', () => {
+        // `Optional[SomeModel] = None` keeps the model's properties in the flattened
+        // schema while the default stays null, so the null default must not be indexed
+        // into when collecting the nested defaults.
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                id: 'test',
+                type: PydanticFormFieldType.OBJECT,
+                format: PydanticFormFieldFormat.DEFAULT,
+                default: null,
+                validations: { isNullable: true },
+                properties: {
+                    degree: getMockPydanticFormField({
+                        id: 'degree',
+                        default: 'BSc',
+                    }),
+                },
+            }),
+        };
+        expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({
+            test: { degree: 'BSc' },
+        });
+    });
+
+    it('Does not seed a non-nullable field without a default value', () => {
+        // No default and not nullable means required: there is no valid value to invent,
+        // so the key is left out until the user provides one.
+        const properties: Properties = {
+            test: getMockPydanticFormField({
+                id: 'test',
+                required: true,
+            }),
+        };
+        expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({});
     });
 });

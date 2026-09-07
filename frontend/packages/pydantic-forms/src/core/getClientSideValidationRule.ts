@@ -15,6 +15,10 @@ export const getClientSideValidationRule = (
 
     if (!pydanticFormField.required) {
         validationRule = validationRule.optional();
+    } else {
+        validationRule = validationRule.refine((value) => value !== undefined, {
+            error: 'Field is required',
+        });
     }
 
     if (pydanticFormField.validations.isNullable) {

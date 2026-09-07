@@ -6,7 +6,7 @@
  * In the JSON Schema there are references to other places in the object.
  * After this hook is run with the data those references will be resolved.
  */
-import useSWR from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 
 import $RefParser from '@apidevtools/json-schema-ref-parser';
 
@@ -18,7 +18,7 @@ import {
 export function useRefParser(
     id: string,
     rawJsonSchema: PydanticFormSchemaRawJson,
-) {
+): SWRResponse<PydanticFormSchemaParsed | undefined> {
     return useSWR<PydanticFormSchemaParsed | undefined>(
         [id, rawJsonSchema],
         async ([, source]) => {
