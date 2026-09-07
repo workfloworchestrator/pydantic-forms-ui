@@ -15,7 +15,7 @@ export const BooleanField = ({
             <input
                 data-testid={`${id}-true`}
                 type="radio"
-                id={'true'}
+                id={`${id}-true`}
                 name={id}
                 value={'true'}
                 checked={value === true}
@@ -26,7 +26,7 @@ export const BooleanField = ({
             <input
                 data-testid={`${id}-false`}
                 type="radio"
-                id={'false'}
+                id={`${id}-false`}
                 name={id}
                 value={'false'}
                 checked={value === false}
@@ -38,7 +38,7 @@ export const BooleanField = ({
                 <input
                     data-testid={`${id}-unset`}
                     type="radio"
-                    id={'null'}
+                    id={`${id}-null`}
                     name={id}
                     value={'null'}
                     checked={!value && value !== false}
