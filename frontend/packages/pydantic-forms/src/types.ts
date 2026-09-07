@@ -333,6 +333,14 @@ export interface PydanticFormLabelProviderResponse {
     data: Record<string, string>;
 }
 
+// Minimal interface for internal SWR-based hooks — avoids referencing
+// SWR's internal hashed types (e.g. types-l2s7dphv) which break .d.ts generation.
+export interface SWRHookReturn<Data> {
+    data: Data;
+    error: Error | undefined;
+    isLoading: boolean;
+}
+
 export enum PydanticFormApiResponseType {
     SUCCESS = 'SUCCESS',
     VALIDATION_ERRORS = 'VALIDATION_ERRORS',
