@@ -12,7 +12,7 @@
  *
  * Disabled revalidate / refresh system of SWR, this would cause submissions
  */
-import useSWR from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 
 import {
     PydanticFormLabelProvider,
@@ -23,7 +23,7 @@ export function useLabelProvider(
     labelProvider?: PydanticFormLabelProvider,
     formKey?: string,
     formId?: string,
-) {
+): SWRResponse<PydanticFormLabelProviderResponse | undefined> {
     return useSWR<PydanticFormLabelProviderResponse | undefined>(
         // cache key
         [labelProvider, formKey, formId],
