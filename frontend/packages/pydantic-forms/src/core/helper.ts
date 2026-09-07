@@ -366,7 +366,7 @@ export const getFormValuesFromFieldOrLabels = (
                     objectProperties,
                 ).reduce((defaults, [key, property]) => {
                     if (
-                        hasDefaultValue(defaultFieldValue) &&
+                        objectHasProperties(defaultFieldValue) &&
                         hasDefaultValue(defaultFieldValue[key])
                     ) {
                         defaults[key] = defaultFieldValue[key];
