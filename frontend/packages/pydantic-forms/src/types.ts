@@ -183,7 +183,7 @@ export interface PydanticFormValidationErrorDetails {
 
 export interface PydanticFormApiValidationError {
     input: string;
-    loc: string[];
+    loc: (string | number)[];
     msg: string;
     type: string;
     url: string; //"https://errors.pydantic.dev/2.4/v/extra_forbidden"

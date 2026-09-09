@@ -16,6 +16,7 @@ import {
 import {
     getFormValuesFromFieldOrLabels,
     getValidationErrorDetailsFromResponse,
+    removeValidationErrorByLoc,
 } from '../helper';
 import { useApiProvider, useLabelProvider, usePydanticFormParser } from './';
 
@@ -30,31 +31,6 @@ export interface UsePydanticFormReturn {
     defaultValues: FieldValues;
     handleRemoveValidationError: (location: string) => void;
 }
-
-const removeValidationErrorByLoc = (
-    validationErrors: PydanticFormValidationErrorDetails | null,
-    locToRemove: string,
-): PydanticFormValidationErrorDetails | null => {
-    if (!validationErrors) return null;
-
-    const newSource = validationErrors.source.filter((err) => {
-        const locPath = err.loc.join('.'); // e.g. "contact_persons.0.email"
-        return locPath !== locToRemove;
-    });
-
-    const [topKey] = locToRemove.split('.'); // e.g. "contact_persons"
-    const newMapped = { ...validationErrors.mapped };
-
-    if (topKey && newMapped[topKey]) {
-        delete newMapped[topKey];
-    }
-
-    return {
-        ...validationErrors,
-        source: newSource,
-        mapped: newMapped,
-    };
-};
 
 export function usePydanticForm(
     formKey: string,

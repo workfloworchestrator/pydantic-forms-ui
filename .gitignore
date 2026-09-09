@@ -21,3 +21,4 @@ test
 todo.md
 venv/
 .venv/
+claude/settings.json
