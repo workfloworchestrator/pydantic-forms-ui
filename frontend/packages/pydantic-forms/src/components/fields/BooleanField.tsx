@@ -22,7 +22,8 @@ export const BooleanField = ({
                 onChange={() => {
                     onChange(true);
                 }}
-            /> True &nbsp;
+            />{' '}
+            True &nbsp;
             <input
                 data-testid={`${id}-false`}
                 type="radio"
@@ -33,20 +34,23 @@ export const BooleanField = ({
                 onChange={() => {
                     onChange(false);
                 }}
-            /> False &nbsp;
+            />{' '}
+            False &nbsp;
             {isNullable && (
                 <>
-                <input
-                    data-testid={`${id}-unset`}
-                    type="radio"
-                    id={`${id}-null`}
-                    name={id}
-                    value={'null'}
-                    checked={!value && value !== false}
-                    onChange={() => {
-                        onChange(null);
-                    }}
-                /> Unset</>
+                    <input
+                        data-testid={`${id}-unset`}
+                        type="radio"
+                        id={`${id}-null`}
+                        name={id}
+                        value={'null'}
+                        checked={!value && value !== false}
+                        onChange={() => {
+                            onChange(null);
+                        }}
+                    />{' '}
+                    Unset
+                </>
             )}
         </>
     );
