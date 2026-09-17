@@ -132,7 +132,8 @@ export enum PydanticFormFieldFormat {
 }
 
 export type PydanticFormFieldFormatExtended =
-    PydanticFormFieldFormat | (string & {});
+    | PydanticFormFieldFormat
+    | (string & {});
 
 export interface PydanticFormFieldOption {
     value: string;
