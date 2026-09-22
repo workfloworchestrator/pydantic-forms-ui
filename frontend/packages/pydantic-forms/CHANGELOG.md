@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 4.1.0
+
+### Minor Changes
+
+- 957374e: Updates npm dependencies
+
 ## 4.0.0
 
 ### Major Changes
