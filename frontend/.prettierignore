@@ -14,3 +14,4 @@ node_modules
 
 /env
 /test
+apps/*/next-env.d.ts

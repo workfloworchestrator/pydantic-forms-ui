@@ -7,7 +7,7 @@ module.exports = {
 
     transform: {
         '^.+\\.tsx?$': ['ts-jest', {
-            tsconfig: 'tsconfig.json',
+            tsconfig: 'tsconfig.spec.json',
         }],
         '^.+\\.jsx?$': 'babel-jest',
     },

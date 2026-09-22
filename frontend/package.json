@@ -14,7 +14,7 @@
         "postinstall": "turbo run build --filter=./packages/*"
     },
     "devDependencies": {
-        "@changesets/cli": "^2.30.0",
+        "@changesets/cli": "^3.0.3",
         "@trivago/prettier-plugin-sort-imports": "^6.0.2",
         "@types/lodash": "^4.17.24",
         "prettier": "^3.8.1",
@@ -26,7 +26,7 @@
     "name": "with-changesets",
     "dependencies": {
         "lodash.merge": "^4.6.2",
-        "typescript": "^5.9.3"
+        "typescript": "^6.0.3"
     },
     "packageManager": "npm@11.7.0",
     "workspaces": [
