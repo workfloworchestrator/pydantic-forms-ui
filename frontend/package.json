@@ -21,7 +21,7 @@
         "turbo": "^2.8.12"
     },
     "engines": {
-        "node": ">=18"
+        "node": ">=24.9"
     },
     "name": "with-changesets",
     "dependencies": {
