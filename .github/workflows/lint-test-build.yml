@@ -8,7 +8,7 @@ jobs:
             - name: Installing Node
               uses: actions/setup-node@v4
               with:
-                  node-version: 22.x
+                  node-version: 24.x
             - name: Installing dependencies
               run: cd frontend && npm install
             - run: cd frontend && npm run tsc
@@ -22,7 +22,7 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version: 22.x
+                  node-version: 24.x
             - name: Installing dependencies
               run: cd frontend && npm install
             - run: cd frontend && npm run test
@@ -34,7 +34,7 @@ jobs:
             - name: Setup node
               uses: actions/setup-node@v4
               with:
-                  node-version: 22.x
+                  node-version: 24.x
             - name: Installing dependencies
               run: cd frontend && npm install
             - run: cd frontend && npm run build
