@@ -3,6 +3,7 @@ import type { FieldValues } from 'react-hook-form';
 
 import type {
     PydanticFormApiResponse,
+    PydanticFormButtons,
     PydanticFormContextConfig,
     PydanticFormSchema,
     PydanticFormSchemaRawJson,
@@ -29,6 +30,7 @@ export interface UsePydanticFormReturn {
     isSending: boolean;
     pydanticFormSchema?: PydanticFormSchema;
     defaultValues: FieldValues;
+    customButtons?: PydanticFormButtons;
     handleRemoveValidationError: (location: string) => void;
 }
 
@@ -58,6 +60,9 @@ export function usePydanticForm(
     const [rawSchema, setRawSchema] =
         useState<PydanticFormSchemaRawJson>(emptyRawSchema);
     const [hasNext, setHasNext] = useState<boolean>(false);
+    const [customButtons, setCustomButtons] = useState<
+        PydanticFormButtons | undefined
+    >(undefined);
     const [validationErrorsDetails, setValidationErrorsDetails] =
         useState<PydanticFormValidationErrorDetails | null>(null);
 
@@ -129,9 +134,8 @@ export function usePydanticForm(
             if (formStep) {
                 formStepsRef.current.push(formStep);
             }
-            if (apiResponse.meta) {
-                setHasNext(!!apiResponse.meta.hasNext);
-            }
+            setHasNext(!!apiResponse.meta?.hasNext);
+            setCustomButtons(apiResponse.meta?.customButtons);
         }
         setIsSending(false);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -152,6 +156,7 @@ export function usePydanticForm(
         isLoading,
         pydanticFormSchema,
         defaultValues,
+        customButtons,
         isSending,
         handleRemoveValidationError,
     };

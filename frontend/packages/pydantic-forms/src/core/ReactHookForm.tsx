@@ -17,7 +17,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Footer from '../components/form/Footer';
 import { Form } from '../components/form/Form';
 import Header from '../components/form/Header';
-import type { PydanticFormComponents, PydanticFormSchema } from '../types';
+import type {
+    PydanticFormButtons,
+    PydanticFormComponents,
+    PydanticFormSchema,
+} from '../types';
 import { getPydanticFormComponents } from './getPydanticFormComponents';
 import { useGetConfig } from './hooks';
 import { useGetZodSchema } from './hooks';
@@ -25,6 +29,7 @@ import { useGetZodSchema } from './hooks';
 export interface ReactHookFormProps {
     apiError?: string;
     defaultValues: FieldValues;
+    customButtons?: PydanticFormButtons;
     handleCancel: () => void;
     handleSubmit: (fieldValues: FieldValues) => void;
     hasNext: boolean;
@@ -41,6 +46,7 @@ export interface ReactHookFormProps {
 export const ReactHookForm = ({
     apiError,
     defaultValues,
+    customButtons,
     handleCancel,
     handleSubmit,
     hasNext,
@@ -114,7 +120,8 @@ export const ReactHookForm = ({
         handleSubmit(_.cloneDeep(data));
     };
 
-    const buttons = defaultValues?.buttons ?? {};
+    const buttons: PydanticFormButtons =
+        customButtons ?? defaultValues?.buttons ?? {};
 
     return (
         <FormProvider {...reactHookForm}>
