@@ -54,6 +54,20 @@ describe('parseProperties', () => {
 
         expect(properties).toEqual(expectedProperties);
     });
+    it('adds the layout to the pydanticFormField', () => {
+        const parsedProperties: ParsedProperties = {
+            test: getParsedPropertyMock({ layout: { span: 4, newRow: true } }),
+        };
+        const properties = parseProperties(parsedProperties);
+
+        expect(properties.test.layout).toEqual({ span: 4, newRow: true });
+    });
+
+    it('leaves out the layout when the schema has none', () => {
+        const properties = parseProperties({ test: getParsedPropertyMock({}) });
+
+        expect(properties.test).not.toHaveProperty('layout');
+    });
     it('recursively transform properties of properties.', () => {
         const parsedProperties: ParsedProperties = {
             person: getParsedPropertyMock({
