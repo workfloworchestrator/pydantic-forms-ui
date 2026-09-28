@@ -3,7 +3,7 @@ import React from 'react';
 import _ from 'lodash';
 
 import type { PydanticFormControlledElementProps } from '../../types';
-import { getFormFieldIdWithPath } from '../../utils';
+import { getFormFieldIdWithPath, getLayoutFieldWidthStyle } from '../../utils';
 
 export const IntegerField = ({
     value,
@@ -45,6 +45,7 @@ export const IntegerField = ({
             style={{
                 padding: '8px',
                 margin: '8px 0',
+                ...getLayoutFieldWidthStyle(pydanticFormField),
             }}
         />
     );

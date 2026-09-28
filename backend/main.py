@@ -84,6 +84,49 @@ class ExtraData(GroupedMetadata):
         yield Field(json_schema_extra=self.props)
 
 
+GRID_COLUMNS = 12
+
+
+@dataclass(frozen=True)
+class Layout(GroupedMetadata):
+    """Positions a field on the frontend's 12-column form grid.
+
+    Fields without a Layout take the full width. Fields fill a row from left
+    to right and wrap to the next row when the 12 columns are used up.
+    """
+
+    span: int | None = None  # width in columns (1-12), full width when unset
+    start: int | None = None  # column (1-12) to start at, leaves space before it
+    new_row: bool = False  # always start on a new row
+    row_span: int | None = None  # height in rows, one row when unset
+    # vertical position of the field within the row
+    align: Literal["start", "center", "end", "stretch"] | None = None
+
+    def __post_init__(self) -> None:
+        if self.span is not None and not 1 <= self.span <= GRID_COLUMNS:
+            raise ValueError(f"span must be between 1 and {GRID_COLUMNS}")
+        if self.start is not None:
+            if not 1 <= self.start <= GRID_COLUMNS:
+                raise ValueError(f"start must be between 1 and {GRID_COLUMNS}")
+            if self.start + (self.span or 1) - 1 > GRID_COLUMNS:
+                raise ValueError(f"start + span exceeds the {GRID_COLUMNS} column grid")
+        if self.row_span is not None and self.row_span < 1:
+            raise ValueError("row_span must be at least 1")
+
+    def __iter__(self) -> Iterator[BaseMetadata]:
+        layout = {
+            "span": self.span,
+            "start": self.start,
+            "newRow": self.new_row or None,
+            "rowSpan": self.row_span,
+            "align": self.align,
+        }
+        layout = {key: value for key, value in layout.items() if value}
+        # An empty Layout() is the same as no Layout, the field takes the full width
+        if layout:
+            yield Field(json_schema_extra={"layout": layout})
+
+
 def example_backend_validation(val: int) -> bool:
     if val == 9:
         raise ValueError("Value cannot be 9")
@@ -133,8 +176,8 @@ TestString = Annotated[str, Field(min_length=2, max_length=10)]
 
 
 class Education(BaseModel):
-    degree: str
-    years: int | None
+    degree: Annotated[str, Layout(span=6)]
+    years: Annotated[int | None, Layout(span=6)]
 
 
 def example_list_validation(val: int) -> bool:
@@ -155,8 +198,10 @@ class Education2(BaseModel):
 
 
 class Person(BaseModel):
-    name: str
-    age: Annotated[int, Ge(18), Le(99), MultipleOf(multiple_of=3)]
+    name: Annotated[str, Layout(span=6)]
+    age: Annotated[
+        int, Ge(18), Le(99), MultipleOf(multiple_of=3), Layout(span=6, align="end")
+    ]
     education: Education
 
 
@@ -177,7 +222,8 @@ async def form(form_data: list[dict] = []):
         class TestForm0(FormPage):
             model_config = ConfigDict(title="Form Title Page 1")
 
-            number: NumberExample = 18
+            two_inputs_on_one_row: Label
+            number: Annotated[NumberExample, Layout(span=6, align="end")] = 18
             # list: TestExampleNumberList
             # list_list: unique_conlist(TestExampleNumberList, min_items=1, max_items=5)
             # list_list_list: unique_conlist(
@@ -185,7 +231,7 @@ async def form(form_data: list[dict] = []):
             # min_items=1,
             # max_items=2,
             # ) = [1, 2]
-            test: TestString = "aa"
+            test: Annotated[TestString, Layout(span=6)] = "aa"
             # textList: unique_conlist(TestString, min_items=1, max_items=5)
             # numberList: TestExampleNumberList = [1, 2]
             # person: Person2
@@ -450,12 +496,12 @@ async def form_full(form_data: list[dict] = []):
             model_config = ConfigDict(title="Nested Objects and Complex Types")
 
             class Address(BaseModel):
-                street: str = Field(
+                street: Annotated[str, Layout(span=8)] = Field(
                     title="Street", description="Street name and number"
                 )
-                city: str = Field(title="City")
-                postal_code: str = Field(title="Postal code")
-                country: str = Field(title="Country")
+                postal_code: Annotated[str, Layout(span=4)] = Field(title="Postal code")
+                city: Annotated[str, Layout(span=6)] = Field(title="City")
+                country: Annotated[str, Layout(span=6)] = Field(title="Country")
 
             class Education(BaseModel):
                 degree: str = Field(title="Degree", description="Type of degree")
@@ -469,9 +515,11 @@ async def form_full(form_data: list[dict] = []):
             )
 
             # List of nested objects
-            education_history: unique_conlist(Education, min_items=1, max_items=5) = Field(
-                title="Education history",
-                description="Your educational background",
+            education_history: unique_conlist(Education, min_items=1, max_items=5) = (
+                Field(
+                    title="Education history",
+                    description="Your educational background",
+                )
             )
 
         nested_data = yield FullFormNested
@@ -501,9 +549,11 @@ async def form_full(form_data: list[dict] = []):
             )
 
             # Constrained list
-            priority_list: Annotated[list[int], Field(min_length=3, max_length=5)] = Field(
-                title="Priority list",
-                description="Rank your top 3-5 priorities",
+            priority_list: Annotated[list[int], Field(min_length=3, max_length=5)] = (
+                Field(
+                    title="Priority list",
+                    description="Rank your top 3-5 priorities",
+                )
             )
 
         validation_data = yield FullFormValidation
@@ -550,6 +600,11 @@ class SimpleChoices(Choice):
     OPTION_C = ("c", "Option C")
 
 
+class ContactMethods(Choice):
+    EMAIL = ("email", "Email")
+    PHONE = ("phone", "Phone")
+
+
 @dataclass(frozen=True)
 class NoticeField(GroupedMetadata):
     variant: str  # can also be made into a Enum for specific variants
@@ -585,58 +640,66 @@ async def form_simple(form_data: list[dict] = []):
         class SimpleForm(SubmitFormPage):
             model_config = ConfigDict(title="Simple Form - Scalar Fields Only")
 
-            # String field
-            full_name: str = Field(
+            # Layout places fields on a 12-column grid, fields without a
+            # Layout take the full width.
+            # Row 1: name, age and birth date next to each other
+            full_name: Annotated[str, Layout(span=6)] = Field(
                 title="Full Name",
                 description="Enter your full name",
                 min_length=2,
                 max_length=100,
             )
 
-            # LongText field
-            comments: LongText = Field(
-                title="Comments",
-                description="Please provide any additional comments or feedback",
-            )
-
-            # Integer field
-            age: int = Field(
+            age: Annotated[int, Layout(span=3)] = Field(
                 title="Age",
                 description="Your age in years",
                 ge=0,
                 le=150,
             )
 
-            # Date field
-            birth_date: date = Field(
+            birth_date: Annotated[date, Layout(span=3)] = Field(
                 title="Birth Date",
                 description="Select your date of birth",
+            )
+
+            # Row 2 and 3: the textarea spans two rows on the left half. Contact
+            # method and preference fill the right half of row 2, subscribe fills
+            # the right half of row 3
+            comments: Annotated[LongText, Layout(span=6, row_span=2)] = Field(
+                title="Comments",
+                description="Please provide any additional comments or feedback",
+            )
+
+            contact_method: Annotated[ContactMethods, Layout(span=3)] = Field(
+                title="Contact method"
+            )
+
+            preference: Annotated[SimpleChoices, Layout(span=3)] = Field(
+                title="Preference",
+                description="Select your preference",
+            )
+
+            subscribe: Annotated[bool, Layout(span=6)] = Field(
+                title="Subscribe to Newsletter",
+                description="Check this box to receive` our newsletter",
+                default=False,
             )
 
             # Custom schema fields: rendered by the frontend as non-input UI blocks.
             # json_schema_extra passes arbitrary data to the schema, which the frontend
             # can read via pydanticFormField.schema in a custom component matcher.
             # "format" determines which component matches; the rest is your own schema.
-            age_notice: Annotated[Optional[str], _age_notice] = None
+            # Row 4: new_row starts a new row even though there is space left, and
+            # start leaves an empty gap before the second notice
+            age_notice: Annotated[
+                Optional[str], _age_notice, Layout(span=4, new_row=True)
+            ] = None
 
-            # Another custom field with a different variant and context
             data_usage_notice: Annotated[
                 Optional[str],
                 _data_usage_notice,
+                Layout(span=6, start=7),
             ] = None
-
-            # Boolean field
-            subscribe: bool = Field(
-                title="Subscribe to Newsletter",
-                description="Check this box to receive` our newsletter",
-                default=False,
-            )
-
-            # Choice field
-            preference: SimpleChoices = Field(
-                title="Preference",
-                description="Select your preference",
-            )
 
         simple_form_data = yield SimpleForm
 

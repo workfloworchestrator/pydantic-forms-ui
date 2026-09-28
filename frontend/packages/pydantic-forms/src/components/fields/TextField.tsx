@@ -8,7 +8,7 @@ import React from 'react';
 import _ from 'lodash';
 
 import { PydanticFormControlledElementProps } from '../../types';
-import { getFormFieldIdWithPath } from '../../utils';
+import { getFormFieldIdWithPath, getLayoutFieldWidthStyle } from '../../utils';
 
 export const TextField = ({
     value,
@@ -38,6 +38,7 @@ export const TextField = ({
             style={{
                 padding: '8px',
                 margin: '8px 0',
+                ...getLayoutFieldWidthStyle(pydanticFormField),
             }}
         />
     );

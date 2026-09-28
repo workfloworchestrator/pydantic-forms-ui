@@ -81,6 +81,19 @@ export interface PydanticFormField {
 
     arrayItem?: PydanticFormField;
     properties?: Properties;
+    layout?: PydanticFormFieldLayout;
+}
+
+/**
+ * Positions a field on the 12-column form grid. Fields without a layout
+ * take the full width.
+ */
+export interface PydanticFormFieldLayout {
+    span?: number; // Width in columns, 1-12 (default 12)
+    start?: number; // Column to start at, 1-12
+    newRow?: boolean; // Always start on a new row
+    rowSpan?: number; // Height in rows (default 1)
+    align?: 'start' | 'center' | 'end' | 'stretch'; // Vertical position of the field in the row
 }
 
 export enum PydanticFormFieldType {
@@ -445,6 +458,7 @@ export interface PydanticFormPropertySchemaParsed
      * @deprecated Use `extraProperties` instead.
      */
     uniforms?: UniformProperties;
+    layout?: PydanticFormFieldLayout;
 
     extraProperties?: UniformProperties;
 

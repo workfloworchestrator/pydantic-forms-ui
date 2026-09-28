@@ -1,6 +1,7 @@
 import React from 'react';
 
 import type { PydanticFormControlledElementProps } from '../../types';
+import { getLayoutFieldWidthStyle } from '../../utils';
 
 export const TextAreaField = ({
     value,
@@ -16,6 +17,7 @@ export const TextAreaField = ({
             onBlur={onBlur}
             defaultValue={value}
             disabled={disabled}
+            style={getLayoutFieldWidthStyle(pydanticFormField)}
         />
     );
 };
