@@ -1,8 +1,18 @@
+import type { CSSProperties } from 'react';
 import type { FieldPath, FieldValues } from 'react-hook-form';
 
 import { z } from 'zod';
 
 import { Locale, PydanticFormField, PydanticFormZodCustomError } from './types';
+
+/**
+ * Inputs of fields with a layout fill their grid cell. Fields without a
+ * layout keep the default input width so existing forms don't change.
+ */
+export const getLayoutFieldWidthStyle = (
+    pydanticFormField: PydanticFormField,
+): CSSProperties =>
+    pydanticFormField.layout ? { width: '100%', boxSizing: 'border-box' } : {};
 
 export const insertItemAtIndex = (
     fields: PydanticFormField[],

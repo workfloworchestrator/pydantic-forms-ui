@@ -10,6 +10,7 @@ import {
     disableField,
     getFormFieldIdWithPath,
     getFormFieldValue,
+    getLayoutFieldWidthStyle,
     getNumberValidationMessage,
     getZodCustomErrorMessages,
     getZodLocale,
@@ -458,5 +459,20 @@ describe('zod error helpers', () => {
                 input: '',
             }),
         ).toBeUndefined();
+    });
+});
+
+describe('getLayoutFieldWidthStyle', () => {
+    it('fills the grid cell when the field has a layout', () => {
+        const field = getMockPydanticFormField({ layout: { span: 6 } });
+        expect(getLayoutFieldWidthStyle(field)).toEqual({
+            width: '100%',
+            boxSizing: 'border-box',
+        });
+    });
+
+    it('keeps the default input width when the field has no layout', () => {
+        const field = getMockPydanticFormField({});
+        expect(getLayoutFieldWidthStyle(field)).toEqual({});
     });
 });
