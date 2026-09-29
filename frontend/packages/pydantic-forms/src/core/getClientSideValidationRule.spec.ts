@@ -150,4 +150,24 @@ describe('getClientSideValidationRule', () => {
         expect(rule.safeParse('other').success).toBe(false);
         expect(rule.safeParse(undefined).success).toBe(false);
     });
+
+    it('Accepts null for a nullable const field', () => {
+        // `Literal['x'] | None = None` puts the const in an anyOf next to null. The
+        // field is seeded with its null default, which has to pass validation.
+        const rule = getClientSideValidationRule(
+            getMockPydanticFormField({
+                id: 'test',
+                type: PydanticFormFieldType.STRING,
+                format: PydanticFormFieldFormat.DEFAULT,
+                default: null,
+                const: 'x',
+                validations: { isNullable: true },
+            }),
+            matcher,
+        );
+
+        expect(rule.safeParse(null).success).toBe(true);
+        expect(rule.safeParse('x').success).toBe(true);
+        expect(rule.safeParse('y').success).toBe(false);
+    });
 });

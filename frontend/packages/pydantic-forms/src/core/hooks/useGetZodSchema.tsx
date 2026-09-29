@@ -72,9 +72,13 @@ export const getZodRule = (
             }
         });
 
-        return pydanticFormField.required
+        const arrayFieldRule = pydanticFormField.required
             ? refinedArrayRule
             : refinedArrayRule.optional();
+
+        return pydanticFormField.validations.isNullable
+            ? arrayFieldRule.nullable()
+            : arrayFieldRule;
     }
 
     return getClientSideValidationRule(pydanticFormField, componentMatcher);
