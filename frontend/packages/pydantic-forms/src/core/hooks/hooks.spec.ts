@@ -542,6 +542,46 @@ describe('getZodValidationObject', () => {
         );
     });
 
+    it('Accepts null for a nullable array field', () => {
+        // `list[str] | None = None` is seeded with its null default, which has to pass validation.
+        const tagsArrayField = getMockPydanticFormField({
+            type: PydanticFormFieldType.ARRAY,
+            id: 'tags',
+            default: null,
+            validations: { isNullable: true },
+            arrayItem: getMockPydanticFormField({
+                type: PydanticFormFieldType.STRING,
+                id: 'tags',
+            }),
+        });
+
+        const zodObject = getZodValidationObject(
+            { tags: tagsArrayField },
+            getMockMatcher(basicMatchers),
+        );
+
+        expect(zodObject.safeParse({ tags: null }).success).toBe(true);
+        expect(zodObject.safeParse({ tags: ['a'] }).success).toBe(true);
+    });
+
+    it('Rejects null for an array field that is not nullable', () => {
+        const tagsArrayField = getMockPydanticFormField({
+            type: PydanticFormFieldType.ARRAY,
+            id: 'tags',
+            arrayItem: getMockPydanticFormField({
+                type: PydanticFormFieldType.STRING,
+                id: 'tags',
+            }),
+        });
+
+        const zodObject = getZodValidationObject(
+            { tags: tagsArrayField },
+            getMockMatcher(basicMatchers),
+        );
+
+        expect(zodObject.safeParse({ tags: null }).success).toBe(false);
+    });
+
     it('Works for array of object fields', () => {
         const nameField = getMockPydanticFormField({
             type: PydanticFormFieldType.STRING,
