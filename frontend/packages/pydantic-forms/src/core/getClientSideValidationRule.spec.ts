@@ -113,4 +113,41 @@ describe('getClientSideValidationRule', () => {
         expect(rule.safeParse('a').success).toBe(false);
         expect(rule.safeParse('ab').success).toBe(true);
     });
+
+    it('Accepts a null const value for a field declared as a string', () => {
+        // Read-only fields can declare a type that contradicts their const value, like
+        // `type: string` with `const: null`. The field is disabled so the user can't
+        // change the value, which means the string validator would lead to a dead end.
+        const rule = getClientSideValidationRule(
+            getMockPydanticFormField({
+                id: 'test',
+                type: PydanticFormFieldType.STRING,
+                format: PydanticFormFieldFormat.DEFAULT,
+                default: null,
+                const: null,
+            }),
+            matcher,
+        );
+
+        expect(rule.safeParse(null).success).toBe(true);
+        expect(rule.safeParse(undefined).success).toBe(true);
+        expect(rule.safeParse('some value').success).toBe(false);
+    });
+
+    it('Only accepts the const value for a required const field', () => {
+        const rule = getClientSideValidationRule(
+            getMockPydanticFormField({
+                id: 'test',
+                type: PydanticFormFieldType.STRING,
+                format: PydanticFormFieldFormat.DEFAULT,
+                required: true,
+                const: 'fixed',
+            }),
+            matcher,
+        );
+
+        expect(rule.safeParse('fixed').success).toBe(true);
+        expect(rule.safeParse('other').success).toBe(false);
+        expect(rule.safeParse(undefined).success).toBe(false);
+    });
 });

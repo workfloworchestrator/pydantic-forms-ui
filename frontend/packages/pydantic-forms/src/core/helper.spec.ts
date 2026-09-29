@@ -11,6 +11,7 @@ import { getMatcher } from './getMatcher';
 import {
     enumToOption,
     flattenSchemaCombinators,
+    getFieldAttributes,
     getFormFieldIdFromLocation,
     getFormValuesFromFieldOrLabels,
     getValidationErrorDetailsFromResponse,
@@ -735,6 +736,31 @@ describe('flattenSchemaCombinators', () => {
         expect(consoleWarnSpy).toHaveBeenCalled();
 
         consoleWarnSpy.mockRestore();
+    });
+});
+
+describe('getFieldAttributes', () => {
+    it('Disables a field with a const value', () => {
+        expect(
+            getFieldAttributes(getMockFormPropertySchemaParsed({ const: 'a' })),
+        ).toEqual({ disabled: true });
+    });
+
+    it('Disables a field with a falsy const value', () => {
+        expect(
+            getFieldAttributes(
+                getMockFormPropertySchemaParsed({ const: null }),
+            ),
+        ).toEqual({ disabled: true });
+        expect(
+            getFieldAttributes(getMockFormPropertySchemaParsed({ const: 0 })),
+        ).toEqual({ disabled: true });
+    });
+
+    it('Does not disable a field without a const value', () => {
+        expect(getFieldAttributes(getMockFormPropertySchemaParsed())).toEqual(
+            {},
+        );
     });
 });
 
