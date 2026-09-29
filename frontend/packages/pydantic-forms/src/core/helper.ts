@@ -447,7 +447,7 @@ export const getFieldAttributes = function (
         attributes.disabled = true;
     }
 
-    if (schemaField.const) {
+    if (typeof schemaField.const !== 'undefined') {
         attributes.disabled = true;
     }
 
