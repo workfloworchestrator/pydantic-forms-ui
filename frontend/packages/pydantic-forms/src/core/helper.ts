@@ -3,6 +3,7 @@
  *
  * Helper functions to be used in PydanticForms
  */
+import type { CSSProperties } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import {
@@ -11,6 +12,7 @@ import {
     PydanticFormContextConfig,
     PydanticFormField,
     PydanticFormFieldAttributes,
+    PydanticFormFieldLayout,
     PydanticFormFieldOption,
     PydanticFormFieldType,
     PydanticFormFieldValidations,
@@ -460,4 +462,38 @@ export const getFieldAttributes = function (
     }
 
     return attributes;
+};
+
+export const GRID_COLUMNS = 12;
+
+const clampColumn = (value: number) =>
+    Math.min(Math.max(Math.round(value), 1), GRID_COLUMNS);
+
+export const getLayoutColumns = (layout?: PydanticFormFieldLayout) => {
+    const start = layout?.start ? clampColumn(layout.start) : undefined;
+    const span = Math.min(
+        clampColumn(layout?.span ?? GRID_COLUMNS),
+        GRID_COLUMNS - (start ?? 1) + 1,
+    );
+    return { start, span };
+};
+
+export const getLayoutStyle = (
+    layout?: PydanticFormFieldLayout,
+): CSSProperties => {
+    const { start, span } = getLayoutColumns(layout);
+
+    const gridColumn = start
+        ? `${start} / span ${span}`
+        : layout?.newRow
+          ? `1 / span ${span}`
+          : `span ${span}`;
+
+    const rowSpan = Math.round(layout?.rowSpan ?? 1);
+
+    return {
+        gridColumn,
+        ...(rowSpan > 1 && { gridRow: `span ${rowSpan}` }),
+        ...(layout?.align && { alignSelf: layout.align }),
+    };
 };

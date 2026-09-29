@@ -105,6 +105,10 @@ const getPydanticFormField = (
         validations,
         ...toOptionalObjectProperty({ const: flatSchema.const }, addConstValue),
         properties,
+        ...toOptionalObjectProperty(
+            { layout: flatSchema.layout },
+            !!flatSchema.layout,
+        ),
     };
     return pydanticFormField;
 };
