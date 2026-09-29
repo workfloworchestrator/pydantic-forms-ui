@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 4.3.0
+
+### Minor Changes
+
+- f595577: Fixes disabled field validations
+
 ## 4.2.0
 
 ### Minor Changes
