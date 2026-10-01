@@ -2,10 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
 import type {
+    FormMeta,
     PydanticFormApiResponse,
     PydanticFormButtons,
     PydanticFormContextConfig,
-    PydanticFormDefinitionResponse,
     PydanticFormSchema,
     PydanticFormSchemaRawJson,
     PydanticFormSuccessResponse,
@@ -58,9 +58,9 @@ export function usePydanticForm(
     const [apiResponse, setApiResponse] = useState<
         PydanticFormApiResponse | undefined
     >(undefined);
-    const [formDefinition, setFormDefinition] = useState<
-        PydanticFormDefinitionResponse | undefined
-    >(undefined);
+    const [rawSchema, setRawSchema] =
+        useState<PydanticFormSchemaRawJson>(emptyRawSchema);
+    const [formMeta, setFormMeta] = useState<FormMeta>();
     const [validationErrorsDetails, setValidationErrorsDetails] =
         useState<PydanticFormValidationErrorDetails | null>(null);
 
@@ -69,8 +69,6 @@ export function usePydanticForm(
     // fetch the labels of the form, can also contain default values
     const { data: formLabels, isLoading: isLoadingFormLabels } =
         useLabelProvider(labelProvider, formKey, formId);
-
-    const rawSchema = formDefinition?.form ?? emptyRawSchema;
 
     const formSteps = formStepsRef.current;
 
@@ -129,7 +127,8 @@ export function usePydanticForm(
             apiResponse.type === PydanticFormApiResponseType.FORM_DEFINITION &&
             rawSchema !== apiResponse.form
         ) {
-            setFormDefinition(apiResponse);
+            setRawSchema(apiResponse.form);
+            setFormMeta(apiResponse.meta);
             setValidationErrorsDetails(null);
             if (formStep) {
                 formStepsRef.current.push(formStep);
@@ -149,12 +148,12 @@ export function usePydanticForm(
     return {
         validationErrorsDetails,
         apiError,
-        hasNext: !!formDefinition?.meta?.hasNext,
+        hasNext: !!formMeta?.hasNext,
         isFullFilled,
         isLoading,
         pydanticFormSchema,
         defaultValues,
-        customButtons: formDefinition?.meta?.customButtons,
+        customButtons: formMeta?.customButtons,
         isSending,
         handleRemoveValidationError,
     };
