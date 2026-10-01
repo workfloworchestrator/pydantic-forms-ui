@@ -347,14 +347,18 @@ export enum PydanticFormApiResponseType {
     FORM_DEFINITION = 'FORM_DEFINITION',
 }
 
-export type FormHasNext = {
+export type FormMeta = {
     hasNext?: boolean;
+    customButtons?: PydanticFormButtons;
 };
+
+/** @deprecated Use FormMeta instead. */
+export type FormHasNext = FormMeta;
 
 export type PydanticFormDefinitionResponse = {
     type: PydanticFormApiResponseType.FORM_DEFINITION;
     form: PydanticFormSchemaRawJson;
-    meta?: FormHasNext;
+    meta?: FormMeta;
     status: number;
 };
 
@@ -497,8 +501,8 @@ export type PydanticFormButtonProps = {
 };
 
 export type PydanticFormButtons = {
-    next: PydanticFormButtonProps;
-    previous: PydanticFormButtonProps;
+    next?: PydanticFormButtonProps;
+    previous?: PydanticFormButtonProps;
 };
 
 export interface PydanticFormFooterProps {

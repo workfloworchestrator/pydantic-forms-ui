@@ -197,6 +197,13 @@ async def form(form_data: list[dict] = []):
 
         class TestForm1(FormPage):
             model_config = ConfigDict(title="Form Title Page 1")
+            meta__: ClassVar[JSON] = {
+                "hasNext": True,
+                "customButtons": {
+                    "next": {"text": "Continue", "color": "#16a34a"},
+                    "previous": {"text": "Back", "color": "#374bbd"},
+                },
+            }
 
             contact_name2: Person
             options: ListChoices

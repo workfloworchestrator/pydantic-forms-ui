@@ -60,6 +60,7 @@ export const PydanticFormHandler = ({
         isLoading,
         pydanticFormSchema,
         defaultValues,
+        customButtons,
         handleRemoveValidationError,
     } = usePydanticForm(
         formKey,
@@ -99,6 +100,7 @@ export const PydanticFormHandler = ({
             <ReactHookForm
                 apiError={apiError}
                 defaultValues={defaultValues}
+                customButtons={customButtons}
                 handleCancel={handleCancel}
                 handleSubmit={handleStepSubmit}
                 hasNext={hasNext}
