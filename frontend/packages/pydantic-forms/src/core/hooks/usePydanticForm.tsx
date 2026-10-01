@@ -5,6 +5,7 @@ import type {
     PydanticFormApiResponse,
     PydanticFormButtons,
     PydanticFormContextConfig,
+    PydanticFormDefinitionResponse,
     PydanticFormSchema,
     PydanticFormSchemaRawJson,
     PydanticFormSuccessResponse,
@@ -57,11 +58,8 @@ export function usePydanticForm(
     const [apiResponse, setApiResponse] = useState<
         PydanticFormApiResponse | undefined
     >(undefined);
-    const [rawSchema, setRawSchema] =
-        useState<PydanticFormSchemaRawJson>(emptyRawSchema);
-    const [hasNext, setHasNext] = useState<boolean>(false);
-    const [customButtons, setCustomButtons] = useState<
-        PydanticFormButtons | undefined
+    const [formDefinition, setFormDefinition] = useState<
+        PydanticFormDefinitionResponse | undefined
     >(undefined);
     const [validationErrorsDetails, setValidationErrorsDetails] =
         useState<PydanticFormValidationErrorDetails | null>(null);
@@ -71,6 +69,8 @@ export function usePydanticForm(
     // fetch the labels of the form, can also contain default values
     const { data: formLabels, isLoading: isLoadingFormLabels } =
         useLabelProvider(labelProvider, formKey, formId);
+
+    const rawSchema = formDefinition?.form ?? emptyRawSchema;
 
     const formSteps = formStepsRef.current;
 
@@ -129,13 +129,11 @@ export function usePydanticForm(
             apiResponse.type === PydanticFormApiResponseType.FORM_DEFINITION &&
             rawSchema !== apiResponse.form
         ) {
-            setRawSchema(apiResponse.form);
+            setFormDefinition(apiResponse);
             setValidationErrorsDetails(null);
             if (formStep) {
                 formStepsRef.current.push(formStep);
             }
-            setHasNext(!!apiResponse.meta?.hasNext);
-            setCustomButtons(apiResponse.meta?.customButtons);
         }
         setIsSending(false);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,12 +149,12 @@ export function usePydanticForm(
     return {
         validationErrorsDetails,
         apiError,
-        hasNext,
+        hasNext: !!formDefinition?.meta?.hasNext,
         isFullFilled,
         isLoading,
         pydanticFormSchema,
         defaultValues,
-        customButtons,
+        customButtons: formDefinition?.meta?.customButtons,
         isSending,
         handleRemoveValidationError,
     };
