@@ -2,7 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
 
 import type {
+    FormMeta,
     PydanticFormApiResponse,
+    PydanticFormButtons,
     PydanticFormContextConfig,
     PydanticFormSchema,
     PydanticFormSchemaRawJson,
@@ -29,6 +31,7 @@ export interface UsePydanticFormReturn {
     isSending: boolean;
     pydanticFormSchema?: PydanticFormSchema;
     defaultValues: FieldValues;
+    customButtons?: PydanticFormButtons;
     handleRemoveValidationError: (location: string) => void;
 }
 
@@ -57,7 +60,7 @@ export function usePydanticForm(
     >(undefined);
     const [rawSchema, setRawSchema] =
         useState<PydanticFormSchemaRawJson>(emptyRawSchema);
-    const [hasNext, setHasNext] = useState<boolean>(false);
+    const [formMeta, setFormMeta] = useState<FormMeta>();
     const [validationErrorsDetails, setValidationErrorsDetails] =
         useState<PydanticFormValidationErrorDetails | null>(null);
 
@@ -125,12 +128,10 @@ export function usePydanticForm(
             rawSchema !== apiResponse.form
         ) {
             setRawSchema(apiResponse.form);
+            setFormMeta(apiResponse.meta);
             setValidationErrorsDetails(null);
             if (formStep) {
                 formStepsRef.current.push(formStep);
-            }
-            if (apiResponse.meta) {
-                setHasNext(!!apiResponse.meta.hasNext);
             }
         }
         setIsSending(false);
@@ -147,11 +148,12 @@ export function usePydanticForm(
     return {
         validationErrorsDetails,
         apiError,
-        hasNext,
+        hasNext: !!formMeta?.hasNext,
         isFullFilled,
         isLoading,
         pydanticFormSchema,
         defaultValues,
+        customButtons: formMeta?.customButtons,
         isSending,
         handleRemoveValidationError,
     };
