@@ -1,5 +1,14 @@
 # pydantic-forms
 
+## 4.4.0
+
+### Minor Changes
+
+- 8f4e5cf: Adds the `legacyNullHandling` config option. When set to `true` the form restores the pre-4.0 default value behaviour: nullable fields without a default are not seeded with `null` and `null` schema defaults are ignored, so untouched optional fields are omitted from the submitted payload instead of being sent as an explicit `null`. Defaults to `false`.
+- efb2814: Read footer button settings from the form page's `meta__.customButtons` (returned as `meta.customButtons` in the API response). When a page has no `customButtons`, the footer falls back to `buttons` from the label provider data, as before.
+  
+  Adds the `FormMeta` type for the API response `meta` field. `FormHasNext` is kept as a deprecated alias of `FormMeta`.
+
 ## 4.3.0
 
 ### Minor Changes
