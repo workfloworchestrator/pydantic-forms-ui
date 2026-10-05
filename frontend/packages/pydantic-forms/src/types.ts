@@ -267,6 +267,12 @@ export interface PydanticFormConfig {
 
     // locale
     locale?: Locale;
+
+    // Restores the pre-4.0 default value behaviour: nullable fields without a
+    // default are not seeded and `null` schema defaults are ignored, so untouched
+    // optional fields are omitted from the submitted payload instead of being sent
+    // as an explicit `null`. Defaults to `false`.
+    legacyNullHandling?: boolean;
 }
 
 export type PydanticFormContextConfig = PydanticFormConfig & {

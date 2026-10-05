@@ -1172,4 +1172,165 @@ describe('getFormValuesFromFieldOrLabels', () => {
         };
         expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual({});
     });
+
+    describe('with legacyNullHandling', () => {
+        it('Ignores a null default so the key is left out of the form values', () => {
+            const properties: Properties = {
+                test: getMockPydanticFormField({
+                    id: 'test',
+                    default: null,
+                    validations: { isNullable: true },
+                }),
+                other: getMockPydanticFormField({
+                    id: 'other',
+                    default: 'kept',
+                }),
+            };
+            expect(
+                getFormValuesFromFieldOrLabels(
+                    matcher,
+                    properties,
+                    undefined,
+                    true,
+                ),
+            ).toEqual({ other: 'kept' });
+        });
+
+        it('Does not seed null for a nullable field without a default value', () => {
+            const properties: Properties = {
+                test: getMockPydanticFormField({
+                    id: 'test',
+                    validations: { isNullable: true },
+                }),
+            };
+            expect(
+                getFormValuesFromFieldOrLabels(
+                    matcher,
+                    properties,
+                    undefined,
+                    true,
+                ),
+            ).toEqual({});
+        });
+
+        it('Applies the legacy behaviour to nested object properties', () => {
+            const properties: Properties = {
+                test: getMockPydanticFormField({
+                    id: 'test',
+                    type: PydanticFormFieldType.OBJECT,
+                    format: PydanticFormFieldFormat.DEFAULT,
+                    properties: {
+                        degree: getMockPydanticFormField({
+                            id: 'degree',
+                            default: 'BSc',
+                        }),
+                        school: getMockPydanticFormField({
+                            id: 'school',
+                            default: null,
+                            validations: { isNullable: true },
+                        }),
+                        year: getMockPydanticFormField({
+                            id: 'year',
+                            type: PydanticFormFieldType.INTEGER,
+                            validations: { isNullable: true },
+                        }),
+                    },
+                }),
+            };
+            expect(
+                getFormValuesFromFieldOrLabels(
+                    matcher,
+                    properties,
+                    undefined,
+                    true,
+                ),
+            ).toEqual({ test: { degree: 'BSc' } });
+        });
+
+        it('Ignores a null default on an object field and uses the nested defaults', () => {
+            const properties: Properties = {
+                test: getMockPydanticFormField({
+                    id: 'test',
+                    type: PydanticFormFieldType.OBJECT,
+                    format: PydanticFormFieldFormat.DEFAULT,
+                    default: null,
+                    validations: { isNullable: true },
+                    properties: {
+                        degree: getMockPydanticFormField({
+                            id: 'degree',
+                            default: 'BSc',
+                        }),
+                    },
+                }),
+            };
+            expect(
+                getFormValuesFromFieldOrLabels(
+                    matcher,
+                    properties,
+                    undefined,
+                    true,
+                ),
+            ).toEqual({ test: { degree: 'BSc' } });
+        });
+
+        it('Ignores a null default on an array field', () => {
+            const properties: Properties = {
+                test: getMockPydanticFormField({
+                    id: 'test',
+                    type: PydanticFormFieldType.ARRAY,
+                    default: null,
+                    required: false,
+                    validations: { isNullable: true },
+                    arrayItem: getMockPydanticFormField({
+                        id: 'nestedField',
+                        type: PydanticFormFieldType.STRING,
+                    }),
+                }),
+            };
+            expect(
+                getFormValuesFromFieldOrLabels(
+                    matcher,
+                    properties,
+                    undefined,
+                    true,
+                ),
+            ).toEqual({});
+        });
+
+        it('Still seeds label data and non-null defaults', () => {
+            const properties: Properties = {
+                test: getMockPydanticFormField({
+                    id: 'test',
+                    default: null,
+                    validations: { isNullable: true },
+                }),
+                count: getMockPydanticFormField({
+                    id: 'count',
+                    type: PydanticFormFieldType.INTEGER,
+                    format: PydanticFormFieldFormat.DEFAULT,
+                    default: 0,
+                }),
+            };
+            expect(
+                getFormValuesFromFieldOrLabels(
+                    matcher,
+                    properties,
+                    { test: 'from label' },
+                    true,
+                ),
+            ).toEqual({ test: 'from label', count: 0 });
+        });
+
+        it('Is off by default', () => {
+            const properties: Properties = {
+                test: getMockPydanticFormField({
+                    id: 'test',
+                    validations: { isNullable: true },
+                }),
+            };
+            expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual(
+                { test: null },
+            );
+        });
+    });
 });
