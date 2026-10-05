@@ -64,7 +64,12 @@ export function usePydanticForm(
     const [validationErrorsDetails, setValidationErrorsDetails] =
         useState<PydanticFormValidationErrorDetails | null>(null);
 
-    const { labelProvider, apiProvider, componentMatcher } = config;
+    const {
+        labelProvider,
+        apiProvider,
+        componentMatcher,
+        legacyNullHandling = false,
+    } = config;
 
     // fetch the labels of the form, can also contain default values
     const { data: formLabels, isLoading: isLoadingFormLabels } =
@@ -96,8 +101,14 @@ export function usePydanticForm(
             {
                 ...formLabels?.data,
             },
+            legacyNullHandling,
         );
-    }, [componentMatcher, formLabels?.data, pydanticFormSchema?.properties]);
+    }, [
+        componentMatcher,
+        formLabels?.data,
+        legacyNullHandling,
+        pydanticFormSchema?.properties,
+    ]);
 
     const isLoading = isLoadingFormLabels || isLoadingSchema || isParsingSchema;
 

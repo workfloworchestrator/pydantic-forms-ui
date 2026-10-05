@@ -315,6 +315,7 @@ export const getFormValuesFromFieldOrLabels = (
     componentMatcher: PydanticFormContextConfig['componentMatcher'],
     properties?: Properties,
     labelData?: Record<string, string>,
+    legacyNullHandling: boolean = false,
 ): FieldValues => {
     if (!properties) {
         return {};
@@ -335,7 +336,10 @@ export const getFormValuesFromFieldOrLabels = (
     };
 
     const hasDefaultValue = (defaultFieldValue: unknown): boolean => {
-        return typeof defaultFieldValue !== 'undefined';
+        if (typeof defaultFieldValue === 'undefined') return false;
+        // Before 4.0 a `null` default was treated as "no default" so the key
+        // was left out of the form values and therefore out of the payload.
+        return legacyNullHandling ? defaultFieldValue !== null : true;
     };
 
     const fieldValues: FieldValues = {};
@@ -375,6 +379,7 @@ export const getFormValuesFromFieldOrLabels = (
                             componentMatcher,
                             { [key]: property },
                             labelData,
+                            legacyNullHandling,
                         );
 
                         if (objectHasProperties(nestedDefault)) {
@@ -397,6 +402,7 @@ export const getFormValuesFromFieldOrLabels = (
                         componentMatcher,
                         { arrayItem },
                         labelData,
+                        legacyNullHandling,
                     );
 
                     if (objectHasProperties(arrayItemDefault)) {
@@ -412,7 +418,10 @@ export const getFormValuesFromFieldOrLabels = (
                 }
             } else if (hasDefaultValue(defaultFieldValue)) {
                 fieldValues[pydanticFormField.id] = defaultFieldValue;
-            } else if (isNullableField(pydanticFormField)) {
+            } else if (
+                !legacyNullHandling &&
+                isNullableField(pydanticFormField)
+            ) {
                 // Fields that have no default value but are nullable we seed with null
                 // to make sure defaultValues includes it so we always submit all properties
                 fieldValues[pydanticFormField.id] = null;
