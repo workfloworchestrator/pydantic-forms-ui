@@ -14,6 +14,7 @@ import {
     getFieldAttributes,
     getFormFieldIdFromLocation,
     getFormValuesFromFieldOrLabels,
+    getLayoutStyle,
     getValidationErrorDetailsFromResponse,
     isNullable,
     optionsToOption,
@@ -1331,6 +1332,73 @@ describe('getFormValuesFromFieldOrLabels', () => {
             expect(getFormValuesFromFieldOrLabels(matcher, properties)).toEqual(
                 { test: null },
             );
+        });
+    });
+});
+
+describe('getLayoutStyle', () => {
+    it('takes the full width when there is no layout', () => {
+        expect(getLayoutStyle(undefined)).toEqual({ gridColumn: 'span 12' });
+    });
+
+    it('spans the given number of columns', () => {
+        expect(getLayoutStyle({ span: 6 })).toEqual({ gridColumn: 'span 6' });
+    });
+
+    it('clamps the span to 1-12', () => {
+        expect(getLayoutStyle({ span: 0 })).toEqual({ gridColumn: 'span 1' });
+        expect(getLayoutStyle({ span: 20 })).toEqual({
+            gridColumn: 'span 12',
+        });
+    });
+
+    it('starts at the first column when newRow is set', () => {
+        expect(getLayoutStyle({ span: 6, newRow: true })).toEqual({
+            gridColumn: '1 / span 6',
+        });
+    });
+
+    it('starts at the given column', () => {
+        expect(getLayoutStyle({ span: 4, start: 5 })).toEqual({
+            gridColumn: '5 / span 4',
+        });
+    });
+
+    it('shrinks the span so the field stays within the grid', () => {
+        expect(getLayoutStyle({ span: 6, start: 10 })).toEqual({
+            gridColumn: '10 / span 3',
+        });
+        expect(getLayoutStyle({ start: 7 })).toEqual({
+            gridColumn: '7 / span 6',
+        });
+    });
+
+    it('prefers start over newRow', () => {
+        expect(getLayoutStyle({ span: 4, start: 3, newRow: true })).toEqual({
+            gridColumn: '3 / span 4',
+        });
+    });
+
+    it('sets the vertical alignment', () => {
+        expect(getLayoutStyle({ align: 'end' })).toEqual({
+            gridColumn: 'span 12',
+            alignSelf: 'end',
+        });
+    });
+
+    it('spans multiple rows', () => {
+        expect(getLayoutStyle({ span: 6, rowSpan: 2 })).toEqual({
+            gridColumn: 'span 6',
+            gridRow: 'span 2',
+        });
+    });
+
+    it('does not set the rows for a single or invalid row span', () => {
+        expect(getLayoutStyle({ rowSpan: 1 })).toEqual({
+            gridColumn: 'span 12',
+        });
+        expect(getLayoutStyle({ rowSpan: 0 })).toEqual({
+            gridColumn: 'span 12',
         });
     });
 });
