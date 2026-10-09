@@ -452,7 +452,10 @@ export const getFieldAttributes = function (
     // to the attributes. However, we dont know yet if the
     // data from the Backend will stay the same..
 
-    if (schemaField.uniforms?.disabled) {
+    // `uniforms` is deprecated, we use it as a fallback for `extraProperties`.
+    const key = 'extraProperties' in schemaField ? 'extraProperties' : 'uniforms';
+
+    if (schemaField[key]?.disabled) {
         attributes.disabled = true;
     }
 
@@ -460,11 +463,11 @@ export const getFieldAttributes = function (
         attributes.disabled = true;
     }
 
-    if (schemaField.uniforms?.sensitive) {
+    if (schemaField[key]?.sensitive) {
         attributes.sensitive = true;
     }
 
-    if (schemaField.uniforms?.password) {
+    if (schemaField[key]?.password) {
         attributes.password = true;
     }
 
