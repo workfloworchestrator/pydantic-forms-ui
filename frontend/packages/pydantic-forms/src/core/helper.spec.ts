@@ -762,6 +762,21 @@ describe('getFieldAttributes', () => {
             {},
         );
     });
+
+    it('uses extraProperties over uniforms when both are present', () => {
+        const schema = getMockFormPropertySchemaParsed({
+            extraProperties: { sensitive: true },
+            uniforms: { sensitive: false },
+        });
+        expect(getFieldAttributes(schema)).toEqual({ sensitive: true });
+    });
+
+    it('still uses uniforms when extraProperties is not present', () => {
+        const schema = getMockFormPropertySchemaParsed({
+            uniforms: { sensitive: true },
+        });
+        expect(getFieldAttributes(schema)).toEqual({ sensitive: true });
+    });
 });
 
 describe('isNullable', () => {

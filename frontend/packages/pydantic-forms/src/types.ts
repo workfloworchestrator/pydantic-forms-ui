@@ -72,7 +72,13 @@ export interface PydanticFormField {
     oneOf?: PydanticFormFieldAnyOfDef[];
     allOf?: PydanticFormFieldAnyOfDef[];
 
+    /**
+     * @deprecated Use `extraProperties` instead.
+     */
     uniforms?: UniformProperties;
+
+    extraProperties?: UniformProperties;
+
     arrayItem?: PydanticFormField;
     properties?: Properties;
 }
@@ -435,7 +441,12 @@ export interface PydanticFormPropertySchemaParsed
     format?: PydanticFormFieldFormatExtended;
     const?: number | string | boolean | null;
 
+    /**
+     * @deprecated Use `extraProperties` instead.
+     */
     uniforms?: UniformProperties;
+
+    extraProperties?: UniformProperties;
 
     properties?: ParsedProperties;
 }
@@ -461,7 +472,12 @@ export interface PydanticFormPropertySchemaRawJson
     default?: string | null | object;
     format: PydanticFormFieldFormat;
 
+    /**
+     * @deprecated Use `extraProperties` instead.
+     */
     uniforms?: UniformProperties;
+
+    extraProperties?: UniformProperties;
 
     properties?: RawJsonProperties;
 }
