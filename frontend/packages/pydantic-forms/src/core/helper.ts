@@ -453,7 +453,8 @@ export const getFieldAttributes = function (
     // data from the Backend will stay the same..
 
     // `uniforms` is deprecated, we use it as a fallback for `extraProperties`.
-    const key = 'extraProperties' in schemaField ? 'extraProperties' : 'uniforms';
+    const key =
+        'extraProperties' in schemaField ? 'extraProperties' : 'uniforms';
 
     if (schemaField[key]?.disabled) {
         attributes.disabled = true;
