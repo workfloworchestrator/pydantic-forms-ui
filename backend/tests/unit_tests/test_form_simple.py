@@ -1,10 +1,6 @@
-from typing import Annotated
-
-import pytest
 from fastapi.testclient import TestClient
-from pydantic import BaseModel
 
-from main import Layout, app
+from main import app
 
 client = TestClient(app)
 
@@ -41,24 +37,6 @@ def test_form_simple_schema_contains_layout():
     assert properties["comments"]["layout"] == {"span": 6, "rowSpan": 2}
 
 
-def test_layout_json_schema_leaves_out_unset_options():
-    class LayoutForm(BaseModel):
-        name: Annotated[str, Layout(span=6, new_row=True, align="end")]
-        city: Annotated[str, Layout(start=4)]
-        full: Annotated[str, Layout()]
-        tall: Annotated[str, Layout(span=6, row_span=2)]
-
-    properties = LayoutForm.model_json_schema()["properties"]
-    assert properties["name"]["layout"] == {
-        "span": 6,
-        "newRow": True,
-        "align": "end",
-    }
-    assert properties["city"]["layout"] == {"start": 4}
-    assert "layout" not in properties["full"]
-    assert properties["tall"]["layout"] == {"span": 6, "rowSpan": 2}
-
-
 def test_form_simple_schema_places_fields_next_to_textarea():
     response = client.post("/form-simple", json=[])
 
@@ -66,19 +44,3 @@ def test_form_simple_schema_places_fields_next_to_textarea():
     assert properties["contact_method"]["layout"] == {"span": 3}
     assert properties["preference"]["layout"] == {"span": 3}
     assert properties["subscribe"]["layout"] == {"span": 6}
-
-
-@pytest.mark.parametrize(
-    "kwargs",
-    [
-        {"span": 0},
-        {"span": 13},
-        {"start": 0},
-        {"start": 13},
-        {"start": 10, "span": 6},
-        {"row_span": 0},
-    ],
-)
-def test_layout_rejects_positions_outside_the_grid(kwargs):
-    with pytest.raises(ValueError):
-        Layout(**kwargs)

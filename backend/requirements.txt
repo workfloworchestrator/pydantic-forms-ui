@@ -1,4 +1,4 @@
 fastapi[standard]
-pydantic-forms
+pydantic-forms==2.8.0rc1
 structlog
 pytest

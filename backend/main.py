@@ -36,6 +36,7 @@ from pydantic_forms.types import JSON
 from pydantic_forms.validators import (
     LongText,
     Label,
+    Layout,
     Divider,
     Hidden,
     Choice,
@@ -82,49 +83,6 @@ class ExtraData(GroupedMetadata):
 
     def __iter__(self) -> Iterator[BaseMetadata]:
         yield Field(json_schema_extra=self.props)
-
-
-GRID_COLUMNS = 12
-
-
-@dataclass(frozen=True)
-class Layout(GroupedMetadata):
-    """Positions a field on the frontend's 12-column form grid.
-
-    Fields without a Layout take the full width. Fields fill a row from left
-    to right and wrap to the next row when the 12 columns are used up.
-    """
-
-    span: int | None = None  # width in columns (1-12), full width when unset
-    start: int | None = None  # column (1-12) to start at, leaves space before it
-    new_row: bool = False  # always start on a new row
-    row_span: int | None = None  # height in rows, one row when unset
-    # vertical position of the field within the row
-    align: Literal["start", "center", "end", "stretch"] | None = None
-
-    def __post_init__(self) -> None:
-        if self.span is not None and not 1 <= self.span <= GRID_COLUMNS:
-            raise ValueError(f"span must be between 1 and {GRID_COLUMNS}")
-        if self.start is not None:
-            if not 1 <= self.start <= GRID_COLUMNS:
-                raise ValueError(f"start must be between 1 and {GRID_COLUMNS}")
-            if self.start + (self.span or 1) - 1 > GRID_COLUMNS:
-                raise ValueError(f"start + span exceeds the {GRID_COLUMNS} column grid")
-        if self.row_span is not None and self.row_span < 1:
-            raise ValueError("row_span must be at least 1")
-
-    def __iter__(self) -> Iterator[BaseMetadata]:
-        layout = {
-            "span": self.span,
-            "start": self.start,
-            "newRow": self.new_row or None,
-            "rowSpan": self.row_span,
-            "align": self.align,
-        }
-        layout = {key: value for key, value in layout.items() if value}
-        # An empty Layout() is the same as no Layout, the field takes the full width
-        if layout:
-            yield Field(json_schema_extra={"layout": layout})
 
 
 def example_backend_validation(val: int) -> bool:
