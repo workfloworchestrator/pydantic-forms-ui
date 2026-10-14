@@ -105,7 +105,7 @@ export default function Page() {
             <FormContainer>
                 <PydanticForm
                     key={formParam}
-                    formKey="theForm"
+                    formKey={formParam}
                     formId="example123"
                     title="Example form"
                     onCancel={defaultOnCancel}

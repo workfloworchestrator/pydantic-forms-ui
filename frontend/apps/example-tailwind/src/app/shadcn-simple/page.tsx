@@ -157,7 +157,7 @@ export default function Home() {
                             {/* Form */}
                             <PydanticForm
                                 key={formParam}
-                                formKey="theForm"
+                                formKey={formParam}
                                 formId="example123"
                                 title="Example form"
                                 onCancel={defaultOnCancel}

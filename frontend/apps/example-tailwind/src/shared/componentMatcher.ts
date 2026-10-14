@@ -135,5 +135,17 @@ export const createComponentMatcher = (
             validator: zodValidationPresets.string,
         },
         ...currentMatchers,
+        {
+            // Fallback for fields no other matcher handles, like floats and
+            // decimals (type "number"). Without it they get the unstyled
+            // TextField of the pydantic-forms package. Must stay last, it
+            // matches every field.
+            id: 'default_replacer',
+            ElementMatch: { Element: TextField, isControlledElement: true },
+            matcher() {
+                return true;
+            },
+            validator: zodValidationPresets.string,
+        },
     ];
 };
