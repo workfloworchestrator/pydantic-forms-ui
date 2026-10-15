@@ -25,6 +25,7 @@ const FORM_MAP: Record<string, string> = {
     'standard-form': '/form',
     'full-form': '/form-full',
     'simple-form': '/form-simple',
+    'simple-layout-form': '/form-simple-layout',
 };
 
 const DEFAULT_FORM = 'standard-form';
@@ -99,6 +100,18 @@ export default function Page() {
                         ].join(' ')}
                     >
                         Simple Form
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setFormParam('simple-layout-form')}
+                        className={[
+                            'flex-1 rounded-xl px-4 py-2.5 text-sm font-medium transition',
+                            formParam === 'simple-layout-form'
+                                ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
+                                : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-200 dark:hover:bg-zinc-800',
+                        ].join(' ')}
+                    >
+                        Simple Layout Form
                     </button>
                 </div>
             </div>

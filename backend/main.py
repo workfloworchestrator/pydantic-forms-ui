@@ -279,19 +279,19 @@ async def form_full(form_data: list[dict] = []):
             )
 
             # Numeric types
-            age: int = Field(
+            age: Annotated[int, Layout(span=4)] = Field(
                 title="Age",
                 description="Provide your age.",
                 ge=0,
                 le=150,
             )
-            height: float = Field(
+            height: Annotated[float, Layout(span=4)] = Field(
                 title="Height (meters)",
                 description="Your height in meters",
                 ge=0.0,
                 le=3.0,
             )
-            balance: Decimal = Field(
+            balance: Annotated[Decimal, Layout(span=4)] = Field(
                 title="Account Balance",
                 description="Your current balance",
                 decimal_places=2,
@@ -315,15 +315,15 @@ async def form_full(form_data: list[dict] = []):
             )
 
             # Enum
-            favorite_color: Colors = Field(
+            favorite_color: Annotated[Colors, Layout(span=6)] = Field(
                 title="Favorite color",
                 description="Choose your favorite color from the palette",
             )
 
             # Literal
-            experience_level: Literal[
+            experience_level: Annotated[Literal[
                 "beginner", "intermediate", "advanced", "expert"
-            ] = Field(
+            ], Layout(span=6)] = Field(
                 title="Experience level",
                 description="Select your skill level",
                 default="beginner",
@@ -335,19 +335,19 @@ async def form_full(form_data: list[dict] = []):
         class FullFormDateTime(FormPage):
             model_config = ConfigDict(title="Date and Time Types")
 
-            birth_date: date = Field(
+            birth_date: Annotated[date, Layout(span=6)] = Field(
                 title="Birth date",
                 description="Your date of birth",
             )
-            appointment_time: datetime = Field(
+            appointment_time: Annotated[datetime, Layout(4, new_row=True)] = Field(
                 title="Appointment",
                 description="Preferred appointment date and time",
             )
-            preferred_time: time = Field(
+            preferred_time: Annotated[time, Layout(span=4)] = Field(
                 title="Preferred meeting time",
                 description="What time do you prefer for meetings?",
             )
-            session_duration: timedelta = Field(
+            session_duration: Annotated[timedelta, Layout(span=4)] = Field(
                 title="Session duration",
                 description="How long should the session last?",
             )
@@ -358,19 +358,22 @@ async def form_full(form_data: list[dict] = []):
         class FullFormSpecialTypes(FormPage):
             model_config = ConfigDict(title="Special Validation Types")
 
-            email: EmailStr = Field(
+            email: Annotated[EmailStr, Layout(span=6)] = Field(
                 title="Email address",
                 description="Your valid email address",
             )
-            website: HttpUrl = Field(
+            website: Annotated[HttpUrl, Layout(span=6)] = Field(
                 title="Website",
                 description="Your website URL",
             )
+            # IPvAnyAddress builds its own JSON schema and drops Annotated
+            # metadata like Layout, so the layout is set on the Field directly
             ip_address: IPvAnyAddress = Field(
                 title="IP Address",
                 description="Your IP address (IPv4 or IPv6)",
+                json_schema_extra={"layout": {"span": 4}},
             )
-            user_id: UUID = Field(
+            user_id: Annotated[UUID, Layout(span=6, start=7)] = Field(
                 title="User ID",
                 description="Your unique user identifier",
             )
@@ -423,12 +426,12 @@ async def form_full(form_data: list[dict] = []):
             model_config = ConfigDict(title="Optional and Union Types")
 
             # Optional types
-            middle_name: str | None = Field(
+            middle_name: Annotated[str | None, Layout(span=6)] = Field(
                 title="Middle name",
                 description="Optional middle name",
                 default=None,
             )
-            phone: str | None = Field(
+            phone: Annotated[str | None, Layout(span=6)] = Field(
                 title="Phone number",
                 description="Optional phone number",
                 default=None,
@@ -591,6 +594,75 @@ async def form_simple(form_data: list[dict] = []):
         class SimpleForm(SubmitFormPage):
             model_config = ConfigDict(title="Simple Form - Scalar Fields Only")
 
+            # String field
+            full_name: str = Field(
+                title="Full Name",
+                description="Enter your full name",
+                min_length=2,
+                max_length=100,
+            )
+
+            # LongText field
+            comments: LongText = Field(
+                title="Comments",
+                description="Please provide any additional comments or feedback",
+            )
+
+            # Integer field
+            age: int = Field(
+                title="Age",
+                description="Your age in years",
+                ge=0,
+                le=150,
+            )
+
+            # Date field
+            birth_date: date = Field(
+                title="Birth Date",
+                description="Select your date of birth",
+            )
+
+            # Custom schema fields: rendered by the frontend as non-input UI blocks.
+            # json_schema_extra passes arbitrary data to the schema, which the frontend
+            # can read via pydanticFormField.schema in a custom component matcher.
+            # "format" determines which component matches; the rest is your own schema.
+            age_notice: Annotated[Optional[str], _age_notice] = None
+
+            # Another custom field with a different variant and context
+            data_usage_notice: Annotated[
+                Optional[str],
+                _data_usage_notice,
+            ] = None
+
+            # Boolean field
+            subscribe: bool = Field(
+                title="Subscribe to Newsletter",
+                description="Check this box to receive` our newsletter",
+                default=False,
+            )
+
+            # Choice field
+            preference: SimpleChoices = Field(
+                title="Preference",
+                description="Select your preference",
+            )
+
+        simple_form_data = yield SimpleForm
+
+        return simple_form_data.model_dump()
+
+    post_form(form_generator, state={}, user_inputs=form_data)
+    return "OK!"
+
+
+@app.post("/form-simple-layout")
+async def form_simple_layout(form_data: list[dict] = []):
+    """Simple form fields placed on the 12-column layout grid."""
+
+    def form_generator(state: State):
+        class SimpleLayoutForm(SubmitFormPage):
+            model_config = ConfigDict(title="Simple Form - With Layout")
+
             # Layout places fields on a 12-column grid, fields without a
             # Layout take the full width.
             # Row 1: name, age and birth date next to each other
@@ -652,9 +724,9 @@ async def form_simple(form_data: list[dict] = []):
                 Layout(span=6, start=7),
             ] = None
 
-        simple_form_data = yield SimpleForm
+        simple_layout_form_data = yield SimpleLayoutForm
 
-        return simple_form_data.model_dump()
+        return simple_layout_form_data.model_dump()
 
     post_form(form_generator, state={}, user_inputs=form_data)
     return "OK!"

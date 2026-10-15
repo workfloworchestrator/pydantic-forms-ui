@@ -269,7 +269,10 @@ use in custom renderers:
 
 The demo forms in [`backend/main.py`](../backend/main.py) use the layout:
 
-- `/form-simple`: all options, including `row_span`, `new_row` and `start`.
-- `/form-full`: layout in a nested object (`Address`).
+- `/form-simple-layout`: all options, including `row_span`, `new_row` and `start`.
+- `/form-full`: numbers side by side on the first page, date and time fields
+  and the optional fields in two columns, and layout in a nested object
+  (`Address`).
+- `/form-simple`: no layout, every field takes the full width.
 - `/form`: two fields on one row on the first page, and layout in nested
   models (`Person`, `Education`), also as list items (`TestPersonList`).
