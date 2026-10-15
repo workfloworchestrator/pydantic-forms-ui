@@ -93,3 +93,13 @@ def test_form_full_complete_happy_path():
     response = client.post("/form-full", json=form_data)
     assert response.status_code == 200
     assert response.json() == "OK!"
+
+
+def test_form_full_first_page_places_numbers_on_one_row():
+    response = client.post("/form-full", json=[])
+    assert response.status_code == 510
+
+    properties = response.json()["form"]["properties"]
+    assert "layout" not in properties["full_name"]
+    for name in ("age", "height", "balance"):
+        assert properties[name]["layout"] == {"span": 4}
