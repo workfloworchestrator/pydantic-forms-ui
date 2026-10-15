@@ -99,7 +99,6 @@ export const createComponentMatcherShadcn = (
             matcher() {
                 return true;
             },
-            validator: zodValidationPresets.string,
         },
     ];
 };

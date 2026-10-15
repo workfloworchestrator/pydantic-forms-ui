@@ -145,7 +145,6 @@ export const createComponentMatcher = (
             matcher() {
                 return true;
             },
-            validator: zodValidationPresets.string,
         },
     ];
 };
