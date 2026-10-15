@@ -45,6 +45,7 @@ export function usePydanticForm(
         response: PydanticFormSuccessResponse,
     ) => void,
     formStep?: FieldValues,
+    onStepAccepted?: (formSteps: FieldValues[]) => void,
 ): UsePydanticFormReturn {
     const emptyRawSchema: PydanticFormSchemaRawJson = useMemo(
         () => ({
@@ -143,6 +144,7 @@ export function usePydanticForm(
             setValidationErrorsDetails(null);
             if (formStep) {
                 formStepsRef.current.push(formStep);
+                onStepAccepted?.(formStepsRef.current);
             }
         }
         setIsSending(false);
