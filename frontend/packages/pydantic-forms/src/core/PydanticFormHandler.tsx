@@ -69,15 +69,15 @@ export const PydanticFormHandler = ({
         formStepsRef,
         onSuccess,
         formStep,
+        restoreHistory,
     );
 
     const handleStepSubmit = useCallback(
         (fieldValues: FieldValues) => {
             storeHistory(fieldValues);
             setStep(fieldValues);
-            restoreHistory([...formStepsRef.current, fieldValues]);
         },
-        [restoreHistory, storeHistory],
+        [storeHistory],
     );
 
     const onPrevious = useCallback(async () => {
