@@ -38,10 +38,12 @@ const getComponents = (
 const getCell = (id: string) => screen.getByLabelText(id).parentElement;
 
 describe('RenderFields layout', () => {
-    it('renders the fields in a 12-column grid', () => {
+    it('renders the fields in a 12-column grid when a field has a layout', () => {
         const { container } = render(
             <RenderFields
-                pydanticFormComponents={getComponents([{ id: 'name' }])}
+                pydanticFormComponents={getComponents([
+                    { id: 'name', layout: { span: 6 } },
+                ])}
             />,
         );
 
@@ -52,21 +54,70 @@ describe('RenderFields layout', () => {
         });
     });
 
+    it('renders the fields directly in the parent when no field has a layout', () => {
+        const { container } = render(
+            <RenderFields
+                pydanticFormComponents={getComponents([
+                    { id: 'name' },
+                    { id: 'email' },
+                    { id: 'phone' },
+                ])}
+            />,
+        );
+
+        expect(container.querySelector('.pf-grid')).toBeNull();
+        ['name', 'email', 'phone'].forEach((id) => {
+            expect(getCell(id)).toHaveStyle({ width: '100%' });
+            expect(getCell(id)).not.toHaveClass('pf-col-span-12');
+            expect(getCell(id)?.parentElement).toBe(container);
+        });
+    });
+
+    it('does not wrap uncontrolled elements without a layout', () => {
+        const { container } = render(
+            <RenderFields
+                pydanticFormComponents={getComponents(
+                    [{ id: 'divider' }],
+                    false,
+                )}
+            />,
+        );
+
+        expect(getCell('divider')).toBe(container);
+    });
+
     it('places each field according to its layout', () => {
-        render(
+        const { container } = render(
             <RenderFields
                 pydanticFormComponents={getComponents([
                     { id: 'first_name', layout: { span: 6 } },
-                    { id: 'last_name', layout: { span: 4, start: 9 } },
+                    { id: 'last_name', layout: { span: 6 } },
                     { id: 'comments' },
                 ])}
             />,
         );
 
-        expect(getCell('first_name')).toHaveStyle({ gridColumn: 'span 6' });
-        expect(getCell('first_name')).toHaveClass('pf-col-span-6');
-        expect(getCell('last_name')).toHaveStyle({ gridColumn: '9 / span 4' });
+        ['first_name', 'last_name'].forEach((id) => {
+            expect(getCell(id)).toHaveStyle({ gridColumn: 'span 6' });
+            expect(getCell(id)).toHaveClass('pf-col-span-6');
+            expect(getCell(id)?.parentElement).toBe(container.firstChild);
+        });
         expect(getCell('comments')).toHaveStyle({ gridColumn: 'span 12' });
+        expect(getCell('comments')).toHaveClass('pf-col-span-12');
+        expect(getCell('comments')?.parentElement).toBe(container.firstChild);
+    });
+
+    it('starts a field at the given column', () => {
+        render(
+            <RenderFields
+                pydanticFormComponents={getComponents([
+                    { id: 'last_name', layout: { span: 4, start: 9 } },
+                ])}
+            />,
+        );
+
+        expect(getCell('last_name')).toHaveStyle({ gridColumn: '9 / span 4' });
+        expect(getCell('last_name')).toHaveClass('pf-col-span-4');
     });
 
     it('wraps uncontrolled elements in a grid cell', () => {

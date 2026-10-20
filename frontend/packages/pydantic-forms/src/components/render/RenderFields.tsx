@@ -87,6 +87,29 @@ export function RenderFields({
         );
     };
 
+    // Without any layout, fields render directly in the parent (no grid wrapper)
+    const renderWithoutGrid = (component: PydanticFormComponent) => {
+        const field = getPrefixedField(component.pydanticFormField);
+
+        return component.Element.isControlledElement ? (
+            <div style={{ width: '100%' }} key={field.id}>
+                {renderElement(component, field)}
+            </div>
+        ) : (
+            <React.Fragment key={field.id}>
+                {renderElement(component, field)}
+            </React.Fragment>
+        );
+    };
+
+    const hasLayout = pydanticFormComponents.some(
+        (component) => component.pydanticFormField.layout,
+    );
+
+    if (!hasLayout) {
+        return <>{pydanticFormComponents.map(renderWithoutGrid)}</>;
+    }
+
     return (
         <div className="pf-grid" style={gridStyle}>
             {pydanticFormComponents.map(renderCell)}
