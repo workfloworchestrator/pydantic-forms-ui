@@ -15,6 +15,7 @@ permissions:
 
 jobs:
     publish:
+        if: github.event_name == 'push'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code repo
@@ -40,3 +41,26 @@ jobs:
                   cwd: /home/runner/work/pydantic-forms-ui/pydantic-forms-ui/frontend
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    publish-snapshot:
+        if: github.event_name == 'workflow_dispatch'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code repo
+              uses: actions/checkout@v4
+
+            - name: Setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  registry-url: "https://registry.npmjs.org"
+
+            - name: Update npm
+              run: npm install -g npm@11.7.0 && npm --version
+
+            - name: Installing dependencies
+              run: cd frontend && npm ci && pwd
+
+            - name: Publish snapshot
+              run: npm run packages:publish-snapshot
+              working-directory: frontend
