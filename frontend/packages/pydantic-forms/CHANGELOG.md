@@ -1,5 +1,11 @@
 # pydantic-forms
 
+## 4.6.0
+
+### Minor Changes
+
+- cea5b33: Form values restoring fixed after failed submission
+
 ## 4.5.1
 
 ### Patch Changes
