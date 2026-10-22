@@ -8,6 +8,7 @@ It shows how you can use the [pydantic forms pypy module][2] on top of pydantic 
 Pydantic Forms is a library that automatically generates dynamic, type-safe web forms from Pydantic models. It eliminates the need to manually write form UI code by deriving form fields, validation rules, and UI components directly from your backend data models.
 
 **Key Features:**
+
 - **Automatic Form Generation**: Define your data model once in Python using Pydantic, and the frontend form is generated automatically
 - **Full-Stack Type Safety**: Validation rules defined in Pydantic models are enforced on both backend and frontend
 - **Multi-Page Forms**: Support for complex, multi-step forms using Python generator functions
@@ -62,6 +63,7 @@ npm run dev  # Runs all example apps
 ```
 
 **Example Applications:**
+
 - **example**: Basic demo at [http://127.0.0.1:3000][5] using CSS modules
 - **example-tailwind**: Tailwind CSS demo at http://127.0.0.1:3001 with shadcn/ui components
 
@@ -76,6 +78,7 @@ pre-commit install
 ```
 
 Pre-commit hooks will run:
+
 - **Black** formatting on Python files
 - **TypeScript compilation**, **ESLint**, and **Prettier** on frontend files
 
@@ -85,9 +88,19 @@ This repository is also used to publish the `pydantic-forms` package to NPM. Pub
 handled using the changesets tool that is configured to be used in an Github action called
 publish-to-npm in the .github/workflows directory.
 
+### Snapshot release
+
+We can also publish a [snapshot][7] (_experimental_) release of the NPM package. You can do so by;
+
+From GitHub: Actions → Publish to NPM → Run workflow → in the _"Use workflow from"_ dropdown, pick `<your-branch-name>`.
+
+This will publish the NPM package with a version like; `0.0.0-20261020090905` (using a `snapshot` tag), which you can then install
+to test out this version.
+
 [1]: https://fastapi.tiangolo.com/
 [2]: https://pypi.org/project/pydantic-forms
 [3]: https://www.npmjs.com/package/pydantic-forms
 [4]: http://127.0.0.1:8000/docs
 [5]: http://127.0.0.1:3000
 [6]: https://pre-commit.com/#install
+[7]: https://changesets.dev/guide/snapshot-releases

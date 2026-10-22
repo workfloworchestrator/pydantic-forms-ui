@@ -11,6 +11,7 @@
         "clean": "turbo run clean && rm -rf node_modules",
         "changeset": "changeset",
         "packages:publish": "turbo run build lint test && changeset publish",
+        "packages:publish-snapshot": "turbo run build lint test && changeset version --snapshot && changeset publish --tag snapshot --no-git-tag",
         "postinstall": "turbo run build --filter=./packages/*"
     },
     "devDependencies": {

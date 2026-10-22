@@ -52,6 +52,7 @@ export const PydanticFormHandler = ({
         }
     }, []);
 
+    const onStepAccepted = restoreHistory;
     const {
         validationErrorsDetails,
         apiError,
@@ -69,15 +70,15 @@ export const PydanticFormHandler = ({
         formStepsRef,
         onSuccess,
         formStep,
+        onStepAccepted,
     );
 
     const handleStepSubmit = useCallback(
         (fieldValues: FieldValues) => {
             storeHistory(fieldValues);
             setStep(fieldValues);
-            restoreHistory([...formStepsRef.current, fieldValues]);
         },
-        [restoreHistory, storeHistory],
+        [storeHistory],
     );
 
     const onPrevious = useCallback(async () => {
