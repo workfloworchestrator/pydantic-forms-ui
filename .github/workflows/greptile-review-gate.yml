@@ -2,9 +2,9 @@ name: Greptile review gate
 
 # Greptile reviews a PR only when the `greptile/run` label is added to it (see
 # the `labels` filter in .greptile/config.json). This workflow is the one place
-# that adds that label, so it can limit what each PR costs: Greptile is billed per
-# review and most reviews used to be automatic re-reviews after every push. A PR
-# gets one review when it is ready and further reviews only on request:
+# that adds that label, so it can limit how many of our limited Greptile review
+# credits each PR uses. A PR gets one review when it is ready and further reviews
+# only on request:
 #
 # - When a PR is ready for review and its author has write access to the repo,
 #   `greptile/run` is added once.
@@ -22,8 +22,7 @@ name: Greptile review gate
 # The labels this workflow uses are created on first run if the repository does not
 # have them yet, so no setup script is needed.
 #
-# Reviews are counted from the PR's history of `greptile/run` labeled events, so
-# reviews requested by commenting `@greptileai` are not included.
+# Reviews are counted from the PR's history of `greptile/run` labeled events.
 #
 # Uses pull_request_target so PRs from forks get a token that can edit labels.
 # It never checks out or runs code from the PR.
@@ -129,13 +128,13 @@ jobs:
               # steer people towards REQUEST_LABEL. Admins may set it directly.
               if [[ "${permission}" != "admin" ]]; then
                 gh pr edit "${PR}" --repo "${REPO}" --remove-label "${TRIGGER_LABEL}"
-                comment "@${SENDER} \`${TRIGGER_LABEL}\` is set by automation only; add \`${REQUEST_LABEL}\` to request a Greptile review. That keeps Greptile usage, which is billed per review, under control."
+                comment "@${SENDER} \`${TRIGGER_LABEL}\` is set by automation only; add \`${REQUEST_LABEL}\` to request a Greptile review. That keeps each PR within its share of our limited Greptile review credits."
               fi
               ;;
             "${TREX_LABEL}")
               if [[ "${permission}" != "admin" ]]; then
                 gh pr edit "${PR}" --repo "${REPO}" --remove-label "${TREX_LABEL}"
-                comment "@${SENDER} TREX reviews are more expensive, so only a repository admin can add \`${TREX_LABEL}\`."
+                comment "@${SENDER} TREX reviews use extra Greptile review credits, so only a repository admin can add \`${TREX_LABEL}\`."
               else
                 trigger_review
               fi
@@ -143,7 +142,7 @@ jobs:
             "${REQUEST_LABEL}")
               gh pr edit "${PR}" --repo "${REPO}" --remove-label "${REQUEST_LABEL}"
               if (( reviews >= MAX_REVIEWS )) && [[ "${permission}" != "admin" ]]; then
-                comment "This PR has reached its limit of ${MAX_REVIEWS} Greptile reviews, so no further review was requested. Greptile is billed per review. If another review is really needed, a repository admin can add the \`${REQUEST_LABEL}\` label to force one."
+                comment "This PR has reached its limit of ${MAX_REVIEWS} Greptile reviews, so no further review was requested. If another review is really needed, a repository admin can add the \`${REQUEST_LABEL}\` label to force one."
               else
                 trigger_review
               fi

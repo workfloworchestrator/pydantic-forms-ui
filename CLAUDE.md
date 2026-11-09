@@ -204,7 +204,7 @@ pre-commit install
 ## Pull Requests
 
 - Always create PRs as drafts (`gh pr create --draft`). Marking a PR ready triggers the one automated
-  Greptile review, which is billed per review; leave that step to the author, once CI passes.
+  Greptile review, which uses limited review credits; leave that step to the author, once CI passes.
 - Use the repo's PR template (`.github/pull_request_template.md`) and keep its section headings.
 
 ## Publishing to NPM
