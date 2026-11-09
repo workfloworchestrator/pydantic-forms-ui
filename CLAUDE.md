@@ -201,6 +201,12 @@ pre-commit install
 - Backend: Black formatting on Python files
 - Frontend: TypeScript compilation, linting, and Prettier formatting (via `frontend/pre-commit.sh`)
 
+## Pull Requests
+
+- Always create PRs as drafts (`gh pr create --draft`). Marking a PR ready triggers the one automated
+  Greptile review, which is billed per review; leave that step to the author, once CI passes.
+- Use the repo's PR template (`.github/pull_request_template.md`) and keep its section headings.
+
 ## Publishing to NPM
 
 The `pydantic-forms` package is published to NPM. To publish:
