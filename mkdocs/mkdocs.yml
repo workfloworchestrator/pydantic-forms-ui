@@ -1,0 +1,46 @@
+site_name: pydantic-forms-ui
+site_description: Generate frontend forms from Pydantic models
+repo_url: https://github.com/workfloworchestrator/pydantic-forms-ui
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  features:
+    - navigation.tabs
+    - navigation.indexes
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - tables
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - Tutorials:
+      - tutorials/index.md
+      - Creating your first layout: tutorials/create-first-layout.md
+  - How-to guides:
+      - how-to/index.md
+      - Layout: how-to/layout.md
+  - Reference:
+      - reference/index.md
+      - Layout: reference/layout.md
+  - Explanation:
+      - explanation/index.md
+      - How the layout grid works: explanation/layout-grid.md
