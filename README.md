@@ -82,6 +82,14 @@ Pre-commit hooks will run:
 - **Black** formatting on Python files
 - **TypeScript compilation**, **ESLint**, and **Prettier** on frontend files
 
+### Pull requests
+
+Open PRs as **draft** and click *Ready for review* once CI passes. That triggers one Greptile review.
+
+- To request another review, add the `greptile-review` label. The number of reviews per PR is limited; admins can exceed it.
+- PRs from authors without write access are not reviewed automatically; a maintainer adds `greptile-review`.
+- Admins can add `greptile-review-trex` for an in-depth review.
+
 ## Publishing to NPM
 
 This repository is also used to publish the `pydantic-forms` package to NPM. Publishing is
