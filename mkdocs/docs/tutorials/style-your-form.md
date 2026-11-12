@@ -5,7 +5,7 @@ styled fields, and you style the labels, errors and buttons. You change which
 component renders a field and keep the validation and the backend as they are.
 
 The tutorial uses [Tailwind CSS][Tailwind CSS]. The steps are the same for other
-styling or component libraries, such as [Elastic UI][Elastic UI] (EUI), because
+styling or component libraries, such as [shadcn/ui][shadcn] or [Elastic UI][Elastic UI] (EUI), because
 a field is just a React component. Only the markup inside the components changes.
 EUI does not support React 19 yet, so use React 18 with it.
 

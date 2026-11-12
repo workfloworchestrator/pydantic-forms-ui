@@ -1,15 +1,14 @@
 # `pydantic-forms`
 
 React components that render a form from a JSON schema and send the answers
-back to your API. The package is the frontend only. It needs a backend that
-serves the schema and receives the submitted data. It works in combination with
-the [`pydantic-forms` Python package][pydantic-forms python], which generates
-the schema from Pydantic models. The [repository][repo] includes a FastAPI
-backend with example forms.
+back to your API. It validates the input in the browser and supports multi-page
+forms, nested objects, lists, choices and a layout grid. Any field can be
+replaced with your own component.
 
-It renders the fields, validates the input in the browser, and supports
-multi-page forms, nested objects, lists, choices and a layout grid. Any field
-can be replaced with your own component.
+This package is the frontend only. It works in combination with the
+[`pydantic-forms` Python package][pydantic-forms python], which generates the
+schema from Pydantic models and validates the submitted data. The
+[repository][repo] includes a FastAPI backend with example forms.
 
 ## Requirements
 
@@ -39,7 +38,8 @@ an `ERESOLVE` error.
 `PydanticForm` needs an `apiProvider`: a function that sends the request body to
 your API and returns the response with its HTTP status. The status tells the
 package what the API returned: `510` is the next form page, `400` is
-validation errors and `200` is a finished form.
+validation errors and `200` is a finished form. The `pydantic-forms` Python
+package does this by itself.
 
 ```tsx
 'use client';
