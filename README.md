@@ -1,46 +1,63 @@
 # Pydantic Forms
 
-This repository contains a working example of a [FastAPI][1] application with the pydantic forms frontend and backend modules working together.
-It shows how you can use the [pydantic forms pypy module][2] on top of pydantic models to automatically generate forms on the frontend using the [pydantic forms npm module][3] to ask for user input. It also handles validation and processing of the user input from the backend whilst doing some simple validation pre-submit to get a nice user experience..
+Generate frontend forms from Pydantic models.
+
+This repository holds a working example of a [FastAPI][fastapi] backend and a
+React frontend that work together. It also holds the source of the
+[`pydantic-forms` npm package][npm], which renders forms in React.
+
+You describe a form in Python with Pydantic models, on top of the
+[`pydantic-forms` Python package][pypi]. The backend serves it as JSON schema,
+and the npm package renders it as a form and sends the answers back. Validation
+runs in the browser for a quick response and again on the backend.
 
 ## What is Pydantic Forms?
 
-Pydantic Forms is a library that automatically generates dynamic, type-safe web forms from Pydantic models. It eliminates the need to manually write form UI code by deriving form fields, validation rules, and UI components directly from your backend data models.
+Pydantic Forms derives form fields, validation rules and layout from your
+backend data models, so you do not write form UI code by hand.
 
-**Key Features:**
+- **Automatic form generation**: define the model once in Python and the form is generated.
+- **Full-stack validation**: rules from the Pydantic model are enforced on the backend and in the browser.
+- **Multi-page forms**: build multi-step forms with Python generator functions.
+- **Custom components**: replace any field with your own component.
+- **Framework agnostic**: works in any React app, the examples use Next.js.
 
-- **Automatic Form Generation**: Define your data model once in Python using Pydantic, and the frontend form is generated automatically
-- **Full-Stack Type Safety**: Validation rules defined in Pydantic models are enforced on both backend and frontend
-- **Multi-Page Forms**: Support for complex, multi-step forms using Python generator functions
-- **Custom Components**: Extensible component system allows custom field types and UI components
-- **Framework Agnostic**: Works with any React application (Next.js examples included)
+## How it works
 
-## How It Works
-
-1. **Backend**: Define your data models using Pydantic with validation rules and constraints
-2. **Form Generator**: Use Python generator functions with `yield` to create multi-page form flows
-3. **JSON Schema**: The backend generates JSON schemas from your Pydantic models
-4. **Frontend**: The React component receives the schema and automatically renders appropriate form fields
-5. **Validation**: User input is validated client-side (via JSON schema/Zod) and server-side (via Pydantic)
-6. **Submission**: Form data is sent back to the backend for processing
+1. **Backend**: define a Pydantic model with validation rules and constraints.
+2. **Form generator**: use a Python generator function with `yield` to create a form flow. Each `yield` is a form page.
+3. **JSON schema**: the backend generates a JSON schema from the model.
+4. **Frontend**: the React component receives the schema and renders the fields.
+5. **Validation**: input is validated in the browser (JSON schema and Zod) and on the backend (Pydantic).
+6. **Submission**: the form data is sent to the backend, which returns the next page or the result.
 
 ```python
-# Backend example
 class UserForm(FormPage):
     name: str = Field(min_length=2, max_length=100)
     age: Annotated[int, Ge(18), Le(99)]
-    email: str = Field(pattern=r'^[\w\.-]+@[\w\.-]+\.\w+$')
+    email: str = Field(pattern=r"^[\w\.-]+@[\w\.-]+\.\w+$")
 ```
 
-The frontend automatically generates appropriate input fields (text input, number input with validation, email input) based on the Pydantic model definition.
+The frontend renders a text input, a number input and an email input with the
+same limits.
 
-## Installation
+## Documentation
 
-This example application creates as FastApi application to serve as a backend for a react frontend.
+The [documentation][docs] has a tutorial, how-to guides, reference and
+explanation:
+
+- [Creating your first form][first form] builds a working form from scratch.
+- [Requirements][requirements] lists the versions the backend and the frontend need.
+- The [backend documentation][pydantic-forms docs] covers the Python package.
+
+The package README on [npm][npm] shows how to install and use the package.
+
+## Run the examples
+
+The backend is a FastAPI application and the frontend is an npm workspace with
+two example apps.
 
 ### Backend
-
-To install using a virtual environment:
 
 ```bash
 cd backend
@@ -50,11 +67,11 @@ pip install -r requirements.txt
 fastapi dev main.py
 ```
 
-Visit [http://127.0.0.1:8000/docs][4] to view the API documentation.
+The API documentation is at <http://127.0.0.1:8000/docs>.
 
 ### Frontend
 
-This is a npm workspace monorepo with multiple example applications:
+The monorepo tooling needs Node.js 24.9 or later.
 
 ```bash
 cd frontend
@@ -62,45 +79,48 @@ npm install
 npm run dev  # Runs all example apps
 ```
 
-**Example Applications:**
+- **example**: basic demo at <http://127.0.0.1:3000> with CSS modules.
+- **example-tailwind**: demo at <http://127.0.0.1:3001> with Tailwind CSS and shadcn/ui components.
 
-- **example**: Basic demo at [http://127.0.0.1:3000][5] using CSS modules
-- **example-tailwind**: Tailwind CSS demo at http://127.0.0.1:3001 with shadcn/ui components
-
-The `pydantic-forms` package is located in `frontend/packages/pydantic-forms/` and is automatically built on install.
+The `pydantic-forms` package lives in `frontend/packages/pydantic-forms/` and is
+built on install.
 
 ## Contributing
 
-When setting up this repo to contribute, initialize the pre-commit hooks using [pre-commit][6] (e.g., `brew install pre-commit`):
+Set up the pre-commit hooks with [pre-commit][pre-commit], for example
+`brew install pre-commit`:
 
 ```bash
 pre-commit install
 ```
 
-Pre-commit hooks will run:
+On commit the hooks run:
 
-- **Black** formatting on Python files
-- **TypeScript compilation**, **ESLint**, and **Prettier** on frontend files
+- **Black** on Python files.
+- **TypeScript compilation**, **ESLint** and **Prettier** on frontend files.
 
-## Publishing to NPM
+## Publishing to npm
 
-This repository is also used to publish the `pydantic-forms` package to NPM. Publishing is
-handled using the changesets tool that is configured to be used in an Github action called
-publish-to-npm in the .github/workflows directory.
+The `pydantic-forms` package is published with [changesets][changesets]. The
+`publish-to-npm` GitHub Action in `.github/workflows` does the publishing.
 
 ### Snapshot release
 
-We can also publish a [snapshot][7] (_experimental_) release of the NPM package. You can do so by;
+You can also publish an experimental [snapshot][snapshot] release to test a
+branch. In GitHub go to Actions, Publish to NPM, Run workflow. Pick your branch
+in the "Use workflow from" dropdown.
 
-From GitHub: Actions → Publish to NPM → Run workflow → in the _"Use workflow from"_ dropdown, pick `<your-branch-name>`.
+This publishes the package under the `snapshot` tag with a version like
+`0.0.0-20261020090905`, which you can then install.
 
-This will publish the NPM package with a version like; `0.0.0-20261020090905` (using a `snapshot` tag), which you can then install
-to test out this version.
+[docs]: mkdocs/docs/index.md
+[first form]: mkdocs/docs/tutorials/create-first-form.md
+[requirements]: mkdocs/docs/reference/requirements.md
 
-[1]: https://fastapi.tiangolo.com/
-[2]: https://pypi.org/project/pydantic-forms
-[3]: https://www.npmjs.com/package/pydantic-forms
-[4]: http://127.0.0.1:8000/docs
-[5]: http://127.0.0.1:3000
-[6]: https://pre-commit.com/#install
-[7]: https://changesets.dev/guide/snapshot-releases
+[fastapi]: https://fastapi.tiangolo.com/
+[pypi]: https://pypi.org/project/pydantic-forms
+[npm]: https://www.npmjs.com/package/pydantic-forms
+[pydantic-forms docs]: https://workfloworchestrator.org/pydantic-forms/
+[pre-commit]: https://pre-commit.com/#install
+[changesets]: https://github.com/changesets/changesets
+[snapshot]: https://changesets.dev/guide/snapshot-releases
