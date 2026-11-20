@@ -13,7 +13,7 @@ schema from Pydantic models and validates the submitted data. The
 ## Requirements
 
 Works in any React app. It does not depend on Next.js. It expects React and
-the form libraries it builds on, such as React Hook Form, Zod,
+the form libraries it builds on, such as React Hook Form,
 `@hookform/resolvers` and `swr`, to be installed. The exact versions are in
 [`package.json`][package.json].
 

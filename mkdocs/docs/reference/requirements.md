@@ -15,17 +15,11 @@ The npm package [`pydantic-forms`][pydantic-forms on npm] works in any React
 app. It does not depend on Next.js: the tutorial and the demo apps use Next.js,
 but the package does not import `next`, so it works in a Vite app as well.
 
-The most important packages are:
-
-- [React][react] and [React Hook Form][react hook form]: the package renders
-  React components, and the field components receive their props from React
-  Hook Form.
-- [Zod][zod]: the schema constraints are checked in the browser with Zod.
-  `zod` is installed with the package.
-
-It also uses `@hookform/resolvers`, `swr` and `next-intl` (a React library
-despite its name, used for translations). The supported versions of these
-packages and of React are listed in
+The package needs [React][react] and [React Hook Form][react hook form]: it
+renders React components, and the field components receive their props from
+React Hook Form. It also expects `@hookform/resolvers`, `swr` and `next-intl`
+(a React library despite its name, used for translations). The supported
+versions of these packages and of React are listed in
 [`package.json`][pydantic-forms package.json]. npm installs them for you.
 
 ### An API provider is required
@@ -48,4 +42,3 @@ tooling. The package itself sets no Node.js requirement.
 [pydantic-forms package.json]: https://github.com/workfloworchestrator/pydantic-forms-ui/blob/main/frontend/packages/pydantic-forms/package.json
 [react]: https://react.dev/
 [react hook form]: https://react-hook-form.com/
-[zod]: https://zod.dev/
