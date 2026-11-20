@@ -106,7 +106,7 @@ cd frontend
 npm install pydantic-forms
 ```
 
-npm installs the dependencies of `pydantic-forms` for you, including Zod.
+npm installs the dependencies of `pydantic-forms` for you.
 
 ## 5. Render the form
 
