@@ -12,34 +12,22 @@ schema from Pydantic models and validates the submitted data. The
 
 ## Requirements
 
-Works in any React app. It does not depend on Next.js.
-
-| Peer dependency       | Version           |
-| --------------------- | ----------------- |
-| `react`, `react-dom`  | 18.2 or 19        |
-| `react-hook-form`     | 7.77 or later 7.x |
-| `zod`                 | 4.3 or later 4.x  |
-| `@hookform/resolvers` | 5.2 or later 5.x  |
-| `swr`                 | 2.4 or later 2.x  |
-| `next-intl`           | 4.14 or later 4.x |
+Works in any React app. It does not depend on Next.js. It expects React and
+the form libraries it builds on, such as React Hook Form, Zod,
+`@hookform/resolvers` and `swr`, to be installed. The exact versions are in
+[`package.json`][package.json].
 
 ## Installation
 
 ```bash
-npm install pydantic-forms zod@4
+npm install pydantic-forms
 ```
-
-npm installs the peer dependencies for you, except that it picks Zod 3, which
-does not fit. Name `zod@4` in the command. Without it, the install fails with
-an `ERESOLVE` error.
 
 ## Usage
 
 `PydanticForm` needs an `apiProvider`: a function that sends the request body to
-your API and returns the response with its HTTP status. The status tells the
-package what the API returned: `510` is the next form page, `400` is
-validation errors and `200` is a finished form. The `pydantic-forms` Python
-package does this by itself.
+your API and returns the response with its HTTP status. The `pydantic-forms`
+Python package returns the next form page or the result.
 
 ```tsx
 'use client';
@@ -107,6 +95,7 @@ Apache-2.0
 [pydantic-forms python]: https://pypi.org/project/pydantic-forms/
 [pydantic-forms python docs]: https://workfloworchestrator.org/pydantic-forms/
 [repo]: https://github.com/workfloworchestrator/pydantic-forms-ui
+[package.json]: https://github.com/workfloworchestrator/pydantic-forms-ui/blob/main/frontend/packages/pydantic-forms/package.json
 [docs]: https://github.com/workfloworchestrator/pydantic-forms-ui/tree/main/mkdocs/docs
 [examples]: https://github.com/workfloworchestrator/pydantic-forms-ui/tree/main/frontend/apps
 [backend]: https://github.com/workfloworchestrator/pydantic-forms-ui/tree/main/backend

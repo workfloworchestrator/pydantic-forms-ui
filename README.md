@@ -47,7 +47,7 @@ The [documentation][docs] has a tutorial, how-to guides, reference and
 explanation:
 
 - [Creating your first form][first form] builds a working form from scratch.
-- [Requirements][requirements] lists the versions the backend and the frontend need.
+- [Requirements][requirements] lists what the backend and the frontend need.
 - The [backend documentation][pydantic-forms docs] covers the Python package.
 
 The package README on [npm][npm] shows how to install and use the package.
