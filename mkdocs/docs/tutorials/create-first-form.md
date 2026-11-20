@@ -103,12 +103,10 @@ In the folder next to `backend`, create a Next.js app and add the package:
 ```bash
 npx create-next-app@latest frontend --ts --app --no-tailwind --no-src-dir --eslint --use-npm
 cd frontend
-npm install pydantic-forms zod@4
+npm install pydantic-forms
 ```
 
-npm installs the peer dependencies of `pydantic-forms` for you, except that it
-picks Zod 3, which does not fit. Name `zod@4` in the command. Without it
-`npm install pydantic-forms` fails with an `ERESOLVE` error.
+npm installs the dependencies of `pydantic-forms` for you, including Zod.
 
 ## 5. Render the form
 

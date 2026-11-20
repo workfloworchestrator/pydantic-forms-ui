@@ -15,16 +15,6 @@ Complete description of the layout configuration, from the Python `Layout` class
 | `row_span`        | `rowSpan`              | `int`, >= 1                                 | 1                | Height of the field in rows. Following fields are placed next to it.      |
 | `align`           | `align`                | `"start"`, `"center"`, `"end"`, `"stretch"` | `"stretch"`      | Vertical position of the field within its row.                            |
 
-### Validation
-
-`Layout` validates its options when the form class is defined:
-
-- `span` and `start` must be within 1-12.
-- `start + span - 1` may not exceed 12.
-- `row_span` must be at least 1.
-
-An invalid layout raises a `ValueError`.
-
 ### Behaviour notes
 
 - `Layout()` without any options writes nothing to the schema and behaves the

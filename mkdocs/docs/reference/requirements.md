@@ -4,49 +4,29 @@ What the backend and the frontend need.
 
 ## Backend
 
-The Python package [`pydantic-forms`][pydantic-forms on PyPI].
-
-| Requirement | Version              |
-| ----------- | -------------------- |
-| Python      | 3.10 to 3.15         |
-| Pydantic    | 2.9 or later         |
-
-The package is not tied to a web framework. For FastAPI, install the `fastapi`
-extra, which provides the exception handler
-(`pydantic_forms.exception_handlers.fastapi.form_error_handler`):
-
-```bash
-pip install "pydantic-forms[fastapi]" structlog
-```
-
-`structlog` is imported by `pydantic-forms` but is not installed with it, so
-add it yourself.
-
-See the [installation guide][pydantic-forms installation] for the other extras.
+The Python package [`pydantic-forms`][pydantic-forms on PyPI] turns Pydantic
+models into form pages. See the [installation guide][pydantic-forms
+installation] for the supported Python and Pydantic versions and the extras,
+such as the FastAPI exception handler.
 
 ## Frontend
 
 The npm package [`pydantic-forms`][pydantic-forms on npm] works in any React
 app. It does not depend on Next.js: the tutorial and the demo apps use Next.js,
 but the package does not import `next`, so it works in a Vite app as well.
-`next-intl` below is a React library despite its name, used for translations.
 
-| Peer dependency      | Version              |
-| -------------------- | -------------------- |
-| `react`, `react-dom` | 18.2 or 19           |
-| `react-hook-form`    | 7.77 or later 7.x    |
-| `zod`                | 4.3 or later 4.x     |
-| `@hookform/resolvers`| 5.2 or later 5.x     |
-| `swr`                | 2.4 or later 2.x     |
-| `next-intl`          | 4.14 or later 4.x    |
+The most important packages are:
 
-npm installs the peer dependencies for you, except that it picks Zod 3, which
-does not fit. Name `zod@4` in the install command. Without it
-`npm install pydantic-forms` fails with an `ERESOLVE` error:
+- [React][react] and [React Hook Form][react hook form]: the package renders
+  React components, and the field components receive their props from React
+  Hook Form.
+- [Zod][zod]: the schema constraints are checked in the browser with Zod.
+  `zod` is installed with the package.
 
-```bash
-npm install pydantic-forms zod@4
-```
+It also uses `@hookform/resolvers`, `swr` and `next-intl` (a React library
+despite its name, used for translations). The supported versions of these
+packages and of React are listed in
+[`package.json`][pydantic-forms package.json]. npm installs them for you.
 
 ### An API provider is required
 
@@ -65,3 +45,7 @@ tooling. The package itself sets no Node.js requirement.
 [pydantic-forms on PyPI]: https://pypi.org/project/pydantic-forms/
 [pydantic-forms on npm]: https://www.npmjs.com/package/pydantic-forms
 [pydantic-forms installation]: https://workfloworchestrator.org/pydantic-forms/installation/
+[pydantic-forms package.json]: https://github.com/workfloworchestrator/pydantic-forms-ui/blob/main/frontend/packages/pydantic-forms/package.json
+[react]: https://react.dev/
+[react hook form]: https://react-hook-form.com/
+[zod]: https://zod.dev/

@@ -12,7 +12,23 @@ EUI does not support React 19 yet, so use React 18 with it.
 You need the app of [Creating your first form][first form], with the backend
 running on port 8000.
 
+## What you change
+
+The tutorial has five steps, in four sections. Each section works on its own
+and leaves the form in a working state:
+
+1. **Add Tailwind CSS** to the app. Nothing changes in the form yet.
+2. **Write a Tailwind text field** and **add a matcher** for it. The name and
+   email inputs get the new field.
+3. **Style the labels and errors** with a row renderer.
+4. **Style the buttons** with a footer renderer.
+
+The steps build on each other, so do them in order.
+
 ## 1. Add Tailwind CSS to the app
+
+If you create a new app instead, leave out `--no-tailwind` in
+`create-next-app`, and this step is done for you.
 
 In the `frontend` folder, install Tailwind and its PostCSS plugin:
 
@@ -37,9 +53,6 @@ Replace the content of `app/globals.css` with a single line:
 ```css
 @import 'tailwindcss';
 ```
-
-If you create a new app instead, leave out `--no-tailwind` in
-`create-next-app` and this step is done for you.
 
 ## 2. Write a Tailwind text field
 
@@ -80,6 +93,9 @@ component, which you change in step 4.
 
 The example app has Tailwind versions of other field types, such as number,
 textarea, dropdown, radio, checkbox and date, in [`example-tailwind`][tailwind fields].
+
+The field is not used yet: a component only renders a field when a matcher
+points to it. That is the next step.
 
 ## 3. Add a matcher for the text field
 
@@ -140,6 +156,9 @@ Reload. The name and email fields are now Tailwind inputs. Fields that no
 matcher of yours handles, such as the checkbox on the second page, keep their
 default component. The default matchers are listed in the [reference][default matchers].
 
+The label and the error message still look like the default form. The next step
+replaces them.
+
 ## 4. Style the labels and errors
 
 The label, description and error message of a field come from a row renderer.
@@ -180,6 +199,9 @@ export const FormRow: RowRenderComponent = ({
     );
 };
 ```
+
+Add `rowRenderer: FormRow` to `config` in `app/page.tsx`. The labels and errors
+now use the Tailwind markup. The next step replaces the buttons.
 
 ## 5. Style the buttons
 
