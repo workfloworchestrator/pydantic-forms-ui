@@ -22,3 +22,6 @@ todo.md
 venv/
 .venv/
 claude/settings.json
+
+# mkdocs build output
+mkdocs/site/
